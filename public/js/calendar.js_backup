@@ -1,0 +1,259 @@
+(function($) {
+
+    //'use strict';
+
+    $(function() {
+
+        var chageUser = false;
+
+        var base_path = "get-booking-orders";
+
+        $('#user_id').on('change', function() {
+
+            var user_id = $(this).val();
+
+            base_path = "get-user-bookings/" + user_id;
+
+            chageUser = true;
+
+            loadCalendar(base_path);
+
+        });
+
+
+
+        function loadCalendar(base_path) {
+
+            if ($('#calendar').length) {
+
+                $.ajax({
+
+                    type: "get",
+
+                    url: base_path,
+
+                    success: function(response) {
+
+
+
+                        var eventsArray = [];
+
+                        $.each(response, function(index, value) {
+
+                            var book_time = moment(value.due_time, ["h:mm A"]).format("HH:mm");
+
+                            var end_time = moment(value.due_time, ["h:mm A"]).add(value.finish_time, 'minutes').format("HH:mm");
+
+                            if (value.booking_color == undefined || value.booking_color == null || value.booking_color == '') {
+
+                                colorCode = '#DE3163';
+
+                            }
+
+                            eventsArray.push({
+
+                                id: index,
+
+                                title: value.customer_name + ' - ' + value.due_time + ' GBP:' + value.total_price + ' (' + value.services_names + ')' + value.comments,
+
+                                start: value.due_date + 'T' + book_time + ':00',
+
+                                end: value.due_date + 'T' + end_time + ':00',
+
+                                color: value.booking_color,
+
+
+
+                            })
+
+                        });
+
+                        if (chageUser) {
+
+                            $('#calendar').fullCalendar('removeEvents');
+
+                            $('#calendar').fullCalendar('addEventSource', eventsArray, true);
+
+                        }
+
+
+
+
+
+                        let today = new Date().toISOString().slice(0, 10)
+
+                        $('#calendar').fullCalendar({
+
+                            header: {
+
+                                left: 'prev,next today',
+
+                                center: 'title',
+
+                                right: 'month,agendaWeek,agendaDay'
+
+                            },
+
+                            defaultDate: today,
+
+                            navLinks: true, // can click day/week names to navigate views
+
+                            selectable: true,
+
+                            selectHelper: true,
+
+                            select: function(start, jsEvent, view) {
+
+                                //wrtie your redirection code here
+
+                                // var root_url="http://localhost/";
+
+                                if (start.isBefore(moment())) {
+
+                                    $('#calendar').fullCalendar('unselect');
+
+                                    return false;
+
+                                }
+
+
+
+                                var event = new Date(start);
+
+
+
+                                let date = JSON.stringify(event)
+
+                                date = date.slice(1, 17)
+
+                                date = date.replace(":", "");
+
+
+
+                                window.location = "get-booking-date/" + date
+
+                            },
+
+
+
+
+
+
+
+                            eventMouseover: function(calEvent, jsEvent) {
+
+                                var tooltip = '<div class="tooltipevent" style="width:250px;height:50px;background:#FFFFFF;position:absolute;z-index:10001;">' + calEvent.title + '</div>';
+
+                                $("body").append(tooltip);
+
+                                $(this).mouseover(function(e) {
+
+                                    $(this).css('z-index', 10000);
+
+                                    $('.tooltipevent').fadeIn('500');
+
+                                    $('.tooltipevent').fadeTo('10', 1.9);
+
+                                }).mousemove(function(e) {
+
+                                    $('.tooltipevent').css('top', e.pageY + 10);
+
+                                    $('.tooltipevent').css('left', e.pageX + 20);
+
+                                });
+
+                            },
+
+
+
+                            eventMouseout: function(calEvent, jsEvent) {
+
+                                $(this).css('z-index', 8);
+
+                                $('.tooltipevent').remove();
+
+                            },
+
+
+
+                            eventClick: function(calEvent, jsEvent, view) {
+
+                                if (confirm("Sure! cancel Booking?") == true) {
+
+                                    $.ajax({
+
+                                        url: 'change-calendar-status',
+
+                                        data: 'invoice=' + calEvent.id,
+
+                                        type: "get",
+
+                                        success: function() {
+
+                                            $('#calendar').fullCalendar('removeEvents', calEvent.id);
+
+                                        }
+
+                                    });
+
+                                } else {
+
+                                    return false;
+
+                                }
+
+                            },
+
+
+
+                            // eventRender: function( event, element, view ) { //for event title increase
+
+                            //   element.find('.fc-title').css("font-size","20px");
+
+                            // },
+
+                            editable: false,
+
+                            eventLimit: true,
+
+
+
+                            views: {
+
+                                day: {
+
+                                    eventLimit: 500,
+
+                                },
+
+                            },
+
+                            events: eventsArray,
+
+                        }).on('click', '.fc-basicDay-button', function(event, element, view) {
+
+                            $("td .fc-day-grid-event .fc-title").css("font-size", "20px");
+
+                            /* Act on the event */
+
+                        });
+
+                    }
+
+
+
+                });
+
+
+
+            }
+
+
+
+        }
+
+        loadCalendar(base_path);
+
+    });
+
+})(jQuery);

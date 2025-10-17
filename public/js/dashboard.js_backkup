@@ -1,0 +1,106 @@
+(function($) {
+  'use strict';
+  $(function() {
+    if ($("#orders-chart").length) {
+
+      var booking_titles = [];
+
+      var booking_totals = [];
+
+      var booking_colors = [];
+
+      var base_path = "get-booking-chart";
+
+      $.ajax({
+          type: "get",
+          url: base_path,
+          success: function(response) {
+              $.each(response, function(index, value) {
+                  booking_titles.push(value.name);
+                  booking_totals.push(value.total);
+                  booking_colors.push(value.service_color);
+              });
+
+
+              //var booking_titles = ['nursery', 'arts', 'public'];
+              console.log(booking_titles);
+              var currentChartCanvas = $("#orders-chart").get(0).getContext("2d");
+              var currentChart = new Chart(currentChartCanvas, {
+                  type: 'bar',
+                  data: {
+                      labels: booking_titles,
+                      datasets: [{
+                          label: 'Bookings',
+                          data: booking_totals,
+                          backgroundColor: booking_colors
+                      }]
+                  },
+                  options: {
+                      responsive: true,
+                      maintainAspectRatio: true,
+                      layout: {
+                          padding: {
+                              left: 0,
+                              right: 0,
+                              top: 20,
+                              bottom: 0
+                          }
+                      },
+                      scales: {
+                          yAxes: [{
+                              gridLines: {
+                                  drawBorder: false,
+                              },
+                              ticks: {
+                                  stepSize: 50,
+                                  fontColor: "#686868"
+                              }
+                          }],
+                          xAxes: [{
+                              stacked: true,
+                              ticks: {
+                                  beginAtZero: true,
+                                  fontColor: "#686868"
+                              },
+                              gridLines: {
+                                  display: false,
+                              },
+                              barPercentage: 0.4
+                          }]
+                      },
+                      legend: {
+                          display: false
+                      },
+                      elements: {
+                          point: {
+                              radius: 0
+                          }
+                      },
+                      legendCallback: function(chart) {
+                          var text = [];
+                          text.push('<ul class="legend' + chart.id + '">');
+                          for (var i = 0; i < chart.data.datasets.length; i++) {
+                              text.push('<li><span class="legend-label" style="background-color:' + chart.data.datasets[i].backgroundColor + '"></span>');
+                              if (chart.data.datasets[i].label) {
+                                  text.push(chart.data.datasets[i].label);
+                              }
+                              text.push('</li>');
+                          }
+                          text.push('</ul>');
+                          return text.join("");
+                      },
+                  }
+              });
+              document.getElementById('orders-chart-legend').innerHTML = currentChart.generateLegend();
+          }
+      });
+    }
+
+    if ($("#inline-datepicker-example").length) {
+        $('#inline-datepicker-example').datepicker({
+            enableOnReadonly: true,
+            todayHighlight: true,
+        });
+    }
+  });
+})(jQuery);

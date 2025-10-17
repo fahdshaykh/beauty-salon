@@ -1,0 +1,875 @@
+@media (max-width:599px) {
+    .row.last-three-btns.last-three-btns-ipad.last-three-btns-mobile {
+        margin-top: 20px;
+    }
+    .last-three-btns.last-three-btns-ipad.last-three-btns-mobile ul li {
+        margin-left: 0;
+        margin-bottom: 0.5rem;
+        padding-left: 15px;
+    }
+    .our-grid-margin.first-two-btns.paid-cash-section-desktop.paid-cash-section-ipad.paid-cash-section-mobile ul {
+        display: block;
+    }
+    button.btn {
+        width: 100%;
+    }
+    .btn-group.dropup {
+        width: 100%;
+    }
+    .col-md-6.our-grid-margin.first-two-btns.paid-cash-section-desktop.paid-cash-section-ipad.paid-cash-section-mobile .our-card .our-card-body {
+        padding: 0;
+    }
+    iframe {
+        height: 28%;
+    }
+    .our-jsgrid-header-row th.our-jsgrid-header-cell.our-jsgrid-header-sortable {
+        width: 37px;
+        font-size: 12px;
+        padding: 0;
+        text-align: center;
+    }
+    .our-jsgrid-header-row th.our-jsgrid-header-cell.our-jsgrid-align-right.our-jsgrid-header-sortable {
+        width: 48px;
+        text-align: center;
+        font-size: 12px;
+        padding: 0;
+    }
+    .our-jsgrid-header-row th.our-jsgrid-header-cell.our-jsgrid-header-sortable {
+        width: 36px;
+        font-size: 12px;
+        text-align: center;
+        padding: 0;
+    }
+    td.our-jsgrid-cell.our-jsgrid-cell-one {
+        font-size: 12px;
+        width: 89px;
+    }
+    td.our-jsgrid-cell.our-jsgrid-cell-two {
+        font-size: 12px;
+    }
+    td.our-jsgrid-cell.our-jsgrid-cell-three {
+        font-size: 12px;
+    }
+    .modal-header .our-left-p {
+        width: 20%;
+    }
+    .modal-header .modal-title {
+        width: 100%;
+    }
+}
+
+@media (max-width:1024px) and (min-width: 766px) {
+    .last-three-btns.last-three-btns-ipad {
+        margin-top: 20px;
+    }
+    .our-grid-margin.job-history-desktop.job-history-ipad {
+        width: 50%;
+    }
+    .our-grid-margin.our-notes-section {
+        width: 50%;
+    }
+    .our-grid-margin.first-two-btns.paid-cash-section-desktop.paid-cash-section-ipad ul {
+        display: block;
+        padding-left: 15px;
+    }
+    .last-three-btns.last-three-btns-ipad ul li {
+        margin-left: 0;
+        margin-bottom: 0.5rem;
+    }
+    button.btn {
+        width: 100%;
+    }
+    .btn-group.dropup {
+        width: 100%;
+    }
+    .our-grid-margin.our-map.section {
+        width: 50%;
+    }
+    .row.last-three-btns.last-three-btns-ipad {
+        margin-top: 20px;
+    }
+    .our-grid-margin.first-two-btns.paid-cash-section-desktop.paid-cash-section-ipad ul {
+        display: block;
+    }
+    .last-three-btns.last-three-btns-ipad ul li {
+        margin-left: 0;
+        margin-bottom: 0.5rem;
+        padding-left: 0px;
+    }
+}
+
+@media (max-width: 767px) and (min-width: 600px) {
+    .row.last-three-btns.last-three-btns-ipad {
+        margin-top: 20px;
+    }
+    .our-grid-margin.first-two-btns.paid-cash-section-desktop.paid-cash-section-ipad ul {
+        display: block;
+    }
+    .last-three-btns.last-three-btns-ipad ul li {
+        margin-left: 0;
+        margin-bottom: 0.5rem;
+        padding-left: 15px;
+    }
+    .our-grid-margin.our-map.section {
+        width: 50%;
+    }
+    .our-grid-margin.first-two-btns.paid-cash-section-desktop.paid-cash-section-ipad {
+        width: 50%;
+    }
+    button.btn {
+        width: 100%;
+    }
+    .btn-group.dropup {
+        width: 100%;
+    }
+}
+
+@media (max-width: 1026px) {
+    .ipad-pro button.btn {
+        padding-left: 0;
+        padding-right: 0;
+    }
+    .ipad-pro {
+        padding-left: 0;
+    }
+}
+
+.modal-title {
+    float: left;
+    width: 34%;
+    text-align: center;
+    padding: .5em;
+    margin: 0 0 0 0;
+    font-weight: 700;
+}
+
+.our-left-p {
+    float: left;
+    width: 34%;
+    text-align: left;
+}
+
+.modal-dialog {
+    max-width: 95%;
+}
+
+th.our-jsgrid-header-cell-one {
+    width: 196px;
+}
+
+th.our-jsgrid-header-cell-two {
+    width: 65px;
+}
+
+th.our-jsgrid-header-cell-three {
+    width: 44px;
+}
+
+.our-jsgrid-cell-one {
+    width: 150px;
+}
+
+.our-jsgrid-cell-two {
+    width: 50px;
+}
+
+.our-jsgrid-cell-three {
+    width: 33px;
+}
+
+.row.last-three-btns ul {
+    list-style-type: none;
+    display: inline-flex;
+    padding-left: 0;
+}
+
+.last-three-btns {
+    margin-top: 69px;
+    text-align: center;
+}
+
+html,
+body {
+    overflow-x: hidden;
+}
+
+.card {
+    border: 1px solid #e0e0ef;
+}
+
+.card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border: 1px solid #e0e0ef;
+    border-radius: 0.375rem;
+}
+
+.our-card .our-card-body {
+    padding: 1.5rem 1.5rem;
+}
+
+.card-body {
+    flex: 1 1 auto;
+    padding: 1.25rem;
+}
+
+.card .card-title {
+    color: #000000;
+    font-weight: normal;
+    margin-bottom: 1.25rem;
+    text-transform: capitalize;
+    font-size: 1.125rem;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+.h1,
+.h2,
+.h3,
+.h4,
+.h5 {
+    font-weight: bold;
+    line-height: 1;
+}
+
+a,
+div,
+h1,
+h2,
+h3,
+h4,
+h5,
+p,
+span {
+    text-shadow: none;
+}
+
+.card .card-description {
+    margin-bottom: 1.5rem;
+    font-weight: 400;
+    color: #76838f;
+}
+
+p {
+    font-size: 0.8125rem;
+}
+
+a,
+div,
+h1,
+h2,
+h3,
+h4,
+h5,
+p,
+span {
+    text-shadow: none;
+}
+
+.our-jsgrid,
+.our-jsgrid *,
+.our-jsgrid :after,
+.our-jsgrid :before {
+    box-sizing: border-box;
+}
+
+.our-jsgrid {
+    position: relative;
+    overflow: hidden;
+    font-size: 1em;
+}
+
+.our-jsgrid .our-jsgrid-grid-header {
+    border: 1px solid #e0e0ef;
+    border-top: 0;
+}
+
+.our-jsgrid-grid-header {
+    background: #f9f9f9;
+}
+
+.btn,
+.fc button,
+.ajax-upload-dragdrop .ajax-file-upload,
+.swal2-modal .swal2-buttonswrapper .swal2-styled,
+.swal2-modal .swal2-buttonswrapper .swal2-styled.swal2-confirm,
+.swal2-modal .swal2-buttonswrapper .swal2-styled.swal2-cancel,
+.wizard>.actions a,
+.btn-group.open .dropdown-toggle,
+.fc .open.fc-button-group .dropdown-toggle,
+.btn:active,
+.fc button:active,
+.ajax-upload-dragdrop .ajax-file-upload:active,
+.swal2-modal .swal2-buttonswrapper .swal2-styled:active,
+.wizard>.actions a:active,
+.btn:focus,
+.fc button:focus,
+.ajax-upload-dragdrop .ajax-file-upload:focus,
+.swal2-modal .swal2-buttonswrapper .swal2-styled:focus,
+.wizard>.actions a:focus,
+.btn:hover,
+.fc button:hover,
+.ajax-upload-dragdrop .ajax-file-upload:hover,
+.swal2-modal .swal2-buttonswrapper .swal2-styled:hover,
+.wizard>.actions a:hover,
+.btn:visited,
+.fc button:visited,
+.ajax-upload-dragdrop .ajax-file-upload:visited,
+.swal2-modal .swal2-buttonswrapper .swal2-styled:visited,
+.wizard>.actions a:visited,
+a,
+a:active,
+a:checked,
+a:focus,
+a:hover,
+a:visited,
+body,
+button,
+button:active,
+button:hover,
+button:visited,
+div,
+input,
+input:active,
+input:focus,
+input:hover,
+input:visited,
+select,
+select:active,
+select:focus,
+select:visited,
+textarea,
+textarea:active,
+textarea:focus,
+textarea:hover,
+textarea:visited {
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+}
+
+.our-jsgrid-grid-header {
+    overflow-x: hidden;
+    overflow-y: scroll;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
+
+.our-jsgrid,
+.our-jsgrid *,
+.our-jsgrid :after,
+.our-jsgrid :before {
+    box-sizing: border-box;
+}
+
+.table,
+.our-jsgrid .our-jsgrid-table {
+    margin-bottom: 0;
+}
+
+.table,
+.our-jsgrid .our-jsgrid-table {
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: 1rem;
+    background-color: transparent;
+}
+
+.our-jsgrid-table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+.our-jsgrid-filter-row>.our-jsgrid-cell:first-child,
+.our-jsgrid-header-row>.our-jsgrid-header-cell:first-child,
+.our-jsgrid-insert-row>.our-jsgrid-cell:first-child {
+    border-left: none;
+}
+
+.our-jsgrid .our-jsgrid-table th {
+    font-weight: initial;
+    font-weight: 600;
+}
+
+.table th,
+.our-jsgrid .our-jsgrid-table th,
+.table td,
+.our-jsgrid .our-jsgrid-table td {
+    vertical-align: middle;
+    line-height: 1;
+}
+
+.table th,
+.our-jsgrid .our-jsgrid-table th,
+.table td,
+.our-jsgrid .our-jsgrid-table td {
+    padding: 0.9375rem;
+    vertical-align: top;
+    border-top: 1px solid #e0e0ef;
+}
+
+.our-jsgrid-header-row>.our-jsgrid-header-cell {
+    background: #f9f9f9;
+}
+
+.our-jsgrid-filter-row>.our-jsgrid-cell,
+.our-jsgrid-header-row>.our-jsgrid-header-cell,
+.our-jsgrid-insert-row>.our-jsgrid-cell {
+    border-bottom: 0;
+}
+
+.our-jsgrid-filter-row>.our-jsgrid-cell:first-child,
+.our-jsgrid-header-row>.our-jsgrid-header-cell:first-child,
+.our-jsgrid-insert-row>.our-jsgrid-cell:first-child {
+    border-left: none;
+}
+
+.our-jsgrid-edit-row input,
+.our-jsgrid-edit-row select,
+.our-jsgrid-edit-row textarea,
+.our-jsgrid-filter-row input,
+.our-jsgrid-filter-row select,
+.our-jsgrid-filter-row textarea,
+.our-jsgrid-insert-row input,
+.our-jsgrid-insert-row select,
+.our-jsgrid-insert-row textarea {
+    width: 100%;
+    padding: .3em .5em;
+}
+
+.our-jsgrid input,
+.our-jsgrid select,
+.our-jsgrid textarea {
+    font-size: 1em;
+}
+
+.our-jsgrid-grid-body {
+    border-top: none;
+}
+
+.our-jsgrid-edit-row>.our-jsgrid-cell,
+.our-jsgrid-filter-row>.our-jsgrid-cell,
+.our-jsgrid-grid-body,
+.our-jsgrid-grid-header,
+.our-jsgrid-header-row>.our-jsgrid-header-cell,
+.our-jsgrid-insert-row>.our-jsgrid-cell {
+    border: 1px solid #e9e9e9;
+}
+
+.our-jsgrid-grid-body {
+    overflow-x: auto;
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
+}
+
+.table,
+.our-jsgrid .our-jsgrid-table {
+    margin-bottom: 0;
+}
+
+.table,
+.our-jsgrid .our-jsgrid-table {
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: 1rem;
+    background-color: transparent;
+}
+
+.our-jsgrid-grid-body .our-jsgrid-alt-row:first-child .our-jsgrid-cell,
+.our-jsgrid-grid-body .our-jsgrid-row:first-child .our-jsgrid-cell {
+    border-top: none;
+}
+
+
+/* .our-jsgrid .our-jsgrid-button {
+    background-image: url(images/our-jsgrid-icons.png);
+} */
+
+.our-jsgrid .our-jsgrid-mode-button {
+    width: 24px;
+    height: 24px;
+}
+
+.our-jsgrid .our-jsgrid-button {
+    width: 23px;
+    height: 23px;
+    border: none;
+    cursor: pointer;
+}
+
+.our-grid-margin {
+    margin-bottom: 1.25rem;
+}
+
+.our-jsgrid .our-jsgrid-table th {
+    font-weight: initial;
+    font-weight: 600;
+}
+
+.table th,
+.our-jsgrid .our-jsgrid-table th,
+.table td,
+.our-jsgrid .our-jsgrid-table td {
+    vertical-align: middle;
+    line-height: 1;
+}
+
+.our-jsgrid-insert-mode-button {
+    background-position: 0 -160px;
+    width: 24px;
+    height: 24px;
+}
+
+.our-jsgrid-align-center,
+.our-jsgrid-align-center input,
+.our-jsgrid-align-center select,
+.our-jsgrid-align-center textarea {
+    text-align: center;
+}
+
+.our-jsgrid-cell {
+    border: 1px solid #f3f3f3;
+}
+
+.our-form-check {
+    position: relative;
+    display: block;
+    padding-left: 0;
+}
+
+.mt-0,
+.demo-modal .modal-dialog,
+.my-0 {
+    margin-top: 0 !important;
+}
+
+.our-form-check .our-form-check-label {
+    min-height: 18px;
+    display: block;
+    margin-left: 1.75rem;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+}
+
+.our-form-check-label {
+    margin-bottom: 0;
+}
+
+.our-form-check .our-form-check-label input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin-left: 0;
+    margin-top: 0;
+    z-index: 1;
+    cursor: pointer;
+    opacity: 0;
+    /* filter: alpha(opacity=0); */
+}
+
+.our-jsgrid,
+.our-jsgrid *,
+.our-jsgrid :after,
+.our-jsgrid :before {
+    box-sizing: border-box;
+}
+
+.our-form-check .our-form-check-label input[type="checkbox"]+.input-helper:before {
+    content: "";
+    width: 18px;
+    height: 18px;
+    border-radius: 2px;
+    border: solid #e0e0ef;
+    border-width: 2px;
+    -webkit-transition: all;
+    -moz-transition: all;
+    -ms-transition: all;
+    -o-transition: all;
+    transition: all;
+    transition-duration: 0s;
+    -webkit-transition-duration: 250ms;
+    transition-duration: 250ms;
+}
+
+.our-form-check .our-form-check-label input[type="checkbox"]+.input-helper:before,
+.our-form-check .our-form-check-label input[type="checkbox"]+.input-helper:after {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.our-form-check .our-form-check-label input[type="checkbox"]+.input-helper:after {
+    -webkit-transition: all;
+    -moz-transition: all;
+    -ms-transition: all;
+    -o-transition: all;
+    transition: all;
+    transition-duration: 0s;
+    -webkit-transition-duration: 250ms;
+    transition-duration: 250ms;
+    font-family: "Font Awesome 5 Free";
+    opacity: 0;
+    filter: alpha(opacity=0);
+    -webkit-transform: scale(0);
+    -ms-transform: scale(0);
+    -o-transform: scale(0);
+    transform: scale(0);
+    content: "\f00c";
+    font-size: .5625rem;
+    color: #392C70;
+    font-weight: 900;
+    text-align: center;
+}
+
+.our-form-check .our-form-check-label input[type="checkbox"]+.input-helper:before,
+.our-form-check .our-form-check-label input[type="checkbox"]+.input-helper:after {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.our-jsgrid-grid-body .our-jsgrid-alt-row:first-child .our-jsgrid-cell,
+.our-jsgrid-grid-body .our-jsgrid-row:first-child .our-jsgrid-cell {
+    border-top: none;
+}
+
+.our-jsgrid-grid-body .our-jsgrid-cell:last-child {
+    border-right: none;
+}
+
+.our-jsgrid .our-jsgrid-pager {
+    line-height: 2;
+}
+
+.pagination .page-item .page-link,
+.our-jsgrid .our-jsgrid-pager .page-item .page-link,
+.our-jsgrid .our-jsgrid-pager .our-jsgrid-pager-nav-button .page-link,
+.our-jsgrid .our-jsgrid-pager .our-jsgrid-pager-page .page-link,
+.our-jsgrid .our-jsgrid-pager .our-jsgrid-pager-nav-button a,
+.our-jsgrid .our-jsgrid-pager .our-jsgrid-pager-page a {
+    border-color: #e0e0ef;
+    color: #000000;
+    font-size: .875rem;
+    -webkit-transition-duration: 0.3s;
+    -moz-transition-duration: 0.3s;
+    -o-transition-duration: 0.3s;
+    transition-duration: 0.3s;
+    position: relative;
+    /* display: block; */
+    padding: 0.5rem 0.75rem;
+    margin-left: -1px;
+    line-height: 1.25;
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+}
+
+.our-jsgrid-pager-page {
+    padding: .2em .6em;
+}
+
+.page-link:hover,
+.our-jsgrid .our-jsgrid-pager .our-jsgrid-pager-nav-button a:hover,
+.our-jsgrid .our-jsgrid-pager .our-jsgrid-pager-page a:hover {
+    z-index: 2;
+    color: #0056b3;
+    text-decoration: none;
+    background-color: #e9ecef;
+    border-color: #dee2e6;
+}
+
+.page-link:focus,
+.our-jsgrid .our-jsgrid-pager .our-jsgrid-pager-nav-button a:focus,
+.our-jsgrid .our-jsgrid-pager .our-jsgrid-pager-page a:focus {
+    z-index: 2;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgb(0 123 255 / 25%);
+}
+
+.pagination .page-item.active .page-link,
+.our-jsgrid .our-jsgrid-pager .page-item.active .page-link,
+.our-jsgrid .our-jsgrid-pager .active.our-jsgrid-pager-nav-button .page-link,
+.our-jsgrid .our-jsgrid-pager .active.our-jsgrid-pager-page .page-link,
+.pagination .page-item.active .our-jsgrid .our-jsgrid-pager .our-jsgrid-pager-nav-button a,
+.our-jsgrid .our-jsgrid-pager .page-item.active .our-jsgrid-pager-nav-button a,
+.our-jsgrid .our-jsgrid-pager .our-jsgrid-pager-nav-button .page-item.active a,
+.our-jsgrid .our-jsgrid-pager .active.our-jsgrid-pager-nav-button a,
+.pagination .page-item.active .our-jsgrid .our-jsgrid-pager .our-jsgrid-pager-page a,
+.our-jsgrid .our-jsgrid-pager .page-item.active .our-jsgrid-pager-page a,
+.our-jsgrid .our-jsgrid-pager .our-jsgrid-pager-page .page-item.active a,
+.our-jsgrid .our-jsgrid-pager .active.our-jsgrid-pager-page a,
+.pagination .page-item:hover .page-link,
+.our-jsgrid .our-jsgrid-pager .page-item:hover .page-link,
+.our-jsgrid .our-jsgrid-pager .our-jsgrid-pager-nav-button:hover .page-link,
+.our-jsgrid .our-jsgrid-pager .our-jsgrid-pager-page:hover .page-link,
+.pagination .page-item:hover .our-jsgrid .our-jsgrid-pager .our-jsgrid-pager-nav-button a,
+.our-jsgrid .our-jsgrid-pager .page-item:hover .our-jsgrid-pager-nav-button a,
+.our-jsgrid .our-jsgrid-pager .our-jsgrid-pager-nav-button .page-item:hover a,
+.our-jsgrid .our-jsgrid-pager .our-jsgrid-pager-nav-button:hover a,
+.pagination .page-item:hover .our-jsgrid .our-jsgrid-pager .our-jsgrid-pager-page a,
+.our-jsgrid .our-jsgrid-pager .page-item:hover .our-jsgrid-pager-page a,
+.our-jsgrid .our-jsgrid-pager .our-jsgrid-pager-page .page-item:hover a,
+.our-jsgrid .our-jsgrid-pager .our-jsgrid-pager-page:hover a,
+.pagination .page-item:focus .page-link,
+.our-jsgrid .our-jsgrid-pager .page-item:focus .page-link,
+.our-jsgrid .our-jsgrid-pager .our-jsgrid-pager-nav-button:focus .page-link,
+.our-jsgrid .our-jsgrid-pager .our-jsgrid-pager-page:focus .page-link,
+.pagination .page-item:focus .our-jsgrid .our-jsgrid-pager .our-jsgrid-pager-nav-button a,
+.our-jsgrid .our-jsgrid-pager .page-item:focus .our-jsgrid-pager-nav-button a,
+.our-jsgrid .our-jsgrid-pager .our-jsgrid-pager-nav-button .page-item:focus a,
+.our-jsgrid .our-jsgrid-pager .our-jsgrid-pager-nav-button:focus a,
+.pagination .page-item:focus .our-jsgrid .our-jsgrid-pager .our-jsgrid-pager-page a,
+.our-jsgrid .our-jsgrid-pager .page-item:focus .our-jsgrid-pager-page a,
+.our-jsgrid .our-jsgrid-pager .our-jsgrid-pager-page .page-item:focus a,
+.our-jsgrid .our-jsgrid-pager .our-jsgrid-pager-page:focus a,
+.pagination .page-item:active .page-link,
+.our-jsgrid .our-jsgrid-pager .page-item:active .page-link,
+.our-jsgrid .our-jsgrid-pager .our-jsgrid-pager-nav-button:active .page-link,
+.our-jsgrid .our-jsgrid-pager .our-jsgrid-pager-page:active .page-link,
+.pagination .page-item:active .our-jsgrid .our-jsgrid-pager .our-jsgrid-pager-nav-button a,
+.our-jsgrid .our-jsgrid-pager .page-item:active .our-jsgrid-pager-nav-button a,
+.our-jsgrid .our-jsgrid-pager .our-jsgrid-pager-nav-button .page-item:active a,
+.our-jsgrid .our-jsgrid-pager .our-jsgrid-pager-nav-button:active a,
+.pagination .page-item:active .our-jsgrid .our-jsgrid-pager .our-jsgrid-pager-page a,
+.our-jsgrid .our-jsgrid-pager .page-item:active .our-jsgrid-pager-page a,
+.our-jsgrid .our-jsgrid-pager .our-jsgrid-pager-page .page-item:active a,
+.our-jsgrid .our-jsgrid-pager .our-jsgrid-pager-page:active a {
+    background: #392C70;
+    border-color: #392C70;
+    color: #ffffff;
+}
+
+.table td img,
+.our-jsgrid .our-jsgrid-table td img {
+    width: 36px;
+    height: 36px;
+    border-radius: 100%;
+}
+
+
+/* map */
+
+.job-map-container {
+    position: relative;
+    min-width: 100%;
+    max-width: 100%;
+    display: block;
+    /* padding: 35% 0; */
+    overflow: hidden;
+    border-radius: 5px;
+}
+
+.job-map-container .google-map {
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.gm-style {
+    font: 400 11px Roboto, Arial, sans-serif;
+    text-decoration: none;
+}
+
+
+/* 3rd */
+
+.col-md-6.our-grid-margin.job-history-desktop.job-history-ipad.job-history-mobile p {
+    font-size: 1em;
+    margin-bottom: 3px;
+    margin-top: 4px;
+    text-align: left;
+}
+
+
+/* 4rth */
+
+.paid-cash-div-desktop.paid-cash-div-ipad.paid-cash-div-mobile p {
+    font-size: 1rem;
+    text-align: center;
+}
+
+button.btn.first-two-btns:hover {
+    background: #007AFE;
+}
+
+.last-three-btns button.btn:hover {
+    background: #007AFE;
+}
+
+.last-three-btns ul li {
+    margin-left: 10px;
+}
+
+.our-grid-margin.job-history-desktop hr {
+    margin-bottom: 0;
+    margin-top: 0;
+}
+
+button.btn.first-two-btns {
+    background: #004cd6;
+    color: white;
+}
+
+.last-three-btns button.btn {
+    background: #004cd6;
+    color: white;
+}
+
+.for-para-margin-first,
+.for-para-margin-third {
+    font-weight: 500;
+}
+
+button.btn.btn-sm.rounded-0.our-jsgrid-button.our-jsgrid-mode-button.our-jsgrid-insert-mode-button {
+    background: transparent;
+    color: black;
+    padding: 0;
+}
+
+button.btn.btn-success.btn-sm.rounded-0.our-jsgrid-button.our-jsgrid-edit-button {
+    background: transparent;
+    color: black;
+    padding: 0;
+}
+
+button.btn.btn-danger.btn-sm.rounded-0.our-jsgrid-button.our-jsgrid-delete-button {
+    background: transparent;
+    color: black;
+    padding: 0;
+}
+
+.our-jsgrid i.fa {
+    font-size: 17px;
+}
+
+.list-inline-item.our-edit-delete-i:not(:last-child) {
+    margin-right: auto;
+}
+
+.our-modal {
+    padding: 9px 9px;
+}
+
+button.btn.btn-danger.btn-sm.rounded-0.our-jsgrid-button.our-jsgrid-delete-button:hover,
+button.btn.btn-sm.rounded-0.our-jsgrid-button.our-jsgrid-mode-button.our-jsgrid-insert-mode-button:hover,
+button.btn.btn-success.btn-sm.rounded-0.our-jsgrid-button.our-jsgrid-edit-button:hover {
+    color: gray;
+}

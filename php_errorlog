@@ -1,0 +1,9 @@
+[23-Feb-2021 09:30:27 UTC] PHP Fatal error:  Can't use method return value in write context in /home/customer/www/app.power-diary.co.uk/public_html/app/Http/Controllers/CompanyController.php on line 21
+[02-Mar-2021 13:54:41 UTC] PHP Fatal error:  App\Notifications\PasswordReset cannot use Illuminate\Support\Facades\DB - it is not a trait in /home/customer/www/app.power-diary.co.uk/public_html/app/Notifications/PasswordReset.php on line 12
+[05-Mar-2021 09:39:37 UTC] PHP Fatal error:  Uncaught RuntimeException: A facade root has not been set. in /home/customer/www/app.power-diary.co.uk/public_html/vendor/laravel/framework/src/Illuminate/Support/Facades/Facade.php:236
+Stack trace:
+#0 /home/customer/www/app.power-diary.co.uk/public_html/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(407): Illuminate\Support\Facades\Facade::__callStatic('replaceNamespac...', Array)
+#1 /home/customer/www/app.power-diary.co.uk/public_html/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(384): Illuminate\Foundation\Exceptions\Handler->registerErrorViewPaths()
+#2 /home/customer/www/app.power-diary.co.uk/public_html/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(295): Illuminate\Foundation\Exceptions\Handler->renderHttpException(Object(Symfony\Component\HttpKernel\Exception\HttpException))
+#3 /home/customer/www/app.power-diary.co.uk/public_html/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(192): Illuminate\Fo in /home/customer/www/app.power-diary.co.uk/public_html/vendor/laravel/framework/src/Illuminate/Support/Facades/Facade.php on line 236
+[05-Mar-2021 18:27:41 UTC] PHP Fatal error:  Cannot use Mail as Mail because the name is already in use in /home/customer/www/app.power-diary.co.uk/public_html/app/Http/Controllers/MailController.php on line 7

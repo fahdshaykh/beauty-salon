@@ -1,0 +1,89 @@
+@section('pagescript')
+    <script src="{{asset('js/file-upload.js')}}"></script>
+    <script src="{{asset('js/typeahead.js')}}"></script>
+    <script src="{{asset('js/select2.js')}}"></script>
+    <script src="{{asset('js/formpickers.js')}}"></script>
+@stop
+
+@extends('layouts.admin')
+
+@section('title', 'Create Service | '.Session::get('site_name'))
+
+@section('content')
+
+
+ <!-- partial -->
+ <div class="main-panel">        
+        <div class="content-wrapper">
+          <div class="page-header">
+            <h3 class="page-title">
+                Create Services
+            </h3>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{route('services.index')}}">Services</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Create Service</li>
+                </ol>
+            </nav>
+          </div>
+          @if ($errors->any())
+              <div class="alert alert-danger alert-dismissible">
+                  <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                  <ul>
+                      @foreach ($errors->all() as $error)
+                          <li>{{ $error }}</li>
+                      @endforeach
+                  </ul>
+              </div>
+          @endif
+
+          @if(Session::has('error'))
+            <div class="alert alert-danger alert-dismissible">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                {{Session::get('error')}}
+            </div>
+          @endif
+          
+          <div class="row">
+            <div class="col-md-6 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="card-title">Create Service</h4>
+                  <form class="forms-sample" action="{{route('services.store')}}" method="post">
+                  @csrf
+                    <div class="form-group">
+                      <label>Select Category</label>
+                      <select id="category_id" name="category_id" class="js-example-basic-single w-100" required>
+                        @foreach($categories as $category)
+                            <option value="{{$category->id}}">{{$category->name}}</option>
+                        @endforeach
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="exampleInputUsername1">Service Name</label>
+                      <input type="text" class="form-control" name="name" id="exampleInputUsername1" placeholder="Enter Service Name" required>
+                    </div>
+                    <div class="form-group">
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text bg-primary text-white"><i class="fas fa-dollar-sign"></i></span>
+                        </div>
+                        <input type="text" name="price" class="form-control" aria-label="Amount (to the nearest dollar)" required>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleTextarea1">Customer Message</label>
+                        <textarea class="form-control" id="exampleTextarea1" name="customer_message" rows="4" maxlength="160"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary mr-2">Submit</button>
+                    <a class="btn btn-light" href="{{route('services.index')}}">Cancel</a>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      
+@endsection
+
+

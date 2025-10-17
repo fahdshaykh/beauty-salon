@@ -1,0 +1,88 @@
+<?php
+
+namespace App\Http\Controllers\Auth;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use App\RolePermissions;
+use Session;
+use Auth;
+use App\User;
+use App\Role;
+use DB;
+
+class LoginController extends Controller
+{
+    /*
+    |--------------------------------------------------------------------------
+    | Login Controller
+    |--------------------------------------------------------------------------
+    |
+    | This controller handles authenticating users for the application and
+    | redirecting them to your home screen. The controller uses a trait
+    | to conveniently provide its functionality to your applications.
+    |
+    */
+
+    use AuthenticatesUsers;
+
+    protected function credentials(Request $request)
+    {        
+        return ['email' => $request->email, 'password' => $request->password];
+    }
+      /**
+     * Get the failed login response instance.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+   
+
+    protected function authenticated(Request $request, $user)
+    {
+        $role_id = Auth::user()->role_id;
+        // dd($role_id);
+	    $role_name = Role::where('id', $role_id)->first()->role;
+        Session::put('userole', $role_name);
+        // $role_id = $user->role_id;
+        $role_permissions = RolePermissions::select('permission_id','access_id')->where('role_id', $role_id)->get();
+        // $role_permissions = $role_permissions->groupBy('permission_id');
+        // $permissions_array = array();
+        foreach($role_permissions as $key => $permissions){
+            $permissions_array[] = $permissions->permission_id.','.$permissions->access_id;
+        }
+        Session::push('all_rp',$permissions_array);
+		// dd(session()->get('all_rp'));
+        Session::put('user_company', auth()->user()->company_id);
+		// dd(session()->get('user_company'));
+        $site_logo = DB::table('theme_settings')->where('company_id', $user->company_id)->get();
+        // dd($site_logo[0]->site_logo);
+        if($user->company_id !== 1){
+            Session::put('site_logo', $site_logo[0]->site_logo);
+            Session::put('site_name', $site_logo[0]->site_name);
+        }
+        
+        $this->redirectTo();
+    }
+    protected function redirectTo(){
+        return '/home';
+        //return redirect('/home');
+    }
+
+    /**
+     * Where to redirect users after login.
+     *
+     * @var string
+     */
+    // protected $redirectTo = '/home';
+
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('guest')->except('logout');
+    }
+}

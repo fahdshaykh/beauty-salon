@@ -1,0 +1,82 @@
+@section('pagescript')
+    <script src="{{asset('js/file-upload.js')}}"></script>
+    <script src="{{asset('js/typeahead.js')}}"></script>
+    <script src="{{asset('js/select2.js')}}"></script>
+    <script src="{{asset('js/formpickers.js')}}"></script>
+@stop
+
+@extends('layouts.admin')
+
+@section('title', 'Edit Service | '.Session::get('site_name'))
+
+@section('content')
+
+
+ <!-- partial -->
+ <div class="main-panel">        
+        <div class="content-wrapper">
+          <div class="page-header">
+            <h3 class="page-title">
+                Update Services
+            </h3>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{route('services.index')}}">Services</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Edit Service</li>
+                </ol>
+            </nav>
+          </div>
+          @if ($errors->any())
+              <div class="alert alert-danger alert-dismissible">
+                  <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                  <ul>
+                      @foreach ($errors->all() as $error)
+                          <li>{{ $error }}</li>
+                      @endforeach
+                  </ul>
+              </div>
+          @endif
+          <div class="row">
+            <div class="col-md-6 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="card-title">Create Service</h4>
+                  <form class="forms-sample" action="{{route('services.update',$services->id)}}" method="post">
+                  @csrf
+                  @method('PUT')
+                  <div class="form-group">
+                      <label>Select Category</label>
+                      <select id="category_id" name="category_id" class="js-example-basic-single w-100">
+                        @foreach($categories as $category)
+                            <option value="{{$category->id}}" @if($services->category_id == $category->id) selected @endif >{{$category->name}}</option>
+                        @endforeach
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="exampleInputUsername1">Service Name:</label>
+                      <input type="text" class="form-control" value="{{ $services->name }}" name="name" id="exampleInputUsername1" placeholder="Enter Service Name" required>
+                    </div>
+                    <div class="form-group">
+                      <label for="exampleInputUsername1">Service Price:</label>
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text bg-primary text-white">$</span>
+                        </div>
+                        <input type="text"  name="price" value="{{ $services->price }}" class="form-control" aria-label="Amount (to the nearest dollar)" required>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleTextarea1">Customer Message</label>
+                        <textarea class="form-control" id="exampleTextarea1" name="customer_message" rows="4" maxlength="160">{{ $services->customer_message }}</textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary mr-2">Submit</button>
+                    <a class="btn btn-light" href="{{route('services.index')}}">Cancel</a>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      
+@endsection
+
