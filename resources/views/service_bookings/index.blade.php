@@ -72,17 +72,7 @@
 
         @endif
 
-        <?php $booking_edit_array = array(4,3); ?>
 
-        <?php $booking_edit = implode(',', $booking_edit_array); ?>
-
-        <?php $booking_delete_array = array(4,4); ?>
-
-        <?php $booking_delete = implode(',', $booking_delete_array); ?>
-
-        <?php $booking_show_array = array(4,5); ?>
-
-        <?php $booking_show = implode(',', $booking_show_array); ?>
 
         <div class="card">
 
@@ -253,28 +243,25 @@
                                         
 
                                         <td>
-                                        @if(in_array($booking_edit, session()->get('all_rp')['0']))
-                                            @if($book['service_status']!=5) 
+
+                                        @can('edit bookings')
                                             <a href="{{url('service-bookings/edit',$book['id'])}}">
                                                 <i class="fas fa-pencil-alt text-primary" aria-hidden="true"></i>
                                             </a> |
-                                            @endif
-                                        @endif
+                                            @endcan
 
-                                        @if(in_array($booking_delete, session()->get('all_rp')['0']))
+                                            @can('delete bookings')
                                             <a onclick="return confirm('Are you sure to delete');" href="{{url('service-bookings/destroy',$book['id'])}}">
                                                 <i class="fas fa-trash text-danger"></i>                          
                                             </a>
-                                        @endif
+                                            @endcan
 
-                                        @if(in_array($booking_show, session()->get('all_rp')['0']))
-                                        @if($book['service_status']!=5) 
-                                        |<a href="{{url('view-booking',$book['id'])}}" title="View/Send Invoice">
-                                                <i class="fa fa-eye text-primary"></i>
-                                            </a>
-                                        </td>
-                                        @endif
-                                        @endif
+                                            @can('view invoices')
+                                            |<a href="{{url('view-booking',$book['id'])}}" title="View/Send Invoice">
+                                                    <i class="fa fa-eye text-primary"></i>
+                                                </a>
+                                            </td>
+                                            @endcan
 
                                     </tr>
 

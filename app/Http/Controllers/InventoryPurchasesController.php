@@ -62,6 +62,16 @@ class InventoryPurchasesController extends Controller
      */
     public function store(Request $request)
     {
+        $validate = $request->validate([
+            'inventory_id'   => 'required|exists:inventories,id',
+            'quantity'       => 'required|numeric|min:1',
+            'price'          => 'required|numeric|min:0',
+            'supplier_id'    => 'required|exists:suppliers,id',
+            'paypemnt_type'  => 'required|in:cash,check',
+            'amount_paid'    => 'nullable|numeric|min:0|lte:price',
+            'description'    => 'nullable|string|max:160',
+        ]);
+
         $data = $request->all();
         $data['company_id'] = auth()->user()->company_id;  
         $data['amount_pending'] = $request->price - $request->amount_paid;
@@ -115,16 +125,17 @@ class InventoryPurchasesController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $purchase = InventoryPurchases::findOrFail($id);
-    
-        // Validation for price and amount_paid (optional, can add if needed)
-        $validated = $request->validate([
-            'supplier_id' => 'required|exists:suppliers,id',
-            'inventory_id' => 'required|exists:inventories,id',
-            'quantity' => 'required|numeric',
-            'price' => 'required|numeric',
-            'amount_paid' => 'required|numeric|min:0',
+        $validate = $request->validate([
+            'inventory_id'   => 'required|exists:inventories,id',
+            'quantity'       => 'required|numeric|min:1',
+            'price'          => 'required|numeric|min:0',
+            'supplier_id'    => 'required|exists:suppliers,id',
+            'paypemnt_type'  => 'required|in:cash,check',
+            'amount_paid'    => 'nullable|numeric|min:0|lte:price',
+            'description'    => 'nullable|string|max:160',
         ]);
+
+        $purchase = InventoryPurchases::findOrFail($id);
     
         // Calculate new pending amount
         $newAmountPending = $request->price - $request->amount_paid;

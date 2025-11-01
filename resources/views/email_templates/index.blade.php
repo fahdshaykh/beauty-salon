@@ -118,11 +118,10 @@
 
                     <div class="col-12">
 
-                    @if(in_array("15,2", session()->get('all_rp')['0']))
+
 
                         <a style="float:right;" href="{{url('/email-template-create')}}" class="btn btn-primary btn-add-template mb-2"> Add new</a>
 
-                        @endif
 
                         <div class="table-responsive">
 
@@ -188,16 +187,14 @@
 
                                             <td>
 
-                                            @if(in_array("15,3", session()->get('all_rp')['0']))
 
-                                                <a href="{{url('/email-template-edit',$templates->id)}}">
+                                            <a href="{{url('/email-template-edit',$templates->id)}}">
 
                                              <i class="fa fa-pencil-alt text-primary"></i></a>
                                              |
                                              <a target="_blank" href="{{url('get-template-preview',$templates->id)}}">
                                              <i class="fa fa-eye text-primary"></i></a>
 
-                                             @endif
 
                                             </td>
 

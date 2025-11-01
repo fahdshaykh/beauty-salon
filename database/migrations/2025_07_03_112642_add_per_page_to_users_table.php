@@ -14,7 +14,7 @@ class AddPerPageToUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->integer('per_page')->default(10)->after('company_id');
+            $table->integer('per_page')->default(10)->after('is_active');
         });
     }
 

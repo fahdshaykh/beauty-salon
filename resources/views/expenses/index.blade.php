@@ -82,16 +82,6 @@
 
 
 
-        <?php $expenses_array = array(9,3); ?>
-
-        <?php $expenses_edit = implode(',', $expenses_array); ?>
-
-        <?php $expenses_array = array(9,4); ?>
-
-        <?php $expenses_delete = implode(',', $expenses_array); ?>
-
-
-
         <div class="card">
 
             <div class="card-body">
@@ -168,17 +158,21 @@
                                         <td>
 
                                         
-
+                                            @can('edit expenses')
                                             <a href="{{url('expenses/edit',$expense->id)}}">
 
                                                 <i class="fas fa-pencil-alt text-primary" aria-hidden="true"></i>
 
                                             </a>
+                                            @endcan
+                                            
+                                            @can('delete expenses')
                                             |<a onclick="return confirm('Are you sure to delete');" href="{{url('expenses/destroy',$expense->id)}}">
 
-<i class="fas fa-trash text-danger"></i>                          
+                                            <i class="fas fa-trash text-danger"></i>                          
 
-</a>
+                                            </a>
+                                            @endcan
                                        
 
                                        

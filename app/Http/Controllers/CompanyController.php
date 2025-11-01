@@ -7,7 +7,8 @@ namespace App\Http\Controllers;
 
 
 use App\Company;
-
+use App\Models\Permission;
+use App\Models\Role;
 use App\User;
 
 use Illuminate\Http\Request;
@@ -47,8 +48,6 @@ class CompanyController extends Controller
         ->join('users','users.company_id','=','companies.id')
 
         ->join('company_settings','company_settings.company_id','=','companies.id')
-
-        ->where('users.role_id',1)
 
         ->groupBy('users.company_id')->get();
 
@@ -178,8 +177,6 @@ class CompanyController extends Controller
 
         $user->email = $request->input('email');
 
-        $user->role_id = '1';
-
         $user->company_id = $company_id;
 
         if($request->input('password')!=""){
@@ -190,25 +187,29 @@ class CompanyController extends Controller
 
         $user->save();
 
+
+// CREATE ADMIN ROLE (per company)
+$role = Role::firstOrCreate([
+    'name' => 'admin',
+    'guard_name' => 'web',
+    'company_id' => $company->id,
+]);
+
+// GIVE ALL PERMISSIONS
+$permissions = Permission::all();
+$role->syncPermissions($permissions);
+
+// CRITICAL: Set team context
+app(\Spatie\Permission\PermissionRegistrar::class)->setPermissionsTeamId($company_id);
+
+// NOW ASSIGN ROLE
+$user->assignRole($role); // This will insert company_id in pivot
+
         
 
-        $message_permission = $request->input('message_permission');
+$message_permission = $request->input('message_permission') ? $request->input('message_permission') : 0;
 
-        if(!$message_permission){
-
-            $message_permission = 0;
-
-        }
-
-
-
-        $email_permission = $request->input('email_permission');
-
-        if(!$email_permission){
-
-            $email_permission = 0;
-
-        }
+$email_permission   = $request->input('email_permission') ? $request->input('email_permission') : 0;
 
         DB::table('company_settings')->insert([
 

@@ -406,27 +406,6 @@ input:checked+.slider:before {
 
 
 
-        <?php $user_add_array = array(6,2); ?>
-
-
-
-        <?php $user_add = implode(',', $user_add_array); ?>
-
-
-
-        <?php $user_edit_array = array(6,3); ?>
-
-
-
-        <?php $user_edit = implode(',', $user_edit_array); ?>
-
-
-
-        <?php $user_delete_array = array(6,4); ?>
-
-
-
-        <?php $user_delete = implode(',', $user_delete_array); ?>
 
 
 
@@ -489,23 +468,13 @@ input:checked+.slider:before {
 
 
 
+                            @can('create inventory purchases')
                             <div class="text-center" style="float: center;">
 
-
-
-                                @if(in_array($user_add, session()->get('all_rp')['0'])) 
-
-
-
                                 <a href="{{ route('inventories_purchases.create') }}" class="btn btn-primary btn-sm">Add Inventory</a>
-
-
-
-                                @endif
-
-
-
+                            
                             </div>
+                            @endcan
 
 
 
@@ -604,10 +573,10 @@ input:checked+.slider:before {
 
 
 
-                                        @if(in_array($user_edit, session()->get('all_rp')['0']))
 
 
 
+                                        @can('edit inventory purchases')
                                             <a href="{{route('inventories_purchases.edit', ['inventories_purchase' => $inventory->id])}}">
 
 
@@ -617,17 +586,11 @@ input:checked+.slider:before {
 
 
                                             </a>
+                                            @endcan
 
 
 
-                                        @endif 
-
-
-
-                                        @if(in_array($user_delete, session()->get('all_rp')['0']))
-
-
-
+                                            @can('delete inventory purchases')
                                             |
                                             <a href="#" onclick="event.preventDefault(); 
                                                                 if (confirm('Are you sure to delete?')) {
@@ -640,10 +603,9 @@ input:checked+.slider:before {
                                                 @csrf
                                                 @method('DELETE')
                                             </form>
+                                            @endcan
 
 
-
-                                        @endif
 
 
 

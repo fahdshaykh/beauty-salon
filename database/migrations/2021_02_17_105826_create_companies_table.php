@@ -16,6 +16,7 @@ class CreateCompaniesTable extends Migration
         Schema::create('companies', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('company_name')->nullable();
+            $table->string('smart_name')->nullable();
             $table->string('owner_name')->nullable();
             $table->string('company_phone')->nullable();
             $table->string('company_address')->nullable();

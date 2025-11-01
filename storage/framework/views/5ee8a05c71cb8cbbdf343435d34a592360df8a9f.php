@@ -1,0 +1,1 @@
+<?php echo $description; ?><?php /**PATH D:\Working\Code Disk\works fahd\beauty-salon\resources\views/emails/template.blade.php ENDPATH**/ ?>

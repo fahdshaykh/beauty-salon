@@ -46,7 +46,8 @@ class EmployeeAttendanceController extends Controller
         $schedule = WorkSchedule::where('day', $currentDay)->first();
     
         if (!$schedule) {
-            return response()->json(['message' => 'No schedule found for today'], 400);
+            // return response()->json(['message' => 'No schedule found for today'], 400);
+            return redirect()->back()->with('error', 'No schedule found for today');
         }
     
         $checkInTime = now();

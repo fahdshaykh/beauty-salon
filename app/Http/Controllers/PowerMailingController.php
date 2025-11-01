@@ -132,7 +132,7 @@ class PowerMailingController extends Controller
             //echo $request->schedule_date.'>>>>>>>'.$request->schedule_time; exit;
         }
         else{
-            
+            // dd('not schedule');
             Mail::send(['html' => 'emails.template'], $data, function($message) use ($emails,$subject,$title) {
                 $message->to($emails)->subject($subject);
                 $message->from(Auth::user()->companySetting->email ?? 'noreply@example.com', $title);
@@ -151,10 +151,10 @@ class PowerMailingController extends Controller
             }
             //$this->UnlinkImage($first_image,$second_image);
             if (Mail::failures()) {
-                return back()->with('error','Email Sending Error, Please try again!');
+                return redirect()->route('power_mailing.create')->with('error','Email Sending Error, Please try again!');
             }
             else{
-                return back()->with('success','Email sent successfully!');
+                return redirect()->route('power_mailing.create')->with('success','Email sent successfully!');
             }
             
         }
@@ -172,30 +172,30 @@ class PowerMailingController extends Controller
         }
     }
 
-    public function mailing_history()
+    public function mailing_history(Request $request)
     {
-        $type = 'all';
-        $start_date = '';
-        $end_date = '';
-        $history=DB::table('email_marketing_history')->select('*')->where('company_id', auth()->user()->company_id)->get();
-    
-        return view('power_mailing.history',compact('history','type','start_date','end_date'));
+        $type = $request->input('type', 'all');
+        $start_date = $request->input('start_date', '');
+        $end_date = $request->input('end_date', '');
+
+        // Base query
+        $query = DB::table('email_marketing_history')
+            ->where('company_id', auth()->user()->company_id);
+
+        // Apply date filter
+        if (!empty($start_date) && !empty($end_date)) {
+            $query->whereBetween('date', [$start_date, $end_date]);
+        }
+
+        // Apply type filter
+        if ($type !== 'all') {
+            $query->where('type', $type);
+        }
+
+        $history = $query->get();
+
+        return view('power_mailing.history', compact('history', 'type', 'start_date', 'end_date'));
     }
 
-    public function mailing_history_filter(Request $request)
-    {
-        $start_date=$request->start_date;
-        $end_date=$request->end_date;
-        $type=$request->type;
-        //dd($request->all());
-        $history_detail =DB::table('email_marketing_history')->select('*');
-        if($start_date!=null && $end_date!=null){
-            $history = $history_detail->whereBetween('date', [$request->start_date, $request->end_date]);
-        }
-        if($type!='all'){
-            $history = $history_detail->where('type', '=',$type);
-        }
-        $history = $history_detail->where('company_id', auth()->user()->company_id)->get();
-        return view('power_mailing.history',compact('history','type','start_date','end_date'));
-    }
+    
 }

@@ -1,0 +1,126 @@
+
+
+<?php $__env->startSection('title', 'Create User | '.Session::get('site_name')); ?>
+
+<?php $__env->startSection('content'); ?>
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="page-header">
+            <h3 class="page-title">New User</h3>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="<?php echo e(route('users.index')); ?>">Users</a></li>
+                    <li class="breadcrumb-item active">Create</li>
+                </ol>
+            </nav>
+        </div>
+
+        <?php if($errors->any()): ?>
+            <div class="alert alert-danger alert-dismissible">
+                <a href="#" class="close" data-dismiss="alert">&times;</a>
+                <ul>
+                    <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <li><?php echo e($error); ?></li>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                </ul>
+            </div>
+        <?php endif; ?>
+
+        <div class="row">
+            <div class="col-12 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Create User</h4>
+                        <form action="<?php echo e(route('users.store')); ?>" method="POST" enctype="multipart/form-data" class="forms-sample">
+                            <?php echo csrf_field(); ?>
+
+                            <div class="form-group">
+                                <label>Name</label>
+                                <input type="text" name="name" class="form-control" value="<?php echo e(old('name')); ?>" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="email" name="email" class="form-control" value="<?php echo e(old('email')); ?>" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Password</label>
+                                <input type="password" name="password" class="form-control" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Phone</label>
+                                <input type="text" name="phone" class="form-control" value="<?php echo e(old('phone')); ?>" maxlength="15">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Base Salary</label>
+                                <input type="number" name="base_salary" class="form-control" value="<?php echo e(old('base_salary')); ?>" step="0.01">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Commission Rate (%)</label>
+                                <input type="number" name="commission_rate" class="form-control" value="<?php echo e(old('commission_rate')); ?>" step="0.01">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Transport Allowance?</label>
+                                <select name="is_transport" id="transportSelect" class="form-control" required>
+                                    <option value="">Select</option>
+                                    <option value="no" <?php echo e(old('is_transport') === 'no' ? 'selected' : ''); ?>>No</option>
+                                    <option value="yes" <?php echo e(old('is_transport') === 'yes' ? 'selected' : ''); ?>>Yes</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group" id="transportAmount" style="display: <?php echo e(old('is_transport') === 'yes' ? 'block' : 'none'); ?>;">
+                                <label>Transport Allowance Amount</label>
+                                <input type="number" name="transport_allowance" class="form-control" value="<?php echo e(old('transport_allowance')); ?>" step="0.01">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Address</label>
+                                <input type="text" name="address" class="form-control" value="<?php echo e(old('address')); ?>">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Role</label>
+                                <select name="role" class="form-control" required>
+                                    <option value="">Select Role</option>
+                                    <?php $__currentLoopData = $roles; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $role): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <option value="<?php echo e($role->name); ?>" <?php echo e(old('role') === $role->name ? 'selected' : ''); ?>>
+                                            <?php echo e(ucfirst($role->name)); ?>
+
+                                        </option>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Profile Image</label>
+                                <input type="file" name="image" class="file-upload-default">
+                                <div class="input-group">
+                                    <input type="text" class="form-control file-upload-info" disabled placeholder="Upload Image">
+                                    <span class="input-group-append">
+                                        <button class="file-upload-browse btn btn-primary" type="button">Upload</button>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">Create User</button>
+                            <a href="<?php echo e(route('users.index')); ?>" class="btn btn-light">Cancel</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $('#transportSelect').on('change', function() {
+        $('#transportAmount').toggle(this.value === 'yes');
+    });
+</script>
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.admin', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\Working\Code Disk\works fahd\beauty-salon\resources\views/users/create.blade.php ENDPATH**/ ?>

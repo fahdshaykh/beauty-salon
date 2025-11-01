@@ -253,15 +253,7 @@
 
                 <p class="designation">
 
-                  @if(auth()->user()->role_id == 1)
-
-                    Admin
-
-                  @else 
-
-                    User
-
-                  @endif
+Admin
 
                 </p>
 
@@ -299,7 +291,7 @@
 
 
 
-          @if(auth()->user()->company_id == 1)
+          <!-- if admin login  -->
 
             <li class="nav-item {{ Request::is('companies*') ? 'active' : '' }}">
 
@@ -359,11 +351,10 @@
 
             </li>
 
-          @else
+          <!-- else admin not loggin  -->
          
 
-         
-
+         @can('view categories')
           <li class="nav-item {{ Request::is('categories/*') ? 'active' : '' }}">
 
             <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="true" aria-controls="ui-basic">
@@ -380,25 +371,24 @@
 
               <ul class="nav flex-column sub-menu">
 
-              @if(in_array("1,1", session()->get('all_rp')['0']))
+
 
                 <li class="nav-item"> <a class="nav-link" href="{{route('categories.index')}}"> Category Listing </a></li>
 
-                @endif
 
-                @if(in_array("1,2", session()->get('all_rp')['0']))
-
+                @can('view categories')
                 <li class="nav-item"> <a class="nav-link" href="{{url('categories/category-create')}}"> Create Category </a></li>
-
-                @endif
+                @endcan
 
               </ul>
 
             </div>
 
           </li>
+          @endcan
 
         
+          @can('view inventories')
           <li class="nav-item {{ Request::is('inventories*') || Request::is('inventories/*') || Request::is('inventories_purchases') ? 'active' : '' }}">
 
             <a class="nav-link" data-toggle="collapse" href="#ui-basico" aria-expanded="true" aria-controls="ui-basico">
@@ -417,20 +407,27 @@
 
               <li class="nav-item"> <a class="nav-link {{ Request::is('inventories*') ? 'active' : '' }}" href="{{route('inventories.index')}}"> Inventory Items </a></li>
               
+              @can('view inventory purchases')
               <li class="nav-item"> <a class="nav-link {{ Request::is('inventories_purchases') ? 'active' : '' }}" href="{{route('inventories_purchases.index')}}"> Inventory  Purchases</a></li>
+              @endcan
 
+              @can('view available inventories')
               <li class="nav-item"> <a class="nav-link" href="{{ route('inventories.available') }}"> Inventory Available </a></li>
+              @endcan
 
+              @can('view suppliers')
               <li class="nav-item"> <a class="nav-link" href="{{ route('suppliers.index') }}"> Suppliers </a></li>
+              @endcan
 
               </ul>
 
             </div>
 
           </li>
+          @endcan
 
           
-
+          @can('view services')
           <li class="nav-item {{ Request::is('services*') ? 'active' : '' }}">
 
             <a class="nav-link" data-toggle="collapse" href="#ui-advanced" aria-expanded="false" aria-controls="ui-advanced">
@@ -447,28 +444,27 @@
 
               <ul class="nav flex-column sub-menu">
 
-                @if(in_array("2,1", session()->get('all_rp')['0']))
+
 
                 <li class="nav-item"> <a class="nav-link" href="{{route('services.index')}}">Service Listing</a></li>
 
-                @endif
 
-                @if(in_array("2,2", session()->get('all_rp')['0']))
-
+                @can('create services')
                 <li class="nav-item"> <a class="nav-link" href="{{url('services/services-create')}}">Create Service</a></li>
+                @endcan
 
-                @endif
 
               </ul>
 
             </div>
 
           </li>
+          @endcan
 
       
 
           
-
+          @can('view customers')
           <li class="nav-item {{ Request::is('customers*') ? 'active' : '' }}">
 
             <a class="nav-link" data-toggle="collapse" href="#form-elements" aria-expanded="false" aria-controls="form-elements">
@@ -485,30 +481,31 @@
 
               <ul class="nav flex-column sub-menu">
 
-                @if(in_array("3,1", session()->get('all_rp')['0']))
 
                 <li class="nav-item"><a class="nav-link  {{ Request::is('customers*') ? 'active' : '' }}" href="{{route('customers.index')}}">Customer Listing</a></li>
-
-                @endif
-
-                @if(in_array("3,2", session()->get('all_rp')['0']))               
-
+         
+                
+                @can('create customers')
                 <li class="nav-item"><a class="nav-link  {{ Request::is('customers*') ? 'active' : '' }}" href="{{url('customers/customers-create')}}">Add Customer</a></li>
-
-                <!-- <li class="nav-item"><a class="nav-link  {{ Request::is('customers*') ? 'active' : '' }}" href="{{url('customers-import-view')}}">Import Customers</a></li> -->
-
-                @endif
+                @endcan
+                
+                @can('import customers')
+                <li class="nav-item"><a class="nav-link  {{ Request::is('customers*') ? 'active' : '' }}" href="{{url('customers-import-view')}}">Import Customers</a></li>
+                @endcan
+                
+                <li class="nav-item"><a class="nav-link  {{ Request::is('referred_customers*') ? 'active' : '' }}" href="{{route('referred_customers.index')}}">Reffered By</a></li>
 
               </ul>
 
             </div>
 
           </li>
-
+          @endcan
          
 
           
 
+          @can('view bookings')
           <li class="nav-item {{ Request::is('service-bookings*') ? 'active' : '' }}">
 
             <a class="nav-link" data-toggle="collapse" href="#editors" aria-expanded="false" aria-controls="editors">
@@ -525,25 +522,26 @@
 
               <ul class="nav flex-column sub-menu">
 
-                @if(in_array("4,1", session()->get('all_rp')['0']))
+
 
                 <li class="nav-item"><a class="nav-link {{ Request::is('service-bookings*') ? 'active' : '' }}" href="{{route('service-bookings.index')}}">Service Bookings</a></li>
 
-                @endif
 
-                @if(in_array("4,2", session()->get('all_rp')['0']))  
 
+                @can('create bookings')
                 <li class="nav-item"><a class="nav-link {{ Request::is('service-bookings/service-bookings-create') ? 'active' : '' }}" href="{{url('service-bookings/service-bookings-create')}}">Create Booking</a></li>
+                @endcan
 
-                @endif
 
               </ul>
 
             </div>
 
           </li>
+          @endcan
          
 
+          @can('view reports')
           <li class="nav-item {{ Request::is('reports*') ? 'active' : '' }}">
 
             <a class="nav-link" data-toggle="collapse" href="#charts" aria-expanded="false" aria-controls="charts">
@@ -560,48 +558,61 @@
 
               <ul class="nav flex-column sub-menu">
 
-                @if(in_array("5,7", session()->get('all_rp')['0'])) 
 
+                @can('view services report')
                 <li class="nav-item"> <a class="nav-link" href="{{url('graph-report')}}">Services Report</a></li>
+                @endcan
 
-                <!-- @endif
-                <li class="nav-item"> <a class="nav-link" href="{{url('get-heat-chart')}}">GeoMap Chart</a></li>
-                @if(in_array("5,1", session()->get('all_rp')['0']))   -->
 
+
+                @can('view bookings report')
                 <li class="nav-item"> <a class="nav-link" href="{{url('reports')}}">Bookings Report</a></li>
+                @endcan
 
-                @endif
 
-                @if(in_array("5,3", session()->get('all_rp')['0']))  
+                <!-- reports permissions -->
 
+                @can('view employee report')
                 <li class="nav-item"> <a class="nav-link" href="{{url('employee-graph-report')}}">Employee Report</a></li>
+                @endcan
 
+                @can('view customer report')
                 <li class="nav-item"> <a class="nav-link" href="{{url('customer-reports')}}">Customer Report</a></li>
+                @endcan
+
+                @can('view customer graph')
                 <li class="nav-item"> <a class="nav-link" href="{{url('customer-graph')}}">Customer Graph</a></li>
+                @endcan
+
+                @can('view customer country graph')
                 <li class="nav-item"> <a class="nav-link" href="{{url('customer-country-graph')}}">Customer Country Graph</a></li>
-                <!-- <li class="nav-item"> <a class="nav-link" href="{{url('zipcode-report')}}">PostCode Graph</a></li> -->
+                @endcan
 
-                @endif
+                <!-- reports permissions -->
 
-                @if(in_array("5,5", session()->get('all_rp')['0']))  
 
+                @can('view expense report')
                 <li class="nav-item"> <a class="nav-link" href="{{url('expense-reports')}}">Expense Report</a></li>
-                <li class="nav-item"> <a class="nav-link" href="{{url('profit-loss-report')}}">Profit & Loss Graph</a></li>
+                @endcan
 
-                @endif
+                @can('view profit & loss graph')
+                <li class="nav-item"> <a class="nav-link" href="{{url('profit-loss-report')}}">Profit & Loss Graph</a></li>
+                @endcan
+
+
 
               </ul>
 
             </div>
 
           </li>
-          
+          @endcan
 
 
 
         
-
-          <!-- <li class="nav-item {{ Request::is('send-quotation*') ? 'active' : '' }}">
+          @can('view quotations')
+          <li class="nav-item {{ Request::is('send-quotation*') ? 'active' : '' }}">
 
               <a class="nav-link" data-toggle="collapse" href="#quote" aria-expanded="false" aria-controls="quote">
 
@@ -617,37 +628,37 @@
 
                 <ul class="nav flex-column sub-menu">
 
-                  @if(in_array("10,1", session()->get('all_rp')['0']))
+
 
                   <li class="nav-item"> <a class="nav-link {{ Request::is('quotations*') ? 'active' : '' }}" href="{{url('quotations')}}">Qutations</a></li>
 
-                  @endif
 
-                  @if(in_array("10,2", session()->get('all_rp')['0']))
 
+                  @can('send quotations')
                   <li class="nav-item"> <a class="nav-link {{ Request::is('send-quotation*') ? 'active' : '' }}" href="{{url('send-quotation')}}">Send Quote </a></li>
+                  @endcan
 
-                  @endif
 
                 </ul>`
 
               </div>
 
-            </li> -->
-          <li class="nav-item">
-            <a class="nav-link" href="{{ route('award.index') }}">
-              <i class="fa fa-puzzle-piece menu-icon"></i>
-              <span class="menu-title">Award</span>
-            </a>
-          </li>
+            </li>
+            @endcan
 
-          <!-- <li class="nav-item">
-            <a class="nav-link" href="{{ route('award.index') }}">
-              <i class="fa fa-puzzle-piece menu-icon"></i>
-              <span class="menu-title">Notifications</span>
-            </a>
-          </li> -->
 
+            @can('view awards')
+            <li class="nav-item">
+              <a class="nav-link" href="{{ route('awards.index') }}">
+                <i class="fas fa-bell menu-icon"></i>
+                <span class="menu-title">Awards</span>
+                <i class="menu-arrow"></i>
+              </a>
+            </li>
+            @endcan
+
+
+          @role('admin')
           <li class="nav-item {{ Request::is('user*') || Request::is('role*') ? 'active' : '' }}">
 
             <a class="nav-link" data-toggle="collapse" href="#general-pages" aria-expanded="false" aria-controls="general-pages">
@@ -664,25 +675,24 @@
 
               <ul class="nav flex-column sub-menu">
 
-                @if(in_array("6,1", session()->get('all_rp')['0'])) 
+
 
                 <li class="nav-item"> <a class="nav-link {{ Request::is('user*') ? 'active' : '' }}" href="{{route('users.index')}}"> Users </a></li>
 
-                @endif
 
-                @if(in_array("7,1", session()->get('all_rp')['0']))  
 
                 <li class="nav-item"> <a class="nav-link {{ Request::is('role*') ? 'active' : '' }}" href="{{url('roles')}}"> Roles </a></li>
 
-                @endif
                 
               </ul>
 
             </div>
 
           </li>
+          @endrole
           
 
+          @can('view attendance')
           <li class="nav-item {{ Request::is('attendance*') || Request::is('work_hours*') ? 'active' : '' }}">
 
             <a class="nav-link" data-toggle="collapse" href="#attendance-pages" aria-expanded="false" aria-controls="attendance-pages">
@@ -701,19 +711,24 @@
 
                 <li class="nav-item"> <a class="nav-link" href="{{ route('attendance') }}">Attendance</a></li>
 
+                @can('view work hours')
                 <li class="nav-item"> <a class="nav-link" href="{{ route('work_hours') }}"> Work Hours </a></li>
+                @endcan
 
+                @can('view payrolls')
                 <li class="nav-item"> <a class="nav-link" href="{{ route('payrolls.index') }}"> Monthly Payrolls </a></li>
+                @endcan
                 
               </ul>
 
             </div>
 
           </li>
+          @endcan
 
 
-         <!-- @if(in_array("17,1", session()->get('all_rp')['0']))
 
+          @can('view settings')
          <li class="nav-item {{ Request::is('message-setting*') ? 'active' : '' }}">
 
             <a class="nav-link" data-toggle="collapse" href="#icons" aria-expanded="false" aria-controls="icons">
@@ -729,22 +744,20 @@
             <div class="collapse {{ Request::is('message-setting*') ? 'show' : '' }}" id="icons">
 
               <ul class="nav flex-column sub-menu"> 
-
+                @can('general settings')
                 <li class="nav-item"> <a class="nav-link {{ Request::is('theme*') ? 'active' : '' }}" href="{{url('theme-settings')}}"> General Setting</a></li>
-
+                @endcan
               </ul>
 
             </div>
 
           </li>
+          @endcan
 
-         @endif -->
 
         
-
-         @if(in_array("9,1", session()->get('all_rp')['0']))
-
-         <li class="nav-item {{ Request::is('expenses*') ? 'active' : '' }}">
+          @can('view expenses')
+          <li class="nav-item {{ Request::is('expenses*') ? 'active' : '' }}">
 
             <a class="nav-link" data-toggle="collapse" href="#expenses" aria-expanded="false" aria-controls="expenses">
 
@@ -768,37 +781,32 @@
 
             
 
-                @if(in_array("9,2", session()->get('all_rp')['0']))
 
                 <ul class="nav flex-column sub-menu">
-
+                @can('create expenses')
                 <li class="nav-item"> <a class="nav-link {{ Request::is('expenses*') ? 'active' : '' }}" href="{{url('expenses/expenses-create')}}">Add Expense </a></li>
-
+                @endcan
                 </ul>
 
-                @endif
 
-                @if(in_array("8,1", session()->get('all_rp')['0']))
 
                 <ul class="nav flex-column sub-menu">
-
+                @can('view expense types')
                 <li class="nav-item"> <a class="nav-link {{ Request::is('expense-types*') ? 'active' : '' }}" href="{{url('expense-types')}}">List Expense Types </a></li>
-
+                @endcan
                 </ul>
 
-                @endif
 
               
 
             </div>
 
           </li>
+          @endcan
 
-         @endif
-        
 
-         @if(in_array("15,1", session()->get('all_rp')['0']))
 
+          @can('view templates')
          <li class="nav-item">
 
             <a class="nav-link" data-toggle="collapse" href="#page-layouts" aria-expanded="false" aria-controls="page-layouts">
@@ -814,26 +822,41 @@
             <div class="collapse" id="page-layouts">
 
               <ul class="nav flex-column sub-menu">
-
-                <!-- <li class="nav-item d-none d-lg-block"> <a class="nav-link {{ Request::is('template*') ? 'active' : '' }}" href="{{url('/template')}}">Sms Templates</a></li> -->
-
                 <li class="nav-item"> <a class="nav-link" href="{{url('/email-template')}}">Email Templates</a></li>
-
               </ul>
 
             </div>
 
           </li>
-
-          @endif
+          @endcan
 
           
 
-         <li class="nav-item {{ Request::is('marketing*') ? 'active' : '' }}">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          @can('view marketing')
+          <li class="nav-item {{ Request::is('marketing*') ? 'active' : '' }}">
 
             <a class="nav-link" data-toggle="collapse" href="#marketing" aria-expanded="false" aria-controls="marketing">
 
-              <i class="fa fa-bullhorn menu-icon"></i>
+              <i class="fa fa-minus-square menu-icon"></i>
 
               <span class="menu-title">Marketing</span>
 
@@ -841,82 +864,37 @@
 
             </a>
 
-            
+            <div class="collapse {{ Request::is('marketing*') ? 'show' : '' }}" id="marketing">
 
-            <div class="collapse {{ Request::is('mailing*') ? 'show' : '' }}" id="marketing">
 
-            @if(in_array("11,1", session()->get('all_rp')['0']))
-
-              <ul class="nav flex-column sub-menu">
-
-             
-
-                <li class="nav-item"> <a class="nav-link {{ Request::is('mailing*') ? 'active' : '' }}" href="{{url('mailing')}}"> Email Marketing </a></li>
-
-              </ul>
-
-              <ul class="nav flex-column sub-menu">
-
-             
-
-                <li class="nav-item"> <a class="nav-link {{ Request::is('mailing-history') ? 'active' : '' }}" href="{{url('mailing-history')}}"> Email History </a></li>
-
-              </ul>
-
-              @endif
-
-              <!-- @if(in_array("16,1", session()->get('all_rp')['0']))
-
-              <ul class="nav flex-column sub-menu">
-
-                <li class="nav-item"> <a class="nav-link {{ Request::is('marketing*') ? 'active' : '' }}" href="{{url('/marketing')}}"> SMS Marketing </a></li>
-
-              </ul>
-
-              <ul class="nav flex-column sub-menu">
-
-             
-
-                <li class="nav-item"> <a class="nav-link {{ Request::is('marketing*') ? 'active' : '' }}" href="{{url('sms-history')}}"> SMS History </a></li>
-
-              </ul>
-
-              @endif -->
+                <ul class="nav flex-column sub-menu">
+                  @can('email marketing')
+                  <li class="nav-item"> <a class="nav-link {{ Request::is('marketing*') ? 'active' : '' }}" href="{{ url('mailing') }}"> Send Mails </a></li>
+                  @endcan
+                </ul>
 
 
 
-              <!-- @if(in_array("16,3", session()->get('all_rp')['0']))
+                <ul class="nav flex-column sub-menu">
+                  @can('email history')
+                  <li class="nav-item"> <a class="nav-link {{ Request::is('mailing-history') ? 'active' : '' }}" href="{{ url('mailing-history') }}">Email history </a></li>
+                  @endcan
+                </ul>
 
-              <ul class="nav flex-column sub-menu">
 
-                <li class="nav-item"> <a class="nav-link {{ Request::is('marketing*') ? 'active' : '' }}" href="{{url('/postcard')}}"> Send PostCard </a></li>
-
-              </ul>
-
-              @endif -->
+              
 
             </div>
 
           </li>
+          @endcan
+
+          
 
         
 
-         
-
-          <!-- <li class="nav-item">
-
-            <a class="nav-link" href="{{url('/marketing')}}" >
-
-              <i class="fas fa-bell menu-icon"></i>
-
-              <span class="menu-title">Marketing</span>
-
-              <i class="menu-arrow"></i>
-
-            </a>
-
-          </li> -->
-
+      
+          @can('view holidays')
           <li class="nav-item">
             <a class="nav-link" href="{{url('/add-holidays')}}" >
               <i class="fas fa-bell menu-icon"></i>
@@ -924,10 +902,10 @@
               <i class="menu-arrow"></i>
             </a>
           </li>
+          @endcan
 
           
 
-         @endif
 
        
 

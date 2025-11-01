@@ -13,41 +13,41 @@
           <div class="alert alert-success" style="display:none;" id="status-success"></div>
           @if(Session::has('success'))
 
-<div class="alert alert-success alert-dismissible">
+            <div class="alert alert-success alert-dismissible">
 
-    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
 
-    {{Session::get('success')}}
+                {{Session::get('success')}}
 
-</div>
-
-
-
-@elseif(Session::has('destroy'))
-
-<div class="alert alert-danger alert-dismissible">
-
-    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-
-    {{Session::get('destroy')}}
-
-</div>
-
-@endif
+            </div>
 
 
 
-@if(Session::has('update'))
+            @elseif(Session::has('destroy'))
 
-<div class="alert alert-success alert-dismissible">
+            <div class="alert alert-danger alert-dismissible">
 
-    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
 
-    {{Session::get('update')}}
+                {{Session::get('destroy')}}
 
-</div>
+            </div>
 
-@endif
+            @endif
+
+
+
+            @if(Session::has('update'))
+
+            <div class="alert alert-success alert-dismissible">
+
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+
+                {{Session::get('update')}}
+
+            </div>
+
+            @endif
           
           <div class="card">
 
@@ -58,9 +58,9 @@
                 <div class="row">
                 
                     <div class="col-12">
-                    @if(in_array("15,2", session()->get('all_rp')['0']))
+                        @can('add template')
                         <a style="float:right;" href="{{route('template.create')}}" class="btn btn-primary btn-add-template mb-2"> Add new</a>
-                        @endif
+                        @endcan
                         <div class="table-responsive">
                                 
                             <table id="order-listing" class="table table-striped table-bordered">

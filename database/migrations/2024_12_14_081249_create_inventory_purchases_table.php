@@ -15,16 +15,20 @@ class CreateInventoryPurchasesTable extends Migration
     {
         Schema::create('inventories_purchases', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('supplier_id');
             $table->unsignedBigInteger('inventory_id');
-            $table->integer('quantity');
-            $table->decimal('price', 10, 2);
-            $table->decimal('amount_paid', 10, 2)->default(0);
-            $table->decimal('amount_pending', 10, 2)->default(0);
-            $table->string('payment_type')->nullable(); // cash, check, etc.
-            $table->text('description')->nullable();
+            $table->unsignedBigInteger('company_id');
+            $table->unsignedBigInteger('supplier_id')->nullable();
+            $table->string('description', 255)->nullable();
+            $table->double('quantity', 10, 2);
+            $table->double('price', 10, 2);
+            $table->decimal('amount_paid', 10, 2)->default(0.00);
+            $table->decimal('amount_pending', 10, 2)->default(0.00);
+            $table->string('payment_type', 255)->nullable();
+            $table->string('image', 255)->nullable();
+            $table->date('expiry_date')->nullable();
             $table->timestamps();
-            
+
+            // Foreign key constraint (optional if you already manage manually)
             $table->foreign('supplier_id')->references('id')->on('suppliers')->onDelete('cascade');
         });
     }

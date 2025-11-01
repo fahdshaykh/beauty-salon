@@ -160,26 +160,6 @@
 
 
 
-        <?php $category_edit_array = array(1,3); ?>
-
-
-
-        <?php $category_edit = implode(',', $category_edit_array); ?>
-
-
-
-        <?php $category_delete_array = array(1,4); ?>
-
-
-
-        <?php $category_delete = implode(',', $category_delete_array); ?>
-
-
-
-
-
-
-
         <div class="card">
 
             <div class="card-body">
@@ -268,18 +248,15 @@
                                         <td>
                                             <div class="btn-group align-top">
 
-                                            @if(in_array($category_edit, session()->get('all_rp')['0']))
+                                            
 
-
+                                                @can('edit categories')
                                                 <a href="{{route('categories.edit',$category->id)}}" class="btn btn-default">
                                                         <i class="fas fa-pen" style="font-size:15px;"></i>
                                                 </a>
+                                                @endcan
 
-                                            @endif  
-
-
-                                            @if(in_array($category_delete, session()->get('all_rp')['0']))
-
+                                                @can('delete categories')
                                                 <form method="post" action="{{ route('categories.destroy', $category->id) }}" onsubmit="return confirm('Are You Sure Want To Delete?');">
                                                     @csrf
                                                     @method('DELETE')
@@ -287,8 +264,9 @@
                                                         <i class="fas fa-trash-alt" style="font-size:15px; color:red;"></i>
                                                     </button>
                                                 </form>
+                                                @endcan
 
-                                            @endif 
+                                            
 
                                             </div>
                                         </td>
@@ -420,11 +398,5 @@ function changeCategoryStatus(_this, id) {
 
 
 }
-
-
-
-
-
-
 
 </script>

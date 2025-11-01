@@ -15,6 +15,7 @@ class CreateSupplierPaymentsTable extends Migration
     {
         Schema::create('supplier_payments', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('company_id');
             $table->unsignedBigInteger('supplier_id');
             $table->unsignedBigInteger('inventory_purchase_id')->nullable(); // NULL = direct payment
             $table->decimal('amount', 10, 2);

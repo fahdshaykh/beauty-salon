@@ -162,26 +162,6 @@
 
 
 
-        <?php $service_edit_array = array(2,3); ?>
-
-
-
-        <?php $service_edit = implode(',', $service_edit_array); ?>
-
-
-
-        <?php $service_delete_array = array(2,4); ?>
-
-
-
-        <?php $service_delete = implode(',', $service_delete_array); ?>
-
-
-
-
-
-
-
         <div class="card">
 
 
@@ -294,17 +274,15 @@
                                         <td>
 
                                         <div class="btn-group align-top">
-                                        @if(in_array($service_edit, session()->get('all_rp')['0']))
 
+                                        @can('edit services')
                                             <a href="{{route('services.edit',$service->id)}}" class="btn btn-default">
                                                     <i class="fas fa-pen" style="font-size:15px;"></i>
                                             </a>
+                                            @endcan
 
-                                        @endif 
 
-
-                                        @if(in_array($service_delete, session()->get('all_rp')['0']))
-
+                                            @can('delete services')
                                             <form method="post" action="{{ route('services.destroy', $service->id) }}" onsubmit="return confirm('Are You Sure Want To Delete?');">
                                                 @csrf
                                                 @method('DELETE')
@@ -312,8 +290,8 @@
                                                     <i class="fas fa-trash-alt" style="font-size:15px; color:red;"></i>
                                                 </button>
                                             </form>
+                                            @endcan
 
-                                        @endif 
 
                                         </div>
                                         </td>

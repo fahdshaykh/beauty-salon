@@ -126,7 +126,12 @@ class Kernel extends HttpKernel
 
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
 
-        'company' => \App\Http\Middleware\Company::class,
+        // 'company' => \App\Http\Middleware\Company::class,
+        'company' => \App\Http\Middleware\SetCurrentCompany::class,
+
+        // 'role' => \Spatie\Permission\Middlewares\RoleMiddleware::class,
+        // 'permission' => \Spatie\Permission\Middlewares\PermissionMiddleware::class,
+        // 'role_or_permission' => \Spatie\Permission\Middlewares\RoleOrPermissionMiddleware::class,
 
     ];
 

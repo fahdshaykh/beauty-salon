@@ -377,25 +377,12 @@
 
                       <select id="tags" name="referred_by" class="js-example-basic-single w-100">
 
-                      <option value="Google" @if(isset($customer->referred_by) && $customer->referred_by =='Google') selected @endif >Google</option>
-
-                      <option value="Leaflet"  @if(isset($customer->referred_by) && $customer->referred_by =='Leaflet') selected @endif >Leaflet</option>
-
-                      <option value="Recommendation" @if(isset($customer->referred_by) && $customer->referred_by =='Recommendation') selected @endif>Recommendation</option>
-
-                      <option value="Repeat client"  @if(isset($customer->referred_by) && $customer->referred_by =='Repeat client') selected @endif>Repeat client</option>
-
-                      <option value="Seen van"  @if(isset($customer->referred_by) && $customer->referred_by =='Seen van') selected @endif>Seen van</option>
-
-                      <option value="Paper advert"  @if(isset($customer->referred_by) && $customer->referred_by =='Paper advert') selected @endif>Paper advert</option>
-
-                      <option value="Facebook"  @if(isset($customer->referred_by) && $customer->referred_by =='Facebook') selected @endif>Facebook</option>
-                      <option value="Instagram"  @if(isset($customer->referred_by) && $customer->referred_by =='Instagram') selected @endif>Instagram</option>
-                      <option value="Email"  @if(isset($customer->referred_by) && $customer->referred_by =='Email') selected @endif>Email</option>
-                      <option value="Postcard"  @if(isset($customer->referred_by) && $customer->referred_by =='Postcard') selected @endif>Postcard</option>
-                      <option value="SMS"  @if(isset($customer->referred_by) && $customer->referred_by =='SMS') selected @endif>SMS</option>
-                      <option value="AdWords"  @if(isset($customer->referred_by) && $customer->referred_by =='AdWords') selected @endif>AdWords</option>
-                      <option value="Magazine"  @if(isset($customer->referred_by) && $customer->referred_by =='Magazine') selected @endif>Magazine</option>
+                        @foreach($referreds as $ref)
+                            <option value="{{ $ref->referred_by }}"
+                                @if(isset($customer->referred_by) && $customer->referred_by == $ref->referred_by) selected @endif>
+                                {{ Ucfirst($ref->referred_by) }}
+                            </option>
+                        @endforeach
 
                       </select>
 

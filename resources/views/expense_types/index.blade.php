@@ -80,13 +80,7 @@
 
 
 
-        <?php $expense_types_array = array(8,3); ?>
 
-        <?php $expense_types_edit = implode(',', $expense_types_array); ?>
-
-        <?php $expense_types_array = array(8,4); ?>
-
-        <?php $expense_types_delete = implode(',', $expense_types_array); ?>
 
         <div class="col-lg-12 grid-margin stretch-card">
 
@@ -146,15 +140,12 @@
 
                             <td>
 
-                            @if(in_array($expense_types_edit, session()->get('all_rp')['0']))
-
                                 <a href="{{url('expense-types/edit',$expense_type->id)}}">
 
                                     <i class="fas fa-pencil-alt text-primary" aria-hidden="true"></i>                          
 
                                 </a>
 
-                            @endif
 
                            
 

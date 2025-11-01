@@ -405,39 +405,6 @@ input:checked+.slider:before {
 
 
 
-
-        <?php $user_add_array = array(6,2); ?>
-
-
-
-        <?php $user_add = implode(',', $user_add_array); ?>
-
-
-
-        <?php $user_edit_array = array(6,3); ?>
-
-
-
-        <?php $user_edit = implode(',', $user_edit_array); ?>
-
-
-
-        <?php $user_delete_array = array(6,4); ?>
-
-
-
-        <?php $user_delete = implode(',', $user_delete_array); ?>
-
-
-
-
-
-
-
-
-
-
-
         <div class="card">
 
 
@@ -494,14 +461,12 @@ input:checked+.slider:before {
 
 
 
-                            @if(in_array($user_add, session()->get('all_rp')['0'])) 
 
 
 
                             <a href="{{url('inventories/create')}}" class="btn btn-primary btn-sm">Add Item</a>
 
 
-                            @endif
 
 
 
@@ -591,12 +556,7 @@ input:checked+.slider:before {
 
                                         <td>
 
-
-
-                                        @if(in_array($user_edit, session()->get('all_rp')['0']))
-
-
-
+                                        @can('edit inventories')
                                             <a href="{{route('inventories.edit', ['inventory' => $inventory->id])}}">
 
 
@@ -606,17 +566,13 @@ input:checked+.slider:before {
 
 
                                             </a>
+                                            @endcan
 
 
 
-                                        @endif 
 
 
-
-                                        @if(in_array($user_delete, session()->get('all_rp')['0']))
-
-
-
+                                            @can('delete inventories')
                                             |
                                             <a href="#" onclick="event.preventDefault(); 
                                                                 if (confirm('Are you sure to delete?')) {
@@ -625,14 +581,15 @@ input:checked+.slider:before {
                                                 <i class="fas fa-trash text-danger"></i>
                                             </a>
 
+
                                             <form id="delete-form-{{ $inventory->id }}" action="{{ route('inventories.destroy', $inventory->id) }}" method="POST" style="display: none;">
                                                 @csrf
                                                 @method('DELETE')
                                             </form>
 
+                                            @endcan
 
 
-                                        @endif
 
 
 

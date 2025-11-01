@@ -263,10 +263,6 @@
 
                     <?php $permvalue = 'no'; 
 
-                    if(in_array('4,2', session()->get('all_rp')['0']))
-
-                    $permvalue = 'yes'
-
                     ?>
 
                     <div class="card-body">

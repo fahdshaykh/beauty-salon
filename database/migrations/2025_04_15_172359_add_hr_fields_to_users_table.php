@@ -14,6 +14,9 @@ class AddHrFieldsToUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
+            $table->string('phone')->nullable();
+            $table->string('address')->nullable();
+            $table->text('device_token')->nullable();
             $table->string('position')->nullable();
             $table->decimal('base_salary', 10, 2)->nullable();
             $table->decimal('commission_rate', 5, 2)->nullable();

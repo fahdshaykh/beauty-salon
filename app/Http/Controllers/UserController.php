@@ -17,18 +17,16 @@ use App\User;
 use PDF;
 use Carbon\Carbon;
 
-use App\Role;
+use App\Models\Role;
 use App\Models\Setting;
 use App\Models\UserSetting;
 use DB;
 
-use Hash;
-
 use File;
 
-use Str;
-
-
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+use Spatie\Permission\PermissionRegistrar;
 
 
 
@@ -77,157 +75,68 @@ class UserController extends Controller
 
 
 
-    public function create()
-
-
-
-    {
-
-
-
-        $roles = Role::where('is_deleted',0)->where('company_id', auth()->user()->company_id)->get();
-
-
-
-        return view('users.create',compact('roles'));
-
-
-
-    }
-
-
-
-
-
-
-
-    public function add(Request $request)
-
-
-
-    {
-
-
-
-        $this->validate($request, 
-
-
-
-            [
-
-
-
-                'name' => 'required',
-
-
-
-                'email' => 'required|email|unique:users',
-
-
-
-                'password' => 'required',
-
-
-
-                'role_id' => 'required'
-
-
-
-            ],
-
-
-
-            [
-
-
-
-                'name.required' => 'Please enter user name.',
-
-
-
-                'email.required' => 'Please enter email address.',
-
-
-
-                'password.required' => 'Please enter Password.',
-
-
-
-                'role_id.required' => 'Please select role.',
-
-
-
-            ],
-
-
-
-        );
-
-
-
-        $user = new User;
-
-        $user->name = $request->input('name');
-
-        $user->email = $request->input('email');
-
-        $user->role_id = $request->input('role_id');
-
-        $user->phone = $request->input('phone');
-
-        $user->position = $request->input('position');
-        $user->base_salary = $request->input('base_salary');
-        $user->commission_rate = $request->input('commission_rate');
-        $user->is_transport = $request->input('is_transport');
-        $user->transport_allowance = $request->input('transport_allowance');
-
-        $user->address = $request->input('address');
-
-        if($request->image){
-
-
-
-            $originalImage = $request->file('image');
-
-
-
-            $originalImage->move(public_path().'/profiles', $user_image = 'img_'.Str::random(15).'.'.$originalImage->getClientOriginalExtension());
-
-            $user->image = $user_image;
-
-        }
-
-
-
-       
-
-
-
-        if($request->input('password')!=""){
-
-
-
-            $user->password = Hash::make($request->input('password'));
-
-
-
-        }
-
-
-
-        $user->company_id = auth()->user()->company_id;
-
-
-
+public function create()
+{
+    // Get only roles from current company
+    $roles = Role::where('company_id', auth()->user()->company_id)
+                 ->where('name', '!=', 'admin') // optional: hide admin
+                 ->get();
+
+    return view('users.create', compact('roles'));
+}
+
+public function store(Request $request)
+{
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|email|unique:users,email',
+        'password' => 'required|min:6',
+        'phone' => 'nullable|string|max:15',
+        'base_salary' => 'nullable|numeric',
+        'commission_rate' => 'nullable|numeric',
+        'is_transport' => 'required|in:yes,no',
+        'transport_allowance' => 'nullable|numeric|required_if:is_transport,yes',
+        'address' => 'nullable|string',
+        'role' => 'required|exists:roles,name', // Spatie uses 'name'
+        'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
+    ], [
+        'role.required' => 'Please select a role.',
+        'role.exists' => 'Selected role is invalid.',
+        'transport_allowance.required_if' => 'Transport allowance is required when transport is yes.'
+    ]);
+
+    // CREATE USER
+    $user = User::create([
+        'name' => $request->name,
+        'email' => $request->email,
+        'password' => Hash::make($request->password),
+        'phone' => $request->phone,
+        'base_salary' => $request->base_salary,
+        'commission_rate' => $request->commission_rate,
+        'is_transport' => $request->is_transport,
+        'transport_allowance' => $request->is_transport === 'yes' ? $request->transport_allowance : 0,
+        'address' => $request->address,
+        'company_id' => auth()->user()->company_id,
+    ]);
+
+    // UPLOAD IMAGE
+    if ($request->hasFile('image')) {
+        $image = $request->file('image');
+        $filename = 'img_' . Str::random(15) . '.' . $image->getClientOriginalExtension();
+        $image->move(public_path('profiles'), $filename);
+        $user->image = $filename;
         $user->save();
-
-
-
-        return redirect('users')->with('success','User created successfully');
-
-
-
     }
+
+    // SET TEAM ID (CRITICAL!)
+    app(PermissionRegistrar::class)->setPermissionsTeamId(auth()->user()->company_id);
+
+    // ASSIGN ROLE (Spatie)
+    $user->assignRole($request->role);
+
+    return redirect()->route('users.index')
+        ->with('success', 'User created successfully');
+}
 
 
 
@@ -276,137 +185,84 @@ class UserController extends Controller
 
 
     public function edit($id)
-
-
-
     {
+        $user = User::findOrFail($id);
 
+        // SECURITY: Only allow editing users from same company
+        if ($user->company_id !== auth()->user()->company_id) {
+            abort(403);
+        }
 
+        $roles = Role::where('company_id', auth()->user()->company_id)
+                 ->where('name', '!=', 'admin') // optional: hide admin
+                 ->get();
 
-        $roles = Role::where('is_deleted',0)->where('company_id', auth()->user()->company_id)->get();
-
-
-
-        $user = User::find($id);
-
-
-
-        return view('users.edit',compact('user','roles'));
-
-
-
+        return view('users.edit', compact('user', 'roles'));
     }
 
-
-
-
-
-
-
-    public function user_update(Request $request, $id)
-
-
-
+    public function update(Request $request, $id)
     {
+        $user = User::findOrFail($id);
 
+        // SECURITY: Only allow update from same company
+        if ($user->company_id !== auth()->user()->company_id) {
+            abort(403);
+        }
 
-
-        $validate = $request->validate([
-
-
-
-            'name' => 'required',
-
-
-
-            'email' => 'required|max:255|unique:users,email,'.$id,
-
-
-
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $id,
+            'phone' => 'nullable|string|max:15',
+            'base_salary' => 'nullable|numeric',
+            'commission_rate' => 'nullable|numeric',
+            'is_transport' => 'required|in:yes,no',
+            'transport_allowance' => 'nullable|numeric|required_if:is_transport,yes',
+            'address' => 'nullable|string',
+            'role' => 'required|exists:roles,name',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'password' => 'nullable|min:6'
         ]);
 
+        // UPDATE USER
+        $user->update([
+            'name' => $request->name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'base_salary' => $request->base_salary,
+            'commission_rate' => $request->commission_rate,
+            'is_transport' => $request->is_transport,
+            'transport_allowance' => $request->is_transport === 'yes' ? $request->transport_allowance : null,
+            'address' => $request->address,
+        ]);
 
+        // UPDATE PASSWORD IF PROVIDED
+        if ($request->filled('password')) {
+            $user->password = Hash::make($request->password);
+            $user->save();
+        }
 
-   
-
-        $user = User::find($id);
-
-
-
-        $user->name = $request->input('name');
-
-
-
-        $user->email = $request->input('email');
-
-        $user->phone = $request->input('phone');
-
-
-        $user->position = $request->input('position');
-        $user->base_salary = $request->input('base_salary');
-        $user->commission_rate = $request->input('commission_rate');
-        $user->is_transport = $request->input('is_transport');
-        $user->transport_allowance = $request->input('transport_allowance');
-
-
-        $user->address = $request->input('address');
-
-        $user->role_id = $request->input('role_id');
-
-        if($request->image){
-
-            $validate = $request->validate([
-
-
-
-                'image' => 'mimes:jpeg,jpg,png,gif|required|max:2048',
-
-
-
-            ]);
-
-            $result =  DB::table('users')->select('image')->where('id', $id)->first(); 
-
-            $image_path = public_path()."/profiles/".$result->image;  // Value is not URL but directory file path
-
-            if(File::exists($image_path)) {
-
-                File::delete($image_path);
-
+        // UPDATE IMAGE
+        if ($request->hasFile('image')) {
+            // Delete old image
+            if ($user->image && file_exists(public_path('profiles/' . $user->image))) {
+                unlink(public_path('profiles/' . $user->image));
             }
 
-            $originalImage = $request->file('image');
-
-
-
-            $originalImage->move(public_path().'/profiles/', $user_image = 'img_'.Str::random(15).'.'.$originalImage->getClientOriginalExtension());
-
-            $user->image = $user_image;
-
+            $image = $request->file('image');
+            $filename = 'img_' . Str::random(15) . '.' . $image->getClientOriginalExtension();
+            $image->move(public_path('profiles'), $filename);
+            $user->image = $filename;
+            $user->save();
         }
 
+        // SET TEAM ID
+        app(PermissionRegistrar::class)->setPermissionsTeamId(auth()->user()->company_id);
 
+        // SYNC ROLE (Spatie)
+        $user->syncRoles([$request->role]);
 
-        if($request->input('password')!=""){
-
-
-
-            $user->password = Hash::make($request->input('password'));
-
-
-
-        }
-
-
-
-        $user->save();
-
-
-
-        return redirect('users')->with('success','User updated successfully');
-
-
-
+        return redirect()->route('users.index')
+            ->with('success', 'User updated successfully');
     }
 
 

@@ -82,6 +82,10 @@ class ServiceBookingController extends Controller
         $query = ServiceBooking::with('customer', 'user', 'services')
             ->where('company_id', auth()->user()->company_id);
 
+        if (!auth()->user()->hasRole('admin')) {
+            $query->where('user_id', auth()->user()->id);
+        }
+
         // Apply service filter
         if ($request->filled('service_id')) {
             $query->whereHas('bookingdetail', function ($q) use ($request) {
@@ -175,11 +179,18 @@ class ServiceBookingController extends Controller
 
         $customers = Customer::select('*')->where('is_active', 1)->where('company_id', auth()->user()->company_id)->where('is_deleted', 0)->orderBy('created_at', 'desc')->get();
 
-        $users = User::select('*')->where('is_active', 1)->where('company_id', auth()->user()->company_id)->where('is_deleted', 0)->orderBy('created_at', 'desc')->get();
+        // $users = User::select('*')->where('is_active', 1)->where('company_id', auth()->user()->company_id)->where('is_deleted', 0)->orderBy('created_at', 'desc')->get();
+        $users = User::activeInCompany()
+                    ->when(!auth()->user()->hasRole('admin'), fn($q) => $q->where('id', auth()->user()->id))
+                    ->get();
 
         $tax_info = Db::table('company_settings')->select('tax_status','vat','amount')->where('company_id', auth()->user()->company_id)->get();
 
-        return view('service_bookings.create',compact('date','customers','services','booking_detail','tax_info','inventories', 'users'));
+        $countries = DB::table('countries')->get();
+
+        $referreds = DB::table('referred_customers')->where('is_active', true)->get();
+
+        return view('service_bookings.create',compact('date', 'countries', 'referreds', 'customers','services','booking_detail','tax_info','inventories', 'users'));
 
 
 

@@ -13,19 +13,19 @@ return new class extends Migration
     {
         Schema::create('employee_attendances', function (Blueprint $table) {
             $table->id();
-            $table->string('user_id');
-            $table->string('name');
-            $table->string('status');
+            $table->unsignedBigInteger('company_id');
+            $table->unsignedBigInteger('user_id');
+            $table->integer('status');
             $table->string('leave_type')->nullable();
             $table->string('reason')->nullable();
-            // $table->timestamp('exit_time')->nullable();
-            // $table->string('hours_worked')->nullable();
+            $table->boolean('is_late')->default(false);
+            $table->string('hours_worked')->nullable();
+            $table->integer('overtime_minutes')->default(0);
             $table->dateTime('check_in')->nullable();
             $table->dateTime('check_out')->nullable();
             $table->string('check_in_location')->nullable();
             $table->string('check_out_location')->nullable();
-            $table->boolean('is_late')->default(false);
-            $table->integer('overtime_minutes')->default(0);
+            $table->string('transport_assistance')->nullable();
             $table->timestamps();
         });
     }

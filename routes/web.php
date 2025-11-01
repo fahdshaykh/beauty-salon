@@ -60,7 +60,7 @@ Route::get('/clear-config', function() {
 Auth::routes();
 Route::get('optout/{companyid}/{customerid}/{opt}','MarketingController@emailoptout')->where('id', '[0-9]+','opt', '[0-9]+');
 Route::get('smsoptout/{companyid}/{customerid}/{opt}','MarketingController@smsoptout')->where('id', '[0-9]+','opt', '[0-9]+');
-Route::group(['middleware' => 'auth'], function () {
+Route::middleware(['auth', 'company'])->group(function () {
 
     Route::get('/', function () {
 
@@ -191,13 +191,13 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('user/user-create', 'UserController@create');
     Route::get('users/deleted', 'UserController@deleted_users');
 
-    Route::post('user/add', 'UserController@add')->name('user.add');
+    Route::post('users/store', 'UserController@store')->name('users.store');
 
     Route::get('user-status', 'UserController@user_status');
 
     Route::get('user/edit/{id}', 'UserController@edit');
 
-    Route::post('user/update/{id}', 'UserController@user_update')->name('user.update');
+    Route::put('user/update/{id}', 'UserController@update')->name('users.update');
 
     Route::get('user/destroy/{id}', 'UserController@destroy');
     Route::get('user/delete_permanent/{id}', 'UserController@delete_permanent');
@@ -206,15 +206,15 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::get('roles', 'RoleController@index')->name('roles.index');
 
-    Route::get('role/role-create', 'RoleController@create');
+    Route::get('role/role-create', 'RoleController@create')->name('roles.create');
 
-    Route::post('role/store', 'RoleController@store')->name('role.store');
+    Route::post('role/store', 'RoleController@store')->name('roles.store');
 
-    Route::get('role/edit/{id}', 'RoleController@edit');
+    Route::get('role/edit/{role}', 'RoleController@edit')->name('roles.edit');
 
-    Route::post('role/update/{id}', 'RoleController@update')->name('role.update');
+    Route::PUT('role/update/{role}', 'RoleController@update')->name('roles.update');
 
-    Route::get('role/destroy/{id}', 'RoleController@destroy');
+    Route::delete('role/destroy/{role}', 'RoleController@destroy')->name('roles.destroy');
 
 
 
@@ -295,7 +295,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::get('expenses/destroy/{id}', 'ExpenseController@destroy');
 
-    Route::get('mailing', 'PowerMailingController@create');
+    Route::get('mailing', 'PowerMailingController@create')->name('power_mailing.create');
     
     Route::post('send-mailing', 'PowerMailingController@send');
   
@@ -339,7 +339,9 @@ Route::get('delete-holidays/{id}','SettingController@delete_holidays');
 Route::resource('/inventories','InventoryController');
 Route::get('inventories-available', [InventoryController::class, 'available'])->name('inventories.available');
 Route::resource('/inventories_purchases','InventoryPurchasesController');
-Route::post('/basket/submit', [SbookingController::class, 'submitBasket'])->name('basket.submit');
+
+    // Referred customers CRUD
+    Route::resource('/referred_customers', 'ReferredCustomerController');
 
 Route::post('/check-inventory-quantity', 'InventoryController@checkQuantity');
 
@@ -373,7 +375,7 @@ Route::get('user/monthly/payslip/{id}', [PayrollController::class, 'payslip'])->
 Route::get('/customers/import', [CustomerController::class, 'showImportForm'])->name('customers.import.form');
 Route::post('/customers/import', [CustomerController::class, 'import'])->name('customers.import');
 
-Route::resource('award', AwardController::class);
+Route::resource('awards', AwardController::class);
 
 Route::post('/admin/booking/change-status', [BookingController::class, 'changeStatus'])->name('admin.booking.change-status');
 

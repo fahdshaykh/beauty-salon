@@ -13,8 +13,7 @@ use App\Quote;
 use Mail;
 
 use DB;
-
-
+use Illuminate\Support\Facades\Auth;
 
 class QuoteController extends Controller
 

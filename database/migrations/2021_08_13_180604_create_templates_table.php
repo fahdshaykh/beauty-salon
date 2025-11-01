@@ -15,9 +15,12 @@ class CreateTemplatesTable extends Migration
     {
         Schema::create('templates', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->int('type');
+            $table->unsignedBigInteger('company_id');
+            $table->integer('type');
             $table->text('title');
-            $table->string('description');
+            $table->longText('description');
+            $table->integer('status')->default(0);
+            $table->longText('template_json')->nullable();
             $table->timestamps();
         });
     }

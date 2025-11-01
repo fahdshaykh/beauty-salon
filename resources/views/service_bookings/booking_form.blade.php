@@ -255,11 +255,11 @@
 </div>
 
 <!-- Customer Details Modal -->
-<div class="modal fade" id="customerModal" tabindex="-1" role="dialog" aria-labelledby="customerModalLabel" aria-hidden="true">
+<div class="modal fade" id="customerHistoryModal" tabindex="-1" role="dialog" aria-labelledby="customerModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="customerModalLabel">Customer Details</h5>
+                <h5 class="modal-title" id="customerModalLabel">Customer History</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="close">
                     <span aria-hidden="true">×</span>
                 </button>
@@ -532,7 +532,7 @@ $(document).ready(function() {
                             bookingsHtml = `<tr><td colspan="6">No Bookings Found</td></tr>`;
                         }
                         $("#booking-table tbody").html(bookingsHtml);
-                        $("#customerModal").modal('show');
+                        $("#customerHistoryModal").modal('show');
                     } else {
                         $("#customer-detail").hide();
                     }
@@ -624,5 +624,28 @@ $(document).ready(function() {
             populateServices($('#user_id').val());
         }, 100); // Delay to ensure DOM and Select2 are ready
     }
+
+    // When user manually changes the service price, update total price accordingly
+    $('#service_price').on('input', function() {
+        var enteredPrice = parseFloat($(this).val()) || 0;
+        var selectedOptions = $('#service_id').find('option:selected');
+        var totalPrice = 0;
+
+        selectedOptions.each(function() {
+            var serviceId = $(this).val();
+            var isFixed = $(this).data('price-type') === 'fixed';
+            var price = parseFloat($(this).data('price')) || 0;
+
+            // If current service is not fixed, use the manually entered price
+            if (serviceId === $('#service_id').val().slice(-1)[0] && !isFixed) {
+                price = enteredPrice;
+            }
+
+            totalPrice += price;
+        });
+
+        $('#total_price').val(totalPrice.toFixed(2));
+    });
+
 });
 </script>

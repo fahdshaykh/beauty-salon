@@ -34,7 +34,7 @@ class AwardController extends Controller
         $awards = Award::where('company_id', auth()->user()->company_id)
         ->paginate($perPage)->appends(['per_page' => $perPage]);
 
-        return view('award.index', compact('awards', 'paginationOptions'));
+        return view('awards.index', compact('awards', 'paginationOptions'));
     }
 
     /**
@@ -44,7 +44,7 @@ class AwardController extends Controller
     {
         $users =DB::table('users')->where('company_id', auth()->user()->company_id)
         ->get(); // Fetch all employees
-        return view('award.create', compact('users'));
+        return view('awards.create', compact('users'));
     }
 
     /**
@@ -69,7 +69,7 @@ class AwardController extends Controller
         ]);
         
     
-        return redirect('/award');
+        return redirect('/awards')->with('success', 'Award created successfully.');
     }
 
     /**
@@ -83,25 +83,40 @@ class AwardController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Award $award)
     {
-        //
+        $users =DB::table('users')->where('company_id', auth()->user()->company_id)->get();
+
+        return view('awards.edit', compact('award', 'users'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Award $award)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'award' => 'required|string|max:255',
+            'gift' => 'required|string|max:255',
+            'date' => 'required|string|max:255'
+            
+        ]);
+
+        $data = $request->all();
+        $data['company_id'] = auth()->user()->company_id;
+        $award->update($data);
+
+        return redirect('/awards')->with('success', 'Award updated successfully.');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Award $award)
     {
-        //
+        $award->delete();
+        return redirect('/awards')->with('success', 'Award deleted successfully.');
     }
     
 }

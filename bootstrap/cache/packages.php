@@ -8,13 +8,13 @@
   ),
   'barryvdh/laravel-dompdf' => 
   array (
-    'providers' => 
-    array (
-      0 => 'Barryvdh\\DomPDF\\ServiceProvider',
-    ),
     'aliases' => 
     array (
       'PDF' => 'Barryvdh\\DomPDF\\Facade',
+    ),
+    'providers' => 
+    array (
+      0 => 'Barryvdh\\DomPDF\\ServiceProvider',
     ),
   ),
   'beyondcode/laravel-dump-server' => 
@@ -54,24 +54,24 @@
   ),
   'maatwebsite/excel' => 
   array (
-    'providers' => 
-    array (
-      0 => 'Maatwebsite\\Excel\\ExcelServiceProvider',
-    ),
     'aliases' => 
     array (
       'Excel' => 'Maatwebsite\\Excel\\Facades\\Excel',
     ),
+    'providers' => 
+    array (
+      0 => 'Maatwebsite\\Excel\\ExcelServiceProvider',
+    ),
   ),
   'mailersend/laravel-driver' => 
   array (
-    'providers' => 
-    array (
-      0 => 'MailerSend\\LaravelDriver\\LaravelDriverServiceProvider',
-    ),
     'aliases' => 
     array (
       'LaravelDriver' => 'MailerSend\\LaravelDriver\\LaravelDriverFacade',
+    ),
+    'providers' => 
+    array (
+      0 => 'MailerSend\\LaravelDriver\\LaravelDriverServiceProvider',
     ),
   ),
   'nesbot/carbon' => 
@@ -86,6 +86,13 @@
     'providers' => 
     array (
       0 => 'NunoMaduro\\Collision\\Adapters\\Laravel\\CollisionServiceProvider',
+    ),
+  ),
+  'spatie/laravel-permission' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Spatie\\Permission\\PermissionServiceProvider',
     ),
   ),
 );

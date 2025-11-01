@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('awards', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->unsignedBigInteger('company_id');
+            $table->unsignedBigInteger('user_id');
             $table->string('award');
             $table->string('gift');
             $table->string('date');

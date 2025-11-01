@@ -593,9 +593,29 @@
 
 
 
-                            <input type="text" id="primary_phone" name="primary_phone" value="" class="form-control" />
+                        <div class="row">
 
+                        
+                        <div class="col-md-3 input-group-prepend">
+                            <select id="tags" name="country_code" class="js-example-basic-single w-100">
 
+                            @foreach ($countries as $country)
+                                
+                            <option value="{{ $country->phone_code }}" 
+                                {{ old('country_code', $customer->country_code ?? '') == $country->phone_code ? 'selected' : '' }}>
+                                +{{ $country->phone_code }}
+                            </option>
+
+                            @endforeach
+
+                            </select>
+                        </div>
+				
+                        <div class="col-md-9">
+                            <input type="text" id="primary_phone" name="primary_phone" minlength="10"  maxlength="14" value="" class="form-control" maxlength="11"  placeholder=""/>
+                        </div>
+
+                        </div>
 
                         </div>
 
@@ -617,7 +637,7 @@
 
 
 
-                        <label class="col-sm-3 col-form-label">Telephone</label>
+                        <label class="col-sm-3 col-form-label">Date of birth</label>
 
 
 
@@ -625,7 +645,7 @@
 
 
 
-                            <input type="text" name="secondary_phone" value="" class="form-control"  />
+                            <input type="date" name="date_of_birth" value="" class="form-control"   placeholder="" />
 
 
 
@@ -720,80 +740,36 @@
 
 
 
-            <!-- <div class="form-group">
+                    <div class="form-group">
 
 
 
-                <label for="exampleTextarea1">Address</label>
+                        <label for="exampleTextarea1">Private Notes*</label>
 
 
 
-                <textarea class="form-control" id="addresstextarea" name="address" rows="4"></textarea>
+                        <textarea class="form-control" id="exampleTextarea1" name="private_notes" rows="4"></textarea>
 
 
-
-            </div> -->
-
-
-
-            <!-- <div class="form-group">
-
-
-
-                <label for="referred_by">Referred By</label>
-
-
-
-                <input id="tags" name="referred_by" class="form-control" value="other" />
-
-
-
-            </div> -->
-
-            <div class="row">
-                
-                <div class="col-md-6">
-
-
-                    <div class="form-group row">
-
-
-
-                            <label class="col-sm-3 col-form-label">Reffered By</label>
-
-                            <div class="col-sm-9">
-
-                                    <select id="tags" name="referred_by" class="js-example-basic-single w-100">
-
-                                    <option value="Google">Google</option>
-
-                                    <option value="Leaflet">Leaflet</option>
-
-                                    <option value="Recommendation">Recommendation</option>
-
-                                    <option value="Repeat client">Repeat client</option>
-
-                                    <option value="Seen van">Seen van</option>
-
-                                    <option value="Paper advert">Paper advert</option>
-
-                                    <option value="Facebook">Facebook</option>
-                                    <option value="Instagram">Instagram</option>
-                                    <option value="Postcard">Postcard</option>
-                                    <option value="Email">Email</option>
-                                    <option value="SMS">SMS</option>
-                                    <option value="AdWords">AdWords</option>
-                                    <option value="Magazine">Magazine</option>
-                                    </select>
-
-                                </div> 
 
                     </div>
 
 
+
+
+                   <div class="form-group">
+                    <label for="referred_by" class="col-form-label d-block">Referred By</label>
+                    <select id="referred_by" name="referred_by" class="js-example-basic-single form-control" style="width: 100%;">
+                        @foreach($referreds as $ref)
+                            <option value="{{ $ref->referred_by }}">
+                                {{ Ucfirst($ref->referred_by) }}
+                            </option>
+                        @endforeach
+                    </select>
                 </div>
 
-            </div>
+
+
 
 
 

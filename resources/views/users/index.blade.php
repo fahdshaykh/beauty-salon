@@ -416,27 +416,7 @@ input:checked+.slider:before {
 
 
 
-        <?php $user_add_array = array(6,2); ?>
 
-
-
-        <?php $user_add = implode(',', $user_add_array); ?>
-
-
-
-        <?php $user_edit_array = array(6,3); ?>
-
-
-
-        <?php $user_edit = implode(',', $user_edit_array); ?>
-
-
-
-        <?php $user_delete_array = array(6,4); ?>
-
-
-
-        <?php $user_delete = implode(',', $user_delete_array); ?>
 
 
 
@@ -484,7 +464,6 @@ input:checked+.slider:before {
 
 
 
-                                @if(in_array($user_add, session()->get('all_rp')['0'])) 
 
 
 
@@ -492,7 +471,6 @@ input:checked+.slider:before {
 
 
 
-                                @endif
 
 
 
@@ -554,10 +532,6 @@ input:checked+.slider:before {
 
 
 
-                                        <th>Role</th>
-
-
-
                                         <th>User Name</th>
 
                                         <th>User Email</th>
@@ -606,7 +580,6 @@ input:checked+.slider:before {
 
 
 
-                                        <td>{{$user->role->role}}</td>
 
 
 
@@ -658,7 +631,7 @@ input:checked+.slider:before {
 
 
 
-                                        @if(in_array($user_edit, session()->get('all_rp')['0']))
+
 
 
 
@@ -674,14 +647,6 @@ input:checked+.slider:before {
 
 
 
-                                        @endif 
-
-
-
-                                        @if(in_array($user_delete, session()->get('all_rp')['0']))
-
-
-
                                             |<a onclick="return confirm('Are you sure to delete');" href="{{url('user/destroy',$user->id)}}">
 
 
@@ -694,7 +659,6 @@ input:checked+.slider:before {
 
 
 
-                                        @endif
 
                                         |<a href="{{url('user/payslip',$user->id)}}">
 

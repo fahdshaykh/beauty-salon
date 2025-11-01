@@ -4,13 +4,10 @@
 
 namespace App\Http\Controllers;
 
-
-
+use App\Models\Role;
+use App\Models\Permission;
 use Illuminate\Http\Request;
-
-use App\Role;
-
-use App\RolePermissions;
+use Spatie\Permission\PermissionRegistrar;
 
 use DB;
 
@@ -38,262 +35,134 @@ class RoleController extends Controller
             }
         }
 
-        $roles = DB::table('roles')->where('company_id', auth()->user()->company_id)
-        ->paginate($perPage)->appends(['per_page' => $perPage]);
+        $roles = Role::where('company_id', auth()->user()->company_id)
+                 ->with('permissions')
+                 ->paginate($perPage);
 
-        $role_permissions = RolePermissions::select('role_id')->where('company_id', auth()->user()->company_id)->groupBy('role_id')
-        ->paginate($perPage)->appends(['per_page' => $perPage]);
 
-        return view('roles.index',compact('roles', 'role_permissions','paginationOptions'));
+
+        return view('roles.index',compact('roles','paginationOptions'));
 
     }
 
 
 
     public function create()
-
     {
+        // Get ALL permissions (global, not per-role)
+        $permissions = Permission::all()->groupBy(function ($perm) {
+            return explode('_', $perm->name)[0]; // Group by module: view, create, etc.
+        });
 
-        $permissions_roles = DB::table('role_permissions')
-
-        ->select('role_permissions.*','permissions.name')
-
-        ->join('permissions', 'permissions.id', '=', 'role_permissions.permission_id')
-
-        ->where('role_permissions.role_id', 1)
-
-        ->get();
-
-        $permissions = $permissions_roles->groupBy('permission_id');
-
-        // dd($permissions);
-
-        return view('roles.create',compact('permissions'));
-
+        return view('roles.create', compact('permissions'));
     }
-
-
 
     public function store(Request $request)
-
     {
-
-	$this->validate($request, 
-
-
-
-            [
-
-
-
-                'role' => 'required',
-
-
-
-            ],
-
-
-
-            [
-
-
-
-                'role.required' => 'Please enter Role name',
-
-
-
-            ],
-
-
-
-        );
-
-
-
-        $data = $request->all();
-
-        
-
-        $role = Role::create([
-
-            'role' => $data['role'],
-
-            'company_id' => auth()->user()->company_id,
-
+        $request->validate([
+            'name' => 'required|unique:roles,name,NULL,id,company_id,' . auth()->user()->company_id,
+            'permissions' => 'required|array',
+            'permissions.*' => 'exists:permissions,name'
+        ], [
+            'name.required' => 'Please enter role name',
+            'name.unique' => 'This role already exists in your company',
+            'permissions.required' => 'Please select at least one permission'
         ]);
 
+        // CREATE ROLE (Your custom model)
+        $role = Role::create([
+            'name' => $request->name,
+            'guard_name' => 'web',
+            'company_id' => auth()->user()->company_id,
+        ]);
 
+        // SET TEAM ID (CRITICAL!)
+        app(PermissionRegistrar::class)->setPermissionsTeamId(auth()->user()->company_id);
 
-	if(!$request->access_id){
+        // SYNC PERMISSIONS
+        $role->syncPermissions($request->permissions);
 
-		return back()->with('validate', 'Please select permissions for this role.');
-
-	}
-
-
-
-        foreach($data['access_id'] as $key => $value){
-
-            foreach($value as $val){
-
-                $insert_data = array (
-
-                    'role_id' => $role->id,
-
-                    'permission_id' => $key,
-
-                    'access_id' => $val,
-
-                );
-
-                $insert_data['company_id'] = auth()->user()->company_id;
-
-                RolePermissions::create($insert_data);
-
-                // DB::table('role_permissions')->updateOrInsert($insert_data);
-
-            }
-
-        }
-
-
-
-        return redirect('roles')->with('success','Role created successfully');
-
+        return redirect()->route('roles.index')
+            ->with('success', 'Role created successfully');
     }
 
 
 
-    public function edit($id)
-
+    public function edit(Role $role)
     {
+        // Security: Only allow editing roles from same company
+        // if ($role->company_id !== auth()->user()->company_id) {
+        //     abort(403);
+        // }
 
-        $role = DB::table('roles')->select('id','role')
+        $permissions = Permission::all()->groupBy(function ($perm) {
+            return explode('_', $perm->name)[0]; // Group by module
+        });
 
-            ->where('id',$id)
+        $rolePermissions = $role->permissions->pluck('name')->toArray();
 
-            ->where('company_id', auth()->user()->company_id)
+        return view('roles.edit', compact('role', 'permissions', 'rolePermissions'));
+    }
 
-            ->get();
-
-        
-
-            $permissions_roles = DB::table('role_permissions')
-
-            ->select('role_permissions.*','permissions.name')
-
-            ->join('permissions', 'permissions.id', '=', 'role_permissions.permission_id')
-
-            ->where('role_permissions.role_id', 1)
-
-            ->get();
-
-            $permissions = $permissions_roles->groupBy('permission_id');
-
-
-
-        $role_permissions_data = DB::table('role_permissions')->where('company_id', auth()->user()->company_id)->where('role_id',$id)->get();
-
-        $grouped_data = $role_permissions_data->groupBy('permission_id');
-
-        //    echo "<pre>"; print_r($role_permissions_data); exit;
-
-        // $role_grouped = $grouped_data->groupBy('role_id');
-
-         //echo "<pre>";print_r($grouped_data);
-
-
-
-        $new_array = array();
-
-        foreach($grouped_data as $accessKey => $permissionValue)
-
-        {
-
-            foreach($permissionValue as $valued)
-
-            {
-
-                $new_array["permissions"][$accessKey][] =  $valued->access_id;               
-
-            }
-
-            
-
+    public function update(Request $request, Role $role)
+    {
+        // Security
+        if ($role->company_id !== auth()->user()->company_id) {
+            abort(403);
         }
 
+        $request->validate([
+            'name' => 'required|unique:roles,name,' . $role->id . ',id,company_id,' . auth()->user()->company_id,
+            'permissions' => 'required|array',
+            'permissions.*' => 'exists:permissions,name'
+        ], [
+            'name.required' => 'Please enter role name',
+            'name.unique' => 'This role name already exists',
+            'permissions.required' => 'Please select at least one permission'
+        ]);
 
+        $role->update([
+            'name' => $request->name,
+        ]);
 
-        return view('roles.edit',compact('new_array','permissions','role'));
+        // SET TEAM ID
+        app(\Spatie\Permission\PermissionRegistrar::class)->setPermissionsTeamId(auth()->user()->company_id);
 
+        // SYNC PERMISSIONS
+        $role->syncPermissions($request->permissions);
+
+        return redirect()->route('roles.index')
+            ->with('update', 'Role updated successfully');
     }
 
 
 
-    public function update(Request $request, $id)
-
+    public function destroy(Role $role)
     {
-
-        // dd($id);
-
-        $data = $request->all();
-
-        $role = Role::where('id', $id)->where('company_id', auth()->user()->company_id)
-
-            ->update(['role' => $data['role']]);
-
-
-
-        $deletedRows = RolePermissions::where('role_id', $id)->where('company_id', auth()->user()->company_id)->delete();
-
-        foreach($data['access_id'] as $key => $value){
-
-            foreach($value as $val){
-
-                $insert_data = array (
-
-                    'role_id' => $id,
-
-                    'permission_id' => $key,
-
-                    'access_id' => $val,
-
-                );
-
-                $insert_data['company_id'] = auth()->user()->company_id;
-
-                RolePermissions::create($insert_data);
-
-                // DB::table('role_permissions')->updateOrInsert($insert_data);
-
-            }
-
+        // SECURITY: Only allow delete from same company
+        if ($role->company_id !== auth()->user()->company_id) {
+            abort(403);
         }
 
-        return redirect('roles')->with('success','Role Updated successfully');
+        // PREVENT DELETING 'admin' ROLE
+        if ($role->name === 'admin') {
+            return back()->with('destroy', 'Cannot delete the admin role.');
+        }
 
-    }
+        // CHECK IF ANY USER HAS THIS ROLE
+        $userCount = $role->users()->count();
+        if ($userCount > 0) {
+            return back()->with('destroy', "Cannot delete role. It is assigned to {$userCount} user(s).");
+        }
 
+        // SET TEAM ID
+        app(\Spatie\Permission\PermissionRegistrar::class)->setPermissionsTeamId(auth()->user()->company_id);
 
+        // DELETE ROLE + PERMISSIONS
+        $role->delete();
 
-    public function destroy($id)
-
-    {
-
-        DB::table('roles')
-
-            ->where('id', $id)
-
-            ->where('company_id', auth()->user()->company_id)
-
-            ->update(['is_deleted' => 1]);
-
-        $deletedRows = RolePermissions::where('role_id', $id)->where('company_id', auth()->user()->company_id)->delete();
-
-        return back()->with('destroy','Role deleted successfully');
-
-
-
+        return redirect()->route('roles.index')
+            ->with('destroy', 'Role deleted successfully');
     }
 
 }

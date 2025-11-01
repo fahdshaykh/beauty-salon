@@ -40,38 +40,27 @@ class LoginController extends Controller
 
     protected function authenticated(Request $request, $user)
     {
-        
         $user->update([
-            'last_login_ip' => $request->ip(), // Save IP address to user table
+            'last_login_ip' => $request->ip(),
         ]);
-        
-        $role_id = Auth::user()->role_id;
 
-	    $role_name = Role::where('id', $role_id)->first()->role;
-    
-        Session::put('userole', $role_name);
-
-        $role_permissions = RolePermissions::select('permission_id','access_id')->where('role_id', $role_id)->get();
-
-        foreach($role_permissions as $key => $permissions){
-            $permissions_array[] = $permissions->permission_id.','.$permissions->access_id;
-        }
-        Session::push('all_rp',$permissions_array);
-		
         Session::put('user_company', auth()->user()->company_id);
-		// dd(session()->get('user_company'));
-        $company_setttings = DB::table('company_settings')->where('company_id', $user->company_id)->first();
-       
-        if($user->company_id !== 1 && $company_setttings){
-            Session::put('site_logo', $company_setttings->site_logo);
-            Session::put('smart_logo', $company_setttings->smart_logo);
-            Session::put('site_name', $company_setttings->site_name);
-            Session::put('message_permissions', $company_setttings->message_permissions);
-            Session::put('email_permissions', $company_setttings->email_permissions);
+
+        $company_settings = DB::table('company_settings')->where('company_id', $user->company_id)->first();
+
+        if($user->company_id !== 1 && $company_settings){
+            Session::put('site_logo', $company_settings->site_logo);
+            Session::put('smart_logo', $company_settings->smart_logo);
+            Session::put('site_name', $company_settings->site_name);
+            Session::put('message_permissions', $company_settings->message_permissions);
+            Session::put('email_permissions', $company_settings->email_permissions);
         }
-        // $this->redirectTo();
+
         return redirect()->route('home');
     }
+
+
+
     protected function redirectTo(){
         return '/home';
         //return redirect('/home');

@@ -406,34 +406,6 @@ input:checked+.slider:before {
 
 
 
-        <?php $user_add_array = array(6,2); ?>
-
-
-
-        <?php $user_add = implode(',', $user_add_array); ?>
-
-
-
-        <?php $user_edit_array = array(6,3); ?>
-
-
-
-        <?php $user_edit = implode(',', $user_edit_array); ?>
-
-
-
-        <?php $user_delete_array = array(6,4); ?>
-
-
-
-        <?php $user_delete = implode(',', $user_delete_array); ?>
-
-
-
-
-
-
-
 
 
 
@@ -489,24 +461,13 @@ input:checked+.slider:before {
                     <div class="col-md-3">
 
 
-
+                    @can('create suppliers')
                         <div class="text-center" style="float: center;">
-
-
-
-                            @if(in_array($user_add, session()->get('all_rp')['0'])) 
-
-
 
                             <a href="{{ route('suppliers.create') }}" class="btn btn-primary btn-sm">Add Supplier</a>
 
-
-
-                            @endif
-
-
-
                         </div>
+                    @endcan
 
 
 
@@ -576,12 +537,19 @@ input:checked+.slider:before {
                                         <td>{{ $supplier->phone }}</td>
                                         <td>{{ $supplier->email }}</td>
                                         <td>
+                                            @can('supplier summary')
                                             <a href="{{ route('suppliers.balance_summary', $supplier->id) }}">
                                                 <i class="fa fa-eye text-primary"></i>
                                             </a>
+                                            @endcan
+
+                                            @can('edit suppliers')
                                             <a href="{{ route('suppliers.edit', $supplier->id) }}">
                                                 <i class="fas fa-pencil-alt text-primary ml-2"></i>
                                             </a>
+                                            @endcan
+                                            
+                                            @can('delete suppliers')
                                             <form action="{{ route('suppliers.destroy', $supplier->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this supplier?');">
                                                 @csrf
                                                 @method('DELETE')
@@ -589,6 +557,7 @@ input:checked+.slider:before {
                                                     <i class="fas fa-trash-alt text-danger ml-2" style="cursor: pointer;"></i>
                                                 </button>
                                             </form>
+                                            @endcan
                                         </td>
                                     </tr>
 

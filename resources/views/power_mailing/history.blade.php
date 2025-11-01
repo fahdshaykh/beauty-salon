@@ -134,9 +134,7 @@
 
                         <div class="row">
 
-                        <form class="form-inline" method="post" action="{{url('email-history-filter')}}">
-
-                        @csrf
+                        <form class="form-inline" method="get" action="{{ url('mailing-history') }}" >
 
                             <div class="col-lg-3">
 

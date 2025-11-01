@@ -16,11 +16,39 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 use App\Notifications\PasswordReset;
 
-
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 
 {
+
+    use HasRoles;
+
+    protected $guard_name = 'web';
+
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+        'phone',
+        'base_salary',
+        'commission_rate',
+        'is_transport',
+        'transport_allowance',
+        'address',
+        'image',
+        'company_id',  // ← ADD THIS LINE
+    ];
+
+        /**
+
+     * The attributes that are mass assignable.
+
+     *
+
+     * @var array
+
+     */
 
     public function role()
 
@@ -46,6 +74,11 @@ class User extends Authenticatable
         return $this->belongsToMany(Services::class, 'service_user', 'user_id', 'service_id');
     }
 
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
+    }
+
     public function companySetting()
     {
         return $this->hasOne(CompanySetting::class, 'company_id', 'company_id');
@@ -59,6 +92,13 @@ class User extends Authenticatable
     public function getPerPagePreference()
     {
         return $this->setting ? $this->setting->per_page : 10;
+    }
+
+    public function scopeActiveInCompany($query)
+    {
+        return $query->where('is_active', 1)
+                    ->where('company_id', auth()->user()->company_id)
+                    ->where('is_deleted', 0);
     }
 
     public function scopeNotCheckedInToday($query)
@@ -107,21 +147,7 @@ public function sendPasswordResetNotification($token)
 
     
 
-    /**
 
-     * The attributes that are mass assignable.
-
-     *
-
-     * @var array
-
-     */
-
-    protected $fillable = [
-
-        'name', 'email', 'password','last_login_ip','position', 'base_salary', 'commission_rate', 'is_transport', 'transport_allowance',
-
-    ];
 
 
 

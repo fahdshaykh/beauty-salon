@@ -90,10 +90,7 @@
         </div>
         @endif
 
-        <?php $customer_edit_array = array(3, 3); ?>
-        <?php $customer_edit = implode(',', $customer_edit_array); ?>
-        <?php $customer_delete_array = array(3, 4); ?>
-        <?php $customer_delete = implode(',', $customer_delete_array); ?>
+
 
         <div class="card">
             <div class="card-body">
@@ -103,9 +100,11 @@
                     </div>
                     <div class="col-md-6"></div>
                     <div class="col-md-3">
+                        @can('export customers')
                         <div class="text-center" style="float: center;">
                             <span data-href="/all-customer-export" id="export" class="btn btn-primary" onclick="exportTasks(event.target);">Export Customers</span>
                         </div>
+                        @endcan
                     </div>
                 </div>
 
@@ -155,16 +154,17 @@
                                         <td>{{ $customer->address }}</td>
                                         <td>{{ $customer->referred_by }}</td>
                                         <td>
-                                            @if(in_array($customer_edit, session()->get('all_rp')['0']))
+                                            @can('edit customers')
                                             <a href="{{ route('customers.edit', $customer->id) }}">
                                                 <i class="fas fa-pencil-alt text-primary" aria-hidden="true"></i>
                                             </a>
-                                            @endif
-                                            @if(in_array($customer_delete, session()->get('all_rp')['0']))
+                                            @endcan
+
+                                            @can('delete customers')
                                             | <a onclick="return confirm('Are you sure to delete');" href="{{ url('customers/destroy', $customer->id) }}">
                                                 <i class="fas fa-trash text-danger"></i>
                                             </a>
-                                            @endif
+                                            @endcan
                                         </td>
                                     </tr>
                                     @endforeach

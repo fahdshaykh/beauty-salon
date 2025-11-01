@@ -62,7 +62,9 @@ class CustomerController extends Controller
 
         $countries = DB::table('countries')->get();
 
-        return view('customers.create', compact('countries'));
+        $referreds = DB::table('referred_customers')->where('is_active', true)->get();
+
+        return view('customers.create', compact('countries', 'referreds'));
 
     }
 
@@ -530,9 +532,10 @@ class CustomerController extends Controller
 
         $countries = DB::table('countries')->get();
 
+        $referreds = DB::table('referred_customers')->where('is_active', true)->get();
 
 
-        return view('customers.edit',compact('customer', 'countries'));
+        return view('customers.edit',compact('customer', 'countries', 'referreds'));
 
 
 

@@ -416,31 +416,6 @@ input:checked+.slider:before {
 
 
 
-        <?php $user_add_array = array(6,2); ?>
-
-
-
-        <?php $user_add = implode(',', $user_add_array); ?>
-
-
-
-        <?php $user_edit_array = array(6,3); ?>
-
-
-
-        <?php $user_edit = implode(',', $user_edit_array); ?>
-
-
-
-        <?php $user_delete_array = array(6,4); ?>
-
-
-
-        <?php $user_delete = implode(',', $user_delete_array); ?>
-
-
-
-
 
 
 
@@ -523,15 +498,9 @@ input:checked+.slider:before {
 
 
 
-                                @if(in_array($user_add, session()->get('all_rp')['0'])) 
-
-
 
                                 <a href="{{url('user/user-create')}}" class="btn btn-primary btn-sm">Add New User</a>
 
-
-
-                                @endif
 
 
 
@@ -606,12 +575,6 @@ input:checked+.slider:before {
 
                                     @foreach($users as $user)
 
-                                    
-
-
-
-                                    @if($user->role_id !== 1)
-
 
 
                                     <tr>
@@ -659,10 +622,6 @@ input:checked+.slider:before {
 
 
                                     <?php $num++; ?>
-
-
-
-                                    @endif
 
 
 

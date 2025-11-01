@@ -15,9 +15,11 @@ class CreateWorkSchedulesTable extends Migration
     {
         Schema::create('work_schedules', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('company_id');
             $table->string('day'); // Monday, Tuesday, etc.
             $table->time('start_time');
             $table->time('end_time');
+            $table->integer('is_active')->default(1);
             $table->timestamps();
         });
     }

@@ -15,7 +15,7 @@ class CreateBookingMessagesTable extends Migration
     {
         Schema::create('booking_messages', function (Blueprint $table) {
             $table->id();
-            $table->int('booking_id');
+            $table->integer('booking_id');
             $table->string('reason');
             $table->timestamps();
         });

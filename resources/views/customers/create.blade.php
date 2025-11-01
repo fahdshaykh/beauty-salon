@@ -31,9 +31,9 @@
             </div>
         @endif
 
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#importModal">
+        <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#importModal">
             Upload Excel File
-        </button>
+        </button> -->
 
         <div class="row">
             <div class="col-12 grid-margin">
