@@ -53,14 +53,14 @@ class AwardController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'user_id' => 'required',
             'award' => 'required|string|max:255',
             'gift' => 'required|string|max:255',
             'date' => 'required|string|max:255'
             
         ]);
         Award::create([
-            'name' => $request->name,
+            'user_id' => $request->user_id,
             'award' => $request->award,
             'gift' => $request->gift,
             'date' => $request->date,
@@ -96,7 +96,7 @@ class AwardController extends Controller
     public function update(Request $request, Award $award)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'user_id' => 'required',
             'award' => 'required|string|max:255',
             'gift' => 'required|string|max:255',
             'date' => 'required|string|max:255'

@@ -290,6 +290,14 @@ Admin
           
 
 
+          <div style="background: #333; color: white; padding: 10px; font-family: monospace;">
+    DEBUG:
+    User ID: {{ auth()->id() }} |
+    Company ID: {{ auth()->user()->company_id }} |
+    Roles: {{ auth()->user()->getRoleNames() }} |
+    Permissions: {{ auth()->user()->getAllPermissions()->pluck('name')->implode(', ') }}
+</div>
+
 
           <!-- if admin login  -->
 

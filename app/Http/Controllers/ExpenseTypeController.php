@@ -19,6 +19,15 @@ class ExpenseTypeController extends Controller
 {
 
     /**
+     * Use policy-based authorization for resource actions.
+     * This replaces route/middleware checks and enforces policies on direct URL access.
+     */
+    public function __construct()
+    {
+        // We authorize in each method instead of using authorizeResource
+        // because our routes use {id} instead of {expense_type}
+    }
+    /**
 
      * Display a listing of the resource.
 
@@ -29,12 +38,20 @@ class ExpenseTypeController extends Controller
      */
 
     public function index()
-
     {
+        $user = auth()->user();
+        
+        // Check viewAny permission via policy
+        if (!($user && method_exists($user, 'hasRole') && $user->hasRole('admin'))) {
+            $this->authorize('viewAny', ExpenseType::class);
+        }
 
-        $expense_types = ExpenseType::where('company_id', auth()->user()->company_id)->orderBy('created_at', 'desc')->get();
+        // Always enforce company isolation for multi-tenant security
+        $expense_types = ExpenseType::where('company_id', $user->company_id)
+            ->orderBy('created_at', 'desc')
+            ->get();
 
-        return view('expense_types.index',compact('expense_types'));
+        return view('expense_types.index', compact('expense_types'));
 
     }
 
@@ -51,11 +68,15 @@ class ExpenseTypeController extends Controller
      */
 
     public function create()
-
     {
-
+        $user = auth()->user();
+        
+        // Check create permission via policy
+        if (!($user && method_exists($user, 'hasRole') && $user->hasRole('admin'))) {
+            $this->authorize('create', ExpenseType::class);
+        }
+        
         return view('expense_types.create');
-
     }
 
 
@@ -128,9 +149,22 @@ class ExpenseTypeController extends Controller
 
     {
 
-        $expense_type = ExpenseType::find($id);
+        $user = auth()->user();
+        
+        // For non-admins, only load expense types from their company
+        $query = ExpenseType::where('id', $id);
+        if (!($user && method_exists($user, 'hasRole') && $user->hasRole('admin'))) {
+            $query->where('company_id', $user->company_id);
+        }
+        
+        $expense_type = $query->firstOrFail();
+        
+        // Still check the policy for permission-based access
+        if (!($user && method_exists($user, 'hasRole') && $user->hasRole('admin'))) {
+            $this->authorize('update', $expense_type);
+        }
 
-        return view('expense_types.edit',compact('expense_type'));
+        return view('expense_types.edit', compact('expense_type'));
 
     }
 
@@ -172,11 +206,20 @@ class ExpenseTypeController extends Controller
 
 
 
+        $user = auth()->user();
+        
+        // Enforce company isolation and find expense type
+        $expense_type = ExpenseType::where('id', $id)
+            ->where('company_id', $user->company_id)
+            ->firstOrFail();
+
+        // Check permission via policy
+        $this->authorize('update', $expense_type);
+
+        // Update with company isolation maintained
         $data = $request->except('_token','_method');
-
-        $data['company_id'] = auth()->user()->company_id;
-
-        DB::table('expense_types')->where('id', $id)->update($data);
+        $data['company_id'] = $user->company_id; // Ensure company_id stays correct
+        $expense_type->update($data);
 
         return redirect('expense-types')->with('success', 'Expense Type updated successfully');
 
@@ -199,19 +242,18 @@ class ExpenseTypeController extends Controller
 
 
     public function expense_type_status(Request $request)
-
     {
+        $user = auth()->user();
 
+        // Enforce company isolation when finding expense type
+        $expensetype = ExpenseType::where('id', $request->id)
+            ->where('company_id', $user->company_id)
+            ->firstOrFail();
 
-
-        $expensetype = ExpenseType::find($request->id);
-
-
+        // Check permission via policy
+        $this->authorize('update', $expensetype);
 
         $expensetype->is_active = $request->status;
-
-
-
         $expensetype->save();
 
 

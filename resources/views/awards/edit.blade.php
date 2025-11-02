@@ -36,13 +36,13 @@
                      
                       <form action="{{ route('awards.update', $award->id) }}" method="POST" >
                       @csrf
-                     
+                      @method('put')
 
          <!-- Attendance Date -->
                       
                     <div class="form-group">
                       <label>Awardee Name</label>
-                      <select class="form-control" id="name" name="name">
+                      <select class="form-control" id="name" name="user_id">
                           <option value="" disabled selected>Please Select Awardee Name</option>
                           @foreach($users as $user)
                               <option value="{{ $user->id }}" {{ $award->user_id == $user->id ? 'selected' : '' }}>{{ $user->name }}</option>

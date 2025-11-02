@@ -140,11 +140,13 @@
 
                             <td>
 
+                            @can('edit expense types')
                                 <a href="{{url('expense-types/edit',$expense_type->id)}}">
 
                                     <i class="fas fa-pencil-alt text-primary" aria-hidden="true"></i>                          
 
                                 </a>
+                            @endcan
 
 
                            

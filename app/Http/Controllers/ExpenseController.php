@@ -4,15 +4,10 @@
 
 namespace App\Http\Controllers;
 
-
-
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\DB;
 use App\Expense;
-
 use App\ExpenseType;
-
-use DB;
 use App\Models\Setting;
 use App\Models\UserSetting;
 
@@ -20,6 +15,16 @@ use App\Models\UserSetting;
 class ExpenseController extends Controller
 
 {
+
+        /**
+     * Use policy-based authorization for resource actions.
+     * This replaces route/middleware checks and enforces policies on direct URL access.
+     */
+    public function __construct()
+    {
+        // We authorize in each method instead of using authorizeResource
+        // because our routes use {id} instead of {expense}
+    }
 
     /**
 
@@ -32,34 +37,40 @@ class ExpenseController extends Controller
      */
 
     public function index(Request $request)
-
     {
+        $user = auth()->user();
+        
+        // Check viewAny permission via policy
+        if (!($user && method_exists($user, 'hasRole') && $user->hasRole('admin'))) {
+            $this->authorize('viewAny', Expense::class);
+        }
 
+        // Handle pagination preferences
         $paginationOptions = Setting::getPaginationOptions();
-        $perPage = $request->input('per_page', auth()->user()->getPerPagePreference());
+        $perPage = $request->input('per_page', $user->getPerPagePreference());
         if (!in_array($perPage, $paginationOptions)) {
-            $perPage = auth()->user()->getPerPagePreference();
+            $perPage = $user->getPerPagePreference();
         }
         if ($request->has('per_page')) {
-            if (auth()->user()->setting) {
-                auth()->user()->setting->update(['per_page' => $perPage]);
+            if ($user->setting) {
+                $user->setting->update(['per_page' => $perPage]);
             } else {
-                UserSetting::create(['user_id' => auth()->user()->id, 'per_page' => $perPage]);
+                UserSetting::create(['user_id' => $user->id, 'per_page' => $perPage]);
             }
         }
 
-
-        $expenses = Expense::select('expenses.*','expense_types.type','payment_methods.method')
-
-        ->join('expense_types', 'expense_types.id', '=', 'expenses.expense_type')
-
-        ->join('payment_methods', 'payment_methods.id', '=', 'expenses.payment_method')
-
-        ->where('expenses.company_id', auth()->user()->company_id)
-
-        ->orderBy('expenses.created_at', 'desc')
-
-        ->paginate($perPage)->appends(['per_page' => $perPage]);
+        // Build query with joins and enforce company isolation
+        $query = Expense::select('expenses.*','expense_types.type','payment_methods.method')
+            ->join('expense_types', function($join) use ($user) {
+                $join->on('expense_types.id', '=', 'expenses.expense_type')
+                     ->where('expense_types.company_id', '=', $user->company_id);
+            })
+            ->join('payment_methods', 'payment_methods.id', '=', 'expenses.payment_method')
+            ->where('expenses.company_id', $user->company_id); // Always enforce company isolation
+        
+        $expenses = $query->orderBy('expenses.created_at', 'desc')
+            ->paginate($perPage)
+            ->appends(['per_page' => $perPage]);
 
 
 
@@ -80,18 +91,20 @@ class ExpenseController extends Controller
      */
 
     public function create()
-
     {
+        $user = auth()->user();
+        
+        // Check create permission via policy
+        if (!($user && method_exists($user, 'hasRole') && $user->hasRole('admin'))) {
+            $this->authorize('create', Expense::class);
+        }
 
+        // Load expense types - enforce company isolation
         $expense_types = ExpenseType::where('is_active', 1)
+            ->where('company_id', $user->company_id)
+            ->get();
 
-        ->where('company_id', auth()->user()->company_id)
-
-        ->get();
-
-        $payment_methods = DB::table('payment_methods')
-
-        ->get();
+        $payment_methods = DB::table('payment_methods')->get();
 
         return view('expenses.create', compact('expense_types','payment_methods'));
 
@@ -178,20 +191,27 @@ class ExpenseController extends Controller
     
 
     public function edit($id)
-
     {
+        $user = auth()->user();
+        
+        // For non-admins, only load expenses from their company
+        $query = Expense::where('id', $id);
+        if (!($user && method_exists($user, 'hasRole') && $user->hasRole('admin'))) {
+            $query->where('company_id', $user->company_id);
+        }
+        
+        $expense = $query->firstOrFail();
+        
+        // Still check the policy for permission-based access
+        if (!($user && method_exists($user, 'hasRole') && $user->hasRole('admin'))) {
+            $this->authorize('update', $expense);
+        }
 
-        $expense_types = ExpenseType::where('company_id', auth()->user()->company_id)
+        // Load related data for the form
+        $expense_types = ExpenseType::where('company_id', $user->company_id)->get();
+        $payment_methods = DB::table('payment_methods')->get();
 
-        ->get();
-
-        $payment_methods = DB::table('payment_methods')
-
-        ->get();
-
-        $expense = Expense::find($id);
-
-        return view('expenses.edit',compact('expense','expense_types','payment_methods'));
+        return view('expenses.edit', compact('expense', 'expense_types', 'payment_methods'));
 
     }
 
@@ -249,9 +269,23 @@ class ExpenseController extends Controller
 
         $data['company_id'] = auth()->user()->company_id;
 
-        //print_r($data); exit;
 
-        DB::table('expenses')->where('id', $id)->update($data);
+        $user = auth()->user();
+        
+        // For non-admins, only update expenses from their company
+        $query = Expense::where('id', $id);
+        if (!($user && method_exists($user, 'hasRole') && $user->hasRole('admin'))) {
+            $query->where('company_id', $user->company_id);
+        }
+        
+        $expense = $query->firstOrFail();
+        
+        // Still check the policy for permission-based access
+        if (!($user && method_exists($user, 'hasRole') && $user->hasRole('admin'))) {
+            $this->authorize('update', $expense);
+        }
+
+        $expense->update($data);
 
         return redirect('expenses')->with('success', 'Expenses updated successfully');
 
@@ -272,31 +306,25 @@ class ExpenseController extends Controller
      */
 
     public function destroy($id)
-
     {
+        $user = auth()->user();
+        
+        // For non-admins, only delete expenses from their company
+        $query = Expense::where('id', $id);
+        if (!($user && method_exists($user, 'hasRole') && $user->hasRole('admin'))) {
+            $query->where('company_id', $user->company_id);
+        }
+        
+        $expense = $query->firstOrFail();
+        
+        // Check delete permission via policy
+        if (!($user && method_exists($user, 'hasRole') && $user->hasRole('admin'))) {
+            $this->authorize('delete', $expense);
+        }
 
-
-
-        // $cat = ExpenseType::where('id',$id)->where('company_id',auth()->user()->company_id)->where('is_deleted',0)->count();
-
-        // if($cat>0){
-
-        //     session()->flash('destroy','Operation Denied. Expense Type Is Related To Services Table.');
-
-        //     return redirect('expenses');
-
-        // }
-
-        // else{
-
-            $expense_type = Expense::destroy($id);
-
-            session()->flash('destroy','Expense deleted Successfully');
-
-            return redirect('expenses');
-
-        // }
-
+        $expense->delete();
+        session()->flash('destroy', 'Expense deleted Successfully');
+        return redirect('expenses');
     }
 
 }

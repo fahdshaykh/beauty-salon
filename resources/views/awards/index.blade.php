@@ -510,7 +510,7 @@ input:checked+.slider:before {
                                 @foreach($awards as $award)
                                   <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{ App\User::where('id', $award->name)->value('name') }}</td>
+                                    <td>{{ $award->user->name }}</td>
 
 
                                     <td>{{ $award->award }}</td>
