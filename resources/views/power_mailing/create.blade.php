@@ -95,7 +95,7 @@
                                     </select>
                                 </div>
                             </div> -->
-                            <div class="col-lg-3">
+                            <!-- <div class="col-lg-3">
                                 <div class="form-group">
                                     <label>Select Services</label>
 
@@ -105,7 +105,7 @@
                                         @endforeach
                                     </select>
                                 </div>
-                            </div>
+                            </div> -->
                             <div class="col-lg-3">
                                 <div class="input-group mb-2 mr-sm-2">
                                     <label>Start Date</label>

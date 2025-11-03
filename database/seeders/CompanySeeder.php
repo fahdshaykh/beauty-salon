@@ -43,97 +43,9 @@ class CompanySeeder extends Seeder
             'company_id' => $company->id,
         ]);
 
-        // 4. Create permissions
-        // $permissions = [
-        //     'view employees',
-        //     'view services',
-        //     'view payroll',
-        //     'view bookings',
-        //     'view clients',
-        //     'view reports',
-        // ];
-        $permissions = [
-
-            // Category
-            'view categories', 'create categories', 'edit categories', 'delete categories',
-
-            // Inventories
-            'view inventories', 'create inventories', 'edit inventories', 'delete inventories',
-            'view inventory purchases', 'create inventory purchases', 'edit inventory purchases', 'delete inventory purchases',
-            'view suppliers', 'create suppliers', 'edit suppliers', 'delete suppliers', 'supplier summary',
-
-            //available inventory
-            'view available inventories',
-
-            // Services
-            'view services', 'create services', 'edit services', 'delete services',
-
-            // Customers
-            'view customers', 'create customers', 'edit customers', 'delete customers',
-
-            // Reffered Sources
-            'view referred customers', 'create referred customers', 'edit referred customers', 'delete referred customers',
-
-            //customers import/export
-            'import customers', 'export customers',
-
-            // Bookings
-            'view bookings', 'create bookings', 'edit bookings', 'delete bookings', 'view invoices',
-
-            // Reports
-            'view reports',
-
-            //sub-reports
-            'view services report', 'view bookings report', 'view employee report', 'view customer report', 'view customer graph', 'view customer country graph', 'view expense report', 'view profit & loss graph',
-
-            // Expenses
-            'view expenses', 'create expenses', 'edit expenses', 'delete expenses',
-            'view expense types', 'create expense types', 'edit expense types', 'delete expense types',
-
-            // Employee Attendance
-            'view attendance', 'create attendance', 'edit attendance', 'delete attendance',
-            'view work hours',
-            'view payrolls', 'download payrolls',
-
-            // User Settings
-            'view users', 'create users', 'edit users', 'delete users',
-            'view roles', 'create roles', 'edit roles', 'delete roles',
-
-            //quotation
-            'view quotations', 'send quotations',
-
-            // Marketing
-            'view marketing',
-
-            // Email Marketing
-            'email marketing', 'email history',
-
-            // SMS Marketing
-            //'sms marketing', 'sms history', 'send postcards',
-
-            // Templates
-            'view templates', 'create templates', 'edit templates', 'delete templates',
-
-            // Holidays
-            'view holidays', 'delete holidays',
-
-            // Awards
-            'view awards', 'create awards', 'edit awards', 'delete awards',
-
-            // Settings
-            'view settings',
-
-            // Company Settings
-            'general settings', 'email settings',
-
-        ];
-
-        foreach ($permissions as $permissionName) {
-            Permission::firstOrCreate([
-                'name' => $permissionName,
-                'guard_name' => 'web',
-            ]);
-        }
+        // 4. Create permissions and get all permissions
+        // $this->call(PermissionsSeeder::class);
+        $permissions = Permission::all()->pluck('name')->toArray();
 
         // 5. Give permissions
         $adminRole->syncPermissions($permissions);
@@ -142,47 +54,17 @@ class CompanySeeder extends Seeder
         app(\Spatie\Permission\PermissionRegistrar::class)->setPermissionsTeamId($company_id);
 
         // 7. Assign role
-        $user->assignRole($adminRole); // Now works!
+        $user->assignRole($adminRole);
 
+        // 8. Seed payment methods and update company_id
+        // $this->call(PaymentMethodsSeeder::class);
+        // DB::update('UPDATE payment_methods SET company_id = ? WHERE company_id = 1', [$company_id]);
 
-        $paymentMethods = [
-            'Cash',
-            'Card',
-            'Bank Transfer',
-            'Cheque',
-        ];
+        // 9. Seed referral sources and update company_id
+        // $this->call(ReferralSourcesSeeder::class);
+        // DB::update('UPDATE referred_customers SET company_id = ? WHERE company_id = 1', [$company_id]);
 
-        foreach ($paymentMethods as $method) {
-            DB::table('payment_methods')->insert([
-                'company_id' => $company_id,
-                'method' => $method,
-            ]);
-        }
-
-
-        //adding refferred by customers
-        $referralSources = [
-            'repeat client',
-            'recommendation',
-            'email',
-            'google',
-            'leaflet',
-            'facebook',
-            'instagram',
-            'paper advert',
-        ];
-
-        foreach ($referralSources as $source) {
-            DB::table('referred_customers')->insert([
-                'company_id' => $company_id,
-                'referred_by' => $source,
-                'is_active' => true,
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ]);
-        }
-
-        //default work schedule
+        // 10. Create default work schedule
         DB::table('work_schedules')->insert([
             ['company_id' => $company_id, 'day' => 'Monday',    'start_time' => '10:00:00', 'end_time' => '19:00:00', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
             ['company_id' => $company_id, 'day' => 'Tuesday',   'start_time' => '10:00:00', 'end_time' => '19:00:00', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
@@ -192,7 +74,7 @@ class CompanySeeder extends Seeder
             ['company_id' => $company_id, 'day' => 'Saturday',  'start_time' => '09:00:00', 'end_time' => '18:00:00', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
         ]);
 
-        // 8. Insert settings
+        // 11. Insert company settings
         DB::table('company_settings')->insert([
             'company_id' => $company_id,
             'site_name' => $company->company_name,

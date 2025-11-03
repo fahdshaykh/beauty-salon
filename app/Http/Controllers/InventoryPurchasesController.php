@@ -22,6 +22,10 @@ class InventoryPurchasesController extends Controller
      */
     public function index(Request $request)
     {
+        if (! (auth()->user() && auth()->user()->can('view inventory purchases'))) {
+            abort(403);
+        }
+
         $paginationOptions = Setting::getPaginationOptions();
         $perPage = $request->input('per_page', auth()->user()->getPerPagePreference());
         if (!in_array($perPage, $paginationOptions)) {
@@ -48,6 +52,10 @@ class InventoryPurchasesController extends Controller
      */
     public function create()
     {
+        if (! (auth()->user() && auth()->user()->can('create inventory purchases'))) {
+            abort(403);
+        }
+
         $inventories = Inventory::where('company_id', auth()->user()->company_id)->get();
         $suppliers = Supplier::where('is_active', 1)->where('company_id', auth()->user()->company_id)->get();
 
@@ -62,6 +70,10 @@ class InventoryPurchasesController extends Controller
      */
     public function store(Request $request)
     {
+        if (! (auth()->user() && auth()->user()->can('create inventory purchases'))) {
+            abort(403);
+        }
+
         $validate = $request->validate([
             'inventory_id'   => 'required|exists:inventories,id',
             'quantity'       => 'required|numeric|min:1',
@@ -110,6 +122,10 @@ class InventoryPurchasesController extends Controller
      */
     public function edit($id)
     {
+        if (! (auth()->user() && auth()->user()->can('edit inventory purchases'))) {
+            abort(403);
+        }
+
         $inventories = Inventory::where('company_id', auth()->user()->company_id)->get();
         $suppliers = Supplier::where('is_active', 1)->where('company_id', auth()->user()->company_id)->get();
         $purchase = InventoryPurchases::findOrFail($id);
@@ -125,6 +141,10 @@ class InventoryPurchasesController extends Controller
      */
     public function update(Request $request, $id)
     {
+        if (! (auth()->user() && auth()->user()->can('edit inventory purchases'))) {
+            abort(403);
+        }
+
         $validate = $request->validate([
             'inventory_id'   => 'required|exists:inventories,id',
             'quantity'       => 'required|numeric|min:1',
@@ -193,6 +213,10 @@ class InventoryPurchasesController extends Controller
      */
     public function destroy($id)
     {
+        if (! (auth()->user() && auth()->user()->can('delete inventory purchases'))) {
+            abort(403);
+        }
+
         $purchase = InventoryPurchases::findOrFail($id);
 
         // Optional: Log reverse payments or notify

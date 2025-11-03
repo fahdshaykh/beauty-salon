@@ -58,7 +58,7 @@
                 <div class="row">
                 
                     <div class="col-12">
-                        @can('add template')
+                        @can('create templates')
                         <a style="float:right;" href="{{route('template.create')}}" class="btn btn-primary btn-add-template mb-2"> Add new</a>
                         @endcan
                         <div class="table-responsive">
@@ -116,10 +116,13 @@
   
                                         </td>
                                             <td>
-                                            @if(in_array("15,3", session()->get('all_rp')['0']))
-                                                <a href="{{Route('template.edit',$templates->id)}}">
-                                             <i class="fa fa-pencil-alt text-primary"></i></a>
-                                             @endif
+                                            
+                                            @can('edit templates')
+                                            <a href="{{Route('template.edit',$templates->id)}}">
+                                             <i class="fa fa-pencil-alt text-primary"></i>
+                                            </a>
+                                            @endcan
+                                             
                                             </td>
 
                                         </tr>

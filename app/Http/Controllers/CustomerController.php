@@ -13,6 +13,7 @@ use Session;
 use DB;
 
 use App\Imports\CustomersImport;
+use App\User;
 use Maatwebsite\Excel\Facades\Excel;
 
 class CustomerController extends Controller
@@ -932,6 +933,104 @@ class CustomerController extends Controller
         }
     }
 
+
+
+    //adding profile module from user conroller
+    public function profile($id)
+    {
+        $user = User::find($id);
+
+        return view('users.profile',compact('user'));
+
+    }
+
+    public function profile_update(Request $request, $id)
+    {
+        $validate = $request->validate([
+
+
+
+            'name' => 'required',
+
+
+
+            'email' => 'required|email|unique:users,email,'.$id,
+
+
+
+        ]);
+
+
+
+        $user = User::find($id);
+
+
+
+        $user->name = $request->input('name');
+
+        $user->email = $request->input('email');
+
+        if($request->image){
+
+
+
+            $validate = $request->validate([
+
+
+
+                'image' => 'mimes:jpeg,jpg,png,gif|required|max:2048',
+
+
+
+            ]);
+
+            $result =  DB::table('users')->select('image')->where('id', $id)->first(); 
+
+            $image_path = public_path()."/profiles/".$result->image;  // Value is not URL but directory file path
+
+            if(File::exists($image_path)) {
+
+                File::delete($image_path);
+
+            }
+
+            $originalImage = $request->file('image');
+
+
+
+            $originalImage->move(public_path().'/profiles', $user_image = 'img_'.Str::random(15).'.'.$originalImage->getClientOriginalExtension());
+
+            $user->image = $user_image;
+
+
+
+        }
+
+
+
+        if($request->input('password')!=""){
+
+
+
+            $user->password = Hash::make($request->input('password'));
+
+
+
+        }
+
+        $user->save();
+
+
+
+        session()->flash('success','Your Profile has updated!');
+
+
+
+        return back();
+
+
+
+    }
 
 
 }

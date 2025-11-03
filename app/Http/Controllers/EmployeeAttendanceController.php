@@ -16,6 +16,10 @@ class EmployeeAttendanceController extends Controller
 {
     public function employee_attendance()
     {
+        if (! (auth()->user() && auth()->user()->can('create attendance'))) {
+            abort(403);
+        }
+
         $users = User::where('company_id', auth()->user()->company_id)
             ->notCheckedInToday()
             ->get(['id', 'name']);
@@ -25,6 +29,10 @@ class EmployeeAttendanceController extends Controller
 
     public function attendance()
     {
+        if (! (auth()->user() && auth()->user()->can('view attendance'))) {
+            abort(403);
+        }
+
         $company_id = auth()->user()->company_id;
         $employees = EmployeeAttendance::where('company_id', $company_id)
             ->whereDate('created_at', today()) // Filter only today's records
@@ -36,6 +44,10 @@ class EmployeeAttendanceController extends Controller
 
     public function store(Request $request)
     {
+        if (! (auth()->user() && auth()->user()->can('create attendance'))) {
+            abort(403);
+        }
+
         $request->validate([
             'user_id' => 'required|exists:users,id',
         ]);
@@ -68,6 +80,10 @@ class EmployeeAttendanceController extends Controller
 
     public function updateExitTime(Request $request)
     {
+        if (! (auth()->user() && auth()->user()->can('edit attendance'))) {
+            abort(403);
+        }
+
         $request->validate([
             'user_id' => 'required|exists:employee_attendances,user_id',
             'check_out_time' => 'required|date_format:H:i',
@@ -115,6 +131,10 @@ class EmployeeAttendanceController extends Controller
 
     public function work_hours(Request $request)
     {
+        if (! (auth()->user() && auth()->user()->can('view work hours'))) {
+            abort(403);
+        }
+
         // Get the current month and year
         $start = now()->startOfMonth(); // First day of the current month
         $end = now()->endOfMonth(); // Last day of the current month

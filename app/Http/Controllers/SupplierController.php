@@ -11,6 +11,10 @@ class SupplierController extends Controller
 {
     public function index(Request $request)
     {
+        if (! (auth()->user() && auth()->user()->can('View suppliers'))) {
+            abort(403);
+        }
+
         $paginationOptions = Setting::getPaginationOptions();
         $perPage = $request->input('per_page', auth()->user()->getPerPagePreference());
         if (!in_array($perPage, $paginationOptions)) {
@@ -32,11 +36,19 @@ class SupplierController extends Controller
 
     public function create()
     {
+        if (! (auth()->user() && auth()->user()->can('create suppliers'))) {
+            abort(403);
+        }
+
         return view('suppliers.create');
     }
 
     public function store(Request $request)
     {
+        if (! (auth()->user() && auth()->user()->can('create suppliers'))) {
+            abort(403);
+        }
+
         $request->validate([
             'name' => 'required|string|max:255'
         ]);
@@ -54,11 +66,19 @@ class SupplierController extends Controller
 
     public function edit(Supplier $supplier)
     {
+        if (! (auth()->user() && auth()->user()->can('edit suppliers'))) {
+            abort(403);
+        }
+
         return view('suppliers.edit', compact('supplier'));
     }
 
     public function update(Request $request, Supplier $supplier)
     {
+        if (! (auth()->user() && auth()->user()->can('edit suppliers'))) {
+            abort(403);
+        }
+
         $request->validate([
             'name' => 'required|string|max:255'
         ]);
@@ -72,12 +92,20 @@ class SupplierController extends Controller
 
     public function destroy(Supplier $supplier)
     {
+        if (! (auth()->user() && auth()->user()->can('delete suppliers'))) {
+            abort(403);
+        }
+
         $supplier->delete();
         return redirect()->route('suppliers.index')->with('success', 'Supplier deleted successfully.');
     }
 
     public function balanceSummary($supplierId)
     {
+        if (! (auth()->user() && auth()->user()->can('supplier summary '))) {
+            abort(403);
+        }
+
         $supplier = Supplier::with(['purchases.inventory', 'payments'])->findOrFail($supplierId);
         // dd($supplier);
         $totalPurchases = $supplier->purchases->sum('price');

@@ -376,7 +376,7 @@ Admin
                 <li class="nav-item"> <a class="nav-link" href="{{route('categories.index')}}"> Category Listing </a></li>
 
 
-                @can('view categories')
+                @can('create categories')
                 <li class="nav-item"> <a class="nav-link" href="{{url('categories/category-create')}}"> Create Category </a></li>
                 @endcan
 

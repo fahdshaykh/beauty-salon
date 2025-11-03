@@ -9,9 +9,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Quote;
-
+use DateTime;
 use Mail;
-
+use DateInterval;
+use DatePeriod;
 use DB;
 use Illuminate\Support\Facades\Auth;
 

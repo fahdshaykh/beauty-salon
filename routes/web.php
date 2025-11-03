@@ -90,9 +90,9 @@ Route::middleware(['auth', 'company'])->group(function () {
     // Mark notification as read
     Route::patch('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');  
 
-    Route::get('user/profile/{id}','UserController@profile');
+    Route::get('user/profile/{id}','CustomerController@profile');
 
-    Route::post('user/profile-update/{id}','UserController@profile_update');
+    Route::post('user/profile-update/{id}','CustomerController@profile_update');
 
     Route::get('services/destroy/{id}','ServicesController@destroy');
 

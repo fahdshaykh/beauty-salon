@@ -32,7 +32,8 @@ class PowerMailingController extends Controller
 
         $services=DB::table('services')->select('id','name')->where('is_active', 1)->where('company_id', auth()->user()->company_id)->groupBy('name')->get();
         // for zip-code
-        $templates_data =Templates::select('*')->where('type', 3)->where('status', 1)->where('company_id', auth()->user()->company_id)->orderBy('created_at', 'desc')->get();
+        // $templates_data =Templates::select('*')->where('type', 3)->where('status', 1)->where('company_id', auth()->user()->company_id)->orderBy('created_at', 'desc')->get();
+        $templates_data =Templates::select('*')->where('type', 3)->where('company_id', auth()->user()->company_id)->orderBy('created_at', 'desc')->get();
         $zipcode=DB::table('customers')->select('zip')->where('company_id', auth()->user()->company_id)->groupBy('zip')->get();
         $customer_detail = DB::table('customers')->where('company_id', auth()->user()->company_id)->where('optout', '!=',1)->where('email','!=','')->where('email','!=', NULL)->get();
         return view('power_mailing.create',compact('customer_detail','zipcode','services','templates_data'));

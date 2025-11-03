@@ -33,9 +33,11 @@
             </nav>
           </div>
           <li class="nav-item d-none d-lg-flex">
+            @can('create attendance')
             <a class="nav-link" href="{{ route('employee_attendance') }}">
               <span class="btn btn-primary">+ Mark Attendance</span>
             </a>
+            @endcan
           </li>
           <div class="row">
             <div class="col-12">
@@ -82,17 +84,19 @@
                                   </td>
                                   <td>{{ $employee->check_out_location }}</td>
                                   <td>
-                                  @if(!$employee->check_out)
+                                    @can('edit attendance')
+                                    @if(!$employee->check_out)
 
-                                    <button 
-                                      class="btn btn-primary btn-sm update-exit-time-btn" 
-                                      data-id="{{ $employee->user_id }}" 
-                                      id="updateExitTimeBtn_{{ $employee->user_id }}"
-                                      type="button">
-                                      Update
-                                    </button>
+                                      <button 
+                                        class="btn btn-primary btn-sm update-exit-time-btn" 
+                                        data-id="{{ $employee->user_id }}" 
+                                        id="updateExitTimeBtn_{{ $employee->user_id }}"
+                                        type="button">
+                                        Update
+                                      </button>
 
-                                  @endif
+                                    @endif
+                                    @endcan
                                   </td>
                               </tr>
                               @endforeach

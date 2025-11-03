@@ -92,7 +92,9 @@
 
                 <div class="card-body">
 
+                @can('create expense types')
                   <h4 class="card-title" style="float:right;"><a class="btn btn-primary btn-fw" href="{{url('expense-types/create')}}"> Add Expense Type</a></h4>
+                @endcan
 
                   <div class="table-responsive">
 

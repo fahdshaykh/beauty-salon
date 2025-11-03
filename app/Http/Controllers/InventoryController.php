@@ -19,6 +19,10 @@ class InventoryController extends Controller
      */
     public function index(Request $request)
     {
+        if (! (auth()->user() && auth()->user()->can('view inventories'))) {
+            abort(403);
+        }
+
         $paginationOptions = Setting::getPaginationOptions();
         $perPage = $request->input('per_page', auth()->user()->getPerPagePreference());
         if (!in_array($perPage, $paginationOptions)) {
@@ -45,6 +49,10 @@ class InventoryController extends Controller
      */
     public function create()
     {
+        if (! (auth()->user() && auth()->user()->can('create inventories'))) {
+            abort(403);
+        }
+
         $inventories_purchases = InventoryPurchases::where('company_id', auth()->user()->company_id)->get();
         return view('inventories.create', compact('inventories_purchases'));
     }
@@ -57,6 +65,10 @@ class InventoryController extends Controller
      */
     public function store(Request $request)
     {
+        if (! (auth()->user() && auth()->user()->can('create inventories'))) {
+            abort(403);
+        }
+
         $validate = $request->validate([
             'name'         => 'required|string|max:255|unique:inventories,name,NULL,id,company_id,' . auth()->user()->company_id,
             'low_alert'    => 'required|numeric|min:0',
@@ -92,6 +104,10 @@ class InventoryController extends Controller
      */
     public function edit($id)
     {
+        if (! (auth()->user() && auth()->user()->can('edit inventories'))) {
+            abort(403);
+        }
+
         $inventory = Inventory::findOrFail($id);
 
         $inventories_purchases = InventoryPurchases::where('company_id', auth()->user()->company_id)->get();
@@ -108,6 +124,10 @@ class InventoryController extends Controller
      */
     public function update(Request $request, $id)
     {
+        if (! (auth()->user() && auth()->user()->can('edit inventories'))) {
+            abort(403);
+        }
+
         $validate = $request->validate([
             'name'         => 'required|string|max:255|unique:inventories,name,NULL,id,company_id,' . auth()->user()->company_id,
             'low_alert'    => 'required|numeric|min:0',
@@ -134,6 +154,10 @@ class InventoryController extends Controller
      */
     public function destroy($id)
     {
+        if (! (auth()->user() && auth()->user()->can('delete inventories'))) {
+            abort(403);
+        }
+
         // Find the inventory by ID
         $inventory = Inventory::findOrFail($id);
 

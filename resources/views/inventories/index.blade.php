@@ -459,14 +459,11 @@ input:checked+.slider:before {
 
                         <div class="text-center" style="float: center;">
 
-
-
-
-
+                        @can('create inventories')
 
                             <a href="{{url('inventories/create')}}" class="btn btn-primary btn-sm">Add Item</a>
 
-
+                        @endcan
 
 
 
