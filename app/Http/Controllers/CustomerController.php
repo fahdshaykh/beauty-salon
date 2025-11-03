@@ -21,6 +21,9 @@ class CustomerController extends Controller
 
     public function index(Request $request)
     {
+
+        $this->authorize('viewAny', Customer::class);
+
         $paginationOptions = Setting::getPaginationOptions();
         $perPage = $request->input('per_page', auth()->user()->getPerPagePreference());
         if (!in_array($perPage, $paginationOptions)) {
@@ -60,6 +63,8 @@ class CustomerController extends Controller
 
     {
 
+        $this->authorize('create', Customer::class);
+
         $countries = DB::table('countries')->get();
 
         $referreds = DB::table('referred_customers')->where('is_active', true)->get();
@@ -96,7 +101,7 @@ class CustomerController extends Controller
 
     {
 
-        //  dd($request->referred_by);
+        $this->authorize('create', Customer::class);
 
         $this->validate($request, 
 
@@ -530,6 +535,8 @@ class CustomerController extends Controller
 
     {
 
+        $this->authorize('update', $customer);
+
         $countries = DB::table('countries')->get();
 
         $referreds = DB::table('referred_customers')->where('is_active', true)->get();
@@ -581,7 +588,7 @@ class CustomerController extends Controller
 
     {
 
-
+        $this->authorize('update', $customer);
 
         $this->validate($request, 
 
@@ -710,6 +717,8 @@ class CustomerController extends Controller
     {
 
         $customer = Customer::find($id);
+
+        $this->authorize('update', $customer);
 
         $customer->is_deleted = 1;
 

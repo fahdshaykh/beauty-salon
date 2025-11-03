@@ -148,7 +148,6 @@ class ExpenseTypeController extends Controller
     public function edit($id)
 
     {
-
         $user = auth()->user();
         
         // For non-admins, only load expense types from their company

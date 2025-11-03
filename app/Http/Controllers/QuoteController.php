@@ -20,11 +20,12 @@ class QuoteController extends Controller
 {
 
     public function index()
-
     {
+        if (! (auth()->user() && auth()->user()->can('view quotations'))) {
+            abort(403);
+        }
 
         $quotations = DB::table('quotes')->where('company_id', auth()->user()->company_id)->get();
-
         return view('quotes.index',compact('quotations'));
 
     }
@@ -32,11 +33,12 @@ class QuoteController extends Controller
 
 
     public function show($id)
-
     {
+        if (! (auth()->user() && auth()->user()->can('view quotations'))) {
+            abort(403);
+        }
 
         $quote = DB::table('quotes')->where('company_id', auth()->user()->company_id)->where('id', $id)->get();
-
         return response()->json($quote);
 
     }
@@ -44,8 +46,10 @@ class QuoteController extends Controller
 
 
     public function create()
-
     {
+        if (! (auth()->user() && auth()->user()->can('send quotations'))) {
+            abort(403);
+        }
 
         return view('quotes.create');
 
@@ -171,6 +175,78 @@ class QuoteController extends Controller
 
         }
 
+    }
+
+
+
+    public function add_holidays()
+    {
+        if (!(auth()->user() && auth()->user()->can('view holidays'))) {
+            abort(403);
+        }
+        
+        $holidays = DB::table('calendar_holidays')->where('company_id',auth()->user()->company_id)->get();
+        return view('holidays.index',compact('holidays'));
+    }
+
+    public function update_holidays(Request $request)
+    {
+        if (! (auth()->user() && auth()->user()->can('view holidays'))) {
+            abort(403);
+        }
+        //echo $request->start_date.'>>>>>>'.$request->end_date; exit;
+        if($request->start_date!="" && $request->end_date!=""){
+            if($request->start_date>$request->end_date){
+                return redirect('add-holidays')->with('destroy', 'End Date should not be greater than start date.');
+            }
+            elseif($request->start_date==$request->end_date){
+               $data = array(
+                    'company_id' => auth()->user()->company_id,
+                   'start_date' => $request->start_date,
+                   'end_date' => $request->end_date,
+                   'days' => $request->start_date
+                   
+               );
+            }
+           
+            else{
+                $begin = new DateTime($request->start_date);
+                $end = new DateTime($request->end_date);
+                $interval = DateInterval::createFromDateString('1 day');
+                $period = new DatePeriod($begin, $interval, $end);
+                $holidays = array();
+                foreach ($period as $dt) {
+                    $holidays[] = $dt->format("Y-m-d");
+                }
+                $data = array(
+                    'company_id' => auth()->user()->company_id,
+                    'start_date' => $request->start_date,
+                    'end_date' => $request->end_date,
+                    'days' => json_encode($holidays)
+                    
+                );
+            }
+            // $count = DB::table('calendar_holidays')->where('company_id',auth()->user()->company_id)->get();
+            // if($count->count()>0){
+            //     DB::table('calendar_holidays')->where('company_id',auth()->user()->company_id)->update($data);
+            // }
+            // else{
+                DB::table('calendar_holidays')->insert($data);
+           // }
+            
+            return redirect('add-holidays')->with('success', 'Holidays Added Successfully.');
+           
+        }
+    }
+
+    public function delete_holidays($id)
+    {
+        if (! (auth()->user() && auth()->user()->can('delete holidays'))) {
+            abort(403);
+        }
+
+        DB::table('calendar_holidays')->where('id',$id)->delete();
+        return redirect('add-holidays')->with('success', 'Deleted Successfully.');
     }
 
 }

@@ -11,6 +11,9 @@ class EmployeeController extends Controller
     public function employee_graph_report()
 
     {
+        if (! (auth()->user() && auth()->user()->can('view employee report'))) {
+            abort(403);
+        }
 
         return view('employee_reports.graph_report');
 
@@ -34,6 +37,7 @@ class EmployeeController extends Controller
             ->join('users', 'service_bookings.user_id', '=', 'users.id')
             ->whereBetween('service_bookings.due_date', [$start_date, $end_date])
             ->whereNotIn('service_bookings.service_status', [4, 5]) // Exclude canceled/completed/etc.
+            ->where('service_bookings.company_id', auth()->user()->company_id)
             ->select(
                 DB::raw('COUNT(service_bookings.id) as total_services'),
                 DB::raw('SUM(service_bookings.total_price) as total_revenue'),

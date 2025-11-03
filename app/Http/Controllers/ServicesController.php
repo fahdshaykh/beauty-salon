@@ -30,6 +30,8 @@ class ServicesController extends Controller
 
     {
 
+        $this->authorize('viewAny', Services::class);
+
         $paginationOptions = Setting::getPaginationOptions();
         $perPage = $request->input('per_page', auth()->user()->getPerPagePreference());
         if (!in_array($perPage, $paginationOptions)) {
@@ -88,6 +90,7 @@ class ServicesController extends Controller
 
     {
 
+        $this->authorize('create', Services::class);
 
         $employees = User::select('*')->where('is_active', 1)->where('company_id', auth()->user()->company_id)->where('is_deleted', 0)->orderBy('created_at', 'desc')->get();
 
@@ -129,6 +132,8 @@ class ServicesController extends Controller
 
      public function store(Request $request)
      {
+        $this->authorize('create', Services::class);
+        
          $validate = $request->validate([
              'category_id' => 'required',
              'name' => 'required|max:255|unique:services,name,NULL,id,company_id,' . auth()->user()->company_id . ',category_id,' . $request->input('category_id'),
@@ -270,6 +275,21 @@ class ServicesController extends Controller
 
     {
 
+        $user = auth()->user();
+        
+        // For non-admins, only load expenses from their company
+        $query = Services::where('id', $id);
+        if (!($user && method_exists($user, 'hasRole') && $user->hasRole('admin'))) {
+            $query->where('company_id', $user->company_id);
+        }
+        
+        $services = $query->firstOrFail();
+        
+        // Still check the policy for permission-based access
+        if (!($user && method_exists($user, 'hasRole') && $user->hasRole('admin'))) {
+            $this->authorize('update', $services);
+        }
+
 
         $employees = User::select('*')->where('is_active', 1)->where('company_id', auth()->user()->company_id)->where('is_deleted', 0)->orderBy('created_at', 'desc')->get();
 
@@ -278,7 +298,7 @@ class ServicesController extends Controller
 
 
 
-        $services = Services::find($id);
+        // $services = Services::find($id);
 
 
 
@@ -331,6 +351,9 @@ class ServicesController extends Controller
          ]);
      
          $service = Services::findOrFail($id);
+
+         $this->authorize('update', $service);
+
          $service->category_id = $request->input('category_id');
          $service->name = trim($request->input('name'));
          $service->price_type = $request->input('price_type');
@@ -397,6 +420,8 @@ class ServicesController extends Controller
 
     public function destroy(Request $request, Services $service)
     {
+        $this->authorize('delete', $service);
+
         // Check if the service is linked to any bookings in the BookingDetail pivot table
         if (DB::table('booking_details')->where('service_id', $service->id)->exists()) {
             return redirect()->back()->with('success', 'Cannot delete service. It is linked to one or more bookings.');

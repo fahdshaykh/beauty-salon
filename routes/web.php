@@ -332,9 +332,10 @@ Route::get('/send_review_sms/{invoice}','ServiceBookingController@send_review_sm
 Route::post('booking-status','ServiceBookingController@change_boking_status');
 Route::post('update-booking-message','SettingController@booking_message_update');
 Route::get('get-template-preview/{id}','PowerMailingController@get_template_preview');
-Route::get('add-holidays','SettingController@add_holidays');
-Route::post('update-holidays','SettingController@update_holidays');
-Route::get('delete-holidays/{id}','SettingController@delete_holidays');
+
+Route::get('add-holidays','QuoteController@add_holidays');
+Route::post('update-holidays','QuoteController@update_holidays');
+Route::get('delete-holidays/{id}','QuoteController@delete_holidays');
 
 Route::resource('/inventories','InventoryController');
 Route::get('inventories-available', [InventoryController::class, 'available'])->name('inventories.available');

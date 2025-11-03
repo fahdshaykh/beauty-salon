@@ -20,6 +20,20 @@ class RoleController extends Controller
 
 {
 
+    /**
+     * Restrict all user management routes to admin users only.
+     * Using a route middleware closure so we don't rely on route definitions.
+     */
+    public function __construct()
+    {
+        $this->middleware(function ($request, $next) {
+            if (! (auth()->user() && auth()->user()->hasRole('admin'))) {
+                abort(403);
+            }
+            return $next($request);
+        });
+    }
+
     public function index(Request $request)
     {
         $paginationOptions = Setting::getPaginationOptions();

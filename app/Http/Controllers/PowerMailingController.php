@@ -26,6 +26,10 @@ class PowerMailingController extends Controller
   
     public function create()
     {
+        if (! (auth()->user() && auth()->user()->can('email marketing'))) {
+            abort(403);
+        }
+
         $services=DB::table('services')->select('id','name')->where('is_active', 1)->where('company_id', auth()->user()->company_id)->groupBy('name')->get();
         // for zip-code
         $templates_data =Templates::select('*')->where('type', 3)->where('status', 1)->where('company_id', auth()->user()->company_id)->orderBy('created_at', 'desc')->get();
@@ -96,6 +100,10 @@ class PowerMailingController extends Controller
 
     public function send(Request $request)
     {
+        if (! (auth()->user() && auth()->user()->can('email marketing'))) {
+            abort(403);
+        }
+        
         $this->validate($request, 
         [
             'template_id' => 'required',
@@ -174,6 +182,10 @@ class PowerMailingController extends Controller
 
     public function mailing_history(Request $request)
     {
+        if (! (auth()->user() && auth()->user()->can('email history'))) {
+            abort(403);
+        }
+
         $type = $request->input('type', 'all');
         $start_date = $request->input('start_date', '');
         $end_date = $request->input('end_date', '');

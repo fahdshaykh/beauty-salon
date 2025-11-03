@@ -269,7 +269,6 @@ class ExpenseController extends Controller
 
         $data['company_id'] = auth()->user()->company_id;
 
-
         $user = auth()->user();
         
         // For non-admins, only update expenses from their company

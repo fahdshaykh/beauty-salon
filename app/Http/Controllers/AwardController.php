@@ -17,6 +17,8 @@ class AwardController extends Controller
      */
     public function index(Request $request)
     {
+        // Authorize listing
+        $this->authorize('viewAny', Award::class);
         $paginationOptions = Setting::getPaginationOptions();
         $perPage = $request->input('per_page', auth()->user()->getPerPagePreference());
         if (!in_array($perPage, $paginationOptions)) {
@@ -42,6 +44,8 @@ class AwardController extends Controller
      */
     public function create()
     {
+        // Authorize create
+        $this->authorize('create', Award::class);
         $users =DB::table('users')->where('company_id', auth()->user()->company_id)
         ->get(); // Fetch all employees
         return view('awards.create', compact('users'));
@@ -52,6 +56,8 @@ class AwardController extends Controller
      */
     public function store(Request $request)
     {
+        // Authorize create
+        $this->authorize('create', Award::class);
         $request->validate([
             'user_id' => 'required',
             'award' => 'required|string|max:255',
@@ -85,6 +91,8 @@ class AwardController extends Controller
      */
     public function edit(Award $award)
     {
+        // Authorize update (policy will enforce company scope)
+        $this->authorize('update', $award);
         $users =DB::table('users')->where('company_id', auth()->user()->company_id)->get();
 
         return view('awards.edit', compact('award', 'users'));
@@ -95,6 +103,8 @@ class AwardController extends Controller
      */
     public function update(Request $request, Award $award)
     {
+        // Authorize update (policy will enforce company scope)
+        $this->authorize('update', $award);
         $request->validate([
             'user_id' => 'required',
             'award' => 'required|string|max:255',
@@ -115,6 +125,8 @@ class AwardController extends Controller
      */
     public function destroy(Award $award)
     {
+        // Authorize delete (policy will enforce company scope)
+        $this->authorize('delete', $award);
         $award->delete();
         return redirect('/awards')->with('success', 'Award deleted successfully.');
     }

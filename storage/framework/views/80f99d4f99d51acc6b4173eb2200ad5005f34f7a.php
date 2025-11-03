@@ -420,7 +420,7 @@ input:checked+.slider:before {
                     <div class="col-md-3">
                         <div class="pagination-dropdown">
                             <label for="per_page">Items per page</label>
-                            <form method="GET" action="<?php echo e(route('inventories.index')); ?>">
+                            <form method="GET" action="<?php echo e(route('referred_customers.index')); ?>">
                                 <?php $__currentLoopData = request()->except(['page', 'per_page']); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $value): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <input type="hidden" name="<?php echo e($key); ?>" value="<?php echo e($value); ?>">
                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
@@ -467,9 +467,9 @@ input:checked+.slider:before {
 
 
 
+                        <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('create referred customers')): ?>
                             <a href="<?php echo e(route('referred_customers.create')); ?>" class="btn btn-primary btn-sm">Add new Source</a>
-
-
+                        <?php endif; ?>
 
 
 
@@ -560,6 +560,7 @@ input:checked+.slider:before {
 
                                         <td>
 
+                                        <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('edit referred customers')): ?>
                                             <a href="<?php echo e(route('referred_customers.edit', ['referred_customer' => $referred->id])); ?>">
 
 
@@ -569,18 +570,20 @@ input:checked+.slider:before {
 
 
                                             </a>
+                                            <?php endif; ?>
 
 
 
 
 
-                                            |
+                                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('delete referred customers')): ?>
                                             <a href="#" onclick="event.preventDefault(); 
                                                                 if (confirm('Are you sure to delete?')) {
                                                                     document.getElementById('delete-form-<?php echo e($referred->id); ?>').submit();
                                                                 }">
                                                 <i class="fas fa-trash text-danger"></i>
                                             </a>
+                                            <?php endif; ?>
 
 
                                             <form id="delete-form-<?php echo e($referred->id); ?>" action="<?php echo e(route('referred_customers.destroy', $referred->id)); ?>" method="POST" style="display: none;">

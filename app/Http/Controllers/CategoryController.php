@@ -32,6 +32,7 @@ class CategoryController extends Controller
     public function index(Request $request)
 
     {
+        $this->authorize('viewAny', Category::class);
 
         $paginationOptions = Setting::getPaginationOptions();
         $perPage = $request->input('per_page', auth()->user()->getPerPagePreference());
@@ -87,6 +88,7 @@ class CategoryController extends Controller
     {
 
 
+        $this->authorize('create', Category::class);
 
         return view('categories.create');
 
@@ -131,6 +133,7 @@ class CategoryController extends Controller
     {
 
 
+        $this->authorize('create', Category::class);
 
         $this->validate($request, 
 
@@ -295,6 +298,7 @@ class CategoryController extends Controller
     {
 
 
+        $this->authorize('update', $category);
 
         return view('categories.edit',compact('category'));
 
@@ -342,6 +346,7 @@ class CategoryController extends Controller
 
     {
 
+        $this->authorize('update', $category);
 
 
         $this->validate($request, 
@@ -424,6 +429,9 @@ class CategoryController extends Controller
 
      public function destroy(Request $request, Category $category)
      {
+
+        $this->authorize('delete', $category);
+
         // Check if the category has any associated services
         if ($category->services()->exists()) {
             return redirect()->back()->with('destroy', 'Cannot delete category. It is linked to one or more services.');

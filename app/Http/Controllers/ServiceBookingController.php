@@ -55,6 +55,10 @@ class ServiceBookingController extends Controller
     public function index(Request $request)
     {
         // Get pagination options from settings
+        // Authorization: ensure user can view service bookings
+        $this->authorize('viewAny', ServiceBooking::class);
+
+        // Get pagination options from settings
         $paginationOptions = Setting::getPaginationOptions();
 
         // Get user's preferred per_page, fallback to request or default
@@ -164,6 +168,10 @@ class ServiceBookingController extends Controller
     { 
 
         // $inventories = Inventory::where('company_id', auth()->user()->company_id)->get();
+            // Authorization: ensure user can create service bookings
+            $this->authorize('create', ServiceBooking::class);
+
+            // $inventories = Inventory::where('company_id', auth()->user()->company_id)->get();
         $inventories = Inventory::where('company_id', auth()->user()->company_id)
                         ->whereHas('purchases')
                         ->get();
@@ -201,6 +209,9 @@ class ServiceBookingController extends Controller
     
     public function store(Request $request)
     {
+        // Authorization: ensure user can create service bookings
+        $this->authorize('create', ServiceBooking::class);
+
         $this->validate($request, [
             'due_date' => 'required',
             'due_time' => 'required',
@@ -399,6 +410,9 @@ class ServiceBookingController extends Controller
 
     {
 
+            // Authorize update on this booking (loads booking and checks company scope)
+            $this->authorize('update', ServiceBooking::where('id', $id)->where('company_id', auth()->user()->company_id)->firstOrFail());
+
         $selectedServices = DB::table('booking_details')->join('services','services.id','=','booking_details.service_id')->where('booking_details.booking_id', $id)->pluck('services.id')->toArray();
 
         // $inventories_purchases = InventoryPurchases::where('company_id', auth()->user()->company_id)->get();
@@ -479,6 +493,9 @@ class ServiceBookingController extends Controller
     public function update(Request $request, ServiceBooking $serviceBooking)
 
     {
+
+            // Authorization: ensure user can update this booking
+            $this->authorize('update', $serviceBooking);
 
         $this->validate($request, 
 
@@ -765,6 +782,10 @@ class ServiceBookingController extends Controller
     {
 
         // $start_date = date("Y").'-'.date("m").'-'.'01';
+            // Authorization: ensure user can view bookings
+            $this->authorize('viewAny', ServiceBooking::class);
+
+            // $start_date = date("Y").'-'.date("m").'-'.'01';
 
         // $end_date = date("Y").'-'.date("m").'-'.'31';
 
@@ -862,6 +883,8 @@ class ServiceBookingController extends Controller
     public function get_user_bookings($user_id)
 
     {
+        // Authorization: ensure user can view bookings
+        $this->authorize('viewAny', ServiceBooking::class);
 
 
 
@@ -1512,6 +1535,8 @@ class ServiceBookingController extends Controller
 
 
     {
+        // Authorize view for this booking
+        $this->authorize('view', ServiceBooking::where('id', $id)->where('company_id', auth()->user()->company_id)->firstOrFail());
 
 
 

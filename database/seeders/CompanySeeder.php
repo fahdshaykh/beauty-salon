@@ -71,6 +71,9 @@ class CompanySeeder extends Seeder
             // Customers
             'view customers', 'create customers', 'edit customers', 'delete customers',
 
+            // Reffered Sources
+            'view referred customers', 'create referred customers', 'edit referred customers', 'delete referred customers',
+
             //customers import/export
             'import customers', 'export customers',
 

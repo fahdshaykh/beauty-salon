@@ -46,6 +46,20 @@ class SettingController extends Controller
 
 {
 
+        /**
+     * Restrict all user management routes to admin users only.
+     * Using a route middleware closure so we don't rely on route definitions.
+     */
+    public function __construct()
+    {
+        $this->middleware(function ($request, $next) {
+            if (! (auth()->user() && auth()->user()->hasRole('admin'))) {
+                abort(403);
+            }
+            return $next($request);
+        });
+    }
+
 
 
     public function theme_settings()
@@ -666,63 +680,6 @@ class SettingController extends Controller
             return redirect('invoice-setting')->with('success', $affected.' Invoice Updated Successfully.');
         }
         return view('settings.invoice_setting');
-    }
-
-    public function add_holidays(){
-        
-        $holidays = DB::table('calendar_holidays')->where('company_id',auth()->user()->company_id)->get();
-        return view('holidays.index',compact('holidays'));
-    }
-
-    public function update_holidays(Request $request){
-        //echo $request->start_date.'>>>>>>'.$request->end_date; exit;
-        if($request->start_date!="" && $request->end_date!=""){
-            if($request->start_date>$request->end_date){
-                return redirect('add-holidays')->with('destroy', 'End Date should not be greater than start date.');
-            }
-            elseif($request->start_date==$request->end_date){
-               $data = array(
-                    'company_id' => auth()->user()->company_id,
-                   'start_date' => $request->start_date,
-                   'end_date' => $request->end_date,
-                   'days' => $request->start_date
-                   
-               );
-            }
-           
-            else{
-                $begin = new DateTime($request->start_date);
-                $end = new DateTime($request->end_date);
-                $interval = DateInterval::createFromDateString('1 day');
-                $period = new DatePeriod($begin, $interval, $end);
-                $holidays = array();
-                foreach ($period as $dt) {
-                    $holidays[] = $dt->format("Y-m-d");
-                }
-                $data = array(
-                    'company_id' => auth()->user()->company_id,
-                    'start_date' => $request->start_date,
-                    'end_date' => $request->end_date,
-                    'days' => json_encode($holidays)
-                    
-                );
-            }
-            // $count = DB::table('calendar_holidays')->where('company_id',auth()->user()->company_id)->get();
-            // if($count->count()>0){
-            //     DB::table('calendar_holidays')->where('company_id',auth()->user()->company_id)->update($data);
-            // }
-            // else{
-                DB::table('calendar_holidays')->insert($data);
-           // }
-            
-            return redirect('add-holidays')->with('success', 'Holidays Added Successfully.');
-           
-        }
-    }
-
-    public function delete_holidays($id){
-        DB::table('calendar_holidays')->where('id',$id)->delete();
-        return redirect('add-holidays')->with('success', 'Deleted Successfully.');
     }
 
 

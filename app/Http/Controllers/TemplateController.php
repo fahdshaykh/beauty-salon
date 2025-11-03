@@ -14,32 +14,46 @@ class TemplateController extends Controller
      */
     public function index()
     {
+        if (! (auth()->user() && auth()->user()->can('view templates'))) {
+            abort(403);
+        }
+
         $data =Templates::select('*')->where('type', 1)->where('company_id', auth()->user()->company_id)->orderBy('created_at', 'desc')->get();
         return view('templates.index',compact('data'));
     }
 
     public function email_templates()
     {
+        if (! (auth()->user() && auth()->user()->can('view templates'))) {
+            abort(403);
+        }
+
         $data =Templates::select('*')->where('type', 3)->where('company_id', auth()->user()->company_id)->orderBy('created_at', 'desc')->get();
         return view('email_templates.index',compact('data'));
     }
 
     public function email_template_create()
-    {
+    { 
+        if (! (auth()->user() && auth()->user()->can('create templates'))) {
+            abort(403);
+        }
         return view('email_templates.create');
     }
 
     public function store_email_template(Request $request)
     {
-        // echo "<pre>"; print_r($request->all()); exit;
-       
-      $this->validate($request, 
-        [
-            'title'         => 'required',
-            'email_des'   => 'required'
-        ]
+        if (! (auth()->user() && auth()->user()->can('create templates'))) {
+            abort(403);
+        }
 
-    );
+        $this->validate($request, 
+            [
+                'title'         => 'required',
+                'email_des'   => 'required'
+            ]
+
+        );
+
         $data=[
             'type' => 3,
             'title' => $request->title,
@@ -57,6 +71,10 @@ class TemplateController extends Controller
 
     public function edit_email_template($id)
     {
+        if (! (auth()->user() && auth()->user()->can('edit templates'))) {
+            abort(403);
+        }
+
         $template = Templates::where('id',$id)->first();
        
        
@@ -71,30 +89,34 @@ class TemplateController extends Controller
 
     public function update_email_template(Request $request)
     {
+        if (! (auth()->user() && auth()->user()->can('edit templates'))) {
+            abort(403);
+        }
+
         $this->validate($request, 
 
-        [
-            'title'         => 'required',
-            'email_des'  => 'required'
-        ]
+            [
+                'title'         => 'required',
+                'email_des'  => 'required'
+            ]
 
-    );
+        );
 
 
-    $template = Templates::find($request->id);
+        $template = Templates::find($request->id);
+            
+        $template->id = $request->id;
+
+        $template->type =3;
+
+        $template->title = $request->title;
+
+        $template->description = $request->email_des;
+        $template->template_json = $request->design;
         
-    $template->id = $request->id;
 
-    $template->type =3;
-
-    $template->title = $request->title;
-
-    $template->description = $request->email_des;
-    $template->template_json = $request->design;
-    
-
-    $template->save();
-    return response()->json(['success' => 'Template Updated successfully']);
+        $template->save();
+        return response()->json(['success' => 'Template Updated successfully']);
     }
 
     /**

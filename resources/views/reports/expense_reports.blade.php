@@ -6,9 +6,7 @@
 
 
 
-        <?php $expense_report_array = array(5,6); ?>
 
-        <?php $expense_report_link = implode(',', $expense_report_array); ?>
 
         <?php $total_amount = 0; ?>
 
@@ -40,11 +38,11 @@
 
                         <div class="text-center" style="float: center;">
 
-                        @if(in_array($expense_report_link, session()->get('all_rp')['0']))
+
 
                         <span data-href="/expense-report/{{$start_date}}/{{$end_date}}/{{$type}}/{{$method}}" id="export" class="btn btn-primary" onclick="exportReports(event.target);">Export Expense Report</span>
 
-                        @endif
+
 
                         </div>
 

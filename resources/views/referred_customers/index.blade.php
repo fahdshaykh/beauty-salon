@@ -417,7 +417,7 @@ input:checked+.slider:before {
                     <div class="col-md-3">
                         <div class="pagination-dropdown">
                             <label for="per_page">Items per page</label>
-                            <form method="GET" action="{{ route('inventories.index') }}">
+                            <form method="GET" action="{{ route('referred_customers.index') }}">
                                 @foreach(request()->except(['page', 'per_page']) as $key => $value)
                                     <input type="hidden" name="{{ $key }}" value="{{ $value }}">
                                 @endforeach
@@ -464,9 +464,9 @@ input:checked+.slider:before {
 
 
 
+                        @can('create referred customers')
                             <a href="{{ route('referred_customers.create') }}" class="btn btn-primary btn-sm">Add new Source</a>
-
-
+                        @endcan
 
 
 
@@ -556,6 +556,7 @@ input:checked+.slider:before {
 
                                         <td>
 
+                                        @can('edit referred customers')
                                             <a href="{{route('referred_customers.edit', ['referred_customer' => $referred->id])}}">
 
 
@@ -565,18 +566,20 @@ input:checked+.slider:before {
 
 
                                             </a>
+                                            @endcan
 
 
 
 
 
-                                            |
+                                            @can('delete referred customers')
                                             <a href="#" onclick="event.preventDefault(); 
                                                                 if (confirm('Are you sure to delete?')) {
                                                                     document.getElementById('delete-form-{{ $referred->id }}').submit();
                                                                 }">
                                                 <i class="fas fa-trash text-danger"></i>
                                             </a>
+                                            @endcan
 
 
                                             <form id="delete-form-{{ $referred->id }}" action="{{ route('referred_customers.destroy', $referred->id) }}" method="POST" style="display: none;">

@@ -290,14 +290,6 @@ Admin
           
 
 
-          <div style="background: #333; color: white; padding: 10px; font-family: monospace;">
-    DEBUG:
-    User ID: {{ auth()->id() }} |
-    Company ID: {{ auth()->user()->company_id }} |
-    Roles: {{ auth()->user()->getRoleNames() }} |
-    Permissions: {{ auth()->user()->getAllPermissions()->pluck('name')->implode(', ') }}
-</div>
-
 
           <!-- if admin login  -->
 
@@ -501,7 +493,9 @@ Admin
                 <li class="nav-item"><a class="nav-link  {{ Request::is('customers*') ? 'active' : '' }}" href="{{url('customers-import-view')}}">Import Customers</a></li>
                 @endcan
                 
+                @can('view referred customers')
                 <li class="nav-item"><a class="nav-link  {{ Request::is('referred_customers*') ? 'active' : '' }}" href="{{route('referred_customers.index')}}">Reffered By</a></li>
+                @endcan
 
               </ul>
 

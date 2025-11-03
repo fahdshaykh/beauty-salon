@@ -104,11 +104,11 @@
 
                         <div class="text-center" style="float: center;">
 
-                        @if(in_array($customer_report, session()->get('all_rp')['0']))
+  
 
                         <span data-href="/customer-report-by-date/{{$start_date}}/{{$end_date}}/{{$customer_id}}" id="export" class="btn btn-primary" onclick="exportReports(event.target);">Export Customer Report</span>
 
-                        @endif
+
 
                         </div>
 

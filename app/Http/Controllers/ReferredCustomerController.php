@@ -13,6 +13,8 @@ class ReferredCustomerController extends Controller
 {
     public function index(Request $request)
     {
+        $this->authorize('viewAny', ReferredCustomer::class);
+
         $paginationOptions = Setting::getPaginationOptions();
         $perPage = $request->input('per_page', auth()->user()->getPerPagePreference());
         if (!in_array($perPage, $paginationOptions)) {
@@ -33,11 +35,15 @@ class ReferredCustomerController extends Controller
 
     public function create()
     {
+        $this->authorize('create', ReferredCustomer::class);
+
         return view('referred_customers.create');
     }
 
     public function store(Request $request)
     {
+        $this->authorize('create', ReferredCustomer::class);
+
         $data = $request->validate([
             'referred_by' => 'required|string|max:120',
             'is_active' => 'nullable|boolean',
@@ -54,18 +60,23 @@ class ReferredCustomerController extends Controller
     public function show($id)
     {
         $referred = ReferredCustomer::forCompany()->findOrFail($id);
+        $this->authorize('view', $referred);
+
         return view('referred_customers.show', compact('referred'));
     }
 
     public function edit($id)
     {
         $referred = ReferredCustomer::forCompany()->findOrFail($id);
+        $this->authorize('update', $referred);
+
         return view('referred_customers.edit', compact('referred'));
     }
 
     public function update(Request $request, $id)
     {
         $referred = ReferredCustomer::forCompany()->findOrFail($id);
+        $this->authorize('update', $referred);
 
         $data = $request->validate([
             'referred_by' => 'required|string|max:120',
@@ -82,6 +93,8 @@ class ReferredCustomerController extends Controller
     public function destroy($id)
     {
         $referred = ReferredCustomer::forCompany()->findOrFail($id);
+        $this->authorize('delete', $referred);
+
         $referred->delete();
         return redirect()->route('referred_customers.index')->with('destroy', 'Referred source deleted.');
     }

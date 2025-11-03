@@ -28,6 +28,10 @@ class ReportController extends Controller
 
     {
 
+        if (! (auth()->user() && auth()->user()->can('view bookings report'))) {
+            abort(403);
+        }
+
         $categories = DB::table('categories')->where('is_active', 1)->where('company_id', auth()->user()->company_id)->get();
 
         
@@ -44,6 +48,10 @@ class ReportController extends Controller
 
     {
 
+        if (! (auth()->user() && auth()->user()->can('view services report'))) {
+            abort(403);
+        }
+
         return view('reports.graph_report');
 
     }
@@ -57,7 +65,7 @@ class ReportController extends Controller
     }
     public function customer_graph_report(Request $request)
     {
-        
+
         $start_date = date("Y").'-'.date("m").'-'.'01';
 
         $end_date = date("Y").'-'.date("m").'-'.'31';
@@ -91,7 +99,12 @@ class ReportController extends Controller
         return response()->json($referredcustomers);
     }
 
-    public function customer_graph(){
+    public function customer_graph()
+    {
+        if (! (auth()->user() && auth()->user()->can('view customer graph'))) {
+            abort(403);
+        }
+
         return view('reports.customer_graph');
     }
 
@@ -99,6 +112,10 @@ class ReportController extends Controller
 
     public function customer_country_graph_report(Request $request)
     {
+        if (! (auth()->user() && auth()->user()->can('view customer country graph'))) {
+            abort(403);
+        }
+
         $start_date = date("Y-m-01");
         $end_date = date("Y-m-t");
 
@@ -153,7 +170,12 @@ class ReportController extends Controller
         return view('reports.customer_country_graph');
     }
 
-    public function profit_loss_report(){
+    public function profit_loss_report()
+    {
+        if (! (auth()->user() && auth()->user()->can('view profit & loss graph'))) {
+            abort(403);
+        }
+
         return view('reports.profit_loss_report');
     }
 
@@ -329,6 +351,9 @@ class ReportController extends Controller
     public function customer_index()
 
     {
+        if (! (auth()->user() && auth()->user()->can('view customer report'))) {
+            abort(403);
+        }
 
         $customers = DB::table('customers')->where('company_id', auth()->user()->company_id)->get();
 
@@ -343,6 +368,9 @@ class ReportController extends Controller
     public function expense_index()
 
     {
+        if (! (auth()->user() && auth()->user()->can('view expense report'))) {
+            abort(403);
+        }
 
         $expense_types = DB::table('expense_types')->where('company_id', auth()->user()->company_id)->get();
 
@@ -376,6 +404,35 @@ class ReportController extends Controller
 
         $end_date = $request->end_date;
 
+        // Normalize incoming date formats to Y-m-d so DB comparisons work reliably.
+        // Accept common formats (Y-m-d, d-m-Y, m/d/Y, etc.) — prefer strtotime, fallback to d-m-Y.
+        if (!empty($start_date)) {
+            $sd_ts = strtotime($start_date);
+            if ($sd_ts !== false) {
+                $start_date = date('Y-m-d', $sd_ts);
+                $request->start_date = $start_date;
+            } else {
+                $d = \DateTime::createFromFormat('d-m-Y', $start_date);
+                if ($d) {
+                    $start_date = $d->format('Y-m-d');
+                    $request->start_date = $start_date;
+                }
+            }
+        }
+        if (!empty($end_date)) {
+            $ed_ts = strtotime($end_date);
+            if ($ed_ts !== false) {
+                $end_date = date('Y-m-d', $ed_ts);
+                $request->end_date = $end_date;
+            } else {
+                $d = \DateTime::createFromFormat('d-m-Y', $end_date);
+                if ($d) {
+                    $end_date = $d->format('Y-m-d');
+                    $request->end_date = $end_date;
+                }
+            }
+        }
+
         $category_id = $request->category_id;
 
         $service_id = $request->service_id;
@@ -394,7 +451,11 @@ class ReportController extends Controller
 
               
 
-                $service_bookings = ServiceBooking::whereBetween('due_date', [$request->start_date." 00:00:00", $request->end_date." 23:59:59"])->where('company_id', auth()->user()->company_id)->orderBy('due_date', 'desc')->get();
+                $service_bookings = ServiceBooking::whereDate('due_date', '>=', $start_date)
+                    ->whereDate('due_date', '<=', $end_date)
+                    ->where('company_id', auth()->user()->company_id)
+                    ->orderBy('due_date', 'desc')
+                    ->get();
 
                
 
@@ -508,7 +569,12 @@ class ReportController extends Controller
 
            
 
-                $service_bookings = ServiceBooking::whereBetween('due_date', [$request->start_date." 00:00:00", $request->end_date." 23:59:59"])->where('payment_instrument',$payment_instrument)->where('company_id', auth()->user()->company_id)->orderBy('due_date', 'desc')->get();
+                $service_bookings = ServiceBooking::whereDate('due_date', '>=', $start_date)
+                    ->whereDate('due_date', '<=', $end_date)
+                    ->where('payment_instrument',$payment_instrument)
+                    ->where('company_id', auth()->user()->company_id)
+                    ->orderBy('due_date', 'desc')
+                    ->get();
 
 
 
@@ -628,7 +694,12 @@ class ReportController extends Controller
 
            
 
-                $service_bookings = ServiceBooking::whereBetween('due_date', [$request->start_date." 00:00:00", $request->end_date." 23:59:59"])->where('service_status',$status_id)->where('company_id', auth()->user()->company_id)->orderBy('due_date', 'desc')->get();
+                $service_bookings = ServiceBooking::whereDate('due_date', '>=', $start_date)
+                    ->whereDate('due_date', '<=', $end_date)
+                    ->where('service_status',$status_id)
+                    ->where('company_id', auth()->user()->company_id)
+                    ->orderBy('due_date', 'desc')
+                    ->get();
 
                
 
@@ -766,7 +837,12 @@ class ReportController extends Controller
 
 
 
-                $service_bookings = ServiceBooking::whereBetween('due_date', [$request->start_date." 00:00:00", $request->end_date." 23:59:59"])->whereIn('id',$booking_id)->where('company_id', auth()->user()->company_id)->orderBy('due_date', 'desc')->get();
+                $service_bookings = ServiceBooking::whereDate('due_date', '>=', $start_date)
+                    ->whereDate('due_date', '<=', $end_date)
+                    ->whereIn('id',$booking_id)
+                    ->where('company_id', auth()->user()->company_id)
+                    ->orderBy('due_date', 'desc')
+                    ->get();
 
                 
 
@@ -918,7 +994,12 @@ class ReportController extends Controller
 
 
 
-                $service_bookings = ServiceBooking::whereBetween('due_date', [$request->start_date." 00:00:00", $request->end_date." 23:59:59"])->whereIn('id',$booking_id)->where('company_id', auth()->user()->company_id)->orderBy('due_date', 'desc')->get();
+                $service_bookings = ServiceBooking::whereDate('due_date', '>=', $start_date)
+                    ->whereDate('due_date', '<=', $end_date)
+                    ->whereIn('id',$booking_id)
+                    ->where('company_id', auth()->user()->company_id)
+                    ->orderBy('due_date', 'desc')
+                    ->get();
 
                 
 
@@ -1038,7 +1119,13 @@ class ReportController extends Controller
 
               
 
-                $service_bookings = ServiceBooking::whereBetween('due_date', [$request->start_date." 00:00:00", $request->end_date." 23:59:59"])->where('company_id', auth()->user()->company_id)->where('service_status',$status_id)->where('payment_instrument',$payment_instrument)->orderBy('due_date', 'desc')->get();
+                $service_bookings = ServiceBooking::whereDate('due_date', '>=', $start_date)
+                    ->whereDate('due_date', '<=', $end_date)
+                    ->where('company_id', auth()->user()->company_id)
+                    ->where('service_status',$status_id)
+                    ->where('payment_instrument',$payment_instrument)
+                    ->orderBy('due_date', 'desc')
+                    ->get();
 
                
 
@@ -1168,7 +1255,12 @@ class ReportController extends Controller
 
 
 
-                $service_bookings = ServiceBooking::whereBetween('due_date', [$request->start_date." 00:00:00", $request->end_date." 23:59:59"])->whereIn('id',$booking_id)->where('company_id', auth()->user()->company_id)->orderBy('due_date', 'desc')->get();
+                $service_bookings = ServiceBooking::whereDate('due_date', '>=', $start_date)
+                    ->whereDate('due_date', '<=', $end_date)
+                    ->whereIn('id',$booking_id)
+                    ->where('company_id', auth()->user()->company_id)
+                    ->orderBy('due_date', 'desc')
+                    ->get();
 
                 
 
@@ -1306,7 +1398,13 @@ class ReportController extends Controller
 
 
 
-                $service_bookings = ServiceBooking::whereBetween('due_date', [$request->start_date." 00:00:00", $request->end_date." 23:59:59"])->whereIn('id',$booking_id)->where('company_id', auth()->user()->company_id)->where('payment_instrument',$payment_instrument)->orderBy('due_date', 'desc')->get();
+                $service_bookings = ServiceBooking::whereDate('due_date', '>=', $start_date)
+                    ->whereDate('due_date', '<=', $end_date)
+                    ->whereIn('id',$booking_id)
+                    ->where('company_id', auth()->user()->company_id)
+                    ->where('payment_instrument',$payment_instrument)
+                    ->orderBy('due_date', 'desc')
+                    ->get();
 
                 
 
@@ -1458,7 +1556,13 @@ class ReportController extends Controller
 
 
 
-                $service_bookings = ServiceBooking::whereBetween('due_date', [$request->start_date." 00:00:00", $request->end_date." 23:59:59"])->whereIn('id',$booking_id)->where('company_id', auth()->user()->company_id)->where('payment_instrument',$payment_instrument)->orderBy('due_date', 'desc')->get();
+                $service_bookings = ServiceBooking::whereDate('due_date', '>=', $start_date)
+                    ->whereDate('due_date', '<=', $end_date)
+                    ->whereIn('id',$booking_id)
+                    ->where('company_id', auth()->user()->company_id)
+                    ->where('payment_instrument',$payment_instrument)
+                    ->orderBy('due_date', 'desc')
+                    ->get();
 
                 
 
@@ -1594,7 +1698,13 @@ class ReportController extends Controller
 
 
 
-                $service_bookings = ServiceBooking::whereBetween('due_date', [$request->start_date." 00:00:00", $request->end_date." 23:59:59"])->whereIn('id',$booking_id)->where('company_id', auth()->user()->company_id)->where('service_status',$status_id)->orderBy('due_date', 'desc')->get();
+                $service_bookings = ServiceBooking::whereDate('due_date', '>=', $start_date)
+                    ->whereDate('due_date', '<=', $end_date)
+                    ->whereIn('id',$booking_id)
+                    ->where('company_id', auth()->user()->company_id)
+                    ->where('service_status',$status_id)
+                    ->orderBy('due_date', 'desc')
+                    ->get();
 
                 
 
@@ -1746,7 +1856,13 @@ class ReportController extends Controller
 
 
 
-                $service_bookings = ServiceBooking::whereBetween('due_date', [$request->start_date." 00:00:00", $request->end_date." 23:59:59"])->whereIn('id',$booking_id)->where('company_id', auth()->user()->company_id)->where('service_status',$status_id)->orderBy('due_date', 'desc')->get();
+                $service_bookings = ServiceBooking::whereDate('due_date', '>=', $start_date)
+                    ->whereDate('due_date', '<=', $end_date)
+                    ->whereIn('id',$booking_id)
+                    ->where('company_id', auth()->user()->company_id)
+                    ->where('service_status',$status_id)
+                    ->orderBy('due_date', 'desc')
+                    ->get();
 
                 
 
@@ -1896,7 +2012,14 @@ class ReportController extends Controller
 
 
 
-                $service_bookings = ServiceBooking::whereBetween('due_date', [$request->start_date." 00:00:00", $request->end_date." 23:59:59"])->whereIn('id',$booking_id)->where('company_id', auth()->user()->company_id)->where('service_status',$status_id)->where('payment_instrument',$payment_instrument)->orderBy('due_date', 'desc')->get();
+                $service_bookings = ServiceBooking::whereDate('due_date', '>=', $start_date)
+                    ->whereDate('due_date', '<=', $end_date)
+                    ->whereIn('id',$booking_id)
+                    ->where('company_id', auth()->user()->company_id)
+                    ->where('service_status',$status_id)
+                    ->where('payment_instrument',$payment_instrument)
+                    ->orderBy('due_date', 'desc')
+                    ->get();
 
                 
 
@@ -2034,7 +2157,14 @@ class ReportController extends Controller
 
 
 
-                $service_bookings = ServiceBooking::whereBetween('due_date', [$request->start_date." 00:00:00", $request->end_date." 23:59:59"])->whereIn('id',$booking_id)->where('company_id', auth()->user()->company_id)->where('service_status',$status_id)->where('payment_instrument',$payment_instrument)->orderBy('due_date', 'desc')->get();
+                $service_bookings = ServiceBooking::whereDate('due_date', '>=', $start_date)
+                    ->whereDate('due_date', '<=', $end_date)
+                    ->whereIn('id',$booking_id)
+                    ->where('company_id', auth()->user()->company_id)
+                    ->where('service_status',$status_id)
+                    ->where('payment_instrument',$payment_instrument)
+                    ->orderBy('due_date', 'desc')
+                    ->get();
 
                 
 
@@ -2186,7 +2316,13 @@ class ReportController extends Controller
 
 
 
-                $service_bookings = ServiceBooking::whereBetween('due_date', [$request->start_date." 00:00:00", $request->end_date." 23:59:59"])->whereIn('id',$booking_id)->where('company_id', auth()->user()->company_id)->where('payment_instrument',$payment_instrument)->orderBy('due_date', 'desc')->get();
+                $service_bookings = ServiceBooking::whereDate('due_date', '>=', $start_date)
+                    ->whereDate('due_date', '<=', $end_date)
+                    ->whereIn('id',$booking_id)
+                    ->where('company_id', auth()->user()->company_id)
+                    ->where('payment_instrument',$payment_instrument)
+                    ->orderBy('due_date', 'desc')
+                    ->get();
 
                 
 
@@ -2332,7 +2468,13 @@ class ReportController extends Controller
 
 
 
-                $service_bookings = ServiceBooking::whereBetween('due_date', [$request->start_date." 00:00:00", $request->end_date." 23:59:59"])->whereIn('id',$booking_id)->where('company_id', auth()->user()->company_id)->where('service_status',$status_id)->orderBy('due_date', 'desc')->get();
+                $service_bookings = ServiceBooking::whereDate('due_date', '>=', $start_date)
+                    ->whereDate('due_date', '<=', $end_date)
+                    ->whereIn('id',$booking_id)
+                    ->where('company_id', auth()->user()->company_id)
+                    ->where('service_status',$status_id)
+                    ->orderBy('due_date', 'desc')
+                    ->get();
 
                 
 
@@ -2478,7 +2620,12 @@ class ReportController extends Controller
 
 
 
-                $service_bookings = ServiceBooking::whereBetween('due_date', [$request->start_date." 00:00:00", $request->end_date." 23:59:59"])->whereIn('id',$booking_id)->where('company_id', auth()->user()->company_id)->orderBy('due_date', 'desc')->get();
+                $service_bookings = ServiceBooking::whereDate('due_date', '>=', $start_date)
+                    ->whereDate('due_date', '<=', $end_date)
+                    ->whereIn('id',$booking_id)
+                    ->where('company_id', auth()->user()->company_id)
+                    ->orderBy('due_date', 'desc')
+                    ->get();
 
                 
 
@@ -2624,7 +2771,14 @@ class ReportController extends Controller
 
 
 
-                $service_bookings = ServiceBooking::whereBetween('due_date', [$request->start_date." 00:00:00", $request->end_date." 23:59:59"])->whereIn('id',$booking_id)->where('company_id', auth()->user()->company_id)->where('service_status',$status_id)->where('payment_instrument')->orderBy('due_date', 'desc')->get();
+                $service_bookings = ServiceBooking::whereDate('due_date', '>=', $start_date)
+                    ->whereDate('due_date', '<=', $end_date)
+                    ->whereIn('id',$booking_id)
+                    ->where('company_id', auth()->user()->company_id)
+                    ->where('service_status',$status_id)
+                    ->where('payment_instrument')
+                    ->orderBy('due_date', 'desc')
+                    ->get();
 
                 
 
