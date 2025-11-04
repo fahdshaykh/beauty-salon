@@ -64,7 +64,9 @@ class HomeController extends Controller
 
             $inactive_company = DB::table('companies')->where('is_active',0)->count();
 
-            return view('home',compact('active_company','inactive_company'));
+            $users = DB::table('users')->select('id','name')->where('company_id', auth()->user()->company_id)->where('is_deleted',0)->get();
+
+            return view('home',compact('active_company','inactive_company', 'users'));
 
         }
 

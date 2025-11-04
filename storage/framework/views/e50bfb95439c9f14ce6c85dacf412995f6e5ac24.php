@@ -292,15 +292,6 @@ Admin
           
 
 
-          <div style="background: #333; color: white; padding: 10px; font-family: monospace;">
-    DEBUG:
-    User ID: <?php echo e(auth()->id()); ?> |
-    Company ID: <?php echo e(auth()->user()->company_id); ?> |
-    Roles: <?php echo e(auth()->user()->getRoleNames()); ?> |
-    Permissions: <?php echo e(auth()->user()->getAllPermissions()->pluck('name')->implode(', ')); ?>
-
-</div>
-
 
           <!-- if admin login  -->
 
@@ -364,6 +355,7 @@ Admin
 
           <!-- else admin not loggin  -->
          
+          
 
          <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('view categories')): ?>
           <li class="nav-item <?php echo e(Request::is('categories/*') ? 'active' : ''); ?>">
@@ -387,7 +379,7 @@ Admin
                 <li class="nav-item"> <a class="nav-link" href="<?php echo e(route('categories.index')); ?>"> Category Listing </a></li>
 
 
-                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('view categories')): ?>
+                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('create categories')): ?>
                 <li class="nav-item"> <a class="nav-link" href="<?php echo e(url('categories/category-create')); ?>"> Create Category </a></li>
                 <?php endif; ?>
 
@@ -507,7 +499,7 @@ Admin
                 <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('view referred customers')): ?>
                 <li class="nav-item"><a class="nav-link  <?php echo e(Request::is('referred_customers*') ? 'active' : ''); ?>" href="<?php echo e(route('referred_customers.index')); ?>">Reffered By</a></li>
                 <?php endif; ?>
-                
+
               </ul>
 
             </div>

@@ -309,10 +309,11 @@ color:#FFF !important;
                             <div class="card-body">
 
                                 <h4 class="card-title">Job Notes</h4>
-
                                   
 
+                                @can('calendar view job notes')
                                 <div id="jsGrid"></div>
+                                @endcan
 
                             </div>
 
@@ -482,10 +483,12 @@ color:#FFF !important;
 
                             <div class="row last-three-btns  last-three-btns-mobile" style="margin-top: 10px;">
 
+                            
                                 <div class="col-lg-12 col-md-12 col-sm-12 ipad-pro">
 
                                     <ul>
 
+                                    @can('calendar update booking status')
                                         <li>
 
                                           
@@ -507,7 +510,9 @@ color:#FFF !important;
                                        
 
                                         </li>
+                                        @endcan
 
+                                        @can('calendar view invoice')
                                         <li>
 
                                         
@@ -515,16 +520,21 @@ color:#FFF !important;
                                         <a target="_blank" href="{{url('view-booking',$booking_detail['id'])}}"><button class="btn"><i class="fas fa-eye btn-icon-prepend"></i> View Invoice</button></a>
 
                                         </li>
+                                        @endcan
 
+                                        @can('calendar update booking')
                                         <li>
 
                                         <a href="{{url('service-bookings/edit',$booking_detail['id'])}}"><button class="btn"><i class="fas fa-redo btn-icon-prepend"></i> Reschedule booking</button></a>
 
                                         </li>
+                                        @endcan
 
                                     </ul>
 
                                 </div>
+
+
 
                             </div>
 

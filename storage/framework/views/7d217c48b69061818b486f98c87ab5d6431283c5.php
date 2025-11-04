@@ -121,7 +121,54 @@
 }
 
 
+/* css for cancel modal  */
+#cancel-modal{
 
+      
+
+z-index: 10;
+
+position: absolute;
+
+margin-left: auto;
+
+margin-right: auto;
+
+margin-top: auto;
+
+margin-bottom: auto;
+
+width: 40%;
+
+padding-top: 0 !important;
+
+
+
+}
+
+#cancel-modal .modal-content{
+
+border:1px solid #392c70;
+
+}
+
+#cancel-modal .modal-header{
+
+padding:0;
+
+background-color: #392c70;
+
+color: #fff;
+
+}
+
+#cancel-modal .modal-header #modal-close{
+
+margin-right:10px !important;
+
+color:#FFF !important;
+
+}
 </style>
 
 
@@ -172,11 +219,9 @@
 
                 <div class="row">
 
-                    <div class="col-md-12">
+                    <div class="col-md-6">
 
-                    <a href=" {{ url('/service-bookings/edit',$booking_detail['id']) }}" class="btn btn-primary mb-2">Edit Booking</a>
-
-                        <div class="card our-card" style="background: #b1b1b112; padding: 0; margin: 0;">
+                        <div class="card our-card" style="background: #b1b1b112; padding: 0; height: 247px; margin: 0;">
 
                             <div class="card-body our-card-body">
 
@@ -196,13 +241,11 @@
 
                                 </div>
 
-
-
-                                <div class="row">
+                                <div class="row mt-2">
 
                                     <div class="col-6">
 
-                                        <b>Price:</b> <span class="customer-data"><?php echo $booking_detail['total_price']; ?> $</span>
+                                        <b>E-Mail:</b> <span class="customer-data"><?php echo ($booking_detail['customer_email']!="")?$booking_detail['customer_email']:'Not Available'; ?></span>
 
                                     </div>
 
@@ -214,161 +257,69 @@
 
                                 </div>
 
-                                <div class="row">
+                                <div class="row mt-2">
 
                                     <div class="col-6">
 
-                                        <b>Comments:</b> <span class="customer-data"><?php echo $booking_detail['comments']; ?></span>
+                                        <b>Price:</b> <span class="customer-data">$<?php echo $booking_detail['total_price']; ?> </span>
 
                                     </div>
 
                                     <div class="col-6">
-
-                                        <!-- <b>Payment Days:</b> <span class="customer-data"><?php echo $booking_detail['payment_days']; ?></span>
-
-                                        </div> -->
-
-                                    </div>
-
-                                <div class="row">
-
-                                    <div class="col-12">
-
-                                        <b>E-Mail:</b> <span class="customer-data"><?php echo ($booking_detail['customer_email']!="")?$booking_detail['customer_email']:'Not Available'; ?></span>
-
-                                    </div>
-
-                                    </div>
-
-                                 
-
-                                <div class="row">
-
-                                    <div class="col-12">
 
                                         <b>Services:</b> <span class="customer-data"><?php echo $booking_detail['services']; ?></span>
 
                                     </div>
 
+
                                 </div>
 
-                                <div class="row">
+                                <div class="row mt-2">
 
                                     <div class="col-12">
 
-                                        <b>Customer Address:</b> <span class="customer-data"><?php echo $booking_detail['customer_address']; ?></span>
+                                        <b>Comments:</b> <span class="customer-data"><?php echo $booking_detail['comments']; ?></span>
 
                                     </div>
 
                                 </div>
 
+                                 
+
+
+
                             </div>
 
                         </div>
-
-
-
-                        <!-- <div class="card our-card" style="background: #b1b1b12e; margin-top: 10px; height: 80px;">
-
-                            <center><b style="margin-right: 20px;">Job History</b></center>
-
-
-
-                            <table class="table table-bordered table-responsive">
-
-                                <tr>
-
-                                    <th>
-
-                                        Due Date
-
-                                    </th>
-
-                                    <th>
-
-                                        services
-
-                                    </th>
-
-                                    <th>
-
-                                        Comment
-
-                                    </th>
-
-                                    <th>
-
-                                        Price
-
-                                    </th>
-
-                                </tr>
-
-                                <?php  foreach($alljobs_customer as $alljobs){ ?>
-
-                                    <tr>
-
-                                        <td>
-
-                                        <?php echo $alljobs->due_date ?>
-
-                                        </td>
-
-                                        <td>
-
-                                        <?php foreach($customerjobs_services[$alljobs->id] as $jobs) { echo ' '.$jobs.' , '; } ?>
-
-                                        </td>
-
-                                        <td>
-
-                                        <?php echo $alljobs->comment ?>
-
-                                        </td>
-
-                                        <td>
-
-                                        <?php echo $alljobs->total_price ?>
-
-                                        </td>
-
-                                    </tr>
-
-                                    <?php } ?>
-
-
-
-                            </table>
-
-                        </div> -->
 
                     </div>
 
                     <div class="popup">
 
-                        <button type="button" class="close" style="color:white;" onclick="hide_image();"><span aria-hidden="true">&times;</span></button>
+                    <button type="button" class="close" style="color:white;" onclick="hide_image();"><span aria-hidden="true">&times;</span></button>
 
                         <img src="" alt="" onclick="hide_image();"/>
 
                     </div>  
 
-                    <!-- <div class="col-lg-6">
+                    <div class="col-lg-6">
 
                         <div class="card">
 
                             <div class="card-body">
 
                                 <h4 class="card-title">Job Notes</h4>
-
                                   
 
+                                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('calendar view job notes')): ?>
                                 <div id="jsGrid"></div>
+                                <?php endif; ?>
 
                             </div>
 
                         </div>
 
-                    </div> -->
+                    </div>
 
                 </div>
 
@@ -378,11 +329,13 @@
 
                 <div class="row">
 
-                    <!-- <div class="col-lg-6 our-grid-margin our-map section">
+                    <div class="col-lg-6 our-grid-margin our-map section">
 
-                        <div class="card our-card">
+                        <!-- <div class="card our-card">
 
                             <div class="card-body our-card-body">
+
+                                <h6 class="card-title our-card-title">Map</h6>
 
                                 <div class="job-map-container">
 
@@ -404,11 +357,97 @@
 
                             </div>
 
+                        </div> -->
+
+                        <div class="card our-card" style="background: #b1b1b12e; height: 237px;">
+
+                        <center><b style="margin-right: 20px;">Customer History</b></center>
+
+
+
+                        <table class="table table-bordered table-responsive">
+
+                            <tr>
+
+                                <th>
+
+                                    Employee Name
+
+                                </th>
+
+                                <th>
+
+                                    Due Date
+
+                                </th>
+
+                                <th>
+
+                                    services
+
+                                </th>
+
+                                <th>
+
+                                    Comment
+
+                                </th>
+
+                                <th>
+
+                                    Price
+
+                                </th>
+
+                            </tr>
+
+                            <?php  foreach($alljobs_customer as $alljobs){ ?>
+
+                                <tr>
+
+                                    <td>
+
+                                    <?php echo $alljobs->user->name; ?>
+
+                                    </td>
+
+                                    <td>
+
+                                    <?php echo $alljobs->due_date ?>
+
+                                    </td>
+
+                                    <td>
+
+                                    <?php foreach($customerjobs_services[$alljobs->id] as $jobs) { echo ' '.$jobs.' , '; } ?>
+
+                                    </td>
+
+                                    <td>
+
+                                    <?php echo $alljobs->comment ?>
+
+                                    </td>
+
+                                    <td>
+
+                                    <?php echo $alljobs->total_price ?>
+
+                                    </td>
+
+                                </tr>
+
+                                <?php } ?>
+
+
+
+                        </table>
+
                         </div>
 
-                    </div>  -->
+                    </div> 
 
-                    <!-- <div class="col-md-6 our-grid-margin first-two-btns paid-cash-section-desktop paid-cash-section-ipad paid-cash-section-mobile">
+                    <div class="col-md-6 our-grid-margin first-two-btns paid-cash-section-desktop paid-cash-section-ipad paid-cash-section-mobile">
 
                         <div class="card our-card" style="background: #b1b1b112;">
 
@@ -418,7 +457,7 @@
 
                                     <p style="padding-top: 0;"><?php if($booking_detail['payment_instrument']!=""){ ?>Paid by <?php echo $booking_detail['payment_instrument']; } else{ echo "Payment is Pending"; } ?></p>
 
-                                    <div style="text-align: center; margin-bottom: 10px;">
+                                    <!-- <div style="text-align: center; margin-bottom: 10px;">
 
                                     <?php if($booking_detail['customer_email']!=""){ ?>
 
@@ -430,13 +469,13 @@
 
                                    <?php } ?>
 
-                                    </div>
+                                    </div> -->
 
-                                    <div style="text-align: center;">
+                                    <!-- <div style="text-align: center;">
 
                                      <button class="btn first-two-btns" onclick="sendReviewSms('<?php echo $booking_detail['customer_mobile']; ?>');"><i class="fa fa-envelope"></i> SMS customers Review request</button>
 
-                                    </div>
+                                    </div> -->
 
                                 </div>
 
@@ -444,10 +483,12 @@
 
                             <div class="row last-three-btns  last-three-btns-mobile" style="margin-top: 10px;">
 
+                            
                                 <div class="col-lg-12 col-md-12 col-sm-12 ipad-pro">
 
                                     <ul>
 
+                                    <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('calendar update booking status')): ?>
                                         <li>
 
                                           
@@ -456,43 +497,50 @@
 
                                            <select style="background-color:#004cd6;color: #fff;width: 100px;
 
-                                           height: 38px;" class="form-control form-control-sm" id="change-status" data-booking_id="{{$booking_detail['id']}}" onchange="changeBookingStatus(this);">
+                                           height: 38px;" class="form-control form-control-sm" id="change-status" data-booking_id="<?php echo e($booking_detail['id']); ?>" onchange="changeBookingStatus(this);">
 
-                                            @foreach($status as $statusKey => $check)
+                                            <?php $__currentLoopData = $status; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $statusKey => $check): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
 
-                                                <option value="{{$statusKey}}" @if($statusKey == $booking_detail['service_status']) selected @endif >{{$check}}</option>
+                                                <option value="<?php echo e($statusKey); ?>" <?php if($statusKey == $booking_detail['service_status']): ?> selected <?php endif; ?> ><?php echo e($check); ?></option>
 
-                                            @endforeach
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
                                             </select>
 
                                        
 
                                         </li>
+                                        <?php endif; ?>
 
+                                        <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('calendar view invoice')): ?>
                                         <li>
 
                                         
 
-                                        <a target="_blank" href="{{url('view-booking',$booking_detail['id'])}}"><button class="btn"><i class="fas fa-eye btn-icon-prepend"></i> View Invoice</button></a>
+                                        <a target="_blank" href="<?php echo e(url('view-booking',$booking_detail['id'])); ?>"><button class="btn"><i class="fas fa-eye btn-icon-prepend"></i> View Invoice</button></a>
 
                                         </li>
+                                        <?php endif; ?>
 
+                                        <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('calendar update booking')): ?>
                                         <li>
 
-                                        <a href="{{url('service-bookings/edit',$booking_detail['id'])}}"><button class="btn"><i class="fas fa-redo btn-icon-prepend"></i> Reschedule booking</button></a>
+                                        <a href="<?php echo e(url('service-bookings/edit',$booking_detail['id'])); ?>"><button class="btn"><i class="fas fa-redo btn-icon-prepend"></i> Reschedule booking</button></a>
 
                                         </li>
+                                        <?php endif; ?>
 
                                     </ul>
 
                                 </div>
 
+
+
                             </div>
 
                         </div>
 
-                    </div> -->
+                    </div>
 
                 </div>
 
@@ -503,6 +551,34 @@
     </div>
 
 </div>
+
+    <!-- Cancel Modal -->
+    <div class="modal fade" id="cancel-modal" tabindex="-1" role="dialog" aria-labelledby="CancelModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="CancelModalLabel">Cancel Booking</h5>
+                    <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button> -->
+                </div>
+                <form id="cancel-form" method="POST" action="<?php echo e(route('service-bookings.cancel')); ?>">
+                    <?php echo csrf_field(); ?>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="cancel-reason">Reason for Cancellation</label>
+                            <textarea class="form-control" id="cancel-reason" name="reason" required></textarea>
+                        </div>
+                        <input type="hidden" id="cancel-booking-id" name="booking_id">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light" id="cancel-modal-close">Close</button>
+                        <input type="submit" class="btn btn-danger" value="Submit Cancellation">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
 <div class="modal fade " id="payment-modal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
 
@@ -536,15 +612,15 @@
 
                         <option value="cash">Cash</option>
 
-                        <option value="card">Card</option>
-
                         <option value="paypal">PayPal</option>
+
+                        <!-- <option value="card">Card</option>
 
                         <option value="invoice">Invoice</option>
 
                         <option value="cheque">Cheque</option>
 
-                        <option value="bacs">BACS</option>
+                        <option value="bacs">BACS</option> -->
 
                     </select>
 
@@ -572,7 +648,7 @@
 
             </div>
 
-            @csrf
+            <?php echo csrf_field(); ?>
 
         </form>
 
@@ -746,7 +822,7 @@ $( document ).ajaxStop(function() {
 
             var formData = new FormData();
 
-            formData.append("_token", "{{ csrf_token() }}");
+            formData.append("_token", "<?php echo e(csrf_token()); ?>");
 
             formData.append("id", "<?php echo $booking_detail['id'];?>",);
 
@@ -766,7 +842,7 @@ $( document ).ajaxStop(function() {
 
                 type: "POST",
 
-                url: "{{route('add-job-notes.store')}}",
+                url: "<?php echo e(route('add-job-notes.store')); ?>",
 
                 data: formData,
 
@@ -788,7 +864,7 @@ $( document ).ajaxStop(function() {
 
             var formData = new FormData();
 
-            formData.append("_token", "{{ csrf_token() }}");
+            formData.append("_token", "<?php echo e(csrf_token()); ?>");
 
             formData.append("booking_id", "<?php echo $booking_detail['id'];?>",);
 
@@ -862,7 +938,7 @@ $( document ).ajaxStop(function() {
 
             $.ajax({
 
-                url: "{{url('change-booking-status')}}",
+                url: "<?php echo e(url('change-booking-status')); ?>",
 
                 type: "POST",
 
@@ -895,6 +971,12 @@ $( document ).ajaxStop(function() {
 $( "#payement-modal-close" ).click(function() {
 
     $("#payment-modal").modal('hide');
+
+});
+
+$( "#cancel-modal-close" ).click(function() {
+
+    $("#cancel-modal").modal('hide');
 
 });
 
@@ -948,9 +1030,10 @@ $( "#modal-close" ).click(function() {
 
             return false;
 
-        }
-
-        else{
+        }  else if(status_value == 4) {
+                    $("#cancel-modal").modal('show');
+                    $('#cancel-booking-id').val(booking_id);
+                } else {
 
 
 
@@ -958,9 +1041,9 @@ $( "#modal-close" ).click(function() {
 
             type: "POST",
 
-            url:"{{url('booking-status')}}",
+            url:"<?php echo e(url('booking-status')); ?>",
 
-            data: { id: booking_id,service_status: status_value,_token: "{{ csrf_token() }}"  },
+            data: { id: booking_id,service_status: status_value,_token: "<?php echo e(csrf_token()); ?>"  },
 
             success: function(response) {
 
@@ -1062,7 +1145,7 @@ $( "#modal-close" ).click(function() {
 
             url:"invoice-sms/",
 
-            data: { invoice: invoice,phone: phone,_token: "{{ csrf_token() }}"},
+            data: { invoice: invoice,phone: phone,_token: "<?php echo e(csrf_token()); ?>"},
 
             success: function(response) {
 
@@ -1096,3 +1179,4 @@ function hide_image(){
 
 </script>
 
+<?php /**PATH D:\Working\Code Disk\works fahd\beauty-salon\resources\views/service_bookings/job_detail.blade.php ENDPATH**/ ?>

@@ -109,102 +109,25 @@
 
 
 
-<div class="alert alert-success alert-dismissible">
+            <div class="alert alert-success alert-dismissible">
 
 
 
-    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
 
 
 
-    {{Session::get('success')}}
+                {{Session::get('success')}}
 
 
 
-</div>
+            </div>
 
-@endif
+        @endif
 
      
 
         </div>
-
-        @if(auth()->user()->company_id == 1)
-
-        <div class="row">
-
-            <div class="col-md-6 grid-margin">
-
-                <div class="card">
-
-                    <div class="card-body">
-
-                        <h4 class="card-title mb-0">Active Company</h4>
-
-                        <div class="d-flex justify-content-between align-items-center">
-
-                            <div class="d-inline-block pt-3">
-
-                                <div class="d-md-flex">
-
-                                    <h2 class="mb-0">{{$active_company}}</h2>
-
-                                </div>
-
-                            </div>
-
-                            <div class="d-inline-block">
-
-                                <i class="fa fa-user-plus text-info icon-lg"></i>                                    
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-            <div class="col-md-6 grid-margin">
-
-                <div class="card">
-
-                    <div class="card-body">
-
-                        <h4 class="card-title mb-0">In-Active Company</h4>
-
-                        <div class="d-flex justify-content-between align-items-center">
-
-                            <div class="d-inline-block pt-3">
-
-                                <div class="d-md-flex">                                    
-
-                                    <h2 class="mb-0">{{$inactive_company}}</h2>
-
-                                </div>
-
-                            </div>
-
-                            <div class="d-inline-block">
-
-                                <i class="fa fa-user-times text-danger icon-lg"></i>                                    
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        @else
-
 
 
         <div class="row">
@@ -215,11 +138,8 @@
 
 
 
-                @if(auth()->user()->role_id == 1)
-
-
-
-                <!-- <div class="form-group col-md-3">
+            @role('admin')
+                <div class="form-group col-md-3">
 
 
 
@@ -251,20 +171,25 @@
 
 
 
-                </div> -->
-
-
-
-                @endif
+                </div>
+            @endrole
 
 
 
                 <div class="card">
 
-                    <?php $permvalue = 'no'; 
 
+                    <?php 
+                        $permvalue = 'no'; 
                     ?>
 
+                    @can('calendar create booking')
+                    <?php 
+                        $permvalue = 'yes'; 
+                    ?>
+                    @endcan
+
+                    @can('view calendar')
                     <div class="card-body">
 
                     <input type="hidden" id="creat-booking-perm" value="{{$permvalue}}">
@@ -278,6 +203,7 @@
 
 
                     </div>
+                    @endcan
 
 
 
@@ -290,10 +216,6 @@
 
 
         </div>
-
-
-
-        @endif
 
 
 

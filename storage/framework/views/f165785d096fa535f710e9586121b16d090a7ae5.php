@@ -109,103 +109,26 @@
 
 
 
-<div class="alert alert-success alert-dismissible">
+            <div class="alert alert-success alert-dismissible">
 
 
 
-    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
 
 
 
-    <?php echo e(Session::get('success')); ?>
+                <?php echo e(Session::get('success')); ?>
 
 
 
 
-</div>
+            </div>
 
-<?php endif; ?>
+        <?php endif; ?>
 
      
 
         </div>
-
-        <?php if(auth()->user()->company_id == 1): ?>
-
-        <div class="row">
-
-            <div class="col-md-6 grid-margin">
-
-                <div class="card">
-
-                    <div class="card-body">
-
-                        <h4 class="card-title mb-0">Active Company</h4>
-
-                        <div class="d-flex justify-content-between align-items-center">
-
-                            <div class="d-inline-block pt-3">
-
-                                <div class="d-md-flex">
-
-                                    <h2 class="mb-0"><?php echo e($active_company); ?></h2>
-
-                                </div>
-
-                            </div>
-
-                            <div class="d-inline-block">
-
-                                <i class="fa fa-user-plus text-info icon-lg"></i>                                    
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-            <div class="col-md-6 grid-margin">
-
-                <div class="card">
-
-                    <div class="card-body">
-
-                        <h4 class="card-title mb-0">In-Active Company</h4>
-
-                        <div class="d-flex justify-content-between align-items-center">
-
-                            <div class="d-inline-block pt-3">
-
-                                <div class="d-md-flex">                                    
-
-                                    <h2 class="mb-0"><?php echo e($inactive_company); ?></h2>
-
-                                </div>
-
-                            </div>
-
-                            <div class="d-inline-block">
-
-                                <i class="fa fa-user-times text-danger icon-lg"></i>                                    
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <?php else: ?>
-
 
 
         <div class="row">
@@ -216,11 +139,8 @@
 
 
 
-                <?php if(auth()->user()->role_id == 1): ?>
-
-
-
-                <!-- <div class="form-group col-md-3">
+            <?php if (\Illuminate\Support\Facades\Blade::check('role', 'admin')): ?>
+                <div class="form-group col-md-3">
 
 
 
@@ -252,21 +172,28 @@
 
 
 
-                </div> -->
-
-
-
-                <?php endif; ?>
+                </div>
+            <?php endif; ?>
 
 
 
                 <div class="card">
 
-                    <?php $permvalue = 'no'; 
 
+                    <?php 
+                        $permvalue = 'no'; 
                     ?>
 
+                    <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('calendar create booking')): ?>
+                    <?php 
+                        $permvalue = 'yes'; 
+                    ?>
+                    <?php endif; ?>
+
+                    <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('view calendar')): ?>
                     <div class="card-body">
+
+                    
 
                     <input type="hidden" id="creat-booking-perm" value="<?php echo e($permvalue); ?>">
 
@@ -279,6 +206,7 @@
 
 
                     </div>
+                    <?php endif; ?>
 
 
 
@@ -291,10 +219,6 @@
 
 
         </div>
-
-
-
-        <?php endif; ?>
 
 
 

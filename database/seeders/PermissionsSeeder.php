@@ -10,6 +10,12 @@ class PermissionsSeeder extends Seeder
     public function run(): void
     {
         $permissions = [
+            // dashboard
+            'view calendar',
+
+            // dashboard bookings
+            'calendar create booking', 'calendar view job notes', 'calendar update booking status', 'calendar view invoice', 'calendar update booking',
+
             // Category
             'view categories', 'create categories', 'edit categories', 'delete categories',
 
