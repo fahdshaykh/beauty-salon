@@ -1,30 +1,19 @@
 <?php
 
+namespace App\Http\Controllers\Admin;
 
-
-namespace App\Http\Controllers;
-
-
-
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use App\Company;
 use App\Models\Permission;
 use App\Models\Role;
 use App\User;
-
-use Illuminate\Http\Request;
-
 use Hash;
-
 use DB;
-
 use Mail;
 
-
-
 class CompanyController extends Controller
-
 {
-
     /**
 
      * Display a listing of the resource.
@@ -53,7 +42,7 @@ class CompanyController extends Controller
 
         // dd($companies);
 
-        return view('companies.index',compact('companies'));
+        return view('admin.companies.index',compact('companies'));
 
     }
 
@@ -73,7 +62,7 @@ class CompanyController extends Controller
 
     {
 
-        return view('companies.create');
+        return view('admin.companies.create');
 
     }
 
@@ -188,28 +177,28 @@ class CompanyController extends Controller
         $user->save();
 
 
-// CREATE ADMIN ROLE (per company)
-$role = Role::firstOrCreate([
-    'name' => 'admin',
-    'guard_name' => 'web',
-    'company_id' => $company->id,
-]);
+        // CREATE ADMIN ROLE (per company)
+        $role = Role::firstOrCreate([
+            'name' => 'admin',
+            'guard_name' => 'web',
+            'company_id' => $company->id,
+        ]);
 
-// GIVE ALL PERMISSIONS
-$permissions = Permission::all();
-$role->syncPermissions($permissions);
+        // GIVE ALL PERMISSIONS
+        $permissions = Permission::all();
+        $role->syncPermissions($permissions);
 
-// CRITICAL: Set team context
-app(\Spatie\Permission\PermissionRegistrar::class)->setPermissionsTeamId($company_id);
+        // CRITICAL: Set team context
+        app(\Spatie\Permission\PermissionRegistrar::class)->setPermissionsTeamId($company_id);
 
-// NOW ASSIGN ROLE
-$user->assignRole($role); // This will insert company_id in pivot
+        // NOW ASSIGN ROLE
+        $user->assignRole($role); // This will insert company_id in pivot
 
-        
+                
 
-$message_permission = $request->input('message_permission') ? $request->input('message_permission') : 0;
+        $message_permission = $request->input('message_permission') ? $request->input('message_permission') : 0;
 
-$email_permission   = $request->input('email_permission') ? $request->input('email_permission') : 0;
+        $email_permission   = $request->input('email_permission') ? $request->input('email_permission') : 0;
 
         DB::table('company_settings')->insert([
 
@@ -319,7 +308,7 @@ $email_permission   = $request->input('email_permission') ? $request->input('ema
 
 
 
-        return redirect('companies')->with('success','Company created successfully');
+        return redirect()->route('admin.companies.index')->with('success','Company created successfully');
 
     }
 
@@ -449,8 +438,6 @@ $email_permission   = $request->input('email_permission') ? $request->input('ema
 
         ->where('companies.id',$company->id)
 
-        ->where('users.role_id',1)
-
         ->get();
 
        
@@ -459,7 +446,7 @@ $email_permission   = $request->input('email_permission') ? $request->input('ema
 
         // dd($message_permission[0]->permission);
 
-        return view('companies.edit',compact('company_detail'));
+        return view('admin.companies.edit',compact('company_detail'));
 
     }
 
@@ -485,7 +472,7 @@ $email_permission   = $request->input('email_permission') ? $request->input('ema
 
   
 
-        $result =  DB::table('users')->select('id')->where('company_id', $company->id)->where('role_id', 1)->first(); 
+        $result =  DB::table('users')->select('id')->where('company_id', $company->id)->first(); 
 
         $this->validate($request, 
 
@@ -571,7 +558,7 @@ $email_permission   = $request->input('email_permission') ? $request->input('ema
 
         // print_r($user_data);exit;
 
-        DB::table('users')->where('company_id', $company->id)->where('role_id', 1)->update($user_data);
+        DB::table('users')->where('company_id', $company->id)->update($user_data);
 
 
 
@@ -607,7 +594,7 @@ $email_permission   = $request->input('email_permission') ? $request->input('ema
 
         ]);
 
-        return redirect('companies')->with('update', 'Renter Information Updated successfully');
+        return redirect()->route('admin.companies.index')->with('update', 'Renter Information Updated successfully');
 
     }
 
@@ -646,6 +633,4 @@ $email_permission   = $request->input('email_permission') ? $request->input('ema
         return back()->with('destroy','Company deleted successfully!');
 
     }
-
 }
-

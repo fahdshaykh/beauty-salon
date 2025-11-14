@@ -460,7 +460,7 @@ input:checked+.slider:before {
 
 
                         @can('create awards')
-                            <a href="{{ route('awards.create') }}" class="btn btn-primary btn-sm">Add Award fade</a>
+                            <a href="{{ route('awards.create') }}" class="btn btn-primary btn-sm">Add Award</a>
                         @endcan
 
 

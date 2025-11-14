@@ -151,15 +151,15 @@
 
 
 
-                        <option value="{{auth()->user()->company_id}}">All Bookings</option>
+                        <option value="0">All Bookings</option>
 
 
 
-                        @foreach($users as $customer)
+                        @foreach($users as $user)
 
 
 
-                        <option value="{{$customer->id}}">{{$customer->name}}</option>
+                        <option value="{{$user->id}}">{{$user->name}}</option>
 
 
 

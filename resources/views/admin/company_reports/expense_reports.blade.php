@@ -6,15 +6,14 @@
 
 
 
-        <?php $expense_report_array = array(5,6); ?>
 
-        <?php $expense_report_link = implode(',', $expense_report_array); ?>
-
-        <?php $total_amount = 0; ?>
 
         @foreach($expense_report as $expense)
 
-        <?php $total_amount = $total_amount + $expense->amount; ?>
+        <?php
+            $total_amount = 0; 
+            $total_amount = $total_amount + $expense->amount; 
+        ?>
 
         @endforeach
 
@@ -51,7 +50,7 @@
 
                       <div style="text-align:center">
 
-                          <p>Grand Total: <i class="fas fa-dollar-sign"></i>{{$total_amount}}</p>
+                          <p>Grand Total: <i class="fas fa-dollar-sign"></i>{{ $total_amount ?? 0}}</p>
 
                       </div>
 

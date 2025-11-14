@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('admin.layouts.admin')
 
 
 
@@ -146,7 +146,7 @@ input:checked+.slider:before {
 
                 <ol class="breadcrumb">
 
-                    <li class="breadcrumb-item"><a href="{{route('companies.index')}}">Companies</a></li>
+                    <li class="breadcrumb-item"><a href="{{route('admin.companies.index')}}">Companies</a></li>
 
                     <li class="breadcrumb-item active" aria-current="page">Company Listing</li>
 
@@ -288,7 +288,7 @@ input:checked+.slider:before {
 
                                         <td>
 
-                                            <a href="{{route('companies.edit',$company->id)}}">
+                                            <a href="{{route('admin.companies.edit',$company->id)}}">
 
                                                 <i class="fas fa-pencil-alt text-primary" aria-hidden="true"></i>
 

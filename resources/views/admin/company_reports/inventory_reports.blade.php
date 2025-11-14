@@ -1,19 +1,5 @@
 
 
-
-
-        
-
-
-
-        <?php $expense_report_array = array(5,6); ?>
-
-        <?php $expense_report_link = implode(',', $expense_report_array); ?>
-
-
-
-
-
         <div class="card">
 
             <div class="card-body">

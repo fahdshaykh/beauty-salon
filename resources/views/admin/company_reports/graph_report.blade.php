@@ -8,7 +8,7 @@
 
 @stop
 
-@extends('layouts.admin')
+@extends('admin.layouts.admin')
 
 
 

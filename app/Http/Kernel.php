@@ -129,6 +129,8 @@ class Kernel extends HttpKernel
         // 'company' => \App\Http\Middleware\Company::class,
         'company' => \App\Http\Middleware\SetCurrentCompany::class,
 
+        'admin' => \App\Http\Middleware\AdminAuth::class,
+
         // 'role' => \Spatie\Permission\Middlewares\RoleMiddleware::class,
         // 'permission' => \Spatie\Permission\Middlewares\PermissionMiddleware::class,
         // 'role_or_permission' => \Spatie\Permission\Middlewares\RoleOrPermissionMiddleware::class,

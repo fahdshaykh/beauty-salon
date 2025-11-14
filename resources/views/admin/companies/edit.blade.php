@@ -10,7 +10,7 @@
 
 
 
-@extends('layouts.admin')
+@extends('admin.layouts.admin')
 
 
 
@@ -96,7 +96,7 @@
 
                         <h4 class="card-title">Update Company Information</h4>
 
-                        <form class="forms-sample" action="{{route('companies.update',$company_detail['0']->company_id)}}" method="post">
+                        <form class="forms-sample" action="{{route('admin.companies.update',$company_detail['0']->company_id)}}" method="post">
 
                             @csrf
 
@@ -280,7 +280,7 @@
 
                             <button type="submit" id="add-company" class="btn btn-primary mr-2">Update Company</button>
 
-                            <a class="btn btn-light" href="{{route('companies.index')}}">Cancel</a>
+                            <a class="btn btn-light" href="{{route('admin.companies.index')}}">Cancel</a>
 
                         </form>
 

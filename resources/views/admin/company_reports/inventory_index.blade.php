@@ -18,7 +18,7 @@
 
 
 
-@extends('layouts.admin')
+@extends('admin.layouts.admin')
 
 
 
@@ -154,7 +154,7 @@
 
 
 
-                <form class="form-inline" action="{{url('record/expense')}}" method="get" id="expense-filters">
+                <form class="form-inline" action="{{url('record/expense')}}" method="get" id="inventory-filters">
 
 
 
@@ -258,39 +258,7 @@
 
 
 
-                    <div class="form-group">
-
-
-
-                      <select id="payment_method" name="payment_method" class="form-control js-example-basic-single w-100" style="width:100%">
-
-
-
-                        <option value="no" selected>Select Payment Method</option>
-
-
-
-                        @foreach($payment_methods as $payment_method)
-
-
-
-                            <option value="{{$payment_method->id}}">{{$payment_method->method}}</option>
-
-
-
-                        @endforeach
-
-
-
-                      </select>
-
-
-
-                    </div>
-
-
-
-                    <button type="submit" value="submit" class="btn btn-primary mb-2">Submit</button>
+                    <button type="submit" value="submit" class="btn btn-primary ml-3 mb-2">Submit</button>
 
 
 
@@ -336,17 +304,17 @@
 
   $(document).ready(function(){
 
-    $("#expense-filters").submit(function(event){
+    $("#inventory-filters").submit(function(event){
 
       event.preventDefault();
 
       $.ajax({
 
-          url:"{{url('company/record/expense')}}",
+          url:"{{url('admin/company/record/inventory')}}",
 
           type:"GET",
 
-          data: $('form#expense-filters').serialize(),
+          data: $('form#inventory-filters').serialize(),
 
           success:function(response){
 

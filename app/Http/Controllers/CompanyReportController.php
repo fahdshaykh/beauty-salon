@@ -5,11 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\ServiceBooking;
-
 use App\Services;
-
 use App\Customer;
-
 use App\Expense;
 use App\InventoryRemain;
 use DB;

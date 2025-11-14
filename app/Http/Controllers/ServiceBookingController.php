@@ -791,11 +791,11 @@ class ServiceBookingController extends Controller
 
         $bookings = ServiceBooking::with('customer','user')->where('service_status',"!=",4)->where('company_id', auth()->user()->company_id);
 
-        // if(auth()->user()->role_id != 1){
+        if (! (auth()->user() && auth()->user()->hasRole('admin'))) {
 
-        //     $bookings->where('user_id', auth()->user()->id);
+            $bookings->where('user_id', auth()->user()->id);
 
-        // }
+        }
 
         $data = $bookings->orderBy('created_at', 'desc')->get();
 
@@ -890,11 +890,11 @@ class ServiceBookingController extends Controller
 
         $bookings = ServiceBooking::with('customer','user')->where('service_status',"!=",4)->where('company_id', auth()->user()->company_id);
 
-        // if($user_id != auth()->user()->company_id){
+        if($user_id){
 
-        //     $bookings->where('user_id', $user_id);
+            $bookings->where('user_id', $user_id);
 
-        // }
+        }
 
         $data = $bookings->orderBy('created_at', 'desc')->get();
 
@@ -963,14 +963,17 @@ class ServiceBookingController extends Controller
             }
 
             
-
-            return response()->json($calender_array);
+            $holidays = DB::table('calendar_holidays')->where('company_id',auth()->user()->company_id)->get();
+            return response()->json(['events'=>$calender_array,'holidays'=>$holidays]);
+            // return response()->json($calender_array);
 
         } else {
 
             $calender_array = [];
-
-            return response()->json($calender_array);
+            $holidays = [];
+            return response()->json(['events'=>$calender_array,'holidays'=>$holidays]);
+            // $calender_array = [];
+            // return response()->json($calender_array);
 
         }
 

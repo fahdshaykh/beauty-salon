@@ -20,9 +20,12 @@ class EmployeeAttendanceController extends Controller
             abort(403);
         }
 
-        $users = User::where('company_id', auth()->user()->company_id)
-            ->notCheckedInToday()
-            ->get(['id', 'name']);
+        // $users = User::where('company_id', auth()->user()->company_id)
+        //     ->notCheckedInToday()
+        //     ->get(['id', 'name']);
+        $users = User::activeInCompany()
+                    ->when(!auth()->user()->hasRole('admin'), fn($q) => $q->where('id', auth()->user()->id))
+                    ->get();
 
         return view('employee_attendance.create', compact('users')); // Pass data to the view
     }

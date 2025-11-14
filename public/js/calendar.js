@@ -33,6 +33,18 @@
                     url: base_path,
 
                     success: function(response) {
+                        console.log("Raw response:", response); // DEBUG
+
+                        if (!response || typeof response !== 'object') {
+                            alert("Invalid response from server");
+                            return;
+                        }
+
+                        if (!response.events || !Array.isArray(response.events)) {
+                            console.warn("No events found or invalid format", response);
+                            response.events = [];
+                        }
+
                         var holder = {};
 
                         response.events.forEach(function(d) {

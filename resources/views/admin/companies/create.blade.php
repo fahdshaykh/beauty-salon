@@ -10,8 +10,7 @@
 
 
 
-@extends('layouts.admin')
-
+@extends('admin.layouts.admin')
 
 
 @section('title', 'Create Company | DiaryMaster ')
@@ -96,7 +95,7 @@
 
                         <h4 class="card-title">Company Form</h4>
 
-                        <form class="forms-sample" action="{{route('companies.store')}}" method="post">
+                        <form class="forms-sample" action="{{route('admin.companies.store')}}" method="post">
 
                             @csrf
 
@@ -280,7 +279,7 @@
 
                             <button type="submit" id="add-company" class="btn btn-primary mr-2">Add Company</button>
 
-                            <a class="btn btn-light" href="{{route('companies.index')}}">Cancel</a>
+                            <a class="btn btn-light" href="{{route('admin.companies.index')}}">Cancel</a>
 
                         </form>
 

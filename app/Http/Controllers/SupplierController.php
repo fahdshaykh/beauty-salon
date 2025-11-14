@@ -11,7 +11,7 @@ class SupplierController extends Controller
 {
     public function index(Request $request)
     {
-        if (! (auth()->user() && auth()->user()->can('View suppliers'))) {
+        if (! (auth()->user() && auth()->user()->can('view suppliers'))) {
             abort(403);
         }
 
@@ -102,7 +102,7 @@ class SupplierController extends Controller
 
     public function balanceSummary($supplierId)
     {
-        if (! (auth()->user() && auth()->user()->can('supplier summary '))) {
+        if (! (auth()->user() && auth()->user()->can('supplier summary'))) {
             abort(403);
         }
 
