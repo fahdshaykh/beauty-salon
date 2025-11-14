@@ -568,7 +568,8 @@ input:checked+.slider:before {
 
 
 
-                                    @if($user->role_id !== 1)
+                                        @role('admin')
+        @if($user->id != auth()->id())
 
 
 
@@ -684,7 +685,8 @@ input:checked+.slider:before {
 
 
 
-                                    @endif
+                                            @endif
+    @endrole
 
 
 

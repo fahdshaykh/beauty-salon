@@ -84,8 +84,7 @@
 
           <span class="fas fa-bars"></span>
 
-        </button>
-       
+        </button>       
 
         <ul class="navbar-nav navbar-nav-right">
 
@@ -327,7 +326,7 @@ Admin
 
             <a class="nav-link" data-toggle="collapse" href="#ui-basico" aria-expanded="true" aria-controls="ui-basico">
 
-              <i class="fas fa-briefcase menu-icon"></i>
+              <i class="fas fa-boxes menu-icon"></i>
 
               <span class="menu-title">Inventories</span>
 
@@ -583,17 +582,6 @@ Admin
             @endcan
 
 
-            @can('view awards')
-            <li class="nav-item">
-              <a class="nav-link" href="{{ route('awards.index') }}">
-                <i class="fas fa-bell menu-icon"></i>
-                <span class="menu-title">Awards</span>
-                <i class="menu-arrow"></i>
-              </a>
-            </li>
-            @endcan
-
-
           @role('admin')
           <li class="nav-item {{ Request::is('user*') || Request::is('role*') ? 'active' : '' }}">
 
@@ -633,7 +621,7 @@ Admin
 
             <a class="nav-link" data-toggle="collapse" href="#attendance-pages" aria-expanded="false" aria-controls="attendance-pages">
 
-              <i class="fa fa-cogs menu-icon"></i>
+              <i class="fas fa-clipboard-list menu-icon"></i>
 
               <span class="menu-title">Employee Attendance</span>
 
@@ -697,7 +685,7 @@ Admin
 
             <a class="nav-link" data-toggle="collapse" href="#expenses" aria-expanded="false" aria-controls="expenses">
 
-              <i class="fa fa-minus-square menu-icon"></i>
+              <i class="fas fa-money-bill menu-icon"></i>
 
               <span class="menu-title">Expenses</span>
 
@@ -792,7 +780,7 @@ Admin
 
             <a class="nav-link" data-toggle="collapse" href="#marketing" aria-expanded="false" aria-controls="marketing">
 
-              <i class="fa fa-minus-square menu-icon"></i>
+              <i class="fas fa-bullhorn menu-icon"></i>
 
               <span class="menu-title">Marketing</span>
 
@@ -827,13 +815,21 @@ Admin
 
           
 
-        
+          @can('view awards')
+          <li class="nav-item">
+            <a class="nav-link" href="{{ route('awards.index') }}">
+              <i class="fas fa-trophy menu-icon"></i>
+              <span class="menu-title">Awards</span>
+              <i class="menu-arrow"></i>
+            </a>
+          </li>
+          @endcan
 
       
           @can('view holidays')
           <li class="nav-item">
             <a class="nav-link" href="{{url('/add-holidays')}}" >
-              <i class="fas fa-bell menu-icon"></i>
+              <i class="fas fa-umbrella-beach menu-icon"></i>
               <span class="menu-title">Add Holidays</span>
               <i class="menu-arrow"></i>
             </a>
