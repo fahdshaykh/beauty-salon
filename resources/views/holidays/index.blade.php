@@ -48,19 +48,6 @@
 
         </div>
 
-        @if(Session::has('success'))
-        <div class="alert alert-success alert-dismissible">
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-            {{Session::get('success')}}
-        </div>
-
-        @elseif(Session::has('destroy'))
-        <div class="alert alert-danger alert-dismissible">
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-            {{Session::get('destroy')}}
-        </div>
-        @endif
-
         <div class="row">
 
           <div class="col-md-12 grid-margin stretch-card">
@@ -132,43 +119,91 @@
         <div class="card" id="report">
         <div class="card">
             <div class="card-body">
-                <div class="row grid-margin">
-                    <div class="col-12">
-                        <div class="table-responsive">
-                            <table id="order-listing" class="table">
-                                <thead>
-                                    <tr class="bg-primary text-white">
-                                        <th>Sr </th>
-                                        <th>Start Date</th>
-                                        <th>End Date</th>
-                                        <th>Date range</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php $num = 1; ?>
-                                    @foreach($holidays as $holiday)
-                                    <tr>
-                                    <td>{{$num}}</td>
-                                    <td>{{$holiday->start_date}}</td>
-                                    <td>{{$holiday->end_date}}</td>
-                                    <td>{{$holiday->days}}</td>
-                                    <td><a href="{{url('delete-holidays',$holiday->id)}}">
-                                    <i class="fas fa-trash-alt text-danger" aria-hidden="true"></i>                          
-                                </a></td>
-</tr>
-                                    <?php $num++; ?>
-                                    @endforeach
-                                </tbody>
-                            </table>
+              <!-- Pagination Dropdown -->
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="pagination-dropdown">
+                            <form class="form-inline">
+                                <div class="form-group">
+                                    <label for="rows">Records:&nbsp;</label>
+                                    <select class="form-control" id="rows" name="rows">
+                                        <option value="5" @if($rows == 5) selected @endif > 5 </option>
+                                        <option value="10" @if($rows == 10) selected @endif > 10 </option>
+                                        <option value="20" @if($rows == 20) selected @endif > 20 </option>
+                                        <option value="50" @if($rows == 50) selected @endif > 50 </option>
+                                        <option value="100" @if($rows == 100) selected @endif > 100 </option>
+										                    <option value="500" @if($rows == 500) selected @endif > 500 </option>                        
+                                    </select>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
+
+                <div class="row">
+                  <div class="col-12">
+                      <div class="table-responsive">
+                          <table class="table table-striped">
+                              <thead>
+                                  <tr>
+                                      <th>Sr</th>
+                                      <th>Start Date</th>
+                                      <th>End Date</th>
+                                      <th>Date Range</th>
+                                      <th>Actions</th>
+                                  </tr>
+                              </thead>
+
+                              <tbody>
+                                  <?php $num = 1; ?>
+                                  @foreach($holidays as $holiday)
+                                  <tr>
+                                      <td>{{ $num }}</td>
+                                      <td>{{ $holiday->start_date }}</td>
+                                      <td>{{ $holiday->end_date }}</td>
+                                      <td>{{ $holiday->days }}</td>
+
+                                      <td>
+                                          <a onclick="return confirm('Are you sure to delete?');" 
+                                            href="{{ url('delete-holidays', $holiday->id) }}">
+                                              <i class="fas fa-trash text-danger"></i>
+                                          </a>
+                                      </td>
+                                  </tr>
+                                  <?php $num++; ?>
+                                  @endforeach
+                              </tbody>
+                          </table>
+                      </div>
+                  </div>
+              </div>
+
+
+                <!-- Pagination Links -->
+                <div class="row">
+                    <div class="col-12 mt-4">
+                        <p>Showing {{ $holidays->firstItem() }} to {{ $holidays->lastItem() }} of {{ $holidays->total() }} entries</p>
+                        {{ $holidays->links() }}
+                    </div>
+                </div>
+
             </div>
         </div>
-          </div>
+      </div>
     </div>
 
 </div>
 
 @endsection
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const rowsSelect = document.getElementById('rows');
+
+    if (rowsSelect) {
+        rowsSelect.addEventListener('change', function () {
+            window.location = "{{ url('/add-holidays') }}?rows=" + this.value;
+        });
+    }
+});
+</script>

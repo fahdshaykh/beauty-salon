@@ -323,86 +323,6 @@ input:checked+.slider:before {
         <div class="alert alert-success" style="display:none;" id="status-success"></div>
 
 
-
-
-
-
-
-        @if(Session::has('success'))
-
-
-
-        <div class="alert alert-success alert-dismissible">
-
-
-
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-
-
-
-            {{Session::get('success')}}
-
-
-
-        </div>
-
-
-
-
-
-
-
-        @elseif(Session::has('destroy'))
-
-
-
-        <div class="alert alert-danger alert-dismissible">
-
-
-
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-
-
-
-            {{Session::get('destroy')}}
-
-
-
-        </div>
-
-
-
-        @endif
-
-
-
-
-
-
-
-        @if(Session::has('update'))
-
-
-
-        <div class="alert alert-success alert-dismissible">
-
-
-
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-
-
-
-            {{Session::get('update')}}
-
-
-
-        </div>
-
-
-
-        @endif
-
-
         <div class="card">
 
 
@@ -415,16 +335,18 @@ input:checked+.slider:before {
                 <div class="row">
                     <div class="col-md-3">
                         <div class="pagination-dropdown">
-                            <label for="per_page">Items per page</label>
-                            <form method="GET" action="{{ route('awards.index') }}">
-                                @foreach(request()->except(['page', 'per_page']) as $key => $value)
-                                    <input type="hidden" name="{{ $key }}" value="{{ $value }}">
-                                @endforeach
-                                <select name="per_page" id="per_page" onchange="this.form.submit()" class="form-control">
-                                    @foreach($paginationOptions as $option)
-                                        <option value="{{ $option }}" {{ request('per_page', auth()->user()->getPerPagePreference()) == $option ? 'selected' : '' }}>{{ $option }} per page</option>
-                                    @endforeach
-                                </select>
+                            <form class="form-inline">
+                                <div class="form-group">
+                                    <label for="rows">Records:&nbsp;</label>
+                                    <select class="form-control" id="rows" name="rows">
+                                        <option value="5" @if($rows == 5) selected @endif > 5 </option>
+                                        <option value="10" @if($rows == 10) selected @endif > 10 </option>
+                                        <option value="20" @if($rows == 20) selected @endif > 20 </option>
+                                        <option value="50" @if($rows == 50) selected @endif > 50 </option>
+                                        <option value="100" @if($rows == 100) selected @endif > 100 </option>
+										<option value="500" @if($rows == 500) selected @endif > 500 </option>                        
+                                    </select>
+                                </div>
                             </form>
                         </div>
                     </div>
@@ -518,28 +440,29 @@ input:checked+.slider:before {
                                     <td>{{ $award->date }}</td>
                                     
                                     <td>
-                                        <div class="btn-group align-top">
-
-                                        
-
+                                        <div class="d-flex gap-1">
                                             @can('edit awards')
-                                            <a href="{{route('awards.edit',$award->id)}}" class="btn btn-default">
-                                                    <i class="fas fa-pen" style="font-size:15px;"></i>
+                                            <a href="{{ route('awards.edit', $award->id) }}"
+                                            class="btn btn-sm btn-outline-primary" title="Edit Award">
+                                                <i class="fas fa-pen"></i>
                                             </a>
                                             @endcan
 
                                             @can('delete awards')
-                                            <form method="post" action="{{ route('awards.destroy', $award->id) }}" onsubmit="return confirm('Are You Sure Want To Delete?');">
+                                            <a href="javascript:void(0)"
+                                            onclick="if(confirm('Are You Sure Want To Delete?'))
+                                                        document.getElementById('delete-award-{{ $award->id }}').submit();"
+                                            class="btn btn-sm btn-outline-danger ml-1" title="Delete Award">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </a>
+
+                                            <form id="delete-award-{{ $award->id }}"
+                                                action="{{ route('awards.destroy', $award->id) }}"
+                                                method="POST" style="display:none;">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="btn btn-default">
-                                                    <i class="fas fa-trash-alt" style="font-size:15px; color:red;"></i>
-                                                </button>
                                             </form>
                                             @endcan
-
-                                        
-
                                         </div>
                                     </td>
                                   </tr>
@@ -590,87 +513,14 @@ input:checked+.slider:before {
 
 
 
-
-
-
 <script>
+document.addEventListener('DOMContentLoaded', function () {
+    const rowsSelect = document.getElementById('rows');
 
-
-
-function changeUserStatus(_this, id) {
-
-
-
-
-
-
-
-    var status = $(_this).prop('checked') == true ? 1 : 0;
-
-
-
-    $.ajax({
-
-
-
-        url: "{{url('user-status')}}",
-
-
-
-        type: 'GET',
-
-
-
-        data: {
-
-
-
-            id: id,
-
-
-
-            status: status
-
-
-
-        },
-
-
-
-        success: function(result) {
-
-
-
-            $("#status-success").show();
-
-
-
-            $("#status-success").html(result.success);
-
-
-
-            setTimeout(function() {
-
-
-
-                $("#status-success").hide()
-
-
-
-            }, 3000);
-
-
-
-        }
-
-
-
-    });
-
-
-
-}
-
-
-
+    if (rowsSelect) {
+        rowsSelect.addEventListener('change', function () {
+            window.location = "{{ url('/awards') }}?rows=" + this.value;
+        });
+    }
+});
 </script>

@@ -66,12 +66,13 @@ class CompanySeeder extends Seeder
 
         // 10. Create default work schedule
         DB::table('work_schedules')->insert([
-            ['company_id' => $company_id, 'day' => 'Monday',    'start_time' => '10:00:00', 'end_time' => '19:00:00', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
-            ['company_id' => $company_id, 'day' => 'Tuesday',   'start_time' => '10:00:00', 'end_time' => '19:00:00', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
-            ['company_id' => $company_id, 'day' => 'Wednesday', 'start_time' => '10:00:00', 'end_time' => '19:00:00', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
-            ['company_id' => $company_id, 'day' => 'Thursday',  'start_time' => '10:00:00', 'end_time' => '19:00:00', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
-            ['company_id' => $company_id, 'day' => 'Friday',    'start_time' => '10:00:00', 'end_time' => '19:00:00', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
-            ['company_id' => $company_id, 'day' => 'Saturday',  'start_time' => '09:00:00', 'end_time' => '18:00:00', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['company_id' => $company_id, 'day' => 'Monday',    'start_time' => '09:00:00', 'end_time' => '17:00:00', 'is_active' => 1, 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['company_id' => $company_id, 'day' => 'Tuesday',   'start_time' => '09:00:00', 'end_time' => '17:00:00', 'is_active' => 1, 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['company_id' => $company_id, 'day' => 'Wednesday', 'start_time' => '09:00:00', 'end_time' => '17:00:00', 'is_active' => 1, 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['company_id' => $company_id, 'day' => 'Thursday',  'start_time' => '09:00:00', 'end_time' => '17:00:00', 'is_active' => 1, 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['company_id' => $company_id, 'day' => 'Friday',    'start_time' => '09:00:00', 'end_time' => '17:00:00', 'is_active' => 1, 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['company_id' => $company_id, 'day' => 'Saturday',  'start_time' => '09:00:00', 'end_time' => '17:00:00', 'is_active' => 1, 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['company_id' => $company_id, 'day' => 'Sunday',  'start_time' => '09:00:00', 'end_time' => '17:00:00', 'is_active' => 1, 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
         ]);
 
         // 11. Insert company settings

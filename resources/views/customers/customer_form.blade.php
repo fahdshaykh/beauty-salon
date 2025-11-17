@@ -40,27 +40,6 @@
 
 
 
-@if(Session::has('success'))
-
-
-
-    <div class="alert alert-success alert-dismissible">
-
-
-
-        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-
-
-
-        {{Session::get('success')}}
-
-
-
-    </div>
-
-
-
-@endif
 
 
 
@@ -179,24 +158,30 @@
         </div> -->
 		<div class="form-group row">
 			<label class="col-sm-3 col-form-label">Mobile*</label>
-			<div class="input-group col-sm-9">
-				<div class="input-group-prepend">
-					<select id="tags" name="country_code" class="js-example-basic-single w-100">
+			<div class="col-sm-9">
 
-					@foreach ($countries as $country)
-						
-                    <option value="{{ $country->phone_code }}" 
-                        {{ old('country_code', $customer->country_code ?? '') == $country->phone_code ? 'selected' : '' }}>
-                        +{{ $country->phone_code }}
-                    </option>
+                    <div class="row">
 
-					@endforeach
+                            <div class="col-md-3 input-group-prepend">
+                                <select id="tags" name="country_code" class="js-example-basic-single w-100">
 
-					</select>
-				</div>
+                                @foreach ($countries as $country)
+                                    
+                                <option value="{{ $country->phone_code }}" 
+                                    {{ old('country_code', $customer->country_code ?? '') == $country->phone_code ? 'selected' : '' }}>
+                                    {{ $country->phone_code }}
+                                </option>
+
+                                @endforeach
+
+                                </select>
+                            </div>
 				
-				<input type="text" id="primary_phone" name="primary_phone" minlength="10"  maxlength="14" value="@if(isset($customer->primary_phone)){{$customer->primary_phone}}@else{{old('primary_phone')}}@endif" class="form-control" maxlength="11"  placeholder=""/>
+                            <div class="col-md-9">
+                                <input type="text" id="primary_phone" name="primary_phone" minlength="10"  maxlength="14" value="@if(isset($customer->primary_phone)){{$customer->primary_phone}}@else{{old('primary_phone')}}@endif" class="form-control" maxlength="11"  placeholder=""/>
+                            </div>
 
+                    </div>
 			</div>
 		</div>
 
@@ -206,35 +191,20 @@
 
 
 
+
+
+
     <div class="col-md-6">
-
-
-
         <div class="form-group row">
-
-
-
             <label class="col-sm-3 col-form-label">Date Of Birth</label>
-
-
-
-            <div class="col-sm-9">
-
-
-                <input type="date" name="date_of_birth" value="@if(isset($customer->date_of_birth)){{$customer->date_of_birth}}@else{{ old('date_of_birth')}}@endif" class="form-control"   placeholder="" />
-
-
-
+            <div id="datepicker-popup-new" class="col-sm-9 input-group date datepicker">
+                <input type="text"name="date_of_birth" value="@if(isset($customer->date_of_birth)){{$customer->date_of_birth}}@else{{ old('date_of_birth')}}@endif" class="form-control" required>
+                <span class="input-group-addon input-group-append border-left">
+                    <span class="far fa-calendar input-group-text"></span>
+                </span>
             </div>
-
-
-
         </div>
-
-
-
     </div>
-
 
 
 </div>

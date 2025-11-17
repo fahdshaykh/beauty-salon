@@ -40,7 +40,7 @@ class PermissionsSeeder extends Seeder
             'import customers', 'export customers',
 
             // Bookings
-            'view bookings', 'create bookings', 'edit bookings', 'delete bookings', 'view invoices',
+            'view bookings', 'create bookings', 'edit bookings', 'delete bookings', 'view invoices', 'booking inventory',
 
             // Reports
             'view reports',

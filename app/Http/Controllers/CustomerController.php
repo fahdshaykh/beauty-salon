@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 use Session;
 
 use DB;
-
+use Illuminate\Support\Facades\Auth;
 use App\Imports\CustomersImport;
 use App\User;
 use Maatwebsite\Excel\Facades\Excel;
@@ -25,27 +25,25 @@ class CustomerController extends Controller
 
         $this->authorize('viewAny', Customer::class);
 
-        $paginationOptions = Setting::getPaginationOptions();
-        $perPage = $request->input('per_page', auth()->user()->getPerPagePreference());
-        if (!in_array($perPage, $paginationOptions)) {
-            $perPage = auth()->user()->getPerPagePreference();
+        // get rows per page if passed with request
+        if (request('rows')) {
+
+            $rows = 500 < intval(request('rows')) ? 500 : intval(request('rows'));
+            $rows = 5 > $rows ? 5 : $rows;
+            Auth::user()->setSettings(['customers_rows_per_page' => $rows]);
         }
-        if ($request->has('per_page')) {
-            if (auth()->user()->setting) {
-                auth()->user()->setting->update(['per_page' => $perPage]);
-            } else {
-                UserSetting::create(['user_id' => auth()->user()->id, 'per_page' => $perPage]);
-            }
-        }
+        // otherwise retrieve from user's settings
+        $rows = Auth::user()->getSetting('customers_rows_per_page', auth()->user()->default_rows);
+
         $customers = Customer::where('company_id', auth()->user()->company_id)
             ->where('is_deleted', 0)
             ->orderBy('created_at', 'desc')
-            ->paginate($perPage)
-            ->appends(['per_page' => $perPage]);
+            ->paginate($rows);
+
         $customers->each(function ($customer) {
             $customer->makeHidden(['is_active']);
         });
-        return view('customers.index', compact('customers', 'paginationOptions'));
+        return view('customers.index', compact('customers', 'rows'));
     }
 
 
@@ -713,11 +711,11 @@ class CustomerController extends Controller
 
 
 
-    public function destroy(Customer $customer, $id)
+    public function destroy(Customer $customer)
 
     {
 
-        $customer = Customer::find($id);
+        // $customer = Customer::find($id);
 
         $this->authorize('update', $customer);
 

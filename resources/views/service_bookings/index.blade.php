@@ -36,43 +36,6 @@
 
         </div>
 
-        <div class="alert alert-success" style="display:none;" id="status-success"></div>
-
-        @if(Session::has('success'))
-
-        <div class="alert alert-success alert-dismissible">
-
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-
-            {{Session::get('success')}}
-
-        </div>
-
-        @elseif(Session::has('destroy'))
-
-        <div class="alert alert-danger alert-dismissible">
-
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-
-            {{Session::get('destroy')}}
-
-        </div>
-
-        @endif
-
-        @if(Session::has('update'))
-
-        <div class="alert alert-success alert-dismissible">
-
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-
-            {{Session::get('update')}}
-
-        </div>
-
-        @endif
-
-
 
         <div class="card">
 
@@ -81,68 +44,67 @@
 
             <!-- Filter Form -->
         <!-- Filter Form -->
-<div class="row mb-3">
-    <div class="col-md-12">
-        <form method="GET" action="{{ route('service-bookings.index') }}">
-            <div class="row">
-                <!-- Service Filter -->
-                <div class="col-md-3">
-                    <label for="service_id">Service</label>
-                    <select name="service_id" id="service_id" class="form-control">
-                        <option value="">All Services</option>
-                        @foreach($services as $service)
-                            <option value="{{ $service->id }}" {{ request('service_id') == $service->id ? 'selected' : '' }}>
-                                {{ $service->name }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <form method="GET" action="{{ route('service-bookings.index') }}">
+                            <div class="row">
+                                <!-- Service Filter -->
+                                <div class="col-md-3">
+                                    <label for="service_id">Service</label>
+                                    <select name="service_id" id="service_id" class="form-control">
+                                        <option value="">All Services</option>
+                                        @foreach($services as $service)
+                                            <option value="{{ $service->id }}" {{ request('service_id') == $service->id ? 'selected' : '' }}>
+                                                {{ $service->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
 
-                <!-- Date Range Filter -->
-                <div class="col-md-3">
-                    <label for="start_date">Start Date</label>
-                    <input type="date" name="start_date" id="start_date" class="form-control" value="{{ request('start_date') }}">
-                </div>
-                <div class="col-md-3">
-                    <label for="end_date">End Date</label>
-                    <input type="date" name="end_date" id="end_date" class="form-control" value="{{ request('end_date') }}">
-                </div>
+                                <!-- Date Range Filter -->
+                                <div class="col-md-3">
+                                    <label for="start_date">Start Date</label>
+                                    <input type="date" name="start_date" id="start_date" class="form-control" value="{{ request('start_date') }}">
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="end_date">End Date</label>
+                                    <input type="date" name="end_date" id="end_date" class="form-control" value="{{ request('end_date') }}">
+                                </div>
 
-                <!-- Status Filter -->
-                <div class="col-md-3">
-                    <label for="status">Status</label>
-                    <select name="status" id="status" class="form-control">
-                        <option value="">All Statuses</option>
-                        @foreach(['1' => 'Booked', '2' => 'In-Progress', '3' => 'Completed', '4' => 'Cancel'] as $key => $label)
-                            <option value="{{ $key }}" {{ request('status') == $key ? 'selected' : '' }}>
-                                {{ $label }}
-                            </option>
-                        @endforeach
-                    </select>
+                                <!-- Status Filter -->
+                                <div class="col-md-3">
+                                    <label for="status">Status</label>
+                                    <select name="status" id="status" class="form-control">
+                                        <option value="">All Statuses</option>
+                                        @foreach(['1' => 'Booked', '2' => 'In-Progress', '3' => 'Completed', '4' => 'Cancel'] as $key => $label)
+                                            <option value="{{ $key }}" {{ request('status') == $key ? 'selected' : '' }}>
+                                                {{ $label }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <!-- Customer Name Filter -->
+                                <div class="col-md-3">
+                                    <label for="customer_name">Customer Name</label>
+                                    <input type="text" name="customer_name" id="customer_name" class="form-control" value="{{ request('customer_name') }}" placeholder="Enter customer name">
+                                </div>
+                                <!-- Primary Phone Filter -->
+                                <div class="col-md-3">
+                                    <label for="primary_phone">Phone</label>
+                                    <input type="text" name="primary_phone" id="primary_phone" class="form-control" value="{{ request('primary_phone') }}" placeholder="Enter phone number">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="d-none d-md-block">&nbsp;</label>
+                                    <button type="submit" class="btn btn-primary">Apply Filters</button>
+                                    <a href="{{ route('service-bookings.index') }}" class="btn btn-secondary">Clear Filters</a>
+                                </div>
+                            </div>
+                            
+                        </form>
+                    </div>
                 </div>
-            </div>
-            <div class="row mt-3">
-                <!-- Customer Name Filter -->
-                <div class="col-md-3">
-                    <label for="customer_name">Customer Name</label>
-                    <input type="text" name="customer_name" id="customer_name" class="form-control" value="{{ request('customer_name') }}" placeholder="Enter customer name">
-                </div>
-                <!-- Primary Phone Filter -->
-                <div class="col-md-3">
-                    <label for="primary_phone">Phone</label>
-                    <input type="text" name="primary_phone" id="primary_phone" class="form-control" value="{{ request('primary_phone') }}" placeholder="Enter phone number">
-                </div>
-                <div class="col-md-6">
-                    <label class="d-none d-md-block">&nbsp;</label>
-                    <button type="submit" class="btn btn-primary">Apply Filters</button>
-                    <a href="{{ route('service-bookings.index') }}" class="btn btn-secondary">Clear Filters</a>
-                </div>
-            </div>
-            <!-- Preserve per_page in form -->
-            <input type="hidden" name="per_page" value="{{ request('per_page', auth()->user()->getPerPagePreference()) }}">
-        </form>
-    </div>
-</div>
 
                 <h4 class="card-title"></h4>
 
@@ -150,16 +112,18 @@
                 <div class="row">
                     <div class="col-md-3">
                         <div class="pagination-dropdown">
-                            <label for="per_page">Items per page</label>
-                            <form method="GET" action="{{ route('service-bookings.index') }}">
-                                @foreach(request()->except(['page', 'per_page']) as $key => $value)
-                                    <input type="hidden" name="{{ $key }}" value="{{ $value }}">
-                                @endforeach
-                                <select name="per_page" id="per_page" onchange="this.form.submit()" class="form-control">
-                                    @foreach($paginationOptions as $option)
-                                        <option value="{{ $option }}" {{ request('per_page', auth()->user()->getPerPagePreference()) == $option ? 'selected' : '' }}>{{ $option }} per page</option>
-                                    @endforeach
-                                </select>
+                            <form class="form-inline">
+                                <div class="form-group">
+                                    <label for="rows">Records:&nbsp;</label>
+                                    <select class="form-control" id="rows" name="rows">
+                                        <option value="5" @if($rows == 5) selected @endif > 5 </option>
+                                        <option value="10" @if($rows == 10) selected @endif > 10 </option>
+                                        <option value="20" @if($rows == 20) selected @endif > 20 </option>
+                                        <option value="50" @if($rows == 50) selected @endif > 50 </option>
+                                        <option value="100" @if($rows == 100) selected @endif > 100 </option>
+										<option value="500" @if($rows == 500) selected @endif > 500 </option>                        
+                                    </select>
+                                </div>
                             </form>
                         </div>
                     </div>
@@ -217,51 +181,101 @@
 
                                         <td><i class="fas fa-dollar-sign"></i>{{$book['total_price']}}</td>
 
-                                        <td style="width: 15%;">{{$book['due_date']}}</td>
+                                        <td style="width: 10%;">{{$book['due_date']}}</td>
 
-                                        <td style="width: 15%;">{{$book['due_time']}}</td>
+                                        <td style="width: 10%;">{{$book['due_time']}}</td>
 
-                                        <td style="width: 15%;">
+                                        <td style="width: 10%;">
+                                            @php
+                                                $statuses = [
+                                                    1 => 'Booked',
+                                                    2 => 'In-Progress',
+                                                    3 => 'Completed',
+                                                    4 => 'Cancel'
+                                                ];
 
-                                        <?php $status = array('1' => 'Booked', '2' => 'In-Progress', '3' => 'Completed', '4' => 'Cancel'); ?>
+                                                $currentStatus = $book['service_status'];
+                                                $isFinal       = in_array($currentStatus, [3, 4]);   // Completed or Cancel
+                                                $isAdmin       = auth()->user()->hasRole('admin'); // <-- change to your role name
+                                            @endphp
 
-                                        <div class="form-group">
+                                            <div class="form-group">
 
-                                        <select class="form-control form-control-sm" id="change" data-booking_id="{{$book['id']}}" onchange="changeLevel(this);"  @if($book['service_status']==5) disabled @endif>
+                                                {{-- 1. ADMIN → always see the dropdown  --}}
+                                                @if($isAdmin)
+                                                    <select class="form-control form-control-sm"
+                                                            id="change"
+                                                            data-booking_id="{{ $book['id'] }}"
+                                                            onchange="changeLevel(this);"
+                                                            @if($currentStatus == 5) disabled @endif>
+                                                        @foreach($statuses as $key => $label)
+                                                            <option value="{{ $key }}" {{ $key == $currentStatus ? 'selected' : '' }}>
+                                                                {{ $label }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
 
-                                            @foreach($status as $statusKey => $check)
+                                                {{-- 2. NON-ADMIN → final status → show badge only  --}}
+                                                @elseif($isFinal)
+                                                    <button type="button" class="btn btn-{{ $currentStatus == 3 ? 'success' : 'danger' }} p-2">
+                                                        {{ $statuses[$currentStatus] }}
+                                                    </button>
 
-                                                <option value="{{$statusKey}}" @if($statusKey == $book['service_status']) selected @endif >{{$check}}</option>
+                                                {{-- 3. NON-ADMIN → editable status → show dropdown  --}}
+                                                @else
+                                                    <select class="form-control form-control-sm"
+                                                            id="change"
+                                                            data-booking_id="{{ $book['id'] }}"
+                                                            onchange="changeLevel(this);"
+                                                            @if($currentStatus == 5) disabled @endif>
+                                                        @foreach($statuses as $key => $label)
+                                                            <option value="{{ $key }}" {{ $key == $currentStatus ? 'selected' : '' }}>
+                                                                {{ $label }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                @endif
 
-                                            @endforeach
-
-                                            </select>
-
-                                            </div> 
-
+                                            </div>
                                         </td>
                                         
 
                                         <td>
+                                            <div class="d-flex gap-1">
 
-                                        @can('edit bookings')
-                                            <a href="{{url('service-bookings/edit',$book['id'])}}">
-                                                <i class="fas fa-pencil-alt text-primary" aria-hidden="true"></i>
-                                            </a> |
-                                            @endcan
-
-                                            @can('delete bookings')
-                                            <a onclick="return confirm('Are you sure to delete');" href="{{url('service-bookings/destroy',$book['id'])}}">
-                                                <i class="fas fa-trash text-danger"></i>                          
-                                            </a>
-                                            @endcan
-
-                                            @can('view invoices')
-                                            |<a href="{{url('view-booking',$book['id'])}}" title="View/Send Invoice">
-                                                    <i class="fa fa-eye text-primary"></i>
+                                                @can('booking inventory')
+                                                <a href="{{ route('service-bookings.edit-inventory', $book['id']) }}"
+                                                class="btn btn-sm btn-outline-info" title="Edit Inventory">
+                                                    <i class="fa fa-box"></i>
                                                 </a>
-                                            </td>
-                                            @endcan
+                                                @endcan
+
+                                                @can('edit bookings')
+                                                <a href="{{ url('service-bookings/edit', $book['id']) }}"
+                                                class="btn btn-sm btn-outline-primary" title="Edit Booking">
+                                                    <i class="fas fa-pencil-alt"></i>
+                                                </a>
+                                                @endcan
+
+                                                @can('delete bookings')
+                                                <a href="{{ url('service-bookings/destroy', $book['id']) }}"
+                                                onclick="return confirm('Are you sure to delete?')"
+                                                class="btn btn-sm btn-outline-danger" title="Delete Booking">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                                @endcan
+
+                                                @can('view invoices')
+                                                <a href="{{ url('view-booking', $book['id']) }}"
+                                                class="btn btn-sm btn-outline-dark" title="View / Send Invoice">
+                                                <i class="fa fa-eye text-success"></i>
+                                                </a>
+                                                @endcan
+
+                                            </div>
+
+                                        </td>
+
 
                                     </tr>
 
@@ -293,70 +307,66 @@
 
     </div>
 
-    <!-- Cancel Modal -->
-    <div class="modal fade" id="cancel-modal" tabindex="-1" role="dialog" aria-labelledby="CancelModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="CancelModalLabel">Cancel Booking</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <form id="cancel-form" method="POST" action="{{ route('service-bookings.cancel') }}">
-                    @csrf
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label for="cancel-reason">Reason for Cancellation</label>
-                            <textarea class="form-control" id="cancel-reason" name="reason" required></textarea>
-                        </div>
-                        <input type="hidden" id="cancel-booking-id" name="booking_id">
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <input type="submit" class="btn btn-danger" value="Submit Cancellation">
-                    </div>
-                </form>
+{{-- ==================== CANCEL MODAL ==================== --}}
+<div class="modal fade" id="cancel-modal" tabindex="-1" aria-labelledby="CancelModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="CancelModalLabel">Cancel Booking</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
+            <form id="cancel-form" method="POST" action="{{ route('service-bookings.cancel') }}">
+                @csrf
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="cancel-reason">Reason for Cancellation</label>
+                        <textarea class="form-control" id="cancel-reason" name="reason" required></textarea>
+                    </div>
+                    <input type="hidden" id="cancel-booking-id" name="booking_id">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-danger">Submit Cancellation</button>
+                </div>
+            </form>
         </div>
     </div>
+</div>
 
-    <div class="modal fade" id="payment-modal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
+{{-- ==================== PAYMENT MODAL ==================== --}}
+<div class="modal fade" id="payment-modal" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="ModalLabel">Payment Method</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-                </button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form action="/checkout"  method="post" id="payment-form">
-            <div class="modal-body">
-               
-                <div class="form-group">
-                    <select class="form-control form-control-lg" name="payment_method" id="payment_method" required>
-                        <option value="">Select Payment Method</option>
-                        <option value="cash">Cash</option>
-                        <option value="paypal">PayPal</option>
-                        <option value="stripe">Stripe</option>
-                    </select>
+            <form id="payment-form" action="/checkout" method="post">
+                @csrf
+                <div class="modal-body">
+                    <div class="form-group">
+                        <select class="form-control form-control-lg" name="payment_method" id="payment_method" required>
+                            <option value="">Select Payment Method</option>
+                            <option value="cash">Cash</option>
+                            <option value="paypal">PayPal</option>
+                            <option value="stripe">Stripe</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="cheque_number" class="cheque_number_label" style="display:none">Cheque Number:</label>
+                        <input type="text" class="form-control" id="cheque_number" name="cheque_number" style="display:none">
+                    </div>
+                    <input type="hidden" id="invoice" name="invoice">
+                    <input type="hidden" id="service_status" name="service_status">
                 </div>
-                <div class="form-group">
-                    <label for="message-text" class="col-form-label cheque_number_label" style="display: none">Cheque Number:</label>
-                    <input type="text" class="form-control" id="cheque_number" name="cheque_number" style="display: none">
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-success">Submit</button>
                 </div>
-                <input type="hidden" class="form-control" id="invoice" name="invoice">
-                <input type="hidden" class="form-control" id="service_status" name="service_status">
-            </div>
-            <div class="modal-footer">
-                <button type="submit" class="btn btn-success">Submit</button>
-                <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
-            </div>
-            @csrf
-        </form>
-            </div>
+            </form>
         </div>
     </div>
+</div>
 
    
 
@@ -369,196 +379,186 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-    $(document).ready(function(){
-        $('.changestatus').change(function() {
-            var status = $(this).val();
-            var id = $(this).data('id');
-            
-            if (status === 'cancelled') {
-                $('#cancel-booking-id').val(id);
-                $('#cancel-modal').modal('show');
-                return false;
-            } else if (status === 'completed') {
-                $("#payment-modal").modal('show');
-                $("#invoice").val(id);
-                $("#service_status").val(status);
-                return false;
-            } else {
-                $.ajax({
-                    url: "{{ route('admin.booking.change-status') }}",
-                    method: "POST",
-                    data: {
-                        status: status,
-                        id: id,
-                        _token: "{{ csrf_token() }}"
-                    },
-                    success: function(response) {
-                        if (response.success) {
-                            toastr.success(response.message);
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        console.error(error);
-                    }
-                });
-            }
-        });
+$(document).ready(function () {
+    let originalStatus = {};
 
-        
-        // $('#cancel-form').submit(function(e) {
-        //     e.preventDefault();
-        //     var formData = $(this).serialize();
-            
-        //     $.ajax({
-        //         url: "{{ route('service-bookings.cancel') }}", // Update this route
-        //         method: "POST",
-        //         data: formData,
-        //         success: function(response) {
-        //             if (response.success) {
-        //                 $('#cancel-modal').modal('hide');
-        //                 toastr.success(response.message);
-        //                 location.reload();
-        //             }
-        //         },
-        //         error: function(xhr, status, error) {
-        //             console.error(error);
-        //             toastr.error('An error occurred while cancelling the booking.');
-        //         }
-        //     });
-        // });
+    // 1. Capture original value on focus
+    $(document).on('focus', 'select#change', function () {
+        const $select = $(this);
+        const bookingId = $select.data('booking_id');
+        originalStatus[bookingId] = $select.val();
+    });
 
-        // $("#payment_method").change(function() {
-        //     var paymentMethod = $(this).val();
-        //     if (paymentMethod === 'paypal') {
-        //         var bookingId = $("#invoice").val(); // Get the booking ID
-        //         window.location.href = "{{ route('redirect.to.paypal') }}?booking_id=" + bookingId;
-        //         return false; // Prevent form submission
-        //     }
-        // });
-    
-        $("#payment-form").submit(function (event) {
-            var paymentMethod = $("#payment_method").val();
-    
-            // if (paymentMethod === 'stripe') {
-            //     // Allow normal form submission to redirect to Stripe
-            //     return true;  
-            // }
-    
-            event.preventDefault(); // Prevent form submission for other methods
-            $.ajax({
-                url: "{{ url('change-booking-status') }}",
-                type: "POST",
-                data: $("#payment-form").serialize(),
-                success: function (response) {
-                    if(response.success){
-                        showSuccessToast(response.success);
-                        $("#payment-modal").modal('hide');
-                    } else {
-                        showDangerToast(response.error);
-                    }
-                },
-            });
-        });
+    // 2. Change handler
+    window.changeLevel = function (level) {
+        const $select = $(level);
+        const bookingId = $select.data('booking_id');
+        const newStatus = $select.val();
 
-    
-        // $('.changestatus').change(function() {
-        //     var status = $(this).val();
-        //     var id = $(this).data('id');
-
-        //     console.log(status, id);
-            
-            
-        //     if (status === 'completed') {
-        //         $("#payment-modal").modal('show');
-        //         $("#invoice").val(id);
-        //         $("#service_status").val(status);
-        //         return false;
-        //     } else {
-        //         $.ajax({
-        //             url: "{{url('change-booking-status')}}",
-        //             method: "POST",
-        //             data: {
-        //                 status: status,
-        //                 id: id,
-        //                 _token: "{{ csrf_token() }}"
-        //             },
-        //             success: function(response) {
-        //                 if (response.success) {
-        //                     toastr.success(response.message);
-        //                 }
-        //             },
-        //             error: function(xhr, status, error) {
-        //                 console.error(error);
-        //             }
-        //         });
-        //     }
-        // });
-
-
-        changeLevel = function(level){
-
-            var status_value = level.value;
-
-            var booking_id = $(level).data('booking_id');
-
-            if(status_value == 3)
-            {
-
-                    $("#payment-modal").modal('show');
-
-                    $("#invoice").val(booking_id);
-
-                    $("#service_status").val(status_value);
-
-                    return false;
-
-            } else if(status_value == 4) {
-                    $("#cancel-modal").modal('show');
-                    $('#cancel-booking-id').val(booking_id);
-                }
-
-                else{
-
-
-
-                    $.ajax({
-
-                    type: "POST",
-
-                    url:"{{url('booking-status')}}",
-
-                    data: { id: booking_id,service_status: status_value,_token: "{{ csrf_token() }}"  },
-
-                    success: function(response) {
-
-                        
-
-                        $("#status-success").show();
-
-                        $("#status-success").html(response.success);
-
-                        setTimeout(function() {
-
-                            $("#status-success").hide()
-
-                        }, 3000);
-
-                    }
-
-                });
-
-
-
-            }
-
-
-
+        if (newStatus == 3) {
+            $('#invoice').val(bookingId);
+            $('#service_status').val(newStatus);
+            $('#payment-modal').modal('show');
+            return;
         }
 
+        if (newStatus == 4) {
+            $('#cancel-booking-id').val(bookingId);
+            $('#cancel-modal').modal('show');
+            return;
+        }
+
+        // For Booked / In-Progress → direct update
+        sendStatusAjax(bookingId, newStatus, $select);
+    };
+
+    // 3. AJAX to update status
+    function sendStatusAjax(bookingId, status, $select, callback) {
+        $.ajax({
+            type: "POST",
+            url: "{{ url('booking-status') }}",
+            data: {
+                id: bookingId,
+                service_status: status,
+                _token: "{{ csrf_token() }}"
+            },
+            success: function (response) {
+                iziToast.success({
+                    title: 'Updated',
+                    message: response.success || 'Status updated successfully.',
+                    position: 'topRight'
+                });
+
+                $select.val(status);
+                delete originalStatus[bookingId];
+
+                if (typeof callback === 'function') callback();
+            },
+            error: function (xhr) {
+                const orig = originalStatus[bookingId] || 1;
+                $select.val(orig);
+
+                iziToast.error({
+                    title: 'Failed',
+                    message: xhr.responseJSON?.message || 'Failed to update status.',
+                    position: 'topRight'
+                });
+            }
+        });
+    }
+
+    // 4. CANCEL MODAL SUBMIT
+    $('#cancel-form').on('submit', function (e) {
+        e.preventDefault();
+
+        const bookingId = $('#cancel-booking-id').val();
+        const $select = $(`select[data-booking_id="${bookingId}"]`);
+
+        $.ajax({
+            url: "{{ route('service-bookings.cancel') }}",
+            method: "POST",
+            data: $(this).serialize(),
+            success: function (res) {
+                if (res.success) {
+                    // iziToast.success({
+                    //     title: 'Success',
+                    //     message: res.message,
+                    //     position: 'topRight'
+                    // });
+                    $('#cancel-modal').modal('hide');
+                    sendStatusAjax(bookingId, 4, $select);
+                } else {
+                    iziToast.error({
+                        title: 'Failed',
+                        message: res.message || 'Cancellation failed.',
+                        position: 'topRight'
+                    });
+                }
+            },
+            error: function () {
+                iziToast.error({
+                    title: 'Error',
+                    message: 'Cancellation failed.',
+                    position: 'topRight'
+                });
+            }
+        });
     });
-    </script>
-    
-    
 
+    // 5. PAYMENT MODAL SUBMIT
+    $('#payment-form').on('submit', function (e) {
+        e.preventDefault();
 
-    
+        const bookingId = $('#invoice').val();
+        const $select = $(`select[data-booking_id="${bookingId}"]`);
+
+        $.ajax({
+            url: "{{ url('change-booking-status') }}",
+            type: "POST",
+            data: $(this).serialize(),
+            success: function (res) {
+                if (res.success) {
+                    // iziToast.success({
+                    //     title: 'Success',
+                    //     message: res.success,
+                    //     position: 'topRight'
+                    // });
+                    $('#payment-modal').modal('hide');
+                    sendStatusAjax(bookingId, 3, $select);
+                } else {
+                    iziToast.error({
+                        title: 'Failed',
+                        message: res.error || 'Payment processing failed.',
+                        position: 'topRight'
+                    });
+                }
+            },
+            error: function () {
+                iziToast.error({
+                    title: 'Error',
+                    message: 'Payment processing failed.',
+                    position: 'topRight'
+                });
+            }
+        });
+    });
+
+    // 6. REVERT ONLY IF MODAL CLOSED WITHOUT SUBMIT
+    function setupRevertOnHide(modalId, idField) {
+        $(modalId).on('hidden.bs.modal', function () {
+            const bookingId = $(idField).val();
+            if (!bookingId) return;
+
+            const $select = $(`select[data-booking_id="${bookingId}"]`);
+            const orig = originalStatus[bookingId];
+
+            if (orig !== undefined) {
+                $select.val(orig); // Revert UI
+                delete originalStatus[bookingId];
+            }
+
+            // Clear fields
+            $(idField).val('');
+        });
+    }
+
+    setupRevertOnHide('#cancel-modal', '#cancel-booking-id');
+    setupRevertOnHide('#payment-modal', '#invoice');
+
+    // 7. Pagination (unchanged)
+    $('#rows').on('change', function () {
+        const rows = $(this).val();
+        const url = new URL(window.location);
+        url.searchParams.set('rows', rows);
+        window.location = url;
+    });
+
+    // REMOVE THIS DUPLICATE HANDLER THAT RELOADS PAGE
+    // It was causing revert + reload race condition
+    /*
+    $('#cancel-modal, #payment-modal').on('hidden.bs.modal', function () {
+        location.reload();
+    });
+    */
+});
+</script>

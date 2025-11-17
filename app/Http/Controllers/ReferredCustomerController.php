@@ -15,22 +15,19 @@ class ReferredCustomerController extends Controller
     {
         $this->authorize('viewAny', ReferredCustomer::class);
 
-        $paginationOptions = Setting::getPaginationOptions();
-        $perPage = $request->input('per_page', auth()->user()->getPerPagePreference());
-        if (!in_array($perPage, $paginationOptions)) {
-            $perPage = auth()->user()->getPerPagePreference();
-        }
-        if ($request->has('per_page')) {
-            if (auth()->user()->setting) {
-                auth()->user()->setting->update(['per_page' => $perPage]);
-            } else {
-                UserSetting::create(['user_id' => auth()->user()->id, 'per_page' => $perPage]);
-            }
-        }
+        // get rows per page if passed with request
+        if (request('rows')) {
 
-        $perPage = $request->get('per_page', 10);
-        $referreds = ReferredCustomer::forCompany()->orderBy('id', 'desc')->paginate($perPage);
-        return view('referred_customers.index', compact('referreds', 'paginationOptions'));
+            $rows = 500 < intval(request('rows')) ? 500 : intval(request('rows'));
+            $rows = 5 > $rows ? 5 : $rows;
+            Auth::user()->setSettings(['referred_customers_rows_per_page' => $rows]);
+        }
+        // otherwise retrieve from user's settings
+        $rows = Auth::user()->getSetting('referred_customers_rows_per_page', auth()->user()->default_rows);
+
+        $referreds = ReferredCustomer::forCompany()->orderBy('id', 'desc')->paginate($rows);
+
+        return view('referred_customers.index', compact('referreds', 'rows'));
     }
 
     public function create()
@@ -97,5 +94,23 @@ class ReferredCustomerController extends Controller
 
         $referred->delete();
         return redirect()->route('referred_customers.index')->with('destroy', 'Referred source deleted.');
+    }
+
+    public function referredStatus(Request $request)
+    {
+        $category = ReferredCustomer::find($request->id);
+
+
+
+        $category->is_active = $request->status;
+
+
+
+        $category->save();
+
+
+
+        return response()->json(['success'=>'Status changed successfully.']);
+
     }
 }

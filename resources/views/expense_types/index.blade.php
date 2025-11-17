@@ -92,9 +92,29 @@
 
                 <div class="card-body">
 
-                @can('create expense types')
-                  <h4 class="card-title" style="float:right;"><a class="btn btn-primary btn-fw" href="{{url('expense-types/create')}}"> Add Expense Type</a></h4>
-                @endcan
+                  <div class="row">
+                        <div class="col-md-3">
+                            <div class="pagination-dropdown">
+                                <form class="form-inline">
+                                    <div class="form-group">
+                                        <label for="rows">Records:&nbsp;</label>
+                                        <select class="form-control" id="rows" name="rows">
+                                            <option value="5" @if($rows == 5) selected @endif > 5 </option>
+                                            <option value="10" @if($rows == 10) selected @endif > 10 </option>
+                                            <option value="20" @if($rows == 20) selected @endif > 20 </option>
+                                            <option value="50" @if($rows == 50) selected @endif > 50 </option>
+                                            <option value="100" @if($rows == 100) selected @endif > 100 </option>
+                                            <option value="500" @if($rows == 500) selected @endif > 500 </option>                        
+                                        </select>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                  @can('create expense types')
+                    <h4 class="card-title" style="float:right;"><a class="btn btn-primary btn-fw" href="{{url('expense-types/create')}}"> Add Expense Type</a></h4>
+                  @endcan
 
                   <div class="table-responsive">
 
@@ -131,29 +151,28 @@
                             <td>{{$expense_type->type}}</td>
 
                             <td>
-
                                 <label class="switch">
-
-                                    <input type="checkbox" id="user-{{$expense_type->id}}" onclick="changeCategoryStatus(event.target, {{ $expense_type->id }});" {{($expense_type->is_active) ? 'checked' : ''}}>
-
+                                    <input type="checkbox"
+                                        id="expensetype-{{ $expense_type->id }}"
+                                        data-name="{{ $expense_type->type }}"
+                                        onclick="changeExpenseTypeStatus(this, {{ $expense_type->id }})"
+                                        {{ $expense_type->is_active ? 'checked' : '' }}>
                                     <span class="slider round"></span>
+                                </label>
+                            </td>
 
-                                </label></td>
 
                             <td>
-
-                            @can('edit expense types')
-                                <a href="{{url('expense-types/edit',$expense_type->id)}}">
-
-                                    <i class="fas fa-pencil-alt text-primary" aria-hidden="true"></i>                          
-
-                                </a>
-                            @endcan
-
-
-                           
-
+                                <div class="d-flex gap-1">
+                                    @can('edit expense types')
+                                    <a href="{{url('expense-types/edit',$expense_type->id)}}"
+                                    class="btn btn-sm btn-outline-primary" title="Edit">
+                                        <i class="fas fa-pencil-alt"></i>
+                                    </a>
+                                    @endcan
+                                </div>
                             </td>
+
 
                         </tr>
 
@@ -183,88 +202,49 @@
 
     @endsection
 
-    <script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const rowsSelect = document.getElementById('rows');
 
+    if (rowsSelect) {
+        rowsSelect.addEventListener('change', function () {
+            window.location = "{{ url('/expense-types') }}?rows=" + this.value;
+        });
+    }
+});
+</script>
 
-
-function changeCategoryStatus(_this, id) {
-
-
-
- 
-
-
-
-    var status = $(_this).prop('checked') == true ? 1 : 0;
-
-
+<script>
+function changeExpenseTypeStatus(_this, id) {
+    var $checkbox = $(_this);
+    var status    = $checkbox.prop('checked') ? 1 : 0;
+    var typeName  = $checkbox.data('name'); // Get expense type name
 
     $.ajax({
-
-
-
-        url: "{{url('expense-type-status')}}",
-
-
-
+        url: "{{ url('expense-type-status') }}",
         type: 'GET',
-
-
-
-        data: {
-
-
-
-            id: id,
-
-
-
-            status: status 
-
-
-
-        },
-
-
-
+        data: { id: id, status: status },
         success: function (result) {
+            iziToast.success({
+                title: typeName + (status ? ' Activated!' : ' Deactivated!'),
+                message: result.success || 'Status updated successfully.',
+                position: 'topRight',
+                icon: status ? 'fas fa-check-circle' : 'fas fa-ban',
+                timeout: 5000
+            });
+        },
+        error: function () {
+            // Revert checkbox on error
+            $checkbox.prop('checked', !status);
 
-
-
-          $("#status-success").show();
-
-
-
-          $("#status-success").html(result.success);
-
-
-
-          setTimeout(function() {
-
-
-
-            $("#status-success").hide()
-
-
-
-          }, 3000);
-
-
-
+            iziToast.error({
+                title: typeName + ' – Update Failed!',
+                message: 'Could not update status. Please try again.',
+                position: 'topRight',
+                icon: 'fas fa-exclamation-triangle',
+                timeout: 6000
+            });
         }
-
-
-
     });
-
-
-
 }
-
-
-
-
-
-
-
 </script>

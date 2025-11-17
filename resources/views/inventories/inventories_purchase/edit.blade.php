@@ -205,7 +205,7 @@ $(document).ready(function() {
 
 
 
-                        <select class="form-control" id="name" name="inventory_id">
+                        <select class="js-example-basic-single w-100" id="name" name="inventory_id">
                             @foreach($inventories as $inventory)
                                 <option value="{{ $inventory->id }}" {{ $inventory->id == old('inventory_id', $purchase->inventory_id) ? 'selected' : '' }}>
                                     {{ $inventory->name }}

@@ -11,8 +11,7 @@ use Illuminate\Http\Request;
 use App\ExpenseType;
 
 use DB;
-
-
+use Illuminate\Support\Facades\Auth;
 
 class ExpenseTypeController extends Controller
 
@@ -46,12 +45,22 @@ class ExpenseTypeController extends Controller
             $this->authorize('viewAny', ExpenseType::class);
         }
 
+        // get rows per page if passed with request
+        if (request('rows')) {
+
+            $rows = 500 < intval(request('rows')) ? 500 : intval(request('rows'));
+            $rows = 5 > $rows ? 5 : $rows;
+            Auth::user()->setSettings(['expenses_rows_per_page' => $rows]);
+        }
+        // otherwise retrieve from user's settings
+        $rows = Auth::user()->getSetting('expenses_rows_per_page', auth()->user()->default_rows);
+
         // Always enforce company isolation for multi-tenant security
         $expense_types = ExpenseType::where('company_id', $user->company_id)
             ->orderBy('created_at', 'desc')
-            ->get();
+            ->paginate($rows);
 
-        return view('expense_types.index', compact('expense_types'));
+        return view('expense_types.index', compact('expense_types', 'rows'));
 
     }
 

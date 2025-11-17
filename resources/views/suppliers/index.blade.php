@@ -312,104 +312,6 @@ input:checked+.slider:before {
 
         </div>
 
-
-
-
-
-
-
-        <div class="alert alert-success" style="display:none;" id="status-success"></div>
-
-
-
-
-
-
-
-        @if(Session::has('success'))
-
-
-
-        <div class="alert alert-success alert-dismissible">
-
-
-
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-
-
-
-            {{Session::get('success')}}
-
-
-
-        </div>
-
-
-
-
-
-
-
-        @elseif(Session::has('destroy'))
-
-
-
-        <div class="alert alert-danger alert-dismissible">
-
-
-
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-
-
-
-            {{Session::get('destroy')}}
-
-
-
-        </div>
-
-
-
-        @endif
-
-
-
-
-
-
-
-        @if(Session::has('update'))
-
-
-
-        <div class="alert alert-success alert-dismissible">
-
-
-
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-
-
-
-            {{Session::get('update')}}
-
-
-
-        </div>
-
-
-
-        @endif
-
-
-
-
-
-
-
-
-
-
-
         <div class="card">
 
 
@@ -422,16 +324,18 @@ input:checked+.slider:before {
                 <div class="row">
                     <div class="col-md-3">
                         <div class="pagination-dropdown">
-                            <label for="per_page">Items per page</label>
-                            <form method="GET" action="{{ route('suppliers.index') }}">
-                                @foreach(request()->except(['page', 'per_page']) as $key => $value)
-                                    <input type="hidden" name="{{ $key }}" value="{{ $value }}">
-                                @endforeach
-                                <select name="per_page" id="per_page" onchange="this.form.submit()" class="form-control">
-                                    @foreach($paginationOptions as $option)
-                                        <option value="{{ $option }}" {{ request('per_page', auth()->user()->getPerPagePreference()) == $option ? 'selected' : '' }}>{{ $option }} per page</option>
-                                    @endforeach
-                                </select>
+                            <form class="form-inline">
+                                <div class="form-group">
+                                    <label for="rows">Records:&nbsp;</label>
+                                    <select class="form-control" id="rows" name="rows">
+                                        <option value="5" @if($rows == 5) selected @endif > 5 </option>
+                                        <option value="10" @if($rows == 10) selected @endif > 10 </option>
+                                        <option value="20" @if($rows == 20) selected @endif > 20 </option>
+                                        <option value="50" @if($rows == 50) selected @endif > 50 </option>
+                                        <option value="100" @if($rows == 100) selected @endif > 100 </option>
+										<option value="500" @if($rows == 500) selected @endif > 500 </option>                        
+                                    </select>
+                                </div>
                             </form>
                         </div>
                     </div>
@@ -536,28 +440,39 @@ input:checked+.slider:before {
                                         </td>
                                         <td>{{ $supplier->phone }}</td>
                                         <td>{{ $supplier->email }}</td>
-                                        <td>
-                                            @can('supplier summary')
-                                            <a href="{{ route('suppliers.balance_summary', $supplier->id) }}">
-                                                <i class="fa fa-eye text-primary"></i>
-                                            </a>
-                                            @endcan
 
-                                            @can('edit suppliers')
-                                            <a href="{{ route('suppliers.edit', $supplier->id) }}">
-                                                <i class="fas fa-pencil-alt text-primary ml-2"></i>
-                                            </a>
-                                            @endcan
-                                            
-                                            @can('delete suppliers')
-                                            <form action="{{ route('suppliers.destroy', $supplier->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this supplier?');">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" style="border:none; background:none;">
-                                                    <i class="fas fa-trash-alt text-danger ml-2" style="cursor: pointer;"></i>
-                                                </button>
-                                            </form>
-                                            @endcan
+                                        <td>
+                                            <div class="d-flex gap-1">
+                                                @can('supplier summary')
+                                                <a href="{{ route('suppliers.balance_summary', $supplier->id) }}"
+                                                class="btn btn-sm btn-outline-success" title="view supplier">
+                                                    <i class="fa fa-eye text-primary"></i>
+                                                </a>
+                                                @endcan
+
+                                                @can('edit suppliers')
+                                                <a href="{{ route('suppliers.edit', $supplier->id) }}"
+                                                class="btn btn-sm btn-outline-primary ml-1" title="Edit supplier">
+                                                    <i class="fas fa-pencil-alt"></i>
+                                                </a>
+                                                @endcan
+
+                                                @can('delete suppliers')
+                                                <a href="javascript:void(0)"
+                                                onclick="if(confirm('Are You Sure Want To Delete?')) 
+                                                            document.getElementById('delete-cat-{{ $supplier->id }}').submit();"
+                                                class="btn btn-sm btn-outline-danger ml-1" title="Delete supplier">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </a>
+
+                                                <form id="delete-cat-{{ $supplier->id }}"
+                                                    action="{{ route('suppliers.destroy', $supplier->id) }}"
+                                                    method="POST" style="display:none;">
+                                                    @csrf @method('DELETE')
+                                                </form>
+                                                @endcan
+
+                                            </div>
                                         </td>
                                     </tr>
 
@@ -610,7 +525,17 @@ input:checked+.slider:before {
 
 
 
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const rowsSelect = document.getElementById('rows');
 
+    if (rowsSelect) {
+        rowsSelect.addEventListener('change', function () {
+            window.location = "{{ url('/suppliers') }}?rows=" + this.value;
+        });
+    }
+});
+</script>
 
 
 

@@ -9,6 +9,8 @@ use App\http\requests\StoreInventoryRequest;
 use App\InventoryRemain;
 use App\Models\Setting;
 use App\Models\UserSetting;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class InventoryController extends Controller
 {
@@ -23,23 +25,20 @@ class InventoryController extends Controller
             abort(403);
         }
 
-        $paginationOptions = Setting::getPaginationOptions();
-        $perPage = $request->input('per_page', auth()->user()->getPerPagePreference());
-        if (!in_array($perPage, $paginationOptions)) {
-            $perPage = auth()->user()->getPerPagePreference();
+        // get rows per page if passed with request
+        if (request('rows')) {
+
+            $rows = 500 < intval(request('rows')) ? 500 : intval(request('rows'));
+            $rows = 5 > $rows ? 5 : $rows;
+            Auth::user()->setSettings(['inventories_rows_per_page' => $rows]);
         }
-        if ($request->has('per_page')) {
-            if (auth()->user()->setting) {
-                auth()->user()->setting->update(['per_page' => $perPage]);
-            } else {
-                UserSetting::create(['user_id' => auth()->user()->id, 'per_page' => $perPage]);
-            }
-        }
+        // otherwise retrieve from user's settings
+        $rows = Auth::user()->getSetting('inventories_rows_per_page', auth()->user()->default_rows);
 
         $inventories = Inventory::where('company_id', auth()->user()->company_id)
-        ->paginate($perPage)->appends(['per_page' => $perPage]);
+        ->paginate($rows);
         
-        return view('inventories.index', compact('inventories', 'paginationOptions'));
+        return view('inventories.index', compact('inventories', 'rows'));
     }
 
     /**
@@ -82,7 +81,7 @@ class InventoryController extends Controller
         Inventory::create($data);
     
 
-        return redirect('/inventories');
+        return redirect('/inventories')->with('success', 'Inventory item created successfully');
     }
 
     /**
@@ -129,7 +128,14 @@ class InventoryController extends Controller
         }
 
         $validate = $request->validate([
-            'name'         => 'required|string|max:255|unique:inventories,name,NULL,id,company_id,' . auth()->user()->company_id,
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('inventories', 'name')
+                    ->where('company_id', auth()->user()->company_id)
+                    ->ignore($id),
+            ],
             'low_alert'    => 'required|numeric|min:0',
             'max_alert'    => 'required|numeric|gt:low_alert',
             'description'  => 'nullable|string|max:160',
@@ -143,7 +149,7 @@ class InventoryController extends Controller
         $inventory->update($data);
     
 
-        return redirect('/inventories');
+        return redirect('/inventories')->with('success', 'Inventory item updated successfully');
     }
 
     /**
@@ -165,7 +171,7 @@ class InventoryController extends Controller
         $inventory->delete();
 
         // Redirect back with a success message
-        return redirect()->route('inventories.index')->with('success', 'Inventory deleted successfully.');
+        return redirect()->route('inventories.index')->with('destroy', 'Inventory item deleted successfully.');
     }
 
     /**
@@ -176,23 +182,20 @@ class InventoryController extends Controller
      */
     public function available(Request $request)
     {
-        $paginationOptions = Setting::getPaginationOptions();
-        $perPage = $request->input('per_page', auth()->user()->getPerPagePreference());
-        if (!in_array($perPage, $paginationOptions)) {
-            $perPage = auth()->user()->getPerPagePreference();
+        // get rows per page if passed with request
+        if (request('rows')) {
+
+            $rows = 500 < intval(request('rows')) ? 500 : intval(request('rows'));
+            $rows = 5 > $rows ? 5 : $rows;
+            Auth::user()->setSettings(['inventories_rows_per_page' => $rows]);
         }
-        if ($request->has('per_page')) {
-            if (auth()->user()->setting) {
-                auth()->user()->setting->update(['per_page' => $perPage]);
-            } else {
-                UserSetting::create(['user_id' => auth()->user()->id, 'per_page' => $perPage]);
-            }
-        }
+        // otherwise retrieve from user's settings
+        $rows = Auth::user()->getSetting('inventories_rows_per_page', auth()->user()->default_rows);
 
         $inventories = InventoryRemain::where('company_id', auth()->user()->company_id)
-        ->paginate($perPage)->appends(['per_page' => $perPage]);
+        ->paginate($rows);
         
-        return view('inventories.show', compact('inventories', 'paginationOptions'));
+        return view('inventories.show', compact('inventories', 'rows'));
     }
 
     /**

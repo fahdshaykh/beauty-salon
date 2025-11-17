@@ -27,7 +27,7 @@ use Mail;
 use App\ServiceBooking;
 
 use DB;
-
+use Illuminate\Support\Facades\Auth;
 use PDF;
 
 

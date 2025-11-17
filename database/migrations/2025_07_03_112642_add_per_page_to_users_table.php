@@ -14,7 +14,8 @@ class AddPerPageToUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->integer('per_page')->default(10)->after('is_active');
+            $table->text('settings')->nullable()->after('is_active');                           // JSON string of individual user settings
+            $table->integer('default_rows')->default(50)->after('settings');                   // Default rows per page for tabulated data
         });
     }
 
@@ -26,7 +27,7 @@ class AddPerPageToUsersTable extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('per_page');
+            $table->dropColumn('settings');
         });
     }
 }

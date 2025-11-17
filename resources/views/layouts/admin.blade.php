@@ -2,10 +2,6 @@
 
 <html lang="en">
 
-
-
-
-
 <head>
 
   <!-- Required meta tags -->
@@ -25,6 +21,8 @@
   <link rel="stylesheet" href="{{asset('vendors/css/vendor.bundle.base.css')}}">
 
   <link rel="stylesheet" href="{{asset('vendors/css/vendor.bundle.addons.css')}}">
+
+  <link rel="stylesheet" href="{{ asset('vendors/izitoast/css/iziToast.min.css') }}">
 
   <!-- endinject -->
 
@@ -252,7 +250,7 @@
 
                 <p class="designation">
 
-Admin
+                  {{ ucfirst(auth()->user()->getRoleNames()->first()) }}
 
                 </p>
 
@@ -288,7 +286,7 @@ Admin
          
 
          @can('view categories')
-          <li class="nav-item {{ Request::is('categories/*') ? 'active' : '' }}">
+          <li class="nav-item {{ request()->routeIs('categories.*') ? 'active' : '' }}">
 
             <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="true" aria-controls="ui-basic">
 
@@ -306,11 +304,11 @@ Admin
 
 
 
-                <li class="nav-item"> <a class="nav-link" href="{{route('categories.index')}}"> Category Listing </a></li>
+                <li class="nav-item"> <a class="nav-link" href="{{ route('categories.index') }}"> Category Listing </a></li>
 
 
                 @can('create categories')
-                <li class="nav-item"> <a class="nav-link" href="{{url('categories/category-create')}}"> Create Category </a></li>
+                <li class="nav-item"> <a class="nav-link" href="{{ route('categories.create') }}"> Create Category </a></li>
                 @endcan
 
               </ul>
@@ -322,7 +320,7 @@ Admin
 
         
           @can('view inventories')
-          <li class="nav-item {{ Request::is('inventories*') || Request::is('inventories/*') || Request::is('inventories_purchases') ? 'active' : '' }}">
+          <li class="nav-item {{ request()->routeIs('inventories.*') || request()->routeIs('inventories_purchases.*') ? 'active' : '' }}">
 
             <a class="nav-link" data-toggle="collapse" href="#ui-basico" aria-expanded="true" aria-controls="ui-basico">
 
@@ -334,11 +332,11 @@ Admin
 
             </a>
 
-            <div class="collapse {{ Request::is('inventories*') || Request::is('inventories_purchases*') ? 'show' : '' }}" id="ui-basico">
+            <div class="collapse {{ Request::is('inventories.*') || Request::is('inventories_purchases.*') ? 'show' : '' }}" id="ui-basico">
 
               <ul class="nav flex-column sub-menu">
 
-              <li class="nav-item"> <a class="nav-link {{ Request::is('inventories*') ? 'active' : '' }}" href="{{route('inventories.index')}}"> Inventory Items </a></li>
+              <li class="nav-item"> <a class="nav-link {{ Request::is('inventories.*') ? 'active' : '' }}" href="{{route('inventories.index')}}"> Inventory Items </a></li>
               
               @can('view inventory purchases')
               <li class="nav-item"> <a class="nav-link {{ Request::is('inventories_purchases') ? 'active' : '' }}" href="{{route('inventories_purchases.index')}}"> Inventory  Purchases</a></li>
@@ -361,44 +359,26 @@ Admin
 
           
           @can('view services')
-          <li class="nav-item {{ Request::is('services*') ? 'active' : '' }}">
-
+          <li class="nav-item {{ request()->routeIs('services.*') ? 'active' : '' }}">
             <a class="nav-link" data-toggle="collapse" href="#ui-advanced" aria-expanded="false" aria-controls="ui-advanced">
-
               <i class="fab fa-trello menu-icon"></i>
-
               <span class="menu-title">Services</span>
-
               <i class="menu-arrow"></i>
-
             </a>
-
             <div class="collapse" id="ui-advanced">
-
               <ul class="nav flex-column sub-menu">
-
-
-
-                <li class="nav-item"> <a class="nav-link" href="{{route('services.index')}}">Service Listing</a></li>
-
-
+                <li class="nav-item"> <a class="nav-link" href="{{ route('services.index') }}">Service Listing</a></li>
                 @can('create services')
-                <li class="nav-item"> <a class="nav-link" href="{{url('services/services-create')}}">Create Service</a></li>
+                <li class="nav-item"> <a class="nav-link" href="{{ route('services.create') }}">Create Service</a></li>
                 @endcan
 
-
               </ul>
-
             </div>
-
           </li>
           @endcan
-
-      
-
           
           @can('view customers')
-          <li class="nav-item {{ Request::is('customers*') ? 'active' : '' }}">
+          <li class="nav-item {{ request()->routeIs('customers.*') || request()->routeIs('referred_customers.*') ? 'active' : '' }}">
 
             <a class="nav-link" data-toggle="collapse" href="#form-elements" aria-expanded="false" aria-controls="form-elements">
 
@@ -415,19 +395,19 @@ Admin
               <ul class="nav flex-column sub-menu">
 
 
-                <li class="nav-item"><a class="nav-link  {{ Request::is('customers*') ? 'active' : '' }}" href="{{route('customers.index')}}">Customer Listing</a></li>
+                <li class="nav-item"><a class="nav-link  {{ Request::is('customers.*') ? 'active' : '' }}" href="{{route('customers.index')}}">Customer Listing</a></li>
          
                 
                 @can('create customers')
-                <li class="nav-item"><a class="nav-link  {{ Request::is('customers*') ? 'active' : '' }}" href="{{url('customers/customers-create')}}">Add Customer</a></li>
+                <li class="nav-item"><a class="nav-link  {{ Request::is('customers.*') ? 'active' : '' }}" href="{{url('customers/customers-create')}}">Add Customer</a></li>
                 @endcan
                 
                 @can('import customers')
-                <li class="nav-item"><a class="nav-link  {{ Request::is('customers*') ? 'active' : '' }}" href="{{url('customers-import-view')}}">Import Customers</a></li>
+                <li class="nav-item"><a class="nav-link  {{ Request::is('customers.*') ? 'active' : '' }}" href="{{url('customers-import-view')}}">Import Customers</a></li>
                 @endcan
                 
                 @can('view referred customers')
-                <li class="nav-item"><a class="nav-link  {{ Request::is('referred_customers*') ? 'active' : '' }}" href="{{route('referred_customers.index')}}">Reffered By</a></li>
+                <li class="nav-item"><a class="nav-link  {{ Request::is('referred_customers.*') ? 'active' : '' }}" href="{{route('referred_customers.index')}}">Reffered By</a></li>
                 @endcan
 
               </ul>
@@ -441,7 +421,7 @@ Admin
           
 
           @can('view bookings')
-          <li class="nav-item {{ Request::is('service-bookings*') ? 'active' : '' }}">
+          <li class="nav-item {{ request()->routeIs('service-bookings.*') ? 'active' : '' }}">
 
             <a class="nav-link" data-toggle="collapse" href="#editors" aria-expanded="false" aria-controls="editors">
 
@@ -459,7 +439,7 @@ Admin
 
 
 
-                <li class="nav-item"><a class="nav-link {{ Request::is('service-bookings*') ? 'active' : '' }}" href="{{route('service-bookings.index')}}">Service Bookings</a></li>
+                <li class="nav-item"><a class="nav-link {{ Request::is('service-bookings.*') ? 'active' : '' }}" href="{{route('service-bookings.index')}}">Service Bookings</a></li>
 
 
 
@@ -477,7 +457,7 @@ Admin
          
 
           @can('view reports')
-          <li class="nav-item {{ Request::is('reports*') ? 'active' : '' }}">
+          <li class="nav-item {{ request()->routeIs('reports.*') || request()->routeIs('customer.*') ? 'active' : '' }}">
 
             <a class="nav-link" data-toggle="collapse" href="#charts" aria-expanded="false" aria-controls="charts">
 
@@ -547,7 +527,7 @@ Admin
 
         
           @can('view quotations')
-          <li class="nav-item {{ Request::is('send-quotation*') ? 'active' : '' }}">
+          <li class="nav-item {{ Request::is('send-quotation.*') ? 'active' : '' }}">
 
               <a class="nav-link" data-toggle="collapse" href="#quote" aria-expanded="false" aria-controls="quote">
 
@@ -559,18 +539,18 @@ Admin
 
               </a>
 
-              <div class="collapse {{ Request::is('send-quotation*') ? 'show' : '' }}" id="quote">
+              <div class="collapse {{ Request::is('send-quotation.*') ? 'show' : '' }}" id="quote">
 
                 <ul class="nav flex-column sub-menu">
 
 
 
-                  <li class="nav-item"> <a class="nav-link {{ Request::is('quotations*') ? 'active' : '' }}" href="{{url('quotations')}}">Qutations</a></li>
+                  <li class="nav-item"> <a class="nav-link {{ Request::is('quotations.*') ? 'active' : '' }}" href="{{url('quotations')}}">Qutations</a></li>
 
 
 
                   @can('send quotations')
-                  <li class="nav-item"> <a class="nav-link {{ Request::is('send-quotation*') ? 'active' : '' }}" href="{{url('send-quotation')}}">Send Quote </a></li>
+                  <li class="nav-item"> <a class="nav-link {{ Request::is('send-quotation.*') ? 'active' : '' }}" href="{{url('send-quotation')}}">Send Quote </a></li>
                   @endcan
 
 
@@ -583,7 +563,7 @@ Admin
 
 
           @role('admin')
-          <li class="nav-item {{ Request::is('user*') || Request::is('role*') ? 'active' : '' }}">
+          <li class="nav-item {{ request()->routeIs('users.*') || request()->routeIs('roles.*') ? 'active' : '' }}">
 
             <a class="nav-link" data-toggle="collapse" href="#general-pages" aria-expanded="false" aria-controls="general-pages">
 
@@ -595,17 +575,20 @@ Admin
 
             </a>
 
-            <div class="collapse {{ Request::is('user*') || Request::is('role*') ? 'show' : '' }}" id="general-pages">
+            <div class="collapse {{ Request::is('users*') || Request::is('role.*') ? 'show' : '' }}" id="general-pages">
 
               <ul class="nav flex-column sub-menu">
 
 
 
-                <li class="nav-item"> <a class="nav-link {{ Request::is('user*') ? 'active' : '' }}" href="{{route('users.index')}}"> Users </a></li>
+                <li class="nav-item"> <a class="nav-link {{ Request::is('users.*') ? 'active' : '' }}" href="{{route('users.index')}}"> Users </a></li>
 
 
 
                 <li class="nav-item"> <a class="nav-link {{ Request::is('role*') ? 'active' : '' }}" href="{{url('roles')}}"> Roles </a></li>
+
+
+                <li class="nav-item"> <a class="nav-link {{ Request::is('work_schedule*') ? 'active' : '' }}" href="{{route('work_schedule.index')}}"> working schedule </a></li>
 
                 
               </ul>
@@ -617,7 +600,7 @@ Admin
           
 
           @can('view attendance')
-          <li class="nav-item {{ Request::is('attendance*') || Request::is('work_hours*') ? 'active' : '' }}">
+          <li class="nav-item {{ Request::is('attendance.*') || Request::is('work_hours.*') ? 'active' : '' }}">
 
             <a class="nav-link" data-toggle="collapse" href="#attendance-pages" aria-expanded="false" aria-controls="attendance-pages">
 
@@ -629,7 +612,7 @@ Admin
 
             </a>
 
-            <div class="collapse {{ Request::is('attendance*') || Request::is('work_hours*') ? 'show' : '' }}" id="attendance-pages">
+            <div class="collapse {{ Request::is('attendance.*') || Request::is('work_hours.*') ? 'show' : '' }}" id="attendance-pages">
 
               <ul class="nav flex-column sub-menu">
 
@@ -681,7 +664,7 @@ Admin
 
         
           @can('view expenses')
-          <li class="nav-item {{ Request::is('expenses*') ? 'active' : '' }}">
+          <li class="nav-item {{ request()->routeIs('expenses.*') || request()->routeIs('expense_types.*') ? 'active' : '' }}">
 
             <a class="nav-link" data-toggle="collapse" href="#expenses" aria-expanded="false" aria-controls="expenses">
 
@@ -693,13 +676,13 @@ Admin
 
             </a>
 
-            <div class="collapse {{ Request::is('expenses*') ? 'show' : '' }}" id="expenses">
+            <div class="collapse {{ Request::is('expenses.*') ? 'show' : '' }}" id="expenses">
 
               <ul class="nav flex-column sub-menu">
 
               
 
-                <li class="nav-item"> <a class="nav-link {{ Request::is('expenses*') ? 'active' : '' }}" href="{{url('expenses')}}"> Expenses </a></li>
+                <li class="nav-item"> <a class="nav-link {{ Request::is('expenses.*') ? 'active' : '' }}" href="{{url('expenses')}}"> Expenses </a></li>
 
               </ul>
 
@@ -708,7 +691,7 @@ Admin
 
                 <ul class="nav flex-column sub-menu">
                 @can('create expenses')
-                <li class="nav-item"> <a class="nav-link {{ Request::is('expenses*') ? 'active' : '' }}" href="{{url('expenses/expenses-create')}}">Add Expense </a></li>
+                <li class="nav-item"> <a class="nav-link {{ Request::is('expenses.*') ? 'active' : '' }}" href="{{url('expenses/expenses-create')}}">Add Expense </a></li>
                 @endcan
                 </ul>
 
@@ -716,12 +699,9 @@ Admin
 
                 <ul class="nav flex-column sub-menu">
                 @can('view expense types')
-                <li class="nav-item"> <a class="nav-link {{ Request::is('expense-types*') ? 'active' : '' }}" href="{{url('expense-types')}}">List Expense Types </a></li>
+                <li class="nav-item"> <a class="nav-link {{ Request::is('expense-types.*') ? 'active' : '' }}" href="{{url('expense-types')}}">List Expense Types </a></li>
                 @endcan
                 </ul>
-
-
-              
 
             </div>
 
@@ -729,9 +709,8 @@ Admin
           @endcan
 
 
-
           @can('view templates')
-         <li class="nav-item">
+         <li class="nav-item {{ request()->routeIs('email_template.*') ? 'active' : '' }}">
 
             <a class="nav-link" data-toggle="collapse" href="#page-layouts" aria-expanded="false" aria-controls="page-layouts">
 
@@ -754,29 +733,8 @@ Admin
           </li>
           @endcan
 
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
           @can('view marketing')
-          <li class="nav-item {{ Request::is('marketing*') ? 'active' : '' }}">
+          <li class="nav-item {{ request()->routeIs('marketing.*') || request()->routeIs('power_mailing.*') ? 'active' : '' }}">
 
             <a class="nav-link" data-toggle="collapse" href="#marketing" aria-expanded="false" aria-controls="marketing">
 
@@ -797,22 +755,16 @@ Admin
                   @endcan
                 </ul>
 
-
-
                 <ul class="nav flex-column sub-menu">
                   @can('email history')
                   <li class="nav-item"> <a class="nav-link {{ Request::is('mailing-history') ? 'active' : '' }}" href="{{ url('mailing-history') }}">Email history </a></li>
                   @endcan
                 </ul>
 
-
-              
-
             </div>
 
           </li>
           @endcan
-
           
 
           @can('view awards')
@@ -825,7 +777,6 @@ Admin
           </li>
           @endcan
 
-      
           @can('view holidays')
           <li class="nav-item">
             <a class="nav-link" href="{{url('/add-holidays')}}" >
@@ -835,11 +786,6 @@ Admin
             </a>
           </li>
           @endcan
-
-          
-
-
-       
 
         </ul>
 
@@ -881,7 +827,7 @@ Admin
 
 
 
-        <!-- container-scroller -->
+  <!-- container-scroller -->
 
 <div id="calendarModal" class="modal fade">
 
@@ -947,6 +893,13 @@ Admin
 
   <script src="{{asset('js/toastDemo.js')}}"></script>
 
+  <!-- JS Libraies -->
+  <script src="{{asset('vendors/izitoast/js/iziToast.min.js')}}"></script>
+  <!-- Page Specific JS File -->
+  <script src="{{asset('js/toastr.js')}}"></script>
+
+  <script src="{{asset('vendors/sweetalert/sweetalert.min.js')}}"></script>
+  <!-- <script src="{{asset('js/alerts.js')}}"></script> -->
   <!-- endinject -->
 
   <!-- Custom js for this page-->
@@ -993,11 +946,65 @@ Admin
 
   @yield('pagescript')
 
+  @push('scripts')
+  <script>
+  // Show Laravel Session Messages via iziToast (works on ALL pages)
+  document.addEventListener('DOMContentLoaded', function () {
+      @if(Session::has('success'))
+          iziToast.success({
+              title: 'Success!',
+              message: '{!! Session::get('success') !!}',
+              position: 'bottomCenter',
+              icon: 'fas fa-check-circle',   // This will now SHOW
+              timeout: 5000
+          });
+      @endif
+
+      @if(Session::has('update'))
+          iziToast.success({
+              title: 'Updated!',
+              message: '{!! Session::get('update') !!}',
+              position: 'bottomCenter',
+              icon: 'fas fa-check-circle',   // This will now SHOW
+              timeout: 5000
+          });
+      @endif
+
+      @if(Session::has('destroy'))
+          iziToast.error({
+              title: 'Deleted?',
+              message: '{!! Session::get('destroy') !!}',
+              position: 'bottomCenter',
+              icon: 'fas fa-trash-alt',
+              timeout: 5000
+          });
+      @endif
+
+      @if(Session::has('error'))
+          iziToast.error({
+              title: 'Error|',
+              message: '{!! Session::get('error') !!}',
+              position: 'bottomCenter',
+              icon: 'fas fa-exclamation-triangle',
+              timeout: 6000
+          });
+      @endif
+
+      @if(Session::has('warning'))
+          iziToast.warning({
+              title: 'Warning',
+              message: '{!! Session::get('warning') !!}',
+              position: 'bottomCenter',
+              icon: 'fas fa-exclamation-circle',
+              timeout: 6000
+          });
+      @endif
+  });
+  </script>
+  @endpush
+
+  @stack('scripts')
 </body>
-
-
-
-
 
 </html>
 

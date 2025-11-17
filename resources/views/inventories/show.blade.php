@@ -424,16 +424,18 @@ input:checked+.slider:before {
                         <div class="row">
                             <div class="col-md-3">
                                 <div class="pagination-dropdown">
-                                    <label for="per_page">Items per page</label>
-                                    <form method="GET" action="{{ route('inventories.available') }}">
-                                        @foreach(request()->except(['page', 'per_page']) as $key => $value)
-                                            <input type="hidden" name="{{ $key }}" value="{{ $value }}">
-                                        @endforeach
-                                        <select name="per_page" id="per_page" onchange="this.form.submit()" class="form-control">
-                                            @foreach($paginationOptions as $option)
-                                                <option value="{{ $option }}" {{ request('per_page', auth()->user()->getPerPagePreference()) == $option ? 'selected' : '' }}>{{ $option }} per page</option>
-                                            @endforeach
-                                        </select>
+                                    <form class="form-inline">
+                                        <div class="form-group">
+                                            <label for="rows">Records:&nbsp;</label>
+                                            <select class="form-control" id="rows" name="rows">
+                                                <option value="5" @if($rows == 5) selected @endif > 5 </option>
+                                                <option value="10" @if($rows == 10) selected @endif > 10 </option>
+                                                <option value="20" @if($rows == 20) selected @endif > 20 </option>
+                                                <option value="50" @if($rows == 50) selected @endif > 50 </option>
+                                                <option value="100" @if($rows == 100) selected @endif > 100 </option>
+                                                <option value="500" @if($rows == 500) selected @endif > 500 </option>                        
+                                            </select>
+                                        </div>
                                     </form>
                                 </div>
                             </div>
@@ -650,7 +652,17 @@ input:checked+.slider:before {
 
 
 
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const rowsSelect = document.getElementById('rows');
 
+    if (rowsSelect) {
+        rowsSelect.addEventListener('change', function () {
+            window.location = "{{ url('/inventories-available') }}?rows=" + this.value;
+        });
+    }
+});
+</script>
 
 
 

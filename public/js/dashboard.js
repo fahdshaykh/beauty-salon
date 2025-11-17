@@ -685,6 +685,8 @@
                         data: { start_date: start_date, end_date: end_date, _token: "{{ csrf_token() }}" },
 
                         success: function(response) {
+                            console.log(response);
+                            
                             var titles = ['Expenses', 'Sales', 'Profit'];
                             var totals = [];
                             if (response !== null) {

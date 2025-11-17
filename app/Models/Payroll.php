@@ -19,4 +19,17 @@ class Payroll extends Model
         'pay_period_start',
         'pay_period_end',
     ];
+
+    protected $casts = [
+        'pay_period_start' => 'date',
+        'pay_period_end'   => 'date',
+    ];
+
+    /**
+     * Get the user (employee) this payroll belongs to.
+     */
+    public function user()
+    {
+        return $this->belongsTo(\App\User::class, 'user_id');
+    }
 }

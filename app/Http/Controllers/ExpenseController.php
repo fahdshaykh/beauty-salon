@@ -10,7 +10,7 @@ use App\Expense;
 use App\ExpenseType;
 use App\Models\Setting;
 use App\Models\UserSetting;
-
+use Illuminate\Support\Facades\Auth;
 
 class ExpenseController extends Controller
 
@@ -45,19 +45,15 @@ class ExpenseController extends Controller
             $this->authorize('viewAny', Expense::class);
         }
 
-        // Handle pagination preferences
-        $paginationOptions = Setting::getPaginationOptions();
-        $perPage = $request->input('per_page', $user->getPerPagePreference());
-        if (!in_array($perPage, $paginationOptions)) {
-            $perPage = $user->getPerPagePreference();
+        // get rows per page if passed with request
+        if (request('rows')) {
+
+            $rows = 500 < intval(request('rows')) ? 500 : intval(request('rows'));
+            $rows = 5 > $rows ? 5 : $rows;
+            Auth::user()->setSettings(['expenses_rows_per_page' => $rows]);
         }
-        if ($request->has('per_page')) {
-            if ($user->setting) {
-                $user->setting->update(['per_page' => $perPage]);
-            } else {
-                UserSetting::create(['user_id' => $user->id, 'per_page' => $perPage]);
-            }
-        }
+        // otherwise retrieve from user's settings
+        $rows = Auth::user()->getSetting('expenses_rows_per_page', auth()->user()->default_rows);
 
         // Build query with joins and enforce company isolation
         $query = Expense::select('expenses.*','expense_types.type','payment_methods.method')
@@ -69,12 +65,11 @@ class ExpenseController extends Controller
             ->where('expenses.company_id', $user->company_id); // Always enforce company isolation
         
         $expenses = $query->orderBy('expenses.created_at', 'desc')
-            ->paginate($perPage)
-            ->appends(['per_page' => $perPage]);
+            ->paginate($rows);
 
 
 
-        return view('expenses.index',compact('expenses', 'paginationOptions'));
+        return view('expenses.index',compact('expenses', 'rows'));
 
     }
 
@@ -304,12 +299,12 @@ class ExpenseController extends Controller
 
      */
 
-    public function destroy($id)
+    public function destroy(Expense $expense)
     {
         $user = auth()->user();
         
         // For non-admins, only delete expenses from their company
-        $query = Expense::where('id', $id);
+        $query = Expense::where('id', $expense->id);
         if (!($user && method_exists($user, 'hasRole') && $user->hasRole('admin'))) {
             $query->where('company_id', $user->company_id);
         }

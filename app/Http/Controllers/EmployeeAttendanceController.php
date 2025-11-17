@@ -9,6 +9,7 @@ use App\User;
 use App\Models\EmployeeAttendance;
 use App\Models\WorkSchedule;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 
@@ -54,31 +55,55 @@ class EmployeeAttendanceController extends Controller
         $request->validate([
             'user_id' => 'required|exists:users,id',
         ]);
-    
+
         $user = User::findOrFail($request->user_id);
-    
-        $currentDay = now()->format('l');
-        $schedule = WorkSchedule::where('day', $currentDay)->first();
-    
-        if (!$schedule) {
-            // return response()->json(['message' => 'No schedule found for today'], 400);
-            return redirect()->back()->with('error', 'No schedule found for today');
+
+        // ---------- 1. TODAY ----------
+        $today = now()->startOfDay();               // 00:00:00 today
+        $tomorrow = $today->clone()->addDay();      // 00:00:00 tomorrow
+
+        // ---------- 2. CHECK FOR EXISTING RECORD ----------
+        $existing = EmployeeAttendance::where('user_id', $user->id)
+            ->where('check_in', '>=', $today)
+            ->where('check_in', '<', $tomorrow)
+            ->first();
+
+        if ($existing) {
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with('error', 'Attendance for this employee has already been recorded today.');
         }
-    
+
+        // ---------- 3. SCHEDULE ----------
+        $currentDay = now()->format('l');   // Monday, Tuesday, …
+        $schedule   = WorkSchedule::where('day', $currentDay)->first();
+
+        if (! $schedule) {
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with('error', 'No schedule found for today');
+        }
+
+        // ---------- 4. CHECK‑IN ----------
         $checkInTime = now();
-        $isLate = $checkInTime->gt(Carbon::parse($schedule->start_time));
-    
+        $isLate      = $checkInTime->gt(Carbon::parse($schedule->start_time));
+
+        // ---------- 5. CREATE ----------
         EmployeeAttendance::create([
-            'user_id' => $user->id,
-            'check_in' => $checkInTime,
-            'status' => $request->status,
-            'reason' => $request->reason ?? null,
+            'user_id'           => $user->id,
+            'check_in'          => $checkInTime,
+            'status'            => $request->status,
+            'reason'            => $request->reason ?? null,
             'check_in_location' => request()->ip(),
-            'is_late' => $isLate,
-            'company_id' => auth()->user()->company_id,
+            'is_late'           => $isLate,
+            'company_id'        => auth()->user()->company_id,
         ]);
-    
-        return redirect()->route('attendance')->with('success', 'user attendence created successfully');
+
+        return redirect()
+            ->route('attendance')
+            ->with('success', 'User attendance created successfully');
     }
 
     public function updateExitTime(Request $request)
@@ -138,37 +163,43 @@ class EmployeeAttendanceController extends Controller
             abort(403);
         }
 
-        // Get the current month and year
-        $start = now()->startOfMonth(); // First day of the current month
-        $end = now()->endOfMonth(); // Last day of the current month
+        $start = now()->startOfMonth();
+        $end = now()->endOfMonth();
 
         $users = User::where('company_id', auth()->user()->company_id)->get();
 
         $query = EmployeeAttendance::query();
 
-        // Apply filters based on user input or default to current month
-        if ($request->has('user_id') && $request->user_id != '') {
+        if ($request->filled('user_id')) {
             $query->where('user_id', $request->user_id);
         }
 
-        // 1. If 'date_from' and 'date_to' are provided, use them, otherwise default to current month
-        if ($request->has('date_from') && $request->date_from != '') {
+        if ($request->filled('date_from')) {
             $query->where('check_in', '>=', $request->date_from);
         } else {
-            $query->where('check_in', '>=', $start); // Default to current month's start
+            $query->where('check_in', '>=', $start);
         }
 
-        if ($request->has('date_to') && $request->date_to != '') {
-            $query->where('check_out', '<=', $request->date_to);
+        if ($request->filled('date_to')) {
+            // Better: use check_out <= end of day
+            $query->where('check_out', '<=', $request->date_to . ' 23:59:59');
         } else {
-            $query->where('check_out', '<=', $end); // Default to current month's end
+            $query->where('check_out', '<=', $end);
         }
 
-        // Fetch data for the current month or filtered dates
-        $workHours = $query->with('user')->get();
+                // get rows per page if passed with request
+        if (request('rows')) {
 
-        // Pass the data to the view
-        return view('employee_attendance.work_hours', compact('workHours', 'users'));
+            $rows = 500 < intval(request('rows')) ? 500 : intval(request('rows'));
+            $rows = 5 > $rows ? 5 : $rows;
+            Auth::user()->setSettings(['work_hours_rows_per_page' => $rows]);
+        }
+        // otherwise retrieve from user's settings
+        $rows = Auth::user()->getSetting('work_hours_rows_per_page', auth()->user()->default_rows);
+
+        $workHours = $query->with('user')->orderBy('created_at', 'desc')->paginate($rows);
+
+        return view('employee_attendance.work_hours', compact('workHours', 'users', 'rows'));
     }
 
 }

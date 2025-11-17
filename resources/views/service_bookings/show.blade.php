@@ -496,11 +496,11 @@
 
                           <button class="btn btn-primary float-right mt-4 ml-2" onclick="window.print();"><i class="fa fa-print mr-1"></i>Print</button>
 
-                          <!-- <?php if($email!=""){ ?>
+                          <?php if($email!=""){ ?>
 
                           <a href="javascript:void(0);" onclick="send_mail()" class="btn btn-success float-right mt-4"><i class="fa fa-share mr-1"></i>Send Invoice</a>
 
-                          <?php } ?> -->
+                          <?php } ?>
 
                         </div>
 

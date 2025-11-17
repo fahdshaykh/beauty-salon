@@ -13,8 +13,7 @@ use DB;
 
 use App\Models\Setting;
 use App\Models\UserSetting;
-
-
+use Illuminate\Support\Facades\Auth;
 
 class RoleController extends Controller
 
@@ -36,26 +35,23 @@ class RoleController extends Controller
 
     public function index(Request $request)
     {
-        $paginationOptions = Setting::getPaginationOptions();
-        $perPage = $request->input('per_page', auth()->user()->getPerPagePreference());
-        if (!in_array($perPage, $paginationOptions)) {
-            $perPage = auth()->user()->getPerPagePreference();
+        // get rows per page if passed with request
+        if (request('rows')) {
+
+            $rows = 500 < intval(request('rows')) ? 500 : intval(request('rows'));
+            $rows = 5 > $rows ? 5 : $rows;
+            Auth::user()->setSettings(['roles_rows_per_page' => $rows]);
         }
-        if ($request->has('per_page')) {
-            if (auth()->user()->setting) {
-                auth()->user()->setting->update(['per_page' => $perPage]);
-            } else {
-                UserSetting::create(['user_id' => auth()->user()->id, 'per_page' => $perPage]);
-            }
-        }
+        // otherwise retrieve from user's settings
+        $rows = Auth::user()->getSetting('roles_rows_per_page', auth()->user()->default_rows);
 
         $roles = Role::where('company_id', auth()->user()->company_id)
                  ->with('permissions')
-                 ->paginate($perPage);
+                 ->paginate($rows);
 
 
 
-        return view('roles.index',compact('roles','paginationOptions'));
+        return view('roles.index',compact('roles','rows'));
 
     }
 

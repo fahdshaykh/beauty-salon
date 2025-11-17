@@ -17,7 +17,7 @@ use App\Customer;
 use App\Expense;
 use App\Models\SupplierPayment;
 use DB;
-
+use App\Models\Payroll;
 
 
 class ReportController extends Controller
@@ -226,52 +226,110 @@ class ReportController extends Controller
         return response()->json($referredcustomers);
     }
     
+    // public function profit_loss_data(Request $request)
+    // {
+    //     $start_date = date("Y-m-01");
+    //     $end_date = date("Y-m-t");
+
+    //     if ($request->start_date && $request->end_date) {
+    //         $start_date = date('Y-m-d', strtotime($request->start_date));
+    //         $end_date = date('Y-m-d', strtotime($request->end_date));
+    //     }
+
+    //     $company_id = auth()->user()->company_id;
+
+    //     // 1. Fetch total general expenses
+    //     $expenses = Expense::whereDate('payable', '>=', $start_date)
+    //         ->whereDate('payable', '<=', $end_date)
+    //         ->where('company_id', $company_id)
+    //         ->select(DB::raw('SUM(amount) as totalexpense'))
+    //         ->first();
+
+    //     // 2. Fetch total supplier payments (inventory purchases)
+    //     $supplierPayments = SupplierPayment::where('company_id', $company_id)
+    //         ->whereDate('created_at', '>=', $start_date)
+    //         ->whereDate('created_at', '<=', $end_date)
+    //         ->select(DB::raw('SUM(amount) as totalpaid'))
+    //         ->first();
+
+    //         // dd($supplierPayments->totalpaid);
+    //     // 3. Fetch total sales
+    //     $sales = ServiceBooking::whereDate('due_date', '>=', $start_date)
+    //         ->whereDate('due_date', '<=', $end_date)
+    //         ->where('company_id', $company_id)
+    //         ->whereNotIn('service_status', [4, 5])
+    //         ->select(DB::raw('SUM(total_price) as totalsales'))
+    //         ->first();
+
+    //     // 4. Combine expenses
+    //     $expenseAmount = floatval($expenses->totalexpense) + floatval($supplierPayments->totalpaid);
+    //     $salesAmount = floatval($sales->totalsales);
+
+    //     $data = [
+    //         'expense' => $expenseAmount,
+    //         'sales' => $salesAmount,
+    //         'revenue' => $salesAmount - $expenseAmount
+    //     ];
+
+    //     // dd($data);
+    //     return response()->json($data);
+    // }
+
+
     public function profit_loss_data(Request $request)
     {
-        $start_date = date("Y-m-01");
-        $end_date = date("Y-m-t");
+        // ----- 1. Date Range -----
+        $start_date = now()->startOfMonth()->format('Y-m-d');
+        $end_date   = now()->endOfMonth()->format('Y-m-d');
 
-        if ($request->start_date && $request->end_date) {
+        if ($request->filled('start_date') && $request->filled('end_date')) {
             $start_date = date('Y-m-d', strtotime($request->start_date));
-            $end_date = date('Y-m-d', strtotime($request->end_date));
+            $end_date   = date('Y-m-d', strtotime($request->end_date));
         }
 
         $company_id = auth()->user()->company_id;
 
-        // 1. Fetch total general expenses
-        $expenses = Expense::whereDate('payable', '>=', $start_date)
+        // ----- 2. General Expenses -----
+        $expenses = Expense::where('company_id', $company_id)
+            ->whereDate('payable', '>=', $start_date)
             ->whereDate('payable', '<=', $end_date)
-            ->where('company_id', $company_id)
-            ->select(DB::raw('SUM(amount) as totalexpense'))
-            ->first();
+            ->sum('amount');
 
-        // 2. Fetch total supplier payments (inventory purchases)
-        $supplierPayments = SupplierPayment::where('company_id', $company_id)
+        // ----- 3. Supplier Payments -----
+        $supplier = SupplierPayment::where('company_id', $company_id)
             ->whereDate('created_at', '>=', $start_date)
             ->whereDate('created_at', '<=', $end_date)
-            ->select(DB::raw('SUM(amount) as totalpaid'))
-            ->first();
+            ->sum('amount');
 
-            // dd($supplierPayments->totalpaid);
-        // 3. Fetch total sales
-        $sales = ServiceBooking::whereDate('due_date', '>=', $start_date)
+        // ----- 4. Salaries Paid (net_pay) -----
+        $salaries = Payroll::whereHas('user', fn($q) => $q->where('company_id', $company_id))
+            ->whereDate('pay_period_start', '>=', $start_date)
+            ->whereDate('pay_period_end',   '<=', $end_date)
+            ->sum('net_pay');
+
+        // ----- 5. Sales -----
+        $sales = ServiceBooking::where('company_id', $company_id)
+            ->where('service_status', 3)
+            ->whereDate('due_date', '>=', $start_date)
             ->whereDate('due_date', '<=', $end_date)
-            ->where('company_id', $company_id)
             ->whereNotIn('service_status', [4, 5])
-            ->select(DB::raw('SUM(total_price) as totalsales'))
-            ->first();
+            ->sum('total_price');
 
-        // 4. Combine expenses
-        $expenseAmount = floatval($expenses->totalexpense) + floatval($supplierPayments->totalpaid);
-        $salesAmount = floatval($sales->totalsales);
+        // ----- 6. Final Calculation -----
+        $totalExpenses = $expenses + $supplier + $salaries;
+        $profit = $sales - $totalExpenses;
 
         $data = [
-            'expense' => $expenseAmount,
-            'sales' => $salesAmount,
-            'revenue' => $salesAmount - $expenseAmount
+            'expense' => round($totalExpenses, 2),
+            'sales'    => round($sales, 2),
+            'revenue'   => round($profit, 2),
+            'breakdown' => [
+                'general_expenses'  => round($expenses, 2),
+                'supplier_payments' => round($supplier, 2),
+                'salaries_paid'     => round($salaries, 2),
+            ]
         ];
 
-        // dd($data);
         return response()->json($data);
     }
 

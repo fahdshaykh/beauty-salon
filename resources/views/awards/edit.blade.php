@@ -1,15 +1,4 @@
 
-
-
-
-
-
-
-
-
-
-
-
 @extends('layouts.admin')
 @section('title', 'Create New Supplier | ' . Session::get('site_name'))
 

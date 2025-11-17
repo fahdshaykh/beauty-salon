@@ -23,12 +23,12 @@
         <div class="content-wrapper">
           <div class="page-header">
             <h3 class="page-title">
-              Attendance
+              Today Attendance
             </h3>
             <nav aria-label="breadcrumb">
               <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="#">Pages</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Attendance</li>
+                <li class="breadcrumb-item active" aria-current="page">Today Attendance</li>
               </ol>
             </nav>
           </div>

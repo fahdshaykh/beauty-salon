@@ -38,71 +38,28 @@
 
 
 
-        <div class="alert alert-success" style="display:none;" id="status-success"></div>
-
-
-
-        @if(Session::has('success'))
-
-        <div class="alert alert-success alert-dismissible">
-
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-
-            {{Session::get('success')}}
-
-        </div>
-
-
-
-        @elseif(Session::has('destroy'))
-
-        <div class="alert alert-danger alert-dismissible">
-
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-
-            {{Session::get('destroy')}}
-
-        </div>
-
-        @endif
-
-
-
-        @if(Session::has('update'))
-
-        <div class="alert alert-success alert-dismissible">
-
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-
-            {{Session::get('update')}}
-
-        </div>
-
-        @endif
-
-
-
-
         <div class="card">
 
             <div class="card-body">
 
                 <h4 class="card-title"></h4>
 
-                
+                <!-- paginations per page  -->
                     <div class="row">
                         <div class="col-md-3">
                             <div class="pagination-dropdown">
-                                <label for="per_page">Items per page</label>
-                                <form method="GET" action="{{ route('expenses.index') }}">
-                                    @foreach(request()->except(['page', 'per_page']) as $key => $value)
-                                        <input type="hidden" name="{{ $key }}" value="{{ $value }}">
-                                    @endforeach
-                                    <select name="per_page" id="per_page" onchange="this.form.submit()" class="form-control">
-                                        @foreach($paginationOptions as $option)
-                                            <option value="{{ $option }}" {{ request('per_page', auth()->user()->getPerPagePreference()) == $option ? 'selected' : '' }}>{{ $option }} per page</option>
-                                        @endforeach
-                                    </select>
+                                <form class="form-inline">
+                                    <div class="form-group">
+                                        <label for="rows">Records:&nbsp;</label>
+                                        <select class="form-control" id="rows" name="rows">
+                                            <option value="5" @if($rows == 5) selected @endif > 5 </option>
+                                            <option value="10" @if($rows == 10) selected @endif > 10 </option>
+                                            <option value="20" @if($rows == 20) selected @endif > 20 </option>
+                                            <option value="50" @if($rows == 50) selected @endif > 50 </option>
+                                            <option value="100" @if($rows == 100) selected @endif > 100 </option>
+                                            <option value="500" @if($rows == 500) selected @endif > 500 </option>                        
+                                        </select>
+                                    </div>
                                 </form>
                             </div>
                         </div>
@@ -156,28 +113,33 @@
 
                                         <td>{{$expense->method}}</td>
 
+
                                         <td>
+                                            <div class="d-flex gap-1">
+                                                @can('edit expenses')
+                                                <a href="{{ route('expenses.edit', $expense->id) }}"
+                                                class="btn btn-sm btn-outline-primary" title="Edit">
+                                                    <i class="fas fa-pencil-alt"></i>
+                                                </a>
+                                                @endcan
 
-                                        
-                                            @can('edit expenses')
-                                            <a href="{{url('expenses/edit',$expense->id)}}">
 
-                                                <i class="fas fa-pencil-alt text-primary" aria-hidden="true"></i>
+                                                @can('delete expenses')
+                                                <a href="javascript:void(0)"
+                                                onclick="if(confirm('Are You Sure Want To Delete?')) 
+                                                            document.getElementById('delete-cat-{{ $expense->id }}').submit();"
+                                                class="btn btn-sm btn-outline-danger ml-1" title="Delete">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </a>
 
-                                            </a>
-                                            @endcan
-                                            
-                                            @can('delete expenses')
-                                            |<a onclick="return confirm('Are you sure to delete');" href="{{url('expenses/destroy',$expense->id)}}">
+                                                <form id="delete-cat-{{ $expense->id }}"
+                                                    action="{{ route('expenses.destroy', $expense->id) }}"
+                                                    method="POST" style="display:none;">
+                                                    @csrf @method('DELETE')
+                                                </form>
+                                                @endcan
 
-                                            <i class="fas fa-trash text-danger"></i>                          
-
-                                            </a>
-                                            @endcan
-                                       
-
-                                       
-
+                                            </div>
                                         </td>
 
                                     </tr>
@@ -212,3 +174,14 @@
 
     @endsection
 
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const rowsSelect = document.getElementById('rows');
+
+    if (rowsSelect) {
+        rowsSelect.addEventListener('change', function () {
+            window.location = "{{ url('/expenses') }}?rows=" + this.value;
+        });
+    }
+});
+</script>

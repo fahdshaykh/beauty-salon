@@ -27,17 +27,26 @@ class User extends Authenticatable
     protected $guard_name = 'web';
 
     protected $fillable = [
+        'company_id',
         'name',
         'email',
+        'image',
+        'is_active',
+        'settings',
+        'default_rows',
+        'is_deleted',
+        'last_login_ip',
+        'email_verified_at',
         'password',
+        'remember_token',
         'phone',
+        'address',
+        'device_token',
+        'position',
         'base_salary',
         'commission_rate',
         'is_transport',
         'transport_allowance',
-        'address',
-        'image',
-        'company_id',  // ← ADD THIS LINE
     ];
 
         /**
@@ -49,6 +58,10 @@ class User extends Authenticatable
      * @var array
 
      */
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'settings' => 'array'
+    ];
 
     public function role()
 
@@ -84,14 +97,46 @@ class User extends Authenticatable
         return $this->hasOne(CompanySetting::class, 'company_id', 'company_id');
     }
 
-    public function setting()
+    // public function setting()
+    // {
+    //     return $this->hasOne(UserSetting::class);
+    // }
+
+    // public function getPerPagePreference()
+    // {
+    //     return $this->setting ? $this->setting->per_page : 10;
+    // }
+        // get a user's setting
+    public function getSetting(string $var, $default = null)
     {
-        return $this->hasOne(UserSetting::class);
+        if($this->settings){
+            if (array_key_exists($var, $this->settings)) {
+                return $this->settings[$var];
+            }
+        }
+        return $default;
     }
 
-    public function getPerPagePreference()
+    // update one or more settings and optionally save the model
+    public function setSettings(array $update, bool $save = true): self
     {
-        return $this->setting ? $this->setting->per_page : 10;
+        if ($this->settings != null) {
+
+            $this->settings = array_merge($this->settings, $update);
+            if ($save) {
+                $this->save();
+            }
+
+        } else {
+
+            $this->settings = array_merge($update);
+            if ($save) {
+                $this->save();
+            }
+            
+        }
+        
+        return $this;
     }
 
     public function scopeActiveInCompany($query)
@@ -178,12 +223,6 @@ public function sendPasswordResetNotification($token)
      * @var array
 
      */
-
-    protected $casts = [
-
-        'email_verified_at' => 'datetime',
-
-    ];
 
 
 

@@ -13,6 +13,7 @@ use App\Models\UserSetting;
 use Session;
 
 use DB;
+use Illuminate\Support\Facades\Auth;
 
 class ServicesController extends Controller
 
@@ -32,27 +33,23 @@ class ServicesController extends Controller
 
         $this->authorize('viewAny', Services::class);
 
-        $paginationOptions = Setting::getPaginationOptions();
-        $perPage = $request->input('per_page', auth()->user()->getPerPagePreference());
-        if (!in_array($perPage, $paginationOptions)) {
-            $perPage = auth()->user()->getPerPagePreference();
+        // get rows per page if passed with request
+        if (request('rows')) {
+
+            $rows = 500 < intval(request('rows')) ? 500 : intval(request('rows'));
+            $rows = 5 > $rows ? 5 : $rows;
+            Auth::user()->setSettings(['services_rows_per_page' => $rows]);
         }
-        if ($request->has('per_page')) {
-            if (auth()->user()->setting) {
-                auth()->user()->setting->update(['per_page' => $perPage]);
-            } else {
-                UserSetting::create(['user_id' => auth()->user()->id, 'per_page' => $perPage]);
-            }
-        }
+        // otherwise retrieve from user's settings
+        $rows = Auth::user()->getSetting('services_rows_per_page', auth()->user()->default_rows);
 
         $services = Services::select('*')->where('company_id', auth()->user()->company_id)
                                 ->orderBy('created_at', 'desc')
-                                ->paginate($perPage)
-                                ->appends(['per_page' => $perPage]);
+                                ->paginate($rows);
 
     //    echo "<pre>"; print_r($services); exit;
 
-        return view('services.index',compact('services', 'paginationOptions'));
+        return view('services.index',compact('services', 'rows'));
 
 
 
@@ -424,16 +421,16 @@ class ServicesController extends Controller
 
         // Check if the service is linked to any bookings in the BookingDetail pivot table
         if (DB::table('booking_details')->where('service_id', $service->id)->exists()) {
-            return redirect()->back()->with('success', 'Cannot delete service. It is linked to one or more bookings.');
+            return redirect()->back()->with('error', 'Cannot delete service. It is linked to one or more bookings.');
         }
 
         // Proceed with deletion if no bookings are linked
         try {
             $service->delete();
-            return redirect()->route('services.index')->with('success', 'Service deleted successfully.');
+            return redirect()->route('services.index')->with('destroy', 'Service deleted successfully.');
         } catch (\Exception $e) {
             // \Log::error("Error deleting service: {$e->getMessage()}");
-            return redirect()->back()->with('success', 'An error occurred while deleting the service.');
+            return redirect()->back()->with('error', 'An error occurred while deleting the service.');
         }
     }
 

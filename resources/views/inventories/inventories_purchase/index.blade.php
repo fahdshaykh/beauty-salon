@@ -315,108 +315,6 @@ input:checked+.slider:before {
 
 
 
-
-
-
-        <div class="alert alert-success" style="display:none;" id="status-success"></div>
-
-
-
-
-
-
-
-        @if(Session::has('success'))
-
-
-
-        <div class="alert alert-success alert-dismissible">
-
-
-
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-
-
-
-            {{Session::get('success')}}
-
-
-
-        </div>
-
-
-
-
-
-
-
-        @elseif(Session::has('destroy'))
-
-
-
-        <div class="alert alert-danger alert-dismissible">
-
-
-
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-
-
-
-            {{Session::get('destroy')}}
-
-
-
-        </div>
-
-
-
-        @endif
-
-
-
-
-
-
-
-        @if(Session::has('update'))
-
-
-
-        <div class="alert alert-success alert-dismissible">
-
-
-
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-
-
-
-            {{Session::get('update')}}
-
-
-
-        </div>
-
-
-
-        @endif
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         <div class="card">
 
 
@@ -428,16 +326,18 @@ input:checked+.slider:before {
                 <div class="row">
                     <div class="col-md-3">
                         <div class="pagination-dropdown">
-                            <label for="per_page">Items per page</label>
-                            <form method="GET" action="{{ route('inventories_purchases.index') }}">
-                                @foreach(request()->except(['page', 'per_page']) as $key => $value)
-                                    <input type="hidden" name="{{ $key }}" value="{{ $value }}">
-                                @endforeach
-                                <select name="per_page" id="per_page" onchange="this.form.submit()" class="form-control">
-                                    @foreach($paginationOptions as $option)
-                                        <option value="{{ $option }}" {{ request('per_page', auth()->user()->getPerPagePreference()) == $option ? 'selected' : '' }}>{{ $option }} per page</option>
-                                    @endforeach
-                                </select>
+                            <form class="form-inline">
+                                <div class="form-group">
+                                    <label for="rows">Records:&nbsp;</label>
+                                    <select class="form-control" id="rows" name="rows">
+                                        <option value="5" @if($rows == 5) selected @endif > 5 </option>
+                                        <option value="10" @if($rows == 10) selected @endif > 10 </option>
+                                        <option value="20" @if($rows == 20) selected @endif > 20 </option>
+                                        <option value="50" @if($rows == 50) selected @endif > 50 </option>
+                                        <option value="100" @if($rows == 100) selected @endif > 100 </option>
+										<option value="500" @if($rows == 500) selected @endif > 500 </option>                        
+                                    </select>
+                                </div>
                             </form>
                         </div>
                     </div>
@@ -568,47 +468,32 @@ input:checked+.slider:before {
 
                                         <td>{{$inventory->quantity}}</td>
 
-
                                         <td>
+                                            <div class="d-flex gap-1">
+                                                @can('edit inventory purchases')
+                                                <a href="{{ route('inventories_purchases.edit', $inventory->id) }}"
+                                                class="btn btn-sm btn-outline-primary" title="Edit inventory">
+                                                    <i class="fas fa-pencil-alt"></i>
+                                                </a>
+                                                @endcan
 
 
+                                                @can('delete inventory purchases')
+                                                <a href="javascript:void(0)"
+                                                onclick="if(confirm('Are You Sure Want To Delete?')) 
+                                                            document.getElementById('delete-cat-{{ $inventory->id }}').submit();"
+                                                class="btn btn-sm btn-outline-danger ml-1" title="Delete inventory">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </a>
 
+                                                <form id="delete-cat-{{ $inventory->id }}"
+                                                    action="{{ route('inventories_purchases.destroy', $inventory->id) }}"
+                                                    method="POST" style="display:none;">
+                                                    @csrf @method('DELETE')
+                                                </form>
+                                                @endcan
 
-
-
-                                        @can('edit inventory purchases')
-                                            <a href="{{route('inventories_purchases.edit', ['inventories_purchase' => $inventory->id])}}">
-
-
-
-                                                <i class="fas fa-pencil-alt text-primary" aria-hidden="true"></i>
-
-
-
-                                            </a>
-                                            @endcan
-
-
-
-                                            @can('delete inventory purchases')
-                                            |
-                                            <a href="#" onclick="event.preventDefault(); 
-                                                                if (confirm('Are you sure to delete?')) {
-                                                                    document.getElementById('delete-form-{{ $inventory->id }}').submit();
-                                                                }">
-                                                <i class="fas fa-trash text-danger"></i>
-                                            </a>
-
-                                            <form id="delete-form-{{ $inventory->id }}" action="{{ route('inventories_purchases.destroy', $inventory->id) }}" method="POST" style="display: none;">
-                                                @csrf
-                                                @method('DELETE')
-                                            </form>
-                                            @endcan
-
-
-
-
-
+                                            </div>
                                         </td>
 
 
@@ -671,7 +556,17 @@ input:checked+.slider:before {
 
 
 
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const rowsSelect = document.getElementById('rows');
 
+    if (rowsSelect) {
+        rowsSelect.addEventListener('change', function () {
+            window.location = "{{ url('/inventories_purchases') }}?rows=" + this.value;
+        });
+    }
+});
+</script>
 
 
     <script>

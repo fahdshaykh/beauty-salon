@@ -597,24 +597,24 @@
                         <div class="row">
 
                         
-                        <div class="col-md-3 input-group-prepend">
-                            <select id="tags" name="country_code" class="js-example-basic-single w-100">
+                            <div class="col-md-3 input-group-prepend">
+                                <select id="tags" name="country_code" class="js-example-basic-single w-100">
 
-                            @foreach ($countries as $country)
-                                
-                            <option value="{{ $country->phone_code }}" 
-                                {{ old('country_code', $customer->country_code ?? '') == $country->phone_code ? 'selected' : '' }}>
-                                +{{ $country->phone_code }}
-                            </option>
+                                @foreach ($countries as $country)
+                                    
+                                <option value="{{ $country->phone_code }}" 
+                                    {{ old('country_code', $customer->country_code ?? '') == $country->phone_code ? 'selected' : '' }}>
+                                    +{{ $country->phone_code }}
+                                </option>
 
-                            @endforeach
+                                @endforeach
 
-                            </select>
-                        </div>
+                                </select>
+                            </div>
 				
-                        <div class="col-md-9">
-                            <input type="text" id="primary_phone" name="primary_phone" minlength="10"  maxlength="14" value="" class="form-control" maxlength="11"  placeholder=""/>
-                        </div>
+                            <div class="col-md-9">
+                                <input type="text" id="primary_phone" name="primary_phone" minlength="10"  maxlength="14" value="" class="form-control" maxlength="11"  placeholder=""/>
+                            </div>
 
                         </div>
 

@@ -185,9 +185,19 @@ class QuoteController extends Controller
         if (!(auth()->user() && auth()->user()->can('view holidays'))) {
             abort(403);
         }
+
+                // get rows per page if passed with request
+        if (request('rows')) {
+
+            $rows = 500 < intval(request('rows')) ? 500 : intval(request('rows'));
+            $rows = 5 > $rows ? 5 : $rows;
+            Auth::user()->setSettings(['referred_customers_rows_per_page' => $rows]);
+        }
+        // otherwise retrieve from user's settings
+        $rows = Auth::user()->getSetting('referred_customers_rows_per_page', auth()->user()->default_rows);
         
-        $holidays = DB::table('calendar_holidays')->where('company_id',auth()->user()->company_id)->get();
-        return view('holidays.index',compact('holidays'));
+        $holidays = DB::table('calendar_holidays')->where('company_id',auth()->user()->company_id)->paginate($rows);
+        return view('holidays.index',compact('holidays', 'rows'));
     }
 
     public function update_holidays(Request $request)
@@ -247,7 +257,7 @@ class QuoteController extends Controller
         }
 
         DB::table('calendar_holidays')->where('id',$id)->delete();
-        return redirect('add-holidays')->with('success', 'Deleted Successfully.');
+        return redirect('add-holidays')->with('destroy', 'Holidays Deleted Successfully.');
     }
 
 }

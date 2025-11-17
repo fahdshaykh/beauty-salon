@@ -35,6 +35,7 @@ use App\Mail\NotificationEmail;
 use App\Models\Setting;
 use App\Models\UserSetting;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class ServiceBookingController extends Controller
 
@@ -58,29 +59,15 @@ class ServiceBookingController extends Controller
         // Authorization: ensure user can view service bookings
         $this->authorize('viewAny', ServiceBooking::class);
 
-        // Get pagination options from settings
-        $paginationOptions = Setting::getPaginationOptions();
+        // get rows per page if passed with request
+        if (request('rows')) {
 
-        // Get user's preferred per_page, fallback to request or default
-        $defaultPerPage = auth()->user()->getPerPagePreference();
-        $perPage = $request->input('per_page', $defaultPerPage);
-
-        // Validate per_page against available options
-        if (!in_array($perPage, $paginationOptions)) {
-            $perPage = $defaultPerPage;
+            $rows = 500 < intval(request('rows')) ? 500 : intval(request('rows'));
+            $rows = 5 > $rows ? 5 : $rows;
+            Auth::user()->setSettings(['service_bookings_rows_per_page' => $rows]);
         }
-
-        // Save user's per_page preference
-        if ($request->has('per_page')) {
-            if (auth()->user()->setting) {
-                auth()->user()->setting->update(['per_page' => $perPage]);
-            } else {
-                UserSetting::create([
-                    'user_id' => auth()->user()->id,
-                    'per_page' => $perPage,
-                ]);
-            }
-        }
+        // otherwise retrieve from user's settings
+        $rows = Auth::user()->getSetting('service_bookings_rows_per_page', auth()->user()->default_rows);
 
         // Start building the query
         $query = ServiceBooking::with('customer', 'user', 'services')
@@ -126,8 +113,7 @@ class ServiceBookingController extends Controller
 
         // Fetch paginated bookings
         $bookings = $query->orderBy('created_at', 'desc')
-            ->paginate($perPage)
-            ->appends($request->except('page')); // Preserve filter parameters in pagination links
+            ->paginate($rows);
 
         $data_array = [];
 
@@ -158,7 +144,7 @@ class ServiceBookingController extends Controller
         // Fetch all services for the filter dropdown
         $services = Services::where('company_id', auth()->user()->company_id)->where('is_active', 1)->get();
 
-        return view('service_bookings.index', compact('data_array', 'bookings', 'paginationOptions', 'services'));
+        return view('service_bookings.index', compact('data_array', 'bookings', 'rows', 'services'));
     }
 
 
@@ -672,53 +658,55 @@ class ServiceBookingController extends Controller
             //     }
             // }
 
-            // 1. Get existing inventory books
-            $oldBooks = InventoryBook::where('booking_id', $request->booking_id)->get()->keyBy('inventory_id');
+            if (!empty($inventory_id)) {
+                // 1. Get existing inventory books
+                $oldBooks = InventoryBook::where('booking_id', $request->booking_id)->get()->keyBy('inventory_id');
 
-            // 2. Delete all existing inventory books
-            InventoryBook::where('booking_id', $request->booking_id)->delete();
+                // 2. Delete all existing inventory books
+                InventoryBook::where('booking_id', $request->booking_id)->delete();
 
-            $newInventories = [];
-            foreach ($data['inventory_id'] as $index => $inventory_id) {
-                $quantity = $data['quantity'][$index] ?? 0;
+                $newInventories = [];
+                foreach ($data['inventory_id'] as $index => $inventory_id) {
+                    $quantity = $data['quantity'][$index] ?? 0;
 
-                if (empty($inventory_id) || $quantity <= 0) {
-                    \Log::warning("Skipping invalid entry: Inventory ID: {$inventory_id}, Quantity: {$quantity}");
-                    continue;
+                    if (empty($inventory_id) || $quantity <= 0) {
+                        \Log::warning("Skipping invalid entry: Inventory ID: {$inventory_id}, Quantity: {$quantity}");
+                        continue;
+                    }
+
+                    $newInventories[$inventory_id] = $quantity;
+
+                    // Insert new inventory book
+                    DB::table('inventory_books')->insert([
+                        'booking_id' => $request->booking_id,
+                        'inventory_id' => $inventory_id,
+                        'quantity' => $quantity,
+                    ]);
                 }
 
-                $newInventories[$inventory_id] = $quantity;
-
-                // Insert new inventory book
-                DB::table('inventory_books')->insert([
-                    'booking_id' => $request->booking_id,
-                    'inventory_id' => $inventory_id,
-                    'quantity' => $quantity,
-                ]);
-            }
-
-            // 3. Compare old vs new and update InventoryRemain
-            // Handle removed inventories: restore their quantity
-            foreach ($oldBooks as $inventory_id => $book) {
-                if (!isset($newInventories[$inventory_id])) {
-                    // Inventory was removed, so add back the quantity
-                    $remain = InventoryRemain::firstOrNew(['inventory_id' => $inventory_id]);
-                    $remain->total_quantity += $book->quantity;
-                    $remain->save();
+                // 3. Compare old vs new and update InventoryRemain
+                // Handle removed inventories: restore their quantity
+                foreach ($oldBooks as $inventory_id => $book) {
+                    if (!isset($newInventories[$inventory_id])) {
+                        // Inventory was removed, so add back the quantity
+                        $remain = InventoryRemain::firstOrNew(['inventory_id' => $inventory_id]);
+                        $remain->total_quantity += $book->quantity;
+                        $remain->save();
+                    }
                 }
-            }
 
-            // Handle new/changed inventories
-            foreach ($newInventories as $inventory_id => $newQty) {
-                $oldQty = $oldBooks[$inventory_id]->quantity ?? 0;
+                // Handle new/changed inventories
+                foreach ($newInventories as $inventory_id => $newQty) {
+                    $oldQty = $oldBooks[$inventory_id]->quantity ?? 0;
 
-                // Calculate the difference
-                $diff = $newQty - $oldQty;
+                    // Calculate the difference
+                    $diff = $newQty - $oldQty;
 
-                if ($diff != 0) {
-                    $remain = InventoryRemain::firstOrNew(['inventory_id' => $inventory_id]);
-                    $remain->total_quantity = max(0, ($remain->total_quantity ?? 0) - $diff);
-                    $remain->save();
+                    if ($diff != 0) {
+                        $remain = InventoryRemain::firstOrNew(['inventory_id' => $inventory_id]);
+                        $remain->total_quantity = max(0, ($remain->total_quantity ?? 0) - $diff);
+                        $remain->save();
+                    }
                 }
             }
 
@@ -2110,37 +2098,40 @@ class ServiceBookingController extends Controller
         //print_r(json_encode($response)); exit;
 
     }
+    
     public function cancel(Request $request)
-{
-    $bookingId = $request->input('booking_id');
-    $reason = $request->input('reason');
+    {
+        $bookingId = $request->input('booking_id');
+        $reason    = $request->input('reason');
 
-    DB::beginTransaction();
-    try {
-        $booking = ServiceBooking::findOrFail($bookingId);
-        $booking->service_status = 4;
-        $booking->save();
+        DB::beginTransaction();
+        try {
+            $booking = ServiceBooking::findOrFail($bookingId);
+            $booking->service_status = 4;          // Cancel
+            $booking->save();
 
-        BookingMessage::create([
-            'booking_id' => $bookingId,
-            'reason' => $reason,
-        ]);
+            BookingMessage::create([
+                'booking_id' => $bookingId,
+                'reason'     => $reason,
+            ]);
 
-        DB::commit();
+            DB::commit();
 
-        return redirect()->route('service-bookings.index')->with('success', 'Booking cancelled successfully.');
-        // return response()->json([
-        //     'success' => true,
-        //     'message' => 'Booking cancelled successfully.'
-        // ]);
-    } catch (\Exception $e) {
-        DB::rollBack();
-        return response()->json([
-            'success' => false,
-            'message' => 'Error: ' . $e->getMessage()
-        ], 500);
+            // Return JSON for AJAX
+            return response()->json([
+                'success' => true,
+                'message' => 'Booking cancelled successfully.'
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Error: ' . $e->getMessage()
+            ], 500);
+        }
     }
-}
 
     public function getEmployeeServices(Request $request)
     {
@@ -2153,6 +2144,109 @@ class ServiceBookingController extends Controller
         return response()->json($services);
     }
 
+    /**
+     * Show ONLY the inventory basket for a booking.
+     */
+    public function editInventory($id)
+    {
+        // Authorize – reuse the same policy you already have
+        $booking = ServiceBooking::with('inventory_books.inventory')
+                        ->where('id', $id)
+                        ->where('company_id', auth()->user()->company_id)
+                        ->firstOrFail();
+
+        $this->authorize('update', $booking);
+
+        // All inventories that have purchases (same query you use in create)
+        $inventories = Inventory::where('company_id', auth()->user()->company_id)
+                            ->whereHas('purchases')
+                            ->get();
+
+        return view('service_bookings.edit_inventory', compact('booking', 'inventories'));
+    }
+
+    /**
+     * Update ONLY the inventory part of a booking.
+     */
+    public function updateInventory(Request $request, $id)
+    {
+        $booking = ServiceBooking::where('id', $id)
+                    ->where('company_id', auth()->user()->company_id)
+                    ->firstOrFail();
+
+        $this->authorize('update', $booking);
+
+        $request->validate([
+            'inventory_id.*' => 'nullable|exists:inventories,id',
+            'quantity.*'     => 'nullable|integer|min:1',
+        ]);
+
+        // -----------------------------------------------------------------
+        // 1. Get old inventory books (keyed by inventory_id)
+        // -----------------------------------------------------------------
+        $oldBooks = InventoryBook::where('booking_id', $id)
+                    ->get()
+                    ->keyBy('inventory_id');
+
+        // -----------------------------------------------------------------
+        // 2. Delete ALL existing inventory books for this booking
+        // -----------------------------------------------------------------
+        InventoryBook::where('booking_id', $id)->delete();
+
+        // -----------------------------------------------------------------
+        // 3. Build new list (skip empty rows)
+        // -----------------------------------------------------------------
+        $newInventories = [];   // inventory_id => quantity
+        if ($request->filled('inventory_id')) {
+            foreach ($request->inventory_id as $index => $inventory_id) {
+                $quantity = $request->quantity[$index] ?? 0;
+
+                if (empty($inventory_id) || $quantity <= 0) {
+                    continue;
+                }
+
+                $newInventories[$inventory_id] = $quantity;
+
+                DB::table('inventory_books')->insert([
+                    'booking_id'   => $id,
+                    'inventory_id' => $inventory_id,
+                    'quantity'     => $quantity,
+                    'created_at'   => now(),
+                    'updated_at'   => now(),
+                ]);
+            }
+        }
+
+        // -----------------------------------------------------------------
+        // 4. Adjust InventoryRemain
+        // -----------------------------------------------------------------
+        // a) Removed inventories → add back the old quantity
+        foreach ($oldBooks as $inventory_id => $book) {
+            if (!isset($newInventories[$inventory_id])) {
+                $remain = InventoryRemain::firstOrNew(['inventory_id' => $inventory_id]);
+                $remain->company_id     = auth()->user()->company_id;
+                $remain->total_quantity = ($remain->total_quantity ?? 0) + $book->quantity;
+                $remain->save();
+            }
+        }
+
+        // b) New / changed → subtract the *difference*
+        foreach ($newInventories as $inventory_id => $newQty) {
+            $oldQty = $oldBooks[$inventory_id]->quantity ?? 0;
+            $diff   = $newQty - $oldQty;               // positive = consume more
+
+            if ($diff !== 0) {
+                $remain = InventoryRemain::firstOrNew(['inventory_id' => $inventory_id]);
+                $remain->company_id     = auth()->user()->company_id;
+                $remain->total_quantity = max(0, ($remain->total_quantity ?? 0) - $diff);
+                $remain->save();
+            }
+        }
+
+        return redirect()
+            ->route('service-bookings.index')
+            ->with('success', 'Inventory updated successfully.');
+    }
 
     // public function getEmployeeServices(Request $request)
     // {

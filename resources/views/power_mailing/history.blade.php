@@ -138,7 +138,7 @@
 
                             <div class="col-lg-3">
 
-                            <div class="input-group mb-2 mr-sm-2">
+                                <div class="input-group mb-2 mr-sm-2">
 
                                     <div id="datepicker-popup-new" class="input-group date datepicker">
 
@@ -158,7 +158,7 @@
 
                             <div class="col-lg-3">
 
-                            <div class="input-group mb-2 mr-sm-2">
+                                <div class="input-group mb-2 mr-sm-2">
 
                                     <div id="datepicker-popup-new2" class="input-group date datepicker">
 

@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use DB;
 use App\Models\Setting;
 use App\Models\UserSetting;
+use Illuminate\Support\Facades\Auth;
 
 
 class CategoryController extends Controller
@@ -34,24 +35,21 @@ class CategoryController extends Controller
     {
         $this->authorize('viewAny', Category::class);
 
-        $paginationOptions = Setting::getPaginationOptions();
-        $perPage = $request->input('per_page', auth()->user()->getPerPagePreference());
-        if (!in_array($perPage, $paginationOptions)) {
-            $perPage = auth()->user()->getPerPagePreference();
+        // get rows per page if passed with request
+        if (request('rows')) {
+
+            $rows = 500 < intval(request('rows')) ? 500 : intval(request('rows'));
+            $rows = 5 > $rows ? 5 : $rows;
+            Auth::user()->setSettings(['categories_rows_per_page' => $rows]);
         }
-        if ($request->has('per_page')) {
-            if (auth()->user()->setting) {
-                auth()->user()->setting->update(['per_page' => $perPage]);
-            } else {
-                UserSetting::create(['user_id' => auth()->user()->id, 'per_page' => $perPage]);
-            }
-        }
+        // otherwise retrieve from user's settings
+        $rows = Auth::user()->getSetting('categories_rows_per_page', auth()->user()->default_rows);
+
         $categories = Category::select('*')->where('company_id', auth()->user()->company_id)
                                 ->orderBy('created_at', 'desc')
-                                ->paginate($perPage)
-                                ->appends(['per_page' => $perPage]);
+                                ->paginate($rows);
 
-        return view('categories.index',compact('categories', 'paginationOptions'));
+        return view('categories.index',compact('categories', 'rows'));
 
     }
 
@@ -253,12 +251,6 @@ class CategoryController extends Controller
 
         return response()->json(['success'=>'Status changed successfully.']);
 
-
-
-       
-
-
-
     }
 
 
@@ -440,7 +432,7 @@ class CategoryController extends Controller
         // If no services are linked, proceed with deletion
         $category->delete();
         
-        return redirect()->route('categories.index')->with('success', 'Category deleted successfully.');
+        return redirect()->route('categories.index')->with('destroy', 'Category deleted successfully.');
     }
 
 }

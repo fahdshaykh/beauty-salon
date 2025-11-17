@@ -1,17 +1,6 @@
 @extends('layouts.admin')
 
-
-
-
-
-
-
 @section('title', 'Categories | '.Session::get('site_name'))
-
-
-
-
-
 
 
 @section('content')
@@ -67,98 +56,7 @@
         </div>
 
 
-
-
-
-
-
         <div class="alert alert-success" style="display:none;" id="status-success"></div>
-
-
-
-
-
-
-
-        @if(Session::has('success'))
-
-
-
-        <div class="alert alert-success alert-dismissible">
-
-
-
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-
-
-
-            {{Session::get('success')}}
-
-
-
-        </div>
-
-
-
-
-
-
-
-        @elseif(Session::has('destroy'))
-
-
-
-        <div class="alert alert-danger alert-dismissible">
-
-
-
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-
-
-
-            {{Session::get('destroy')}}
-
-
-
-        </div>
-
-
-
-        @endif
-
-
-
-
-
-
-
-        @if(Session::has('update'))
-
-
-
-        <div class="alert alert-success alert-dismissible">
-
-
-
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-
-
-
-            {{Session::get('update')}}
-
-
-
-        </div>
-
-
-
-        @endif
-
-
-
-
-
-
 
         <div class="card">
 
@@ -170,16 +68,18 @@
                 <div class="row">
                     <div class="col-md-3">
                         <div class="pagination-dropdown">
-                            <label for="per_page">Items per page</label>
-                            <form method="GET" action="{{ route('categories.index') }}">
-                                @foreach(request()->except(['page', 'per_page']) as $key => $value)
-                                    <input type="hidden" name="{{ $key }}" value="{{ $value }}">
-                                @endforeach
-                                <select name="per_page" id="per_page" onchange="this.form.submit()" class="form-control">
-                                    @foreach($paginationOptions as $option)
-                                        <option value="{{ $option }}" {{ request('per_page', auth()->user()->getPerPagePreference()) == $option ? 'selected' : '' }}>{{ $option }} per page</option>
-                                    @endforeach
-                                </select>
+                            <form class="form-inline">
+                                <div class="form-group">
+                                    <label for="rows">Records:&nbsp;</label>
+                                    <select class="form-control" id="rows" name="rows">
+                                        <option value="5" @if($rows == 5) selected @endif > 5 </option>
+                                        <option value="10" @if($rows == 10) selected @endif > 10 </option>
+                                        <option value="20" @if($rows == 20) selected @endif > 20 </option>
+                                        <option value="50" @if($rows == 50) selected @endif > 50 </option>
+                                        <option value="100" @if($rows == 100) selected @endif > 100 </option>
+										<option value="500" @if($rows == 500) selected @endif > 500 </option>                        
+                                    </select>
+                                </div>
                             </form>
                         </div>
                     </div>
@@ -224,52 +124,42 @@
                                         <td>{{date('m-d-Y', strtotime($category->created_at))}}</td>
 
                                         <td>
-
                                             <label class="switch">
-
-                                                <input type="checkbox" id="user-{{$category->id}}"
-
-                                                    onclick="changeCategoryStatus(event.target, {{ $category->id }});"{{($category->is_active) ? 'checked' : ''}}>
-
-
-
+                                                <input type="checkbox"
+                                                    id="user-{{ $category->id }}"
+                                                    data-name="{{ $category->name }}"
+                                                    onclick="changeCategoryStatus(this, {{ $category->id }})"
+                                                    {{ $category->is_active ? 'checked' : '' }}>
                                                 <span class="slider round"></span>
-
-
-
                                             </label>
-
-
-
                                         </td>
 
-
-
                                         <td>
-                                            <div class="btn-group align-top">
-
-                                            
-
+                                            <div class="d-flex gap-1">
                                                 @can('edit categories')
-                                                <a href="{{route('categories.edit',$category->id)}}" class="btn btn-default">
-                                                        <i class="fas fa-pen" style="font-size:15px;"></i>
+                                                <a href="{{ route('categories.edit', $category->id) }}"
+                                                class="btn btn-sm btn-outline-primary" title="Edit">
+                                                    <i class="fas fa-pencil-alt"></i>
                                                 </a>
                                                 @endcan
 
                                                 @can('delete categories')
-                                                <form method="post" action="{{ route('categories.destroy', $category->id) }}" onsubmit="return confirm('Are You Sure Want To Delete?');">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-default">
-                                                        <i class="fas fa-trash-alt" style="font-size:15px; color:red;"></i>
-                                                    </button>
+                                                <a href="javascript:void(0)"
+                                                onclick="if(confirm('Are You Sure Want To Delete?')) 
+                                                            document.getElementById('delete-cat-{{ $category->id }}').submit();"
+                                                class="btn btn-sm btn-outline-danger ml-1" title="Delete">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </a>
+
+                                                <form id="delete-cat-{{ $category->id }}"
+                                                    action="{{ route('categories.destroy', $category->id) }}"
+                                                    method="POST" style="display:none;">
+                                                    @csrf @method('DELETE')
                                                 </form>
                                                 @endcan
-
-                                            
-
                                             </div>
                                         </td>
+
 
                                     </tr>
 
@@ -320,83 +210,53 @@
     @endsection
 
 
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const rowsSelect = document.getElementById('rows');
+
+    if (rowsSelect) {
+        rowsSelect.addEventListener('change', function () {
+            window.location = "{{ url('/categories') }}?rows=" + this.value;
+        });
+    }
+});
+</script>
+
 
 <script>
 
-
-
 function changeCategoryStatus(_this, id) {
-
-
-
- 
-
-
-
-    var status = $(_this).prop('checked') == true ? 1 : 0;
-
-
+    var $checkbox = $(_this);
+    var status    = $checkbox.prop('checked') ? 1 : 0;
+    var catName   = $checkbox.data('name'); // Get category name
 
     $.ajax({
-
-
-
-        url: "{{url('category-status')}}",
-
-
-
+        url: "{{ url('category-status') }}",
         type: 'GET',
-
-
-
-        data: {
-
-
-
-            id: id,
-
-
-
-            status: status 
-
-
-
-        },
-
-
-
+        data: { id: id, status: status },
         success: function (result) {
+            // SUCCESS TOAST with Category Name
+            iziToast.success({
+                title: catName + (status ? ' Activated!' : ' Deactivated!'),
+                message: 'Status updated successfully.',
+                position: 'topRight',
+                icon: 'fas fa-check-circle',
+                timeout: 5000
+            });
+        },
+        error: function () {
+            // Revert checkbox on error
+            $checkbox.prop('checked', !status);
 
-
-
-          $("#status-success").show();
-
-
-
-          $("#status-success").html(result.success);
-
-
-
-          setTimeout(function() {
-
-
-
-            $("#status-success").hide()
-
-
-
-          }, 3000);
-
-
-
+            iziToast.error({
+                title: catName + ' – Update Failed!',
+                message: 'Could not update status. Please try again.',
+                position: 'topRight',
+                icon: 'fas fa-exclamation-triangle',
+                timeout: 6000
+            });
         }
-
-
-
     });
-
-
-
 }
 
 </script>

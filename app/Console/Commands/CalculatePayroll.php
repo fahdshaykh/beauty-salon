@@ -5,202 +5,162 @@ namespace App\Console\Commands;
 use App\Models\Payroll;
 use App\User;
 use Illuminate\Console\Command;
+use App\Models\WorkSchedule;
+use Carbon\Carbon;
 
 class CalculatePayroll extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'calculate:payroll';
+    protected $signature = 'calculate:payroll {--month= : YYYY-MM (default: previous month)}';
+    protected $description = 'Generate payroll for all employees based on work schedules';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Command description';
-
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
-     * Execute the console command.
-     *
-     * @return int
-     */
     public function handle()
     {
-        $start = now()->subMonth()->startOfMonth();
-        $end = now()->subMonth()->endOfMonth();
+        // -------------------------------------------------
+        // 1. Determine pay period
+        // -------------------------------------------------
+        $input = $this->option('month');
+        $period = $input ? Carbon::createFromFormat('Y-m', $input) : now()->subMonth();
 
-        // Monthly hours: 6 working days/week * 8 hours/day * 4.33 weeks ≈ 208 hours
-        $monthlyWorkingHours = 6 * 8 * 4;
+        $start = $period->copy()->startOfMonth();
+        $end   = $period->copy()->endOfMonth();
 
-        $users = User::where('is_deleted', 0)->whereNotNull('base_salary')->get();
+        $this->info("Generating payroll for {$start->format('F Y')}");
+
+        // -------------------------------------------------
+        // 2. Load all active users with salary
+        // -------------------------------------------------
+        $users = User::where('is_deleted', 0)
+                     ->whereNotNull('base_salary')
+                     ->where('base_salary', '>', 0)
+                     ->get();
 
         foreach ($users as $user) {
+            // Skip if payroll already exists for this period
+            $exists = Payroll::where('user_id', $user->id)
+                             ->whereDate('pay_period_start', $start)
+                             ->whereDate('pay_period_end', $end)
+                             ->exists();
 
-            $alreadyExists = Payroll::where('user_id', $user->id)
-            ->whereDate('pay_period_start', $start)
-            ->whereDate('pay_period_end', $end)
-            ->exists();
-
-            if ($alreadyExists) {
-                $this->info("Payroll already exists for user ID {$user->id} for {$start->format('F Y')}");
+            if ($exists) {
+                $this->line("  → Payroll already exists for {$user->name}");
                 continue;
             }
 
+            // -------------------------------------------------
+            // 3. Calculate **scheduled working hours** for this employee
+            // -------------------------------------------------
+            $scheduledHours = $this->getScheduledHours($user->company_id, $start, $end);
 
-            $baseSalary = $user->base_salary;
-
-            // 1. Commission from services
-            $commission = $user->serviceBookings()
-                ->whereBetween('created_at', [$start, $end])
-                ->sum('total_price') * ($user->commission_rate / 100);
-
-            // 2. Attendances in pay period
-            $attendances = $user->attendances();
-
-            // 3. Hourly Rate
-            $hourlyRate = $monthlyWorkingHours > 0 ? $baseSalary / $monthlyWorkingHours : 0;
-
-            // 4. Overtime Calculation
-            $overtimeMinutes = $attendances->sum('overtime_minutes');
-            $overtimeHours = $overtimeMinutes / 60;
-            $overtimePayment = $overtimeHours * $hourlyRate;
-
-            // 5. Leave Deduction (status = 'A')
-            $unpaidLeaves = $attendances->where('status', 'A')->count();
-            $leaveDeduction = 0;
-
-            if ($unpaidLeaves > 2) {
-                $extraLeaves = $unpaidLeaves - 2;
-                $leaveHours = $extraLeaves * 8;
-                $leaveDeduction = $leaveHours * $hourlyRate;
+            if ($scheduledHours <= 0) {
+                $this->warn("  → No schedule for {$user->name} – skipping");
+                continue;
             }
 
-            // 6. Transport Deduction
-            $transportDeduction = ($user->is_transport === 'yes' && $user->transport_allowance)
-                ? $user->transport_allowance
-                : 0;
+            $baseSalary = (float) $user->base_salary;
+            $hourlyRate = $baseSalary / $scheduledHours;
 
-            // 7. Tax Deduction (10%)
-            $taxableIncome = $baseSalary + $commission + $overtimePayment;
-            $tax = 0.10 * $taxableIncome;
-
-            // 8. Net Pay
-            $totalDeductions = $leaveDeduction + $transportDeduction + $tax;
-            $netPay = $taxableIncome - $totalDeductions;
-
-            // 9. Save to Payroll
-            Payroll::create([
-                'user_id'          => $user->id,
-                'base_salary'      => round($baseSalary, 2),
-                'commission'       => round($commission, 2),
-                'overtime_payment' => round($overtimePayment, 2),
-                'deductions'       => round($totalDeductions, 2),
-                'net_pay'          => round($netPay, 2),
-                'pay_period_start' => $start,
-                'pay_period_end'   => $end,
-            ]);
-        }
-
-        $this->info('Payroll generated successfully with accurate calculations.');
-    }
-
-
-
-
-
-
-
-
-
-
-
-     /*
-
-     for managing late penalties
-
-    public function handle()
-    {
-        $start = now()->subMonth()->startOfMonth();
-        $end = now()->subMonth()->endOfMonth();
-        $workingDaysInMonth = 26;
-
-        $users = User::where('is_deleted', 0)->whereNotNull('base_salary')->get();
-
-        foreach ($users as $user) {
-            $baseSalary = $user->base_salary;
-
-            // 1. Commission
+            // -------------------------------------------------
+            // 4. Commission
+            // -------------------------------------------------
             $commission = $user->serviceBookings()
-                ->whereBetween('created_at', [$start, $end])
-                ->sum('total_price') * ($user->commission_rate / 100);
+                               ->whereBetween('created_at', [$start, $end])
+                               ->sum('total_price') * ($user->commission_rate / 100);
 
-            // 2. Overtime
-            $overtimeMinutes = $user->attendances()
-                ->whereBetween('created_at', [$start, $end])
-                ->sum('overtime_minutes');
+            // -------------------------------------------------
+            // 5. Attendances (filtered by period)
+            // -------------------------------------------------
+            $attendances = $user->attendances()
+                                ->whereBetween('date', [$start, $end]);
 
-            $hourlyRate = $baseSalary / 160;
-            $overtimePayment = ($overtimeMinutes / 60) * $hourlyRate;
+            // Overtime
+            $overtimeMinutes = $attendances->sum('overtime_minutes');
+            $overtimePay     = ($overtimeMinutes / 60) * $hourlyRate;
 
-            // 3. Late Penalty (e.g., 100 per late)
-            $lateCount = $user->attendances()
-                ->whereBetween('created_at', [$start, $end])
-                ->where('is_late', 1)
-                ->count();
+            // Late penalty (e.g., 100 PKR per late)
+            $lateCount   = $attendances->where('is_late', 1)->count();
             $latePenalty = $lateCount * 100;
 
-            // 4. Absences (No attendance entries for a working day)
-            $attendanceDates = $user->attendances()
-                ->whereBetween('created_at', [$start, $end])
-                ->pluck('created_at')
-                ->map(fn($date) => $date->format('Y-m-d'))
-                ->unique();
+            // Unpaid leaves (assume column `status = 'A'` or `absent = 1`)
+            $unpaidLeaves = $attendances->where('status', 'A')->count();
+            $leaveDeduction = 0;
+            if ($unpaidLeaves > 2) {
+                $extra = $unpaidLeaves - 2;
+                $leaveDeduction = $extra * 8 * $hourlyRate; // 8h per day
+            }
 
-            $presentDays = $attendanceDates->count();
-            $absentDays = max(0, $workingDaysInMonth - $presentDays);
-            $dailyRate = $baseSalary / $workingDaysInMonth;
-            $absentDeduction = $absentDays * $dailyRate;
+            // -------------------------------------------------
+            // 6. Transport Allowance (added to income)
+            // -------------------------------------------------
+            $transport = ($user->is_transport === 'yes') ? (float) $user->transport_allowance : 0;
 
-            // 5. Tax (10%)
-            $tax = 0.10 * ($baseSalary + $commission);
+            // -------------------------------------------------
+            // 7. Taxable income & Tax (10%)
+            // -------------------------------------------------
+            $taxable = $baseSalary + $commission + $overtimePay + $transport;
+            $tax     = 0.10 * $taxable;
 
-            // 6. Total Deductions
-            $totalDeductions = $tax + $latePenalty + $absentDeduction;
+            // -------------------------------------------------
+            // 8. Total Deductions & Net Pay
+            // -------------------------------------------------
+            $totalDeductions = $leaveDeduction + $latePenalty + $tax;
+            $netPay = $taxable - $totalDeductions;
 
-            // 7. Net Pay
-            $netPay = $baseSalary + $commission + $overtimePayment - $totalDeductions;
-
+            // -------------------------------------------------
+            // 9. Save Payroll
+            // -------------------------------------------------
             Payroll::create([
-                'user_id' => $user->id,
-                'base_salary' => $baseSalary,
-                'commission' => $commission,
-                'overtime_payment' => $overtimePayment,
-                'deductions' => $totalDeductions,
-                'net_pay' => $netPay,
-                'pay_period_start' => $start,
-                'pay_period_end' => $end,
+                'user_id'           => $user->id,
+                'company_id'        => $user->company_id,
+                'base_salary'       => round($baseSalary, 2),
+                'commission'        => round($commission, 2),
+                'overtime_payment'  => round($overtimePay, 2),
+                'transport'         => round($transport, 2),
+                'late_penalty'      => round($latePenalty, 2),
+                'leave_deduction'   => round($leaveDeduction, 2),
+                'tax'               => round($tax, 2),
+                'deductions'        => round($totalDeductions, 2),
+                'net_pay'           => round($netPay, 2),
+                'pay_period_start'  => $start,
+                'pay_period_end'    => $end,
+                'scheduled_hours'   => $scheduledHours,
             ]);
+
+            $this->info("  → Payroll created for {$user->name}: PKR " . number_format($netPay, 2));
         }
 
-        $this->info('Payroll with penalties and deductions generated successfully.');
+        $this->info('Payroll generation completed.');
     }
 
+    /**
+     * Calculate total scheduled working hours for a company in a date range.
+     */
+    private function getScheduledHours(int $companyId, Carbon $start, Carbon $end): float
+    {
+        $schedules = WorkSchedule::where('company_id', $companyId)
+                                 ->where('is_active', 1)
+                                 ->get();
 
+        if ($schedules->isEmpty()) {
+            return 0;
+        }
 
-    */
+        $totalMinutes = 0;
 
+        $current = $start->copy();
+        while ($current->lte($end)) {
+            $dayName = $current->englishDayOfWeek; // Monday, Tuesday...
 
+            $schedule = $schedules->firstWhere('day', $dayName);
+            if ($schedule) {
+                $startTime = Carbon::createFromFormat('H:i:s', $schedule->start_time);
+                $endTime   = Carbon::createFromFormat('H:i:s', $schedule->end_time);
+                $minutes   = $endTime->diffInMinutes($startTime);
+                $totalMinutes += $minutes;
+            }
+
+            $current->addDay();
+        }
+
+        return $totalMinutes / 60; // return hours
+    }
 }

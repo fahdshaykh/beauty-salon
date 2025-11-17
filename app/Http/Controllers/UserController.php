@@ -23,8 +23,8 @@ use App\Models\UserSetting;
 use DB;
 
 use File;
-
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Spatie\Permission\PermissionRegistrar;
 
@@ -58,27 +58,22 @@ class UserController extends Controller
 
     {
 
-        $paginationOptions = Setting::getPaginationOptions();
-        $perPage = $request->input('per_page', auth()->user()->getPerPagePreference());
-        if (!in_array($perPage, $paginationOptions)) {
-            $perPage = auth()->user()->getPerPagePreference();
-        }
-        if ($request->has('per_page')) {
-            if (auth()->user()->setting) {
-                auth()->user()->setting->update(['per_page' => $perPage]);
-            } else {
-                UserSetting::create(['user_id' => auth()->user()->id, 'per_page' => $perPage]);
-            }
-        }
+        // get rows per page if passed with request
+        if (request('rows')) {
 
+            $rows = 500 < intval(request('rows')) ? 500 : intval(request('rows'));
+            $rows = 5 > $rows ? 5 : $rows;
+            Auth::user()->setSettings(['users_rows_per_page' => $rows]);
+        }
+        // otherwise retrieve from user's settings
+        $rows = Auth::user()->getSetting('users_rows_per_page', auth()->user()->default_rows);
 
 
         $users = User::where('is_deleted', 0)->where('company_id', auth()->user()->company_id)
                                 ->orderBy('created_at', 'desc')
-                                ->paginate($perPage)
-                                ->appends(['per_page' => $perPage]);
+                                ->paginate($rows);
 
-        return view('users.index',compact('users', 'paginationOptions'));
+        return view('users.index',compact('users', 'rows'));
 
 
     }
@@ -159,17 +154,7 @@ public function store(Request $request)
 
 
     public function user_status(Request $request)
-
-
-
     {
-
-
-
-        // dd($request->status);
-
-
-
         $user = User::find($request->id);
 
 
@@ -181,8 +166,16 @@ public function store(Request $request)
         $user->save();
 
 
+        if ($request->status == '1') {
 
-        return response()->json(['success'=>'Status changed successfully.']);
+            return response()->json(['success'=>' Account has been activated!']);
+
+        } else {
+
+            return response()->json(['success'=>' Account has been de-activated!']);
+
+        }
+
 
 
 

@@ -119,7 +119,7 @@
 
                                 <div class="d-md-flex">
 
-                                    <h2 class="mb-0">{{ 2 }}</h2>
+                                    <h2 class="mb-0">{{ $activeCompanies }}</h2>
 
                                 </div>
 
@@ -153,7 +153,7 @@
 
                                 <div class="d-md-flex">                                    
 
-                                    <h2 class="mb-0">{{ 1 }}</h2>
+                                    <h2 class="mb-0">{{ $inactiveCompanies }}</h2>
 
                                 </div>
 

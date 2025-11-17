@@ -141,7 +141,10 @@
                         <div class="form-group">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="input-group-text bg-primary text-white"><i class="fa fa-info-circle" aria-hidden="true"></i></span>
+                                    <span 
+                                    class="input-group-text bg-primary text-white"
+                                    title="This price is modifiable if service price is not fixed, otherwise you cannot change it.">
+                                    <i class="fa fa-info-circle" aria-hidden="true"></i></span>
                                 </div>
                                 <input type="text" name="service_price" class="form-control" id="service_price">
                             </div>
@@ -159,7 +162,9 @@
                     </div>
                 </div>
 
+                
                 <!-- Inventory Section -->
+                <p>Inventories is optional</p>
                 <div class="row">
                     <div class="col-md-8">
                         <label>Select Inventory</label>
@@ -322,7 +327,6 @@
         </div>
     </div>
 </div>
-
 
 <script>
 $(document).ready(function() {
@@ -566,15 +570,33 @@ $(document).ready(function() {
                 inventory_id: inventoryId
             },
             success: function(response) {
+                // Out of stock
                 if (response.quantity <= 0) {
-                    alert(`Inventory "${inventoryName}" is out of stock (${response.quantity})!`);
+                    swal({
+                        title: "Out of Stock!",
+                        text: `Inventory "${inventoryName}" is out of stock (${response.quantity})!`,
+                        icon: "error",
+                        button: "OK",
+                        className: "swal-error-custom" // optional: for styling
+                    });
                     return;
                 }
+
                 let rowClass = "";
+
+                // Low stock warning
                 if (response.quantity < response.low_alert) {
-                    alert(`Warning: Inventory "${inventoryName}" quantity is low (${response.quantity})!`);
+                    swal({
+                        title: "Low Stock Warning",
+                        text: `Warning: Inventory "${inventoryName}" quantity is low (${response.quantity})!`,
+                        icon: "warning",
+                        button: "OK",
+                        className: "swal-warning-custom"
+                    });
                     rowClass = "table-danger";
                 }
+
+                // Add to basket
                 $('#basket_body').append(`
                     <tr class="${rowClass}">
                         <td>
@@ -582,15 +604,16 @@ $(document).ready(function() {
                             ${inventoryName}
                         </td>
                         <td>
-                            <input type="number" class="form-control" name="quantity[]" value="" min="1" required>
+                            <input type="number" class="form-control" name="quantity[]" value="1" min="1" max="${response.quantity}" required>
                         </td>
                         <td>
                             <button type="button" class="btn btn-danger btn-sm remove-row">Remove</button>
                         </td>
                     </tr>
                 `);
+
                 $('#basket_table').show();
-                inventorySelect.val('');
+                inventorySelect.val('').trigger('change'); // if using select2
             },
             error: function(xhr) {
                 alert('Failed to check inventory. Please try again.');

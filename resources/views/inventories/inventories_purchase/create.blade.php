@@ -199,7 +199,7 @@ $(document).ready(function() {
 
                         <label for="name">Select Item</label>
 
-                        <select class="form-control" id="name" name="inventory_id">
+                        <select class="js-example-basic-single w-100" id="name" name="inventory_id">
                            @foreach($inventories as   $inventory)
                              <option value="{{ $inventory->id }}">{{ $inventory->name }}</option>
                             @endforeach
@@ -246,7 +246,7 @@ $(document).ready(function() {
 
                         <label for="name">Select Supplier</label>
 
-                        <select class="form-control" id="name" name="supplier_id">
+                        <select class="js-example-basic-single w-100" id="name" name="supplier_id">
                            @foreach($suppliers as   $supplier)
                              <option value="{{ $supplier->id }}">{{ $supplier->name }}</option>
                             @endforeach

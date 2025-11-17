@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Models\Setting;
 use App\Models\UserSetting;
+use Illuminate\Support\Facades\Auth;
 
 class AwardController extends Controller
 {
@@ -19,24 +20,22 @@ class AwardController extends Controller
     {
         // Authorize listing
         $this->authorize('viewAny', Award::class);
-        $paginationOptions = Setting::getPaginationOptions();
-        $perPage = $request->input('per_page', auth()->user()->getPerPagePreference());
-        if (!in_array($perPage, $paginationOptions)) {
-            $perPage = auth()->user()->getPerPagePreference();
+
+        // get rows per page if passed with request
+        if (request('rows')) {
+
+            $rows = 500 < intval(request('rows')) ? 500 : intval(request('rows'));
+            $rows = 5 > $rows ? 5 : $rows;
+            Auth::user()->setSettings(['awards_rows_per_page' => $rows]);
         }
-        if ($request->has('per_page')) {
-            if (auth()->user()->setting) {
-                auth()->user()->setting->update(['per_page' => $perPage]);
-            } else {
-                UserSetting::create(['user_id' => auth()->user()->id, 'per_page' => $perPage]);
-            }
-        }
+        // otherwise retrieve from user's settings
+        $rows = Auth::user()->getSetting('awards_rows_per_page', auth()->user()->default_rows);
         
 
         $awards = Award::where('company_id', auth()->user()->company_id)
-        ->paginate($perPage)->appends(['per_page' => $perPage]);
+        ->paginate($rows);
 
-        return view('awards.index', compact('awards', 'paginationOptions'));
+        return view('awards.index', compact('awards', 'rows'));
     }
 
     /**
@@ -46,7 +45,7 @@ class AwardController extends Controller
     {
         // Authorize create
         $this->authorize('create', Award::class);
-        $users =DB::table('users')->where('company_id', auth()->user()->company_id)
+        $users =DB::table('users')->where('is_deleted', 0)->where('company_id', auth()->user()->company_id)
         ->get(); // Fetch all employees
         return view('awards.create', compact('users'));
     }
@@ -128,7 +127,7 @@ class AwardController extends Controller
         // Authorize delete (policy will enforce company scope)
         $this->authorize('delete', $award);
         $award->delete();
-        return redirect('/awards')->with('success', 'Award deleted successfully.');
+        return redirect('/awards')->with('destroy', 'Award deleted successfully.');
     }
     
 }

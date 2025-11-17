@@ -12,6 +12,7 @@ use App\Models\SupplierBalance;
 use App\Models\SupplierPayment;
 use App\Models\Setting;
 use App\Models\UserSetting;
+use Illuminate\Support\Facades\Auth;
 
 class InventoryPurchasesController extends Controller
 {
@@ -26,23 +27,20 @@ class InventoryPurchasesController extends Controller
             abort(403);
         }
 
-        $paginationOptions = Setting::getPaginationOptions();
-        $perPage = $request->input('per_page', auth()->user()->getPerPagePreference());
-        if (!in_array($perPage, $paginationOptions)) {
-            $perPage = auth()->user()->getPerPagePreference();
+        // get rows per page if passed with request
+        if (request('rows')) {
+
+            $rows = 500 < intval(request('rows')) ? 500 : intval(request('rows'));
+            $rows = 5 > $rows ? 5 : $rows;
+            Auth::user()->setSettings(['inventories_purchases_rows_per_page' => $rows]);
         }
-        if ($request->has('per_page')) {
-            if (auth()->user()->setting) {
-                auth()->user()->setting->update(['per_page' => $perPage]);
-            } else {
-                UserSetting::create(['user_id' => auth()->user()->id, 'per_page' => $perPage]);
-            }
-        }
+        // otherwise retrieve from user's settings
+        $rows = Auth::user()->getSetting('inventories_purchases_rows_per_page', auth()->user()->default_rows);
 
         $purchases = InventoryPurchases::where('company_id', auth()->user()->company_id)->orderBy('created_at', 'desc')
-        ->paginate($perPage)->appends(['per_page' => $perPage]);
+        ->paginate($rows);
 
-        return view('inventories.inventories_purchase.index', compact('purchases', 'paginationOptions'));
+        return view('inventories.inventories_purchase.index', compact('purchases', 'rows'));
     }
 
     /**
@@ -100,7 +98,7 @@ class InventoryPurchasesController extends Controller
         }
     
 
-        return redirect(route('inventories_purchases.index'));
+        return redirect(route('inventories_purchases.index'))->with('success', 'Inventory item purchased successfully');
     }
 
     /**
@@ -201,7 +199,7 @@ class InventoryPurchasesController extends Controller
         }
     
         // Redirect to the list of purchases
-        return redirect(route('inventories_purchases.index'))->with('success', 'Purchase updated successfully.');
+        return redirect(route('inventories_purchases.index'))->with('success', 'Inventory item updated successfully');
     }
     
 
@@ -224,6 +222,6 @@ class InventoryPurchasesController extends Controller
     
         $purchase->delete();
     
-        return redirect()->back()->with('success', 'Purchase and payments reversed.');
+        return redirect()->back()->with('destroy', 'Purchase and payments reversed.');
     }
 }

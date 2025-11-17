@@ -15,45 +15,28 @@
             </nav>
         </div>
 
-        <!-- Success Messages -->
-        @if(session('success'))
-            <div class="alert alert-success alert-dismissible">
-                <a href="#" class="close" data-dismiss="alert">&times;</a>
-                {{ session('success') }}
-            </div>
-        @endif
-
-        @if(session('destroy'))
-            <div class="alert alert-danger alert-dismissible">
-                <a href="#" class="close" data-dismiss="alert">&times;</a>
-                {{ session('destroy') }}
-            </div>
-        @endif
-
-        @if(session('update'))
-            <div class="alert alert-success alert-dismissible">
-                <a href="#" class="close" data-dismiss="alert">&times;</a>
-                {{ session('update') }}
-            </div>
-        @endif
-
         <div class="card">
             <div class="card-body">
                 <!-- Pagination Dropdown -->
                 <div class="row mb-3">
-                    <div class="col-md-3">
-                        <form method="GET" action="{{ route('roles.index') }}">
-                            @foreach(request()->except(['page', 'per_page']) as $key => $value)
-                                <input type="hidden" name="{{ $key }}" value="{{ $value }}">
-                            @endforeach
-                            <select name="per_page" onchange="this.form.submit()" class="form-control">
-                                @foreach([10, 25, 50, 100] as $option)
-                                    <option value="{{ $option }}" {{ request('per_page', 10) == $option ? 'selected' : '' }}>
-                                        {{ $option }} per page
-                                    </option>
-                                @endforeach
-                            </select>
-                        </form>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="pagination-dropdown">
+                                <form class="form-inline">
+                                    <div class="form-group">
+                                        <label for="rows">Records:&nbsp;</label>
+                                        <select class="form-control" id="rows" name="rows">
+                                            <option value="5" @if($rows == 5) selected @endif > 5 </option>
+                                            <option value="10" @if($rows == 10) selected @endif > 10 </option>
+                                            <option value="20" @if($rows == 20) selected @endif > 20 </option>
+                                            <option value="50" @if($rows == 50) selected @endif > 50 </option>
+                                            <option value="100" @if($rows == 100) selected @endif > 100 </option>
+                                            <option value="500" @if($rows == 500) selected @endif > 500 </option>                        
+                                        </select>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
                     </div>
                     <div class="col-md-6"></div>
                     <div class="col-md-3 text-right">
@@ -96,8 +79,10 @@
                                     <td>{{ $role->created_at->format('m-d-Y') }}</td>
                                     <td>
                                         @can('edit roles')
-                                            <a href="{{ route('roles.edit', $role) }}" class="text-warning mr-2">
-                                                <i class="fas fa-pencil-alt"></i>
+
+                                            <a href="{{ route('roles.edit', $role) }}"
+                                                class="btn btn-sm btn-outline-primary" title="Edit Role">
+                                                    <i class="fas fa-pencil-alt"></i>
                                             </a>
                                         @endcan
 
@@ -105,7 +90,7 @@
                                             @if($role->name !== 'admin')
                                                 <form action="{{ route('roles.destroy', $role) }}" method="POST" style="display:inline">
                                                     @csrf @method('DELETE')
-                                                    <button type="submit" class="border-0 bg-transparent text-danger"
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger ml-1"
                                                             onclick="return confirm('Delete {{ $role->name }} role?')">
                                                         <i class="fas fa-trash-alt"></i>
                                                     </button>
@@ -138,3 +123,15 @@
     </div>
 </div>
 @endsection
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const rowsSelect = document.getElementById('rows');
+
+    if (rowsSelect) {
+        rowsSelect.addEventListener('change', function () {
+            window.location = "{{ url('/roles') }}?rows=" + this.value;
+        });
+    }
+});
+</script>
