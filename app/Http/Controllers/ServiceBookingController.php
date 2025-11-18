@@ -310,6 +310,40 @@ class ServiceBookingController extends Controller
         }
 
         // code for manage inventory start here end
+
+        $message_status = DB::table('company_settings')->select('*')->where('company_id', auth()->user()->company_id)->get();
+
+        if($message_status['0']->message_permissions == 1){
+
+            if($message_status['0']->sms_count<=0){
+
+                return redirect('service-bookings')->with('success', 'Booking Updated successfully. Message not sent due to insufficient SMS balance.');
+
+            }
+
+           $response =  $this->send_message($request->booking_id, 'Booking');
+
+           if(isset($response->error)){
+
+                return redirect('service-bookings')->with('destroy', 'Booking created successfully. Message not sent to customer. Ask bSaloon to check this error: '.$response->error->msg.'.');
+
+            }else{
+
+                $remaining_sms = $message_status['0']->sms_count-1;
+
+                DB::table('company_settings')->where('company_id', auth()->user()->company_id)->update([
+
+                    'sms_count' => $remaining_sms,
+
+                ]);
+
+                return redirect('service-bookings')->with('success', 'Booking created successfully & Message sent to customer.');
+
+            }
+
+
+
+        }
     
         return redirect('service-bookings')->with('success', 'Booking created successfully.');
         
@@ -717,39 +751,39 @@ class ServiceBookingController extends Controller
 
         //         $this->mobile_notification($request->service_id,auth()->user()->id,$data['due_date']);
 
-        // $message_status = DB::table('company_settings')->select('*')->where('company_id', auth()->user()->company_id)->get();
+        $message_status = DB::table('company_settings')->select('*')->where('company_id', auth()->user()->company_id)->get();
 
-        // if($message_status['0']->message_permissions == 1){
+        if($message_status['0']->message_permissions == 1){
 
-        //     if($message_status['0']->sms_count<=0){
+            if($message_status['0']->sms_count<=0){
 
-        //         return redirect('service-bookings')->with('success', 'Booking Updated successfully. Message not sent due to insufficient SMS balance.');
+                return redirect('service-bookings')->with('success', 'Booking Updated successfully. Message not sent due to insufficient SMS balance.');
 
-        //     }
+            }
 
-        //    $response =  $this->send_message($request->booking_id,'update');
+           $response =  $this->send_message($request->booking_id, 'Booking');
 
-        //    if(isset($response->error)){
+           if(isset($response->error)){
 
-        //         return redirect('service-bookings')->with('destroy', 'Booking Updated successfully. Message not sent to customer. Ask bSaloon to check this error: '.$response->error->msg.'.');
+                return redirect('service-bookings')->with('destroy', 'Booking Updated successfully. Message not sent to customer. Ask bSaloon to check this error: '.$response->error->msg.'.');
 
-        //     }else{
+            }else{
 
-        //         $remaining_sms = $message_status['0']->sms_count-1;
+                $remaining_sms = $message_status['0']->sms_count-1;
 
-        //         DB::table('company_settings')->where('company_id', auth()->user()->company_id)->update([
+                DB::table('company_settings')->where('company_id', auth()->user()->company_id)->update([
 
-        //             'sms_count' => $remaining_sms,
+                    'sms_count' => $remaining_sms,
 
-        //         ]);
+                ]);
 
-        //         return redirect('service-bookings')->with('success', 'Booking Updated successfully & Message sent to customer.');
+                return redirect('service-bookings')->with('success', 'Booking Updated successfully & Message sent to customer.');
 
-        //     }
+            }
 
 
 
-        // }
+        }
 
         // else{
 
@@ -1253,7 +1287,10 @@ class ServiceBookingController extends Controller
 
 
 
-    public function invoice_sms(Request $request){
+    public function invoice_sms(Request $request)
+    {
+
+        $settings = DB::table('company_settings')->where('company_id', auth()->user()->company_id)->first();
 
         $response = $this->check_credits();
 
@@ -1279,7 +1316,7 @@ class ServiceBookingController extends Controller
 
             $customer = $booking_detail[0]->customer->first_name .' '.$booking_detail[0]->customer->last_name;
 
-            $api_key = 'acApZrJKNW89EaYYIj2QRzPGGz2iJz9kSAPssZ26w050RU';
+            $api_key = $settings->voodoosms_api_key;
 
              $body = '{
 
@@ -1289,7 +1326,7 @@ class ServiceBookingController extends Controller
 
                  "from": "'.$company_from.'",
 
-                 "country_code": "44",
+                 "country_code": "'.$booking_detail[0]->customer->country_code.'",
 
                  "msg": "Dear '.$customer.'\n Total Amount for '.$services.' is £'.$booking_detail[0]->total_price.' against invoice '.$booking_detail[0]->invoice.'-'.$booking_detail[0]->customer->zip.' .Click to view invoice https://app.bSaloon.co.uk/sms-invoice-mail/'.$request->invoice.'/'.$booking_detail[0]->company_id.'",
 
@@ -1358,13 +1395,11 @@ class ServiceBookingController extends Controller
 
 
 
-    public function send_message($bookingID,$action)
-
-
-
+    public function send_message($bookingID, $action)
     {
 
         //echo $bookingID; exit;
+        $settings = DB::table('company_settings')->where('company_id', auth()->user()->company_id)->first();
 
         $response = $this->check_credits();
 
@@ -1427,9 +1462,10 @@ class ServiceBookingController extends Controller
 
             $services = rtrim($services, ',');
 
-            $company_from = ($smart_name=='')? $company_name:$smart_name;
+            $company_from = ($smart_name=='') ? $company_name : $smart_name;
 
-            $api_key = 'acApZrJKNW89EaYYIj2QRzPGGz2iJz9kSAPssZ26w050RU';
+            
+            $api_key = $settings->voodoosms_api_key;
 
             $body = '{
 
@@ -1439,7 +1475,7 @@ class ServiceBookingController extends Controller
 
                 "from": "'.$company_from.'",
 
-                "country_code": "44",
+                "country_code": "'.$booking_detail[0]->customer->country_code.'",
 
                 "dynamic_data": [
 
@@ -1649,9 +1685,7 @@ class ServiceBookingController extends Controller
 
     {
 
-        
-
-        
+        $settings = DB::table('company_settings')->where('company_id', auth()->user()->company_id)->first();
 
         $review = DB::table('company_settings')
 
@@ -1661,11 +1695,11 @@ class ServiceBookingController extends Controller
 
         ->get();
 
-        $api_key = 'acApZrJKNW89EaYYIj2QRzPGGz2iJz9kSAPssZ26w050RU';
+        $api_key = $settings->voodoosms_api_key;
 
         if($review[0]->sms_count<=0){
 
-            return response()->json(['error' => 'You have insuffiecient sms Balance. Contact bSaloon.']);
+            return response()->json(['error' => 'You have insuffiecient sms Balance. Check Voodoo SMS account.']);
 
         }
 
@@ -1995,9 +2029,12 @@ class ServiceBookingController extends Controller
 
     
 
-    public function check_credits(){
+    public function check_credits()
+    {
+        
+        $settings = DB::table('company_settings')->where('company_id', auth()->user()->company_id)->first();
 
-        $api_key = 'acApZrJKNW89EaYYIj2QRzPGGz2iJz9kSAPssZ26w050RU';
+        $api_key = $settings->voodoosms_api_key;
 
         $ch = curl_init('https://api.voodoosms.com/credits');
 

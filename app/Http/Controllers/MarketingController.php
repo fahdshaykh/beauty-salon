@@ -1,16 +1,21 @@
 <?php
 
 namespace App\Http\Controllers;
-use DB;
+
 use App\ServiceBooking;
 use Mail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Twilio\Rest\Client;
 
 class MarketingController extends Controller
 {
-    public function index(){
-        
+    public function index()
+    {
+        if (! (auth()->user() && auth()->user()->can('sms marketing'))) {
+            abort(403);
+        }
         // if($templates['body']!=""){
 
         // } 
@@ -23,12 +28,13 @@ class MarketingController extends Controller
 
      
 
-        $templates_data=DB::table('templates')->select('type')->where('status',1)->where('company_id', auth()->user()->company_id)->groupBy('type')->get();
+        $templates_data=DB::table('templates')->select('type')->where('type', 1)->where('status',1)->where('company_id', auth()->user()->company_id)->groupBy('type')->get();
         return view('marketing.index',compact('zipcode','templates_data','services','settings'));
         
     }
 
-    public function postcard(){
+    public function postcard()
+    {
         //for services
         $services=DB::table('services')->select('id','name')->where('is_active', 1)->where('company_id', auth()->user()->company_id)->groupBy('name')->get();
         // for zip-code
@@ -46,6 +52,12 @@ class MarketingController extends Controller
 
     public function find_customers(Request $request)
     {   
+        if (! (auth()->user() && auth()->user()->can('sms marketing'))) {
+            abort(403);
+        }
+
+        $all_services_by_customer = [];
+
         DB::enableQueryLog();
         $start_date=$request->start_date;
         $end_date=$request->end_date;
@@ -55,7 +67,7 @@ class MarketingController extends Controller
         //echo $start_date.'>>>'.$end_date.'>>>>'.$service_id.'>>>>>'.$zip.'>>>>'.$ref; exit;
         if($start_date=="" && $end_date=="" && $ref=="" && $service_id=="" && $zip==""){   $customers="no";
      
-            return view('marketing.response',compact('customers'));
+            return view('marketing.response',compact('customers','all_services_by_customer'));
         }
         else if($service_id==""){
             //dd($request->all());
@@ -90,13 +102,13 @@ class MarketingController extends Controller
             if(count($customers)>0){
                 
                   //dd($customers); exit;
-                $view = view('marketing.response',compact('customers'))->render();
+                $view = view('marketing.response',compact('customers','all_services_by_customer'))->render();
                 return response()->json($view);
             }
             else{
               
                 $customers="no";
-                return view('marketing.response',compact('customers'));
+                return view('marketing.response',compact('customers','all_services_by_customer'));
             } 
         }
        
@@ -142,7 +154,7 @@ class MarketingController extends Controller
             }
             else{
                 $customers="no";
-                return view('marketing.response',compact('customers'));
+                return view('marketing.response',compact('customers','all_services_by_customer'));
             }
                 // $customers = DB::table('customers')->join('service_bookings', 'service_bookings.customer_id', '=', 'customers.id')->whereIn('service_bookings.id',$booking_ids);
            
@@ -244,18 +256,26 @@ class MarketingController extends Controller
         }
         
     }
-    function find_templates(Request $request){
+    function find_templates(Request $request)
+    {
         $type=$request->template_type;
         $template_title=DB::table('templates')->select('id','title')->where('type',$type)->where('company_id', auth()->user()->company_id)->get();
         return response()->json($template_title);
     }
 
-    function send_message(Request $request){
-        //echo "<pre>"; print_r($request->all()); exit;
+    function send_message(Request $request)
+    {
+        if (! (auth()->user() && auth()->user()->can('sms marketing'))) {
+            abort(403);
+        }
+        // echo "<pre>"; print_r($request->all()); exit;
+        $settings = DB::table('company_settings')->where('company_id', auth()->user()->company_id)->first();
+        $api_key = $settings->voodoosms_api_key;
+
         if($request->type==1){
             //print_r($request->phoneumber); exit;
            $template_text =  DB::table('templates')->where('id', $request->title)->pluck('description')->first();
-           $customers =  DB::table('customers')->select('id','primary_phone','first_name','last_name','sms_optout_msg')->whereIn('id', $request->phoneumber)->get()->toArray();
+           $customers =  DB::table('customers')->select('id','country_code','primary_phone','first_name','last_name','sms_optout_msg')->whereIn('id', $request->phoneumber)->get()->toArray();
             //setting optout link for customer only for one time
             
             $result = "";
@@ -266,7 +286,7 @@ class MarketingController extends Controller
            $company_settings =  DB::table('company_settings')->select('*')->where('company_id',  auth()->user()->company_id)->get();
            $total_numbers = count($phonenumbers);
            if($company_settings[0]->sms_count<=0){
-                return redirect('marketing')->with('destroy', 'You have insufficient SMS balance. Please contact bSaloon.');
+                return redirect('marketing')->with('destroy', 'You have insufficient SMS balance. Check Voodoo SMS account.');
            }
            elseif($company_settings[0]->sms_count<$total_numbers){
                 return redirect('marketing')->with('destroy', 'You Can not Send SMS. Selected customers are '.$total_numbers.' & Remaining Balance is '.$company_settings[0]->sms_count.' Please contact bSaloon.');
@@ -277,13 +297,13 @@ class MarketingController extends Controller
            }
         //    $smstype = ($total_numbers==1)? 'sendsms': 'bulksms' ;
            foreach($customers as $cusotmer){
-            $optoutlink = "";
-            if($cusotmer->sms_optout_msg==0){
-                $optoutlink = ' For Opt Out Click Following Link https://app.bSaloon.co.uk/smsoptout/'.auth()->user()->company_id.'/'.$cusotmer->id.'/1';
-                DB::table('customers')->where('id', $cusotmer->id)->update([
-                    'sms_optout_msg' => 1,
-                ]);
-            } 
+            // $optoutlink = "";
+            // if($cusotmer->sms_optout_msg==0){
+            //     $optoutlink = ' For Opt Out Click Following Link https://app.bSaloon.co.uk/smsoptout/'.auth()->user()->company_id.'/'.$cusotmer->id.'/1';
+            //     DB::table('customers')->where('id', $cusotmer->id)->update([
+            //         'sms_optout_msg' => 1,
+            //     ]);
+            // } 
            
             if($request->schedule!=0){
                 $schedule =  $request->schedule_date.' '.$request->schedule_time;
@@ -295,7 +315,7 @@ class MarketingController extends Controller
     
                     "from": "'.$from.'",
     
-                    "country_code": "44",
+                    "country_code": "'.$cusotmer->country_code.'",
                     "schedule": "'.$schedule.'" ,
                     "dynamic_data": [
     
@@ -307,7 +327,7 @@ class MarketingController extends Controller
     
                     ],
     
-                    "msg": "'.$template_text.' '.$optoutlink.'",
+                    "msg": "'.$template_text.'",
     
                     "sandbox": false
     
@@ -334,7 +354,7 @@ class MarketingController extends Controller
     
                     "from": "'.$from.'",
     
-                    "country_code": "44",
+                    "country_code": "'.$cusotmer->country_code.'",
     
                     "dynamic_data": [
     
@@ -346,7 +366,7 @@ class MarketingController extends Controller
     
                     ],
     
-                    "msg": "'.$template_text.' '.$optoutlink.'",
+                    "msg": "'.$template_text.'",
     
                     "sandbox": false
     
@@ -357,7 +377,7 @@ class MarketingController extends Controller
 
             curl_setopt($ch, CURLOPT_POST, true);
             curl_setopt($ch, CURLOPT_HTTPHEADER, [
-                'Authorization: acApZrJKNW89EaYYIj2QRzPGGz2iJz9kSAPssZ26w050RU'
+                'Authorization: ' . $api_key
             ]);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $msg);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -467,8 +487,11 @@ class MarketingController extends Controller
 
     
 
-    public function get_scheduled_list(){
-        $api_key = 'acApZrJKNW89EaYYIj2QRzPGGz2iJz9kSAPssZ26w050RU';
+    public function get_scheduled_list()
+    {
+        $settings = DB::table('company_settings')->where('company_id', auth()->user()->company_id)->first();
+        $api_key = $settings->voodoosms_api_key;
+
         $ch = curl_init('https://api.voodoosms.com/schedule');
 
             curl_setopt($ch, CURLOPT_POST, true);
@@ -484,6 +507,10 @@ class MarketingController extends Controller
     }
     public function sms_history()
     {
+        if (! (auth()->user() && auth()->user()->can('sms history'))) {
+            abort(403);
+        }
+
         $type = 'all';
         $start_date = '';
         $end_date = '';
@@ -494,6 +521,10 @@ class MarketingController extends Controller
 
     public function sms_history_filter(Request $request)
     {
+        if (! (auth()->user() && auth()->user()->can('sms history'))) {
+            abort(403);
+        }
+        
         $start_date=$request->start_date;
         $end_date=$request->end_date;
         $type=$request->type;
@@ -509,9 +540,11 @@ class MarketingController extends Controller
         return view('marketing.sms_history',compact('history','type','start_date','end_date'));
     }
 
-    public function cancel_scheduled_sms(){
+    public function cancel_scheduled_sms()
+    {
         //echo "hkasjdfksadf"; exit;
-        $api_key = 'acApZrJKNW89EaYYIj2QRzPGGz2iJz9kSAPssZ26w050RU';           
+        $settings = DB::table('company_settings')->where('company_id', auth()->user()->company_id)->first();
+        $api_key = $settings->voodoosms_api_key;           
             $ch = curl_init('https://api.voodoosms.com/schedule/5813799');
             curl_setopt($ch, CURLOPT_HTTPHEADER, [
                 'Authorization: ' . $api_key

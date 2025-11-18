@@ -61,56 +61,36 @@
                     <div class="card-body">
                         <h4 class="card-title">E-Mails Send Form <?php echo date("Y-m-d h:i A"); ?></h4>
                         <div class="row">
-                        <form class="form-inline" method="post" action="{{url('customer-email-filter')}}">
-                        @csrf
-                            <!-- <div class="col-lg-2">
+                        <form class="form-inline" method="get" action="{{ route('power_mailing.create') }}">
+                            <div class="col-lg-2">
                                 <div class="form-group">
-                                    <label>Select Post Code</label>
-                                    <select id="service_id" name="zip[]" class="form-control js-example-basic-multiple w-100" multiple="multiple">
-                                        
-                                        @foreach($zipcode as $data)
-                                        <option value="{{$data->zip}}">{{$data->zip}}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div> -->
-                            <!-- <div class="col-lg-2">
-                                <div class="form-group">
-                                    <label>Select Referred by</label>
 
                                     <select id="id" name="referred_by[]" class="form-control js-example-basic-multiple w-100" multiple="multiple">
-                                    <option value="Google">Google</option>
-                                    <option value="Leaflet">Leaflet</option>
-                                    <option value="Recommendation">Recommendation</option>
-                                    <option value="Repeat client">Repeat client</option>
-                                    <option value="Seen van">Seen van</option>
-                                    <option value="Paper advert">Paper advert</option>
-                                    <option value="Facebook">Facebook</option>
-                                    <option value="Instagram">Instagram</option>
-                                    <option value="Postcard">Postcard</option>
-                                    <option value="Email">Email</option>
-                                    <option value="SMS">SMS</option>
-                                    <option value="AdWords">AdWords</option>
-                                    <option value="Magazine">Magazine</option>
+                                    @foreach($referreds as $referred)
+                                        <option value="{{ $referred->referred_by }}"
+                                            {{ is_array(request('referred_by')) && in_array($referred->referred_by, request('referred_by')) ? 'selected' : '' }}>
+                                            {{ $referred->referred_by }}
+                                        </option>
+                                    @endforeach
                                     </select>
                                 </div>
-                            </div> -->
-                            <!-- <div class="col-lg-3">
+                            </div>
+                            <div class="col-lg-2">
                                 <div class="form-group">
-                                    <label>Select Services</label>
-
-                                    <select id="service_id" name="service_id[]" class="form-control js-example-basic-multiple w-100" multiple="multiple">
+                                    <select name="service_id[]" class="form-control js-example-basic-multiple w-100" multiple="multiple">
                                         @foreach($services as $service)
-                                        <option value="{{$service->id}}">{{$service->name}}</option>
+                                            <option value="{{ $service->id }}"
+                                                {{ is_array(request('service_id')) && in_array($service->id, request('service_id')) ? 'selected' : '' }}>
+                                                {{ $service->name }}
+                                            </option>
                                         @endforeach
                                     </select>
                                 </div>
-                            </div> -->
+                            </div>
                             <div class="col-lg-3">
                                 <div class="input-group mb-2 mr-sm-2">
-                                    <label>Start Date</label>
                                     <div id="datepicker-popup-new" class="input-group date datepicker">
-                                        <input type="text" name="start_date" placeholder=" Start Date" class="form-control"/>
+                                        <input type="text" name="start_date" value="{{ request('start_date') }}" placeholder=" Start Date" class="form-control"/>
                                         <span class="input-group-addon input-group-append border-left">
                                             <span class="far fa-calendar input-group-text"></span>
                                         </span>
@@ -119,9 +99,8 @@
                             </div>
                             <div class="col-lg-3">
                                 <div class="input-group mb-2 mr-sm-2">
-                                    <label>End Date</label>
                                     <div id="datepicker-popup-new2" class="input-group date datepicker">
-                                        <input type="text" name="end_date" placeholder="Start Date" class="form-control"/>
+                                        <input type="text" name="end_date" value="{{ request('end_date') }}" placeholder="Start Date" class="form-control"/>
                                         <span class="input-group-addon input-group-append border-left">
                                             <span class="far fa-calendar input-group-text"></span>
                                         </span>
@@ -149,9 +128,9 @@
                                     <tr class="bg-primary text-white">
                                         <th><i class="fa fa-check"></i></th>
                                         <th>Name</th>
-                                        <th>Email#</th>
                                         <th>Phone</th>
-                                        <th>Date of Birth</th>
+                                        <th>Email#</th>
+                                        <th>Address</th>
                                         <th>Referred By:</th>
                                     </tr>
                                 </thead>
@@ -160,8 +139,7 @@
                                         @foreach($customer_detail as $data)
                                         
                                         <tr>    
-                                            <td>
-                                                <div class="form-check form-check-flat form-check-primary">
+                                            <td><div class="form-check form-check-flat form-check-primary">
                                                 
                                                 <label class="form-check-label">
                                                     <input value="{{$data->email}}" data-customer="{{$data->id}}" name="customer-checkbox" id="custom-check" type="checkbox" class="form-check-input custom-check">
@@ -171,9 +149,9 @@
                                                 </td>
                                                 
                                             <td>{{$data->first_name}} {{$data->last_name}}</td>
+                                            <td>{{$data->country_code}}-{{$data->primary_phone}}</td>
                                             <td>{{$data->email}}</td>
-                                            <td>{{$data->primary_phone}}</td>
-                                            <td>{{$data->date_of_birth}}</td>
+                                            <td>{{$data->address}}</td>
                                             <td>{{$data->referred_by}}</td>
                                     
                                         </tr>
@@ -206,15 +184,13 @@
                         <input type="hidden" name="emails" id="customers_emails" value="">
                         <input type="hidden" name="customerids" id="customerids" value="">
                         <div class="row">
-
-                            <!-- <div class="form-group col-md-4">
+                            <div class="form-group col-md-4">
                                 <div class="form-check form-check-flat form-check-primary">                              
                                     <label class="form-check-label"> Click If you want to schedule Email
                                     <input id="check_schedule" name="schedule" type="checkbox" class="form-check-input">
                                         <i class="input-helper"></i></label>
                                 </div>
-                            </div> -->
-                            
+                            </div>
                             <!-- <div class="form-group col-md-4">
                             <div class="form-check form-check-flat form-check-primary">                              
                                 <label class="form-check-label"> Insert Opt Out Link
@@ -335,21 +311,5 @@ $(document).ready(function() {
   
 });
 
-</script>
-
-<script>
-$(document).ready(function() {
-    const maxAllowed = 20;
-
-    $(document).on('change', '.custom-check', function() {
-        const checkedCount = $('.custom-check:checked').length;
-
-        if (checkedCount > maxAllowed) {
-            // Uncheck the current one
-            $(this).prop('checked', false);
-            alert('You can select a maximum of ' + maxAllowed + ' customers only.');
-        }
-    });
-});
 </script>
 @endsection

@@ -134,7 +134,7 @@
 
                             <div class="row">
 
-                                <div class="col-lg-2">
+                                <!-- <div class="col-lg-2">
 
                                     <div class="form-group">
 
@@ -152,7 +152,7 @@
 
                                     </div>
 
-                                </div>
+                                </div> -->
 
 
 

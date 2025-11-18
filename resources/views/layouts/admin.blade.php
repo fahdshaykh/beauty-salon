@@ -725,8 +725,16 @@
             <div class="collapse {{ request()->routeIs('email_template.index', 'email_template.create', 'email_template.edit') ? 'show' : '' }}" id="page-layouts" data-parent="#sidebar .nav">
 
               <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link {{ request()->routeIs('email_template.index') ? 'active' : '' }}" href="{{url('/email-template')}}">Email Templates</a></li>
-              </ul>
+
+                  @can('view email templates')
+                  <li class="nav-item"> <a class="nav-link {{ request()->routeIs('email_template.index') ? 'active' : '' }}" href="{{url('/email-template')}}">Email Templates</a></li>
+                  @endcan
+
+                  @can('view sms templates')
+                  <li class="nav-item d-none d-lg-block"> <a class="nav-link {{ Request::is('template*') ? 'active' : '' }}" href="{{url('/template')}}">SMS Templates</a></li>
+                  @endcan
+
+                </ul>
 
             </div>
 
@@ -760,6 +768,22 @@
                   <li class="nav-item"> <a class="nav-link {{ request()->routeIs('mailing.history') ? 'active' : '' }}" href="{{ url('mailing-history') }}">Email history </a></li>
                   @endcan
                 </ul>
+
+                @can('sms marketing')
+                <ul class="nav flex-column sub-menu">
+
+                  <li class="nav-item"> <a class="nav-link {{ Request::is('marketing*') ? 'active' : '' }}" href="{{url('/marketing')}}"> SMS Marketing </a></li>
+
+                </ul>
+                @endcan
+
+                @can('sms history')
+                <ul class="nav flex-column sub-menu">
+
+                  <li class="nav-item"> <a class="nav-link {{ Request::is('marketing*') ? 'active' : '' }}" href="{{url('sms-history')}}"> SMS History </a></li>
+
+                </ul>
+                @endcan
 
             </div>
 

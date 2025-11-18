@@ -6,8 +6,9 @@ use Illuminate\Http\Request;
 use App\Templates;
 use Str;
 use Mail;
-use DB;
+
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use MailerSend\MailerSend;
 use MailerSend\Helpers\Builder\Variable;
 use MailerSend\Helpers\Builder\Recipient;
@@ -24,79 +25,120 @@ class PowerMailingController extends Controller
      * @return void
      */
   
-    public function create()
+    // PowerMailingController.php
+
+    // PowerMailingController.php
+
+    public function create(Request $request)
     {
         if (! (auth()->user() && auth()->user()->can('email marketing'))) {
             abort(403);
         }
+        
+        $services = DB::table('services')
+            ->select('id', 'name')
+            ->where('is_active', 1)
+            ->where('company_id', auth()->user()->company_id)
+            ->groupBy('name')
+            ->get();
 
-        $services=DB::table('services')->select('id','name')->where('is_active', 1)->where('company_id', auth()->user()->company_id)->groupBy('name')->get();
-        // for zip-code
-        // $templates_data =Templates::select('*')->where('type', 3)->where('status', 1)->where('company_id', auth()->user()->company_id)->orderBy('created_at', 'desc')->get();
-        $templates_data =Templates::select('*')->where('type', 3)->where('company_id', auth()->user()->company_id)->orderBy('created_at', 'desc')->get();
-        $zipcode=DB::table('customers')->select('zip')->where('company_id', auth()->user()->company_id)->groupBy('zip')->get();
-        $customer_detail = DB::table('customers')->where('company_id', auth()->user()->company_id)->where('optout', '!=',1)->where('email','!=','')->where('email','!=', NULL)->get();
-        return view('power_mailing.create',compact('customer_detail','zipcode','services','templates_data'));
-    }
+        $referreds = DB::table('referred_customers')
+            ->select('id', 'referred_by')
+            ->where('is_active', 1)
+            ->where('company_id', auth()->user()->company_id)
+            ->get();    
 
-    public function get_template_preview($template_id){
-        $template = Templates::select('description')->where('id',$template_id)->first();
-        echo $template->description; exit;
-    }
+        $templates_data = Templates::where('type', 3)
+            ->where('company_id', auth()->user()->company_id)
+            ->orderBy('created_at', 'desc')
+            ->get();
 
-    public function email_filter(Request $request){
-        $data = $request->all();
-        $templates_data =Templates::select('*')->where('type', 3)->where('company_id', auth()->user()->company_id)->orderBy('created_at', 'desc')->get();
-        $services=DB::table('services')->select('id','name')->where('is_active', 1)->where('company_id', auth()->user()->company_id)->groupBy('name')->get();
-        // for zip-code
-        $zipcode=DB::table('customers')->select('zip')->where('optout', '!=',1)->where('company_id', auth()->user()->company_id)->groupBy('zip')->get();
-        $start_date=$request->start_date;
-        $end_date=$request->end_date;
-        $service_id=$request->service_id;
-        $zip=$request->zip;
-        $ref=$request->referred_by; 
-        if($service_id==null){
-            $customer_detail = DB::table('customers');
-            if($zip!=null){
-                $customer_detail = $customer_detail->Where(function ($query) use($zip) {
-                for ($i = 0; $i < count($zip); $i++){
-                         $query->orwhere('zip', 'like',  '%' . substr($zip[$i], 0, 3) .'%');
-                    }      
+        $zipcode = DB::table('customers')
+            ->select('zip')
+            ->where('company_id', auth()->user()->company_id)
+            ->groupBy('zip')
+            ->get();
+
+        // Default: show all customers who can receive email
+        $customer_detail = collect();
+
+        // If filters are applied (normal submit or AJAX)
+        if ($request->filled('start_date') || $request->filled('service_id') || $request->filled('zip') || $request->filled('referred_by') || $request->ajax()) {
+            
+            $query = DB::table('customers')
+                ->where('company_id', auth()->user()->company_id)
+                ->where('optout', '!=', 1)
+                ->whereNotNull('email')
+                ->where('email', '!=', '');
+
+            // Filter by service
+            if ($request->filled('service_id')) {
+                $booking_ids = DB::table('booking_details')
+                    ->whereIn('service_id', $request->service_id)
+                    ->groupBy('booking_id')
+                    ->pluck('booking_id');
+
+                $query = DB::table('customers')
+                    ->join('service_bookings', 'service_bookings.customer_id', '=', 'customers.id')
+                    ->whereIn('service_bookings.id', $booking_ids)
+                    ->where('customers.company_id', auth()->user()->company_id)
+                    ->where('customers.optout', '!=', 1)
+                    ->whereNotNull('customers.email')
+                    ->where('customers.email', '!=', '')
+                    ->select('customers.*');
+            }
+
+            // Zip code partial match
+            if ($request->filled('zip')) {
+                $query->where(function ($q) use ($request) {
+                    foreach ($request->zip as $zip) {
+                        $q->orWhere('zip', 'like', substr($zip, 0, 3) . '%');
+                    }
                 });
             }
-            if($ref!=null){
-                $customer_detail = $customer_detail->whereIn('referred_by', $ref);
-            }
-            if($start_date!=null && $end_date!==null){
-                $customer_detail = DB::table('customers')->whereBetween('created_at', [$request->start_date." 00:00:00", $request->end_date." 23:59:59"]);
-            }
-            $customer_detail = $customer_detail->where('company_id', auth()->user()->company_id)->orderBy('created_at', 'desc')->where('email','!=','')->where('email','!=', NULL)->get();
-            return view('power_mailing.create',compact('customer_detail','zipcode','services','templates_data'));
 
+            // Referred by
+            if ($request->filled('referred_by')) {
+                $query->whereIn('customers.referred_by', $request->referred_by);
+            }
+
+            // Date range
+            if ($request->filled('start_date') && $request->filled('end_date')) {
+                $from = $request->start_date . ' 00:00:00';
+                $to   = $request->end_date . ' 23:59:59';
+
+                if ($request->filled('service_id')) {
+                    $query->whereBetween('service_bookings.due_date', [$from, $to]);
+                } else {
+                    $query->whereBetween('customers.created_at', [$from, $to]);
+                }
+            }
+
+            $customer_detail = $query->orderBy('created_at', 'desc')->get();
+        } else {
+            // First page load: show all valid customers
+            $customer_detail = DB::table('customers')
+                ->where('company_id', auth()->user()->company_id)
+                ->where('optout', '!=', 1)
+                ->whereNotNull('email')
+                ->where('email', '!=', '')
+                ->orderBy('created_at', 'desc')
+                ->get();
         }
-        else{
-            $booking_ids = DB::table('booking_details')->whereIn('service_id',$service_id)->groupBy('booking_id')->pluck('booking_id')->toArray();
 
-            $customer_detail = DB::table('customers')->join('service_bookings', 'service_bookings.customer_id', '=', 'customers.id')->whereIn('service_bookings.id',$booking_ids);
-            if($zip!=null){
-                $customer_detail = $customer_detail->Where(function ($query) use($zip) {
-                    for ($i = 0; $i < count($zip); $i++){
-                             $query->orwhere('customers.zip', 'like',  '%' . substr($zip[$i], 0, 3) .'%');
-                        }      
-                    });
-            }
-            if($ref!=null){
-                // echo "here"; exit;
-                $customer_detail = $customer_detail->whereIn('customers.referred_by', $ref);
-            }
-            if($start_date!=null && $end_date!=null){
-                $customer_detail = whereBetween('service_bookings.created_at', [$request->start_date." 00:00:00", $request->end_date." 23:59:59"]);
-            }
-            $customer_detail = $customer_detail->where('customers.company_id', auth()->user()->company_id)->orderBy('customers.created_at', 'desc')->where('customers.email','!=','')->where('customers.email','!=', NULL)->get();
-            return view('power_mailing.create',compact('customer_detail','zipcode','services','templates_data'));
-
+        // If AJAX → return only table
+        if ($request->ajax()) {
+            return view('power_mailing.partials.customer_table', compact('customer_detail'))->render();
         }
-        
+
+        // Normal load → full page
+        return view('power_mailing.create', compact('customer_detail', 'zipcode', 'services', 'referreds', 'templates_data'));
+    }
+
+    public function get_template_preview($template_id)
+    {
+        $template = Templates::select('description')->where('id',$template_id)->first();
+        echo $template->description; exit;
     }
 
     public function send(Request $request)

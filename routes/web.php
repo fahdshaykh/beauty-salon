@@ -217,7 +217,7 @@ Route::middleware(['auth', 'company'])->group(function () {
     ]);
 
     // ── Mailing & Marketing ──
-    Route::post('/customer-email-filter', [PowerMailingController::class, 'email_filter'])->name('mailing.email_filter');
+    // Route::post('/customer-email-filter', [PowerMailingController::class, 'email_filter'])->name('mailing.email_filter');
     Route::get('mailing-history', [PowerMailingController::class, 'mailing_history'])->name('mailing.history');
     Route::post('/email-history-filter', [PowerMailingController::class, 'mailing_history_filter'])->name('mailing.history_filter');
     Route::get('sms-history', [MarketingController::class, 'sms_history'])->name('sms.history');
@@ -281,6 +281,7 @@ Route::middleware(['auth', 'company'])->group(function () {
     Route::get('message-status', [SettingController::class, 'message_status'])->name('settings.message_status');
     Route::get('tax-status', [SettingController::class, 'tax_status'])->name('settings.tax_status');
     Route::post('tax-settings-update', [SettingController::class, 'tax_settings_update'])->name('settings.tax_update');
+    Route::post('voodoosms-settings-update', [SettingController::class, 'voodoosms_settings_update'])->name('settings.voodoosms_update');
     Route::post('socialmedia-update', [SettingController::class, 'socialmeida_update'])->name('settings.social_update');
     Route::get('message-setting/edit/{id}', [SettingController::class, 'message_settings_edit'])->name('settings.message_edit');
     Route::post('message-setting/update/{id}', [SettingController::class, 'message_settings_update'])->name('settings.message_update');
@@ -337,24 +338,24 @@ Route::middleware(['auth', 'company'])->group(function () {
     Route::post('/email-template-update', [TemplateController::class, 'update_email_template'])->name('email_template.update');
     Route::get('template-status', [TemplateController::class, 'templateStatus'])->name('email_template.status');
     Route::resource('/template', TemplateController::class)->names([
-        'index'   => 'template.resource.index',
-        'create'  => 'template.resource.create',
-        'store'   => 'template.resource.store',
-        'show'    => 'template.resource.show',
-        'edit'    => 'template.resource.edit',
-        'update'  => 'template.resource.update',
-        'destroy' => 'template.resource.destroy',
+        'index'   => 'template.index',
+        'create'  => 'template.create',
+        'store'   => 'template.store',
+        'show'    => 'template.show',
+        'edit'    => 'template.edit',
+        'update'  => 'template.update',
+        'destroy' => 'template.destroy',
     ]);
 
     // ── JS Grid (Job Notes) ──
     Route::resource('/add-job-notes', JsGridController::class)->names([
-        'index'   => 'job_notes.index',
-        'create'  => 'job_notes.create',
-        'store'   => 'job_notes.store',
-        'show'    => 'job_notes.show',
-        'edit'    => 'job_notes.edit',
-        'update'  => 'job_notes.update',
-        'destroy' => 'job_notes.destroy',
+        'index'   => 'add-job-notes.index',
+        'create'  => 'add-job-notes.create',
+        'store'   => 'add-job-notes.store',
+        'show'    => 'add-job-notes.show',
+        'edit'    => 'add-job-notes.edit',
+        'update'  => 'add-job-notes.update',
+        'destroy' => 'add-job-notes.destroy',
     ]);
 
     // ── Inventory ──

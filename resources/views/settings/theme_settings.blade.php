@@ -193,6 +193,8 @@
 
                       <ul class="nav nav-tabs nav-tabs-vertical-custom" role="tablist">
 
+                      <!-- add permission here  -->
+
                         <li class="nav-item">
 
                           <a class="nav-link active" id="home-tab-custom" data-toggle="tab" href="#home-3" role="tab" aria-controls="home-3" aria-selected="true">
@@ -203,8 +205,19 @@
 
                         </li>
 
+                        <!-- add permission here  -->
 
+                        <li class="nav-item">
 
+                          <a class="nav-link" id="profile-tab-custom" data-toggle="tab" href="#profile-3" role="tab" aria-controls="profile-3" aria-selected="false">
+
+                            Review SMS<i  class="fas fa-chevron-right"></i>
+
+                          </a>
+
+                        </li>
+
+                        <!-- add permission here  -->
 
                         <li class="nav-item">
 
@@ -218,9 +231,51 @@
 
 
 
+                        <li class="nav-item">
 
+                            <a class="nav-link" id="message-tab-custom" data-toggle="tab" href="#message-3" role="tab" aria-controls="contact-4" aria-selected="false">
 
-                         
+                              Message Settings<i  class="fas fa-chevron-right"></i>
+
+                            </a>
+
+                          </li>
+
+                          <!-- add permission here  -->
+
+                          <li class="nav-item">
+
+                            <a class="nav-link" id="tax-tab-custom" data-toggle="tab" href="#tax-3" role="tab" aria-controls="tax-3" aria-selected="false">
+
+                              Tax Settings<i  class="fas fa-chevron-right"></i>
+
+                            </a>
+
+                          </li>
+
+                          
+
+                          <li class="nav-item">
+
+                            <a class="nav-link" id="booking-sms-tab" data-toggle="tab" href="#booking_sms" role="tab" aria-controls="booking_sms" aria-selected="false">
+
+                              SMS Templates<i  class="fas fa-chevron-right"></i>
+
+                            </a>
+
+                          </li>
+
+                          <!-- add permission here  -->
+
+                          <!-- <li class="nav-item">
+
+                            <a class="nav-link" id="postcard" data-toggle="tab" href="#clicksend-tab" role="tab" aria-controls="booking_sms" aria-selected="false">
+
+                             Post Card<i  class="fas fa-chevron-right"></i>
+
+                            </a>
+
+                          </li> -->
 
 
                           <!-- <li class="nav-item">
@@ -245,6 +300,7 @@
 
                       <div class="tab-content tab-content-vertical tab-content-vertical-custom">
 
+                      <!-- add permission here  -->
 
                         <div class="tab-pane fade show active" id="home-3" role="tabpanel" aria-labelledby="home-tab-custom">
 
@@ -387,11 +443,110 @@
 
                             <!-- tab-2 -->
 
+                        <!-- add permission here  -->
 
+                        <div class="tab-pane fade" id="profile-3" role="tabpanel" aria-labelledby="profile-tab-custom">
+
+                            <div class="row">
+
+                                <div class="col-lg-8">
+
+                                    <div class="card">
+
+                                        <div class="card-body">
+
+                                            <div class="row">
+
+                                                <div class="col-lg-6"> <b> Acticvate / Disable review </b></div>
+
+                                                <div class="col-lg-6">
+
+                                    
+
+                                                    <label class="switch" style="float: right;">
+
+                                
+
+                                                        <input type="checkbox" id="user-{{$settings->company_id}}"
+
+                    
+
+                                                            onclick="changeReviewStatus(event.target)"
+
+                    
+
+                                                            {{($settings->review_permissions) ? 'checked' : ''}}>
+
+
+
+                                                        <span class="slider round"></span>
+
+                    
+
+                                                    </label>
+
+                                  
+
+                                                </div>
+
+                                            </div>
+
+                                            <div class="row">
+
+                                                <div class="col-lg-12">
+
+                                                    <form class="forms-sample" method="post" id="review_settings">
+
+                        
+
+                                                        @csrf
+
+                        
+
+                                                        <div class="form-group">
+
+                                    
+
+                                                            <label for="exampleTextarea1">Review SMS</label>
+
+                                    
+
+                                                            <textarea class="form-control" id="exampleTextarea1" name="url" rows="4">{{$settings->review_url}}</textarea>
+
+                                    
+
+                                                        </div>
+
+                        
+
+                                                        <button type="submit" class="btn btn-primary mr-2">Update</button>
+
+                    
+
+                        
+
+                                                    </form>
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        
+
+                        </div>
 
 
                            <!-- tab-3 -->
 
+                        <!-- add permission here  -->
 
                         <div class="tab-pane fade" id="contact-3" role="tabpanel" aria-labelledby="contact-tab-custom">
 
@@ -581,21 +736,312 @@
 
                              <!-- tab-4 -->
 
-                            
+                            <!-- add permission here  -->
+
+                        <div class="tab-pane fade" id="message-3" role="tabpanel" aria-labelledby="profile-tab-custom">
+
+                            <div class="card">
+
+                                <div class="card-body">
+
+                                    <div class="row">
+
+                                        <div class="col-lg-6"> <b> Acticvate / Disable Messages  </b></div>
+
+                                        <div class="col-lg-12">
+
+                                    
+
+                                            <label class="switch" style="float: right;">
 
                         
+
+                                                <input type="checkbox" id="user-{{$settings->company_id}}"
+
+            
+
+                                                    onclick="changeMessageStatus(event.target, {{ $settings->company_id }});"
+
+            
+
+                                                    {{($settings->message_permissions) ? 'checked' : ''}}>
+
+        
+
+                                                <span class="slider round"></span>
+
+            
+
+                                            </label>
+
+                                          
+
+
+
+
+                                                    <form id="voodoosms-settings" class="forms-sample" >
+
+                                        
+
+                                                            @csrf
+
+                                                            <br>
+
+                                                            <div class="form-group">
+
+                                                                <label for="exampleTextarea1">API</label>
+
+                                                            
+
+                                                                <input type="theme" name="voodoosms_api_key" value="{{$settings->voodoosms_api_key}}" class="form-control" placeholder="Enter voodoosms_api_key" required/>
+
+
+                                                            </div>
+
+                                                            <div class="form-group">
+
+                                                                <label for="exampleTextarea1">SMS Count</label>
+
+                                                            
+
+                                                                <input type="theme" name="sms_count" value="{{$settings->sms_count}}" class="form-control" placeholder="Enter sms count" required/>
+
+
+                                                            </div>
+
+                                        
+
+                                                    <button type="submit" class="btn btn-primary mr-2">Update API Settings</button>
+
+                                            </form>
+
+                                        </div>
+
+                                    </div>
+
+
+
+                                </div>
+
+                            </div>
+
+                        </div>
 
                                          <!-- tab-5 -->
 
+                        <!-- add permission here  -->
+
+                        <div class="tab-pane fade" id="tax-3" role="tabpanel" aria-labelledby="tax-tab-custom">
+
+                            <div class="row">
+
+                                <div class="col-lg-8">
+
+                                    <div class="card">
+
+                                        <div class="card-body">
+
+                                            <div class="row">
+
+                                                <div class="col-lg-6"> <b> Acticvate / Disable Tax </b></div>
+
+                                                    <div class="col-lg-6">
+
+                                    
+
+                                                        <label class="switch" style="float: right;">
+
+                                    
+
+                                                            <input type="checkbox" id="user-{{$settings->company_id}}"
 
                         
+
+                                                                onclick="changeTaxStatus(event.target);"
+
+                        
+
+                                                                {{($settings->tax_status) ? 'checked' : ''}}>
+
+                        
+
+                                                            <span class="slider round"></span>
+
+                        
+
+                                                        </label>
+
+                                                        
+
+                                                    </div>
+
+                                                </div>
+
+                                                <div class="row">
+
+                                                    <div class="col-lg-12">
+
+                                                        <form id="tax-settings" class="forms-sample" >
+
+                                        
+
+                                                            @csrf
+
+                                                            <br>
+
+                                                            <div class="form-group">
+
+                                                                <div class="form-check">
+
+                                                                    <label class="form-check-label">
+
+                                                                    <input type="radio" class="form-check-input" name="vat"   id="optionsRadios1" value="0" @if($settings->vat==0) checked @endif >
+
+                                                                    Fixed
+
+                                                                    <i class="input-helper"></i></label>
+
+                                                                </div>
+
+                                                                <br>
+
+                                                                <div class="form-check">
+
+                                                                    
+
+                                                                    <label class="form-check-label">
+
+                                                                    <input type="radio" class="form-check-input" name="vat" id="optionsRadios1" value="1" @if($settings->vat==1)  
+
+                                                                    checked  @endif>
+
+                                                                    Percentage
+
+                                                                    <i class="input-helper"></i></label>
+
+                                                                </div>
+
+                                                                <br>
+
+                                                            
+
+                                                                <label for="exampleTextarea1">Amount</label>
+
+                                                            
+
+                                                                <input type="theme" name="amount" value="{{$settings->amount}}" class="form-control" placeholder="Enter Amount" required/>
+
+                                                                
+
+                                        
+
+                                                            </div>
+
+                                        
+
+                                                            <button type="submit" class="btn btn-primary mr-2">Update Tax Settings</button>
+
+                                    
+
+                                        
+
+                                                        </form>
+
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
 
                       
 
 
                             <!-- tab-6 -->
 
-                            
+                            <div class="tab-pane fade" id="booking_sms" role="tabpanel"aria-labelledby="profile-tab-custom">
+
+                                <div class="row">
+
+                                    <div class="col-lg-8">
+
+                                        <div class="card">
+
+                                            <div class="card-body">
+
+                                                <div class="row">
+
+                                                <div class="alert alert-warning mt-3" role="alert" style="text-align:center">
+
+                                                    In order to send dynamic message please follow the pattern: <strong>{customer name}</strong> | <strong>{services name}</strong> | <strong>{date}</strong> | <strong>{time}</strong>
+
+                                                </div>
+
+                                                    <div class="col-lg-12">
+
+                                                        <form id="booking_sms" class="forms-sample" method="post">
+
+
+
+                                                            @csrf
+
+                                        
+
+                                                            <div class="form-group">
+
+                                        
+
+                                                                <label for="exampleTextarea1">New booking SMS <span> (characters limit 150)</span></label>
+
+                                                                <textarea class="form-control" id="booking_message" name="booking_sms" rows="4">{{$settings->booking_sms}}</textarea>
+
+                                                                    <br>
+
+                                                                <label for="exampleTextarea1">Re-Schedule SMS <span> (characters limit 150)</span></label>
+
+                                                                <textarea class="form-control" id="re_shdule" name="re_shdule" rows="4">{{$settings->re_sheduled_sms}}</textarea>
+                                                                <br>
+                                                                <label for="exampleTextarea1">Survey SMS <span> (characters limit 150)</span></label>
+
+                                                                <textarea class="form-control" id="survey_sms" name="survey_sms" rows="4">{{$settings->survey_sms}}</textarea>
+                                        
+
+                                                            </div>
+
+                                        
+
+                                                            <button type="submit" class="btn btn-primary mr-2">Update </button>
+
+                                        
+
+                                                            <a class="btn btn-light" href="">Cancel</a>
+
+                                        
+
+                                                        </form>
+
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                                    
+
+                            </div>
 
 
 
@@ -603,8 +1049,105 @@
 
                             <!------ tab-7  -------->
 
+                            <!-- add permission here  -->
 
-                            
+                            <!-- <div class="tab-pane fade" id="clicksend-tab" role="tabpanel"aria-labelledby="profile-tab-custom">
+
+                                <div class="row">
+
+                                    <div class="col-lg-8">
+
+                                        <div class="card">
+
+                                            <div class="card-body">
+
+                                                <div class="row">
+
+                                                    <div class="col-lg-12">
+
+                                                    @if($settings->clicksend_api_key=="" || $settings->clicksend_username=="" || $settings->clicksend_password=="")
+
+                                                        <p class="card-description">You don't have account on clicksend<a target="_blank" href="https://clicksend.com/?u=267536"> Create my account</a></p>
+
+                                                        @endif
+
+                                                        <form id="clicksend-form" class="forms-sample" method="post">
+
+
+
+                                                            @csrf
+
+                                                                <div class="form-group">
+
+                                                                    <label for="exampleInputUsername1">Username</label>
+
+                                                                    <input type="text" name="clicksend_username"  class="form-control" value="{{$settings->clicksend_username}}" placeholder="Enter clicksend username" required/>
+
+                                                                </div>
+
+                                                                
+
+                                                                    <div class="form-group">
+
+                                                                    <label for="exampleInputUsername1">Password</label>
+
+                                                                    <input type="text" value="{{$settings->clicksend_password}}" name="clicksend_password" class="form-control" placeholder="Enter clicksend password" required/>
+
+                                                                </div>
+
+                                                                <div class="form-group">
+
+                                                                    <label for="exampleInputUsername1">Api key</label>
+
+                                                                    <input type="text" value="{{$settings->clicksend_api_key}}" name="clicksend_apikey"  class="form-control" placeholder="Enter clicksend ApiKey" required/>
+
+                                                                </div>
+
+
+
+                                                                <div class="form-group">
+
+                                                                    <label for="exampleInputUsername1">Return Address Id (To get address Id <a target="_blank" href="https://dashboard.clicksend.com/messaging-settings/post/return-addresses">click here</a>)</label>
+
+                                                                    <input type="text" value="{{$settings->clicksend_returnaddress}}" name="clicksend_returnaddress"  class="form-control" placeholder="Enter clicksend Return AddressId" required/>
+
+                                                                </div>
+
+                                                             
+
+                                                                
+
+                                        
+
+                                                           
+
+                                        
+
+                                                            <button type="submit" class="btn btn-primary mr-2">Update </button>
+
+                                        
+
+                                                            <a class="btn btn-light" href="">Cancel</a>
+
+                                        
+
+                                                        </form>
+
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                                    
+
+                            </div> -->
 
 
 
@@ -960,6 +1503,50 @@ var formData = new FormData($(this)[0]);
 $.ajax({
 
     url: "{{url('tax-settings-update')}}",
+
+    type: "POST",
+
+    data: formData,
+
+    processData: false,
+
+    contentType: false,
+
+    success: function (response) {
+
+        if(response.success){
+
+        showSuccessToast(response.success);
+
+    
+
+    }
+
+    else{
+
+        showDangerToast(response.error);
+
+    }
+
+    },
+
+});
+
+});
+
+
+//voodoosms settings update
+$("#voodoosms-settings").submit(function () {
+
+
+
+event.preventDefault();
+
+var formData = new FormData($(this)[0]);
+
+$.ajax({
+
+    url: "{{url('voodoosms-settings-update')}}",
 
     type: "POST",
 

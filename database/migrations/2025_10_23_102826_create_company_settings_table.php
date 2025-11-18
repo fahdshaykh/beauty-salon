@@ -28,14 +28,15 @@ class CreateCompanySettingsTable extends Migration
             $table->integer('tax_status')->default(0);
             $table->integer('vat');
             $table->integer('amount')->nullable();
-            $table->string('booking_sms', 255)->default('Thanks for booking DiaryMaster {services name} {date} {time}. For changes please call 0800 068 1251.');
+            $table->text('voodoosms_api_key')->nullable();
+            $table->integer('sms_count')->default(0);
+            $table->string('booking_sms', 255)->default('Thanks for booking {services name} {date} {time}. For changes please contact us.');
             $table->string('re_sheduled_sms', 255)->default('this is predefined reschedule sms');
             $table->text('survey_sms')->nullable();
             $table->text('clicksend_api_key')->nullable();
             $table->string('clicksend_username', 255)->nullable();
             $table->string('clicksend_password', 255)->nullable();
             $table->integer('clicksend_returnaddress');
-            $table->integer('sms_count')->default(0);
             $table->text('facebook')->nullable();
             $table->text('instagram')->nullable();
             $table->text('twitter')->nullable();

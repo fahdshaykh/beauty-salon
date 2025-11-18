@@ -64,14 +64,20 @@ class PermissionsSeeder extends Seeder
             //quotation
             'view quotations', 'send quotations',
 
+            // Templates
+            'view templates',
+
+            // Email Templates
+            'view email templates', 'create email templates', 'edit email templates', 'delete email templates',
+
+            // SMS Templates
+            'view sms templates', 'create sms templates', 'edit sms templates', 'delete sms templates',
+
             // Marketing
             'view marketing',
 
             // Email Marketing
-            'email marketing', 'email history',
-
-            // Templates
-            'view templates', 'create templates', 'edit templates', 'delete templates',
+            'email marketing', 'email history', 'sms marketing', 'sms history',
 
             // Holidays
             'view holidays', 'delete holidays',

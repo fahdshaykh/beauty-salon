@@ -561,9 +561,6 @@ class SettingController extends Controller
     }
 
     public function tax_settings_update(Request $request)
-
-
-
     {
 
       
@@ -579,6 +576,25 @@ class SettingController extends Controller
 
 
         return response()->json(['success'=>'Tax Settings Updated successfully']);
+
+
+
+    }
+
+
+    //voodoosms settings update
+    public function voodoosms_settings_update(Request $request)
+    {
+
+      
+
+       $voodoosms_api_key = $request->voodoosms_api_key;
+
+       $sms_count = $request->sms_count;
+
+        $review = DB::table('company_settings')->where('company_id', auth()->user()->company_id)->update(['voodoosms_api_key' => $voodoosms_api_key ,'sms_count'=>$sms_count]);
+
+        return response()->json(['success'=>'Voodoo SMS Settings Updated successfully']);
 
 
 
