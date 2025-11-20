@@ -27,7 +27,7 @@
             </h3>
             <nav aria-label="breadcrumb">
               <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="#">Pages</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('attendance') }}">Attendance</a></li>
                 <li class="breadcrumb-item active" aria-current="page">Today Attendance</li>
               </ol>
             </nav>
@@ -43,7 +43,7 @@
             <div class="col-12">
               <div class="card">
                 <div class="card-body">
-                  <h4 class="card-title">Table</h4>
+                  <!-- <h4 class="card-title">Table</h4> -->
                  
                   <div class="row">
                     <div class="col-12">

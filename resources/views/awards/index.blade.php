@@ -329,30 +329,6 @@ input:checked+.slider:before {
 
             <div class="card-body">
 
-
-
-                <!-- Pagination Dropdown -->
-                <div class="row">
-                    <div class="col-md-3">
-                        <div class="pagination-dropdown">
-                            <form class="form-inline">
-                                <div class="form-group">
-                                    <label for="rows">Records:&nbsp;</label>
-                                    <select class="form-control" id="rows" name="rows">
-                                        <option value="5" @if($rows == 5) selected @endif > 5 </option>
-                                        <option value="10" @if($rows == 10) selected @endif > 10 </option>
-                                        <option value="20" @if($rows == 20) selected @endif > 20 </option>
-                                        <option value="50" @if($rows == 50) selected @endif > 50 </option>
-                                        <option value="100" @if($rows == 100) selected @endif > 100 </option>
-										<option value="500" @if($rows == 500) selected @endif > 500 </option>                        
-                                    </select>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-
-
                 <div class="row">
 
 
@@ -397,6 +373,26 @@ input:checked+.slider:before {
                 </div>
 
 
+                <!-- Pagination Dropdown -->
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="pagination-dropdown">
+                            <form class="form-inline">
+                                <div class="form-group">
+                                    <label for="rows">Records:&nbsp;</label>
+                                    <select class="form-control" id="rows" name="rows">
+                                        <option value="5" @if($rows == 5) selected @endif > 5 </option>
+                                        <option value="10" @if($rows == 10) selected @endif > 10 </option>
+                                        <option value="20" @if($rows == 20) selected @endif > 20 </option>
+                                        <option value="50" @if($rows == 50) selected @endif > 50 </option>
+                                        <option value="100" @if($rows == 100) selected @endif > 100 </option>
+										<option value="500" @if($rows == 500) selected @endif > 500 </option>                        
+                                    </select>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="row">
 
@@ -429,7 +425,7 @@ input:checked+.slider:before {
 
                                 <tbody>
                           
-                                @foreach($awards as $award)
+                                @forelse($awards as $award)
                                   <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $award->user->name }}</td>
@@ -467,7 +463,14 @@ input:checked+.slider:before {
                                     </td>
                                   </tr>
                                 
-                                  @endforeach
+                                @empty
+
+                                <tr style="text-align: right">
+                                    <td colspan='3'> No Data Available</td>
+                                </tr>
+
+                                @endforelse
+
                                 </tbody>
 
 

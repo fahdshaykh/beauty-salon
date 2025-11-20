@@ -59,7 +59,7 @@
                         <div class="table-responsive">
                             <table class="table table-striped">
                                 <thead>
-                                    <tr>
+                                    <tr class="bg-primary text-white">
                                         <th>Name</th>
                                         <th>Primary Phone</th>
                                         <th>Date Of Birth</th>
@@ -71,7 +71,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach($customers as $customer)
+                                    @forelse($customers as $customer)
                                     <tr>
                                         <td><a href="{{ url('bookings-history', $customer->id) }}"> {{ $customer->first_name }} {{ $customer->last_name }} </a></td>
                                         <td>{{ $customer->country_code }}-{{ $customer->primary_phone }}</td>
@@ -117,7 +117,13 @@
                                             </div>
                                         </td>
                                     </tr>
-                                    @endforeach
+                                    @empty
+
+                                    <tr style="text-align: center">
+                                        <td colspan='8'> No Data Available</td>
+                                    </tr>
+
+                                    @endforelse
                                 </tbody>
                             </table>
                         </div>

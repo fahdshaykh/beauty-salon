@@ -67,7 +67,7 @@
 
                                 <thead>
 
-                                    <tr>
+                                    <tr class="bg-primary text-white">
                                        
                                         <th>Type</th>
                                         <th>Title</th>
@@ -78,7 +78,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach($data as $templates)
+                                    @forelse($data as $templates)
                                  
                                     <?php
                                     $type = '';
@@ -128,7 +128,14 @@
                                         </tr>
 
 
-                                    @endforeach
+                                    @empty
+
+                                    <tr style="text-align: center">
+                                        <td colspan='6'> No Data Available</td>
+                                    </tr>
+
+                                    @endforelse
+
                                 </tbody>
 
                             </table>

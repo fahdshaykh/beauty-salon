@@ -20916,7 +20916,7 @@ input:focus {
 }
 
 .navbar.default-layout-navbar .navbar-menu-wrapper {
-    background: rgba(37, 198, 212, .86);
+    background: #392C70;
     transition: width 0.25s ease, background 0.25s ease;
     -webkit-transition: width 0.25s ease, background 0.25s ease;
     -moz-transition: width 0.25s ease, background 0.25s ease;
@@ -20937,7 +20937,8 @@ input:focus {
 
 .navbar.default-layout-navbar .navbar-menu-wrapper .navbar-toggler {
     border: 0;
-    color: inherit;
+    /* color: inherit; */
+    color: #ffffff;
 }
 
 @media (max-width: 991px) {
@@ -20967,7 +20968,8 @@ input:focus {
 }
 
 .navbar.default-layout-navbar .navbar-menu-wrapper .navbar-nav .nav-item .nav-link i {
-    font-size: 0.9375rem;
+    font-size: 1.938rem;
+    color: white;
 }
 
 .navbar.default-layout-navbar .navbar-menu-wrapper .navbar-nav .nav-item.nav-search .input-group-text,

@@ -294,7 +294,7 @@ input:checked+.slider:before {
 
 
 
-                    <li class="breadcrumb-item"><a href="{{route('users.index')}}">Referreds</a></li>
+                    <li class="breadcrumb-item"><a href="{{ route('referred_customers.index') }}">Referreds</a></li>
 
 
 
@@ -318,30 +318,6 @@ input:checked+.slider:before {
 
 
             <div class="card-body">
-
-
-            <!-- Pagination Dropdown -->
-                <div class="row">
-                    <div class="col-md-3">
-                        <div class="pagination-dropdown">
-                            <form class="form-inline">
-                                <div class="form-group">
-                                    <label for="rows">Records:&nbsp;</label>
-                                    <select class="form-control" id="rows" name="rows">
-                                        <option value="5" @if($rows == 5) selected @endif > 5 </option>
-                                        <option value="10" @if($rows == 10) selected @endif > 10 </option>
-                                        <option value="20" @if($rows == 20) selected @endif > 20 </option>
-                                        <option value="50" @if($rows == 50) selected @endif > 50 </option>
-                                        <option value="100" @if($rows == 100) selected @endif > 100 </option>
-										<option value="500" @if($rows == 500) selected @endif > 500 </option>                        
-                                    </select>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-
-
 
                 <div class="row">
 
@@ -391,6 +367,27 @@ input:checked+.slider:before {
                 </div>
 
 
+            <!-- Pagination Dropdown -->
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="pagination-dropdown">
+                            <form class="form-inline">
+                                <div class="form-group">
+                                    <label for="rows">Records:&nbsp;</label>
+                                    <select class="form-control" id="rows" name="rows">
+                                        <option value="5" @if($rows == 5) selected @endif > 5 </option>
+                                        <option value="10" @if($rows == 10) selected @endif > 10 </option>
+                                        <option value="20" @if($rows == 20) selected @endif > 20 </option>
+                                        <option value="50" @if($rows == 50) selected @endif > 50 </option>
+                                        <option value="100" @if($rows == 100) selected @endif > 100 </option>
+										<option value="500" @if($rows == 500) selected @endif > 500 </option>                        
+                                    </select>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
 
                 <div class="row">
 
@@ -412,9 +409,7 @@ input:checked+.slider:before {
 
 
 
-                                    <tr>
-
-
+                                    <tr class="bg-primary text-white">
 
                                         <th>Sr.No #</th>
 
@@ -444,7 +439,7 @@ input:checked+.slider:before {
 
 
 
-                                    @foreach($referreds as $referred)
+                                    @forelse($referreds as $referred)
 
 
 
@@ -515,7 +510,13 @@ input:checked+.slider:before {
 
 
 
-                                    @endforeach
+                                    @empty
+
+                                    <tr style="text-align: center">
+                                        <td colspan='6'> No Data Available</td>
+                                    </tr>
+
+                                    @endforelse
 
 
 

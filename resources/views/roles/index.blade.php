@@ -17,6 +17,27 @@
 
         <div class="card">
             <div class="card-body">
+
+                <div class="row">
+
+                    <div class="col-md-3">
+
+                        <h4 class="card-title">Roles Listing</h4>
+
+                    </div>
+
+                    <div class="col-md-6"></div>
+
+                    <div class="col-md-3">
+
+                        <div class="text-center" style="float: center;">
+
+                            <a href="{{ route('roles.create') }}" class="btn btn-primary btn-sm">Add New Role</a>
+
+                        </div>
+                    </div>
+
+                </div>
                 <!-- Pagination Dropdown -->
                 <div class="row mb-3">
                     <div class="row">
@@ -38,21 +59,13 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6"></div>
-                    <div class="col-md-3 text-right">
-                        @can('create roles')
-                            <a href="{{ route('roles.create') }}" class="btn btn-primary btn-sm">
-                                Add New Role
-                            </a>
-                        @endcan
-                    </div>
                 </div>
 
                 <!-- Roles Table -->
                 <div class="table-responsive">
                     <table class="table table-hover">
                         <thead>
-                            <tr>
+                            <tr class="bg-primary text-white">
                                 <th>Sr.No #</th>
                                 <th>Role Name</th>
                                 <th>Permissions</th>
@@ -77,7 +90,7 @@
                                         @endif
                                     </td>
                                     <td>{{ $role->created_at->format('m-d-Y') }}</td>
-                                    <td>
+                                    <td style="float: center;">
                                         @can('edit roles')
 
                                             <a href="{{ route('roles.edit', $role) }}"

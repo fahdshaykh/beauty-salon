@@ -145,7 +145,7 @@
                       <div class="table-responsive">
                           <table class="table table-striped">
                               <thead>
-                                  <tr>
+                                  <tr class="bg-primary text-white">
                                       <th>Sr</th>
                                       <th>Start Date</th>
                                       <th>End Date</th>
@@ -156,7 +156,7 @@
 
                               <tbody>
                                   <?php $num = 1; ?>
-                                  @foreach($holidays as $holiday)
+                                  @forelse($holidays as $holiday)
                                   <tr>
                                       <td>{{ $num }}</td>
                                       <td>{{ $holiday->start_date }}</td>
@@ -171,7 +171,13 @@
                                       </td>
                                   </tr>
                                   <?php $num++; ?>
-                                  @endforeach
+                                   @empty
+
+                                    <tr style="text-align: center">
+                                        <td colspan='6'> No Data Available</td>
+                                    </tr>
+
+                                    @endforelse
                               </tbody>
                           </table>
                       </div>

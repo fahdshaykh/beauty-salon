@@ -92,6 +92,10 @@
 
                 <div class="card-body">
 
+                    @can('create expense types')
+                        <h4 class="card-title" style="float:right;"><a class="btn btn-primary btn-fw" href="{{url('expense-types/create')}}"> Add Expense Type</a></h4>
+                    @endcan
+
                   <div class="row">
                         <div class="col-md-3">
                             <div class="pagination-dropdown">
@@ -112,17 +116,13 @@
                         </div>
                     </div>
 
-                  @can('create expense types')
-                    <h4 class="card-title" style="float:right;"><a class="btn btn-primary btn-fw" href="{{url('expense-types/create')}}"> Add Expense Type</a></h4>
-                  @endcan
-
                   <div class="table-responsive">
 
                     <table class="table table-hover">
 
                       <thead>
 
-                        <tr>
+                        <tr class="bg-primary text-white">
 
                           <th>Sr No#</th>
 
@@ -178,7 +178,9 @@
 
                         @empty
 
-                        <tr><td colspan='3'> No Data Available</td></tr>
+                        <tr class="text-center">
+                            <td colspan='6'> No Data Available</td>
+                        </tr>
 
                         <?php $num++; ?>
 

@@ -165,7 +165,7 @@
 
 
                         @can('create customers')
-                            <div class="text-center" style="float: center;">
+                            <div class="text-center" style="float: right;">
 
 
 

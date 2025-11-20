@@ -26,7 +26,7 @@
 
                 <ol class="breadcrumb">
 
-                    <li class="breadcrumb-item"><a href="{{url('expenses/index')}}">Expenses</a></li>
+                    <li class="breadcrumb-item"><a href="{{url('expenses')}}">Expenses</a></li>
 
                     <li class="breadcrumb-item active" aria-current="page">Expenses Listing</li>
 
@@ -75,9 +75,7 @@
 
                                 <thead>
 
-                                    <tr>
-
-                                      
+                                    <tr class="bg-primary text-white">
 
                                         <th>Expense Type</th>
 
@@ -97,7 +95,7 @@
 
                                    
 
-                                    @foreach($expenses as $expense)
+                                    @forelse($expenses as $expense)
 
                                    
 
@@ -146,7 +144,13 @@
 
                                
 
-                                    @endforeach
+                                    @empty
+
+                                    <tr style="text-align: center">
+                                        <td colspan='5'> No Data Available</td>
+                                    </tr>
+
+                                    @endforelse
 
                                 </tbody>
 

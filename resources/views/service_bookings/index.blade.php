@@ -139,7 +139,7 @@
 
                                 <thead>
 
-                                    <tr>
+                                    <tr class="bg-primary text-white">
 
                                         <th>User</th>
 
@@ -167,7 +167,7 @@
 
                                     <?php $num = 1; ?>
 
-                                    @foreach($data_array as $key => $book)
+                                    @forelse($data_array as $key => $book)
 
                                     <tr>
 
@@ -281,7 +281,13 @@
 
                                     <?php $num++; ?>
 
-                                    @endforeach
+                                    @empty
+
+                                    <tr style="text-align: center">
+                                        <td colspan='9'> No Data Available</td>
+                                    </tr>
+
+                                    @endforelse
 
                                 </tbody>
 

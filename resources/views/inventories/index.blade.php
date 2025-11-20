@@ -319,6 +319,50 @@ input:checked+.slider:before {
 
             <div class="card-body">
 
+                <div class="row">
+
+
+
+                    <div class="col-md-3">
+
+
+
+                        <h4 class="card-title">Inventory Listing</h4>
+
+
+
+                    </div>
+
+
+
+                    <div class="col-md-6"></div>
+
+
+
+                    <div class="col-md-3">
+
+
+
+                        <div class="text-center" style="float: center;">
+
+                        @can('create inventories')
+
+                            <a href="{{url('inventories/create')}}" class="btn btn-primary btn-sm">Add New Item</a>
+
+                        @endcan
+
+
+
+                        </div>
+
+
+
+                    </div>
+
+
+
+                </div>
+
 
             <!-- Pagination Dropdown -->
                 <div class="row">
@@ -342,53 +386,6 @@ input:checked+.slider:before {
                 </div>
 
 
-
-                <div class="row">
-
-
-
-                    <div class="col-md-3">
-
-
-
-                    <h4 class="card-title">Inventory Listing</h4>
-
-
-
-                    </div>
-
-
-
-                    <div class="col-md-6"></div>
-
-
-
-                    <div class="col-md-3">
-
-
-
-                        <div class="text-center" style="float: center;">
-
-                        @can('create inventories')
-
-                            <a href="{{url('inventories/create')}}" class="btn btn-primary btn-sm">Add Item</a>
-
-                        @endcan
-
-
-
-                        </div>
-
-
-
-                    </div>
-
-
-
-                </div>
-
-
-
                 <div class="row">
 
 
@@ -409,9 +406,7 @@ input:checked+.slider:before {
 
 
 
-                                    <tr>
-
-
+                                    <tr class="bg-primary text-white">
 
                                         <th>Sr.No #</th>
 
@@ -439,13 +434,7 @@ input:checked+.slider:before {
 
 
 
-                                    @foreach($inventories as $inventory)
-
-
-
-                                    
-
-
+                                    @forelse($inventories as $inventory)
 
                                     <tr>
 
@@ -499,7 +488,13 @@ input:checked+.slider:before {
 
 
 
-                                    @endforeach
+                                    @empty
+
+                                    <tr style="text-align: center">
+                                        <td colspan='6'> No Data Available</td>
+                                    </tr>
+
+                                    @endforelse
 
 
 

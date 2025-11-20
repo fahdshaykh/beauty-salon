@@ -82,7 +82,7 @@
 
 
 
-                    <li class="breadcrumb-item"><a href="{{url('quote-mail')}}">Quote</a></li>
+                    <li class="breadcrumb-item"><a href="{{ route('quotations.index') }}">Quotations</a></li>
 
 
 

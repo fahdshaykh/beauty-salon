@@ -95,7 +95,7 @@
 
                                 <thead>
 
-                                    <tr>
+                                    <tr class="bg-primary text-white">
 
                                         <th>Category Name</th>
 
@@ -113,7 +113,7 @@
 
                                 <tbody>
 
-                                    @foreach($categories as $category)
+                                    @forelse($categories as $category)
 
                                     <tr>
 
@@ -163,7 +163,13 @@
 
                                     </tr>
 
-                                    @endforeach
+                                @empty
+
+                                <tr style="text-align: center">
+                                    <td colspan='6'> No Data Available</td>
+                                </tr>
+
+                                @endforelse
 
 
 

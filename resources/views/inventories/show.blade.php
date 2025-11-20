@@ -294,7 +294,7 @@ input:checked+.slider:before {
 
 
 
-                    <li class="breadcrumb-item"><a href="{{route('users.index')}}">Inventories</a></li>
+                    <li class="breadcrumb-item"><a href="{{ route('inventories_purchases.index') }}">Inventories</a></li>
 
 
 
@@ -313,135 +313,13 @@ input:checked+.slider:before {
         </div>
 
 
-
-
-
-
-
-        <div class="alert alert-success" style="display:none;" id="status-success"></div>
-
-
-
-
-
-
-
-        @if(Session::has('success'))
-
-
-
-        <div class="alert alert-success alert-dismissible">
-
-
-
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-
-
-
-            {{Session::get('success')}}
-
-
-
-        </div>
-
-
-
-
-
-
-
-        @elseif(Session::has('destroy'))
-
-
-
-        <div class="alert alert-danger alert-dismissible">
-
-
-
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-
-
-
-            {{Session::get('destroy')}}
-
-
-
-        </div>
-
-
-
-        @endif
-
-
-
-
-
-
-
-        @if(Session::has('update'))
-
-
-
-        <div class="alert alert-success alert-dismissible">
-
-
-
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-
-
-
-            {{Session::get('update')}}
-
-
-
-        </div>
-
-
-
-        @endif
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         <div class="card">
 
 
 
             <div class="card-body">
 
-
-                    <!-- Pagination Dropdown -->
-                        <div class="row">
-                            <div class="col-md-3">
-                                <div class="pagination-dropdown">
-                                    <form class="form-inline">
-                                        <div class="form-group">
-                                            <label for="rows">Records:&nbsp;</label>
-                                            <select class="form-control" id="rows" name="rows">
-                                                <option value="5" @if($rows == 5) selected @endif > 5 </option>
-                                                <option value="10" @if($rows == 10) selected @endif > 10 </option>
-                                                <option value="20" @if($rows == 20) selected @endif > 20 </option>
-                                                <option value="50" @if($rows == 50) selected @endif > 50 </option>
-                                                <option value="100" @if($rows == 100) selected @endif > 100 </option>
-                                                <option value="500" @if($rows == 500) selected @endif > 500 </option>                        
-                                            </select>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
+            <div class="row">
 
 
 
@@ -449,7 +327,7 @@ input:checked+.slider:before {
 
 
 
-                            <h4 class="card-title">Inventory Listing</h4>
+                            <h4 class="card-title">Remaining inventories</h4>
 
 
 
@@ -482,6 +360,29 @@ input:checked+.slider:before {
 
 
                         </div>
+
+                    <!-- Pagination Dropdown -->
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="pagination-dropdown">
+                                    <form class="form-inline">
+                                        <div class="form-group">
+                                            <label for="rows">Records:&nbsp;</label>
+                                            <select class="form-control" id="rows" name="rows">
+                                                <option value="5" @if($rows == 5) selected @endif > 5 </option>
+                                                <option value="10" @if($rows == 10) selected @endif > 10 </option>
+                                                <option value="20" @if($rows == 20) selected @endif > 20 </option>
+                                                <option value="50" @if($rows == 50) selected @endif > 50 </option>
+                                                <option value="100" @if($rows == 100) selected @endif > 100 </option>
+                                                <option value="500" @if($rows == 500) selected @endif > 500 </option>                        
+                                            </select>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        
 
 
 
@@ -535,7 +436,7 @@ input:checked+.slider:before {
 
 
 
-                                    @foreach($inventories as $inventory)
+                                    @forelse($inventories as $inventory)
 
 
 
@@ -604,7 +505,13 @@ input:checked+.slider:before {
 
 
 
-                                    @endforeach
+                                    @empty
+
+                                    <tr style="text-align: center">
+                                        <td colspan='6'> No Data Available</td>
+                                    </tr>
+
+                                    @endforelse
 
 
 

@@ -86,6 +86,14 @@
 
         <ul class="navbar-nav navbar-nav-right">
 
+          @can('create bookings')
+          <li class="nav-item d-none d-lg-flex">
+            <a class="nav-link" href="{{ url('service-bookings/service-bookings-create') }}">
+              <span class="btn btn-primary">+ Create Booking</span>
+            </a>
+          </li>
+          @endcan
+
         <li class="nav-item dropdown">
               <a class="nav-link count-indicator dropdown-toggle" id="notificationDropdown" href="#" data-toggle="dropdown">
                   <i class="fas fa-bell mx-0"></i>
@@ -444,7 +452,7 @@
 
 
                 @can('create bookings')
-                <li class="nav-item"><a class="nav-link {{ request()->routeIs('service-bookings.create') ? 'active' : '' }}" href="{{url('service-bookings/service-bookings-create')}}">Create Booking</a></li>
+                <li class="nav-item"><a class="nav-link {{ request()->routeIs('service-bookings.create') ? 'active' : '' }}" href="{{ url('service-bookings/service-bookings-create') }}">Create Booking</a></li>
                 @endcan
 
 

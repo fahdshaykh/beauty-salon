@@ -130,7 +130,7 @@
 
 
 
-                                    <tr>
+                                    <tr class="bg-primary text-white">
 
                                         <th>Category Name</th>
 
@@ -150,7 +150,7 @@
 
                                 <tbody>
 
-                                    @foreach($services as $service)
+                                    @forelse($services as $service)
 
                                     <tr>
 
@@ -203,7 +203,13 @@
                                         
                                     </tr>
 
-                                    @endforeach
+                                    @empty
+
+                                    <tr style="text-align: center">
+                                        <td colspan='6'> No Data Available</td>
+                                    </tr>
+
+                                    @endforelse
 
                                 </tbody>
 

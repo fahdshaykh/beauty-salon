@@ -75,7 +75,7 @@ function ucfirst(str) {
             <h3 class="page-title">Work Schedule</h3>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="#">Pages</a></li>
+                    <li class="breadcrumb-item"><a href="{{ route('work_schedule.index') }}">Schedules</a></li>
                     <li class="breadcrumb-item active" aria-current="page">Work Schedule</li>
                 </ol>
             </nav>

@@ -338,35 +338,16 @@ input:checked+.slider:before {
 
 
 
-                        <div class="col-md-6"></div>
+                            <div class="col-md-6"></div>
 
+                            <div class="col-md-3">
 
+                                <div class="text-center" style="float: center;">
 
-                        <div class="col-md-3">
+                                    <a href="{{url('user/user-create')}}" class="btn btn-primary btn-sm">Add New User</a>
 
-
-
-                            <div class="text-center" style="float: center;">
-
-
-
-
-
-
-                                <a href="{{url('user/user-create')}}" class="btn btn-primary btn-sm">Add New User</a>
-
-
-
-
-
-
+                                </div>
                             </div>
-
-
-
-                        </div>
-
-
 
                         </div>
 
@@ -412,13 +393,9 @@ input:checked+.slider:before {
 
 
 
-                                    <tr>
-
-
+                                    <tr class="bg-primary text-white">
 
                                         <th>Sr.No #</th>
-
-
 
                                         <th>User Name</th>
 
@@ -429,8 +406,6 @@ input:checked+.slider:before {
                                         <th>User address</th>
 
                                         <th>Status</th>
-
-
 
                                         <th>Actions</th>
 
@@ -452,12 +427,12 @@ input:checked+.slider:before {
 
 
 
-                                    @foreach($users as $user)
+                                    @forelse($users as $user)
 
 
 
                                         @role('admin')
-        @if($user->id != auth()->id())
+                                        @if($user->id != auth()->id())
 
 
 
@@ -527,12 +502,18 @@ input:checked+.slider:before {
 
 
 
-                                            @endif
-    @endrole
+                                    @endif
+                                    @endrole
 
 
 
-                                    @endforeach
+                                    @empty
+
+                                    <tr style="text-align: center">
+                                        <td colspan='6'> No Data Available</td>
+                                    </tr>
+
+                                    @endforelse
 
 
 

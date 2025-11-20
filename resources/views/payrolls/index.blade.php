@@ -298,7 +298,7 @@ input:checked+.slider:before {
 
 
 
-                    <li class="breadcrumb-item active" aria-current="page">Users Listing</li>
+                    <li class="breadcrumb-item active" aria-current="page">Users Payroll</li>
 
 
 
@@ -311,117 +311,6 @@ input:checked+.slider:before {
 
 
         </div>
-
-
-
-
-
-
-
-        <div class="alert alert-success" style="display:none;" id="status-success"></div>
-
-
-
-
-
-
-
-        @if(Session::has('success'))
-
-
-
-        <div class="alert alert-success alert-dismissible">
-
-
-
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-
-
-
-            {{Session::get('success')}}
-
-
-
-        </div>
-
-
-
-
-
-
-
-        @elseif(Session::has('destroy'))
-
-
-
-        <div class="alert alert-danger alert-dismissible">
-
-
-
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-
-
-
-            {{Session::get('destroy')}}
-
-
-
-        </div>
-
-
-
-        @endif
-
-
-
-
-
-
-
-        @if(Session::has('update'))
-
-
-
-        <div class="alert alert-success alert-dismissible">
-
-
-
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-
-
-
-            {{Session::get('update')}}
-
-
-
-        </div>
-
-
-
-        @endif
-
-
-
-        @if(session('error'))
-
-        <div class="alert alert-danger alert-dismissible">
-
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-
-            {{ session('error') }}
-
-        </div>
-
-        @endif
-
-
-
-
-
-
-
-
-
 
         <div class="card">
 
@@ -536,9 +425,7 @@ input:checked+.slider:before {
 
 
 
-                                    <tr>
-
-
+                                    <tr class="bg-primary text-white">
 
                                         <th>Sr.No #</th>
 
@@ -573,7 +460,7 @@ input:checked+.slider:before {
 
 
 
-                                    @foreach($users as $user)
+                                    @forelse($users as $user)
 
 
 
@@ -625,7 +512,13 @@ input:checked+.slider:before {
 
 
 
-                                    @endforeach
+                                    @empty
+
+                                    <tr style="text-align: center">
+                                        <td colspan='6'> No Data Available</td>
+                                    </tr>
+
+                                    @endforelse
 
 
 
