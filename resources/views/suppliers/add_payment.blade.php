@@ -100,7 +100,7 @@
 
                   <h4 class="card-title">Add Pending Payment</h4>
 
-                  <form class="forms-sample" action="{{ route('supplier-payments.store') }}" method="post">
+                  <form class="forms-sample" action="{{ route('supplier_payments.store') }}" method="post">
 
                   @csrf
 

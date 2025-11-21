@@ -91,6 +91,7 @@ class InventoryPurchasesController extends Controller
         if ($request->amount_paid > 0) {
             SupplierPayment::create([
                 'supplier_id' => $request->supplier_id,
+                'company_id' => auth()->user()->company_id,
                 'inventory_purchase_id' => $purchase->id,
                 'amount' => $request->amount_paid,
                 'note' => 'Initial payment during purchase',
@@ -176,6 +177,7 @@ class InventoryPurchasesController extends Controller
             // Add new payment if the amount paid is greater
             SupplierPayment::create([
                 'supplier_id' => $request->supplier_id,
+                'company_id' => auth()->user()->company_id,
                 'inventory_purchase_id' => $purchase->id,
                 'amount' => $request->amount_paid - $totalPaid,
                 'note' => 'Updated payment during purchase',

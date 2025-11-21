@@ -24,6 +24,7 @@ class SupplierPaymentController extends Controller
 
         SupplierPayment::create([
             'supplier_id' => $request->supplier_id,
+            'company_id' => auth()->user()->company_id,
             'amount' => $request->amount,
             'note' => $request->note,
         ]);

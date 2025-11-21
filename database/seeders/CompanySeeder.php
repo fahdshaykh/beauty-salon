@@ -82,7 +82,7 @@ class CompanySeeder extends Seeder
             'smart_name' => 'beauty_salon',
             'email_permissions' => 1,
             'message_permissions' => 1,
-            'review_permissions' => 0,
+            'review_permissions' => 1,
             'review_url' => '',
             'email' => $user->email,
             'sms_count' => 0,

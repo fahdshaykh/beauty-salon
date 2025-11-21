@@ -7,7 +7,7 @@
     <div class="content-wrapper">
         <div class="page-header">
             <h3 class="page-title">Supplier Summary</h3>
-            <a href="{{ route('supplier-payments.edit', $supplier->id) }}" class="btn btn-primary btn-sm">Add Payment</a>
+            <a href="{{ route('supplier_payments.edit', $supplier->id) }}" class="btn btn-primary btn-sm">Add Payment</a>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{{ route('suppliers.index') }}">Suppliers</a></li>
