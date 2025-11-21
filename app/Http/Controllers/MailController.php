@@ -23,11 +23,11 @@ use Illuminate\Http\Request;
 
 
 use Mail;
-
 use App\ServiceBooking;
-
+use App\Mail\InvoiceMailable;
 use DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use PDF;
 
 
@@ -45,139 +45,83 @@ class MailController extends Controller
 
 
     public function invoice_mail($id)
-
     {
+        try {
+            $booking_detail = ServiceBooking::with('customer')->where('id', $id)->get();
 
-        $booking_detail = ServiceBooking::with('customer')->where('id', $id)->get();
+            $detail_array = "";
+            $payment_instrument = 'Not Available';
+            $chequenumber= '';
 
-        $detail_array = "";
+            foreach($booking_detail as $book){
 
-        $payment_method = 'Not Available';
+                if($book->payment_instrument!=""){
+                    $payment_instrument = $book->payment_instrument;
+                    $chequenumber= $book->chequenumber;
+                }
 
-        $chequenumber= '';
-
-        foreach($booking_detail as $book){
-
-            if($book->payment_method!=""){
-
-                $payment_method = $book->payment_method;
-
-                $chequenumber= $book->chequenumber;
-
+                $detail_array = array(
+                    'invoice' =>  $book->invoice,
+                    'due_date' => $book->due_date,
+                    'total_price' => $book->total_price,
+                    'first_name' =>  $book->customer->first_name,
+                    'last_name' =>  $book->customer->last_name,
+                    'primary_phone' => $book->customer->primary_phone,
+                    'email' => $book->customer->email,
+                    'address' =>$book->customer->address ,
+                    'comment' => $book->comment,
+                    'payment_instrument' => $payment_instrument,
+                    'payment_days' => $book->payment_days,
+                    'vat' => $book->vat,
+                    'chequenumber' => $chequenumber,
+                    'postcode' => $book->customer->zip,
+                    'services' => $this->get_services($book->id),
+                );
             }
 
-            $detail_array = array(
+            $title = 'ABC Company';
+            $subject = 'Booking Invoice';
 
-                'invoice' =>  $book->invoice,
+            $detail_array["header"] = '';
+            $detail_array["footer"] = '';
+            $detail_array["company_logo"] = '';
 
-                'due_date' => $book->due_date,
+            $company_email = DB::table('email_settings')->where('company_id', auth()->user()->company_id)->get();
+            // dd($company_email[0]->image);
+            if(!$company_email->isEmpty()){
+                $title = $company_email[0]->title;
+                $subject = $company_email[0]->subject;
+                $detail_array["header"] = $company_email[0]->header;
+                $detail_array["footer"] = $company_email[0]->footer;
+                $detail_array["company_logo"] = $company_email[0]->image;
+            }
 
-                'total_price' => $book->total_price,
+            // Generate PDF
+            $pdf = \PDF::loadView('emails.invoicepdf', compact('detail_array'));
 
-                'first_name' =>  $book->customer->first_name,
+            $to_name = $detail_array['last_name'];
+            $to_email = $detail_array['email'];
 
-                'last_name' =>  $book->customer->last_name,
+            $fromAddress = Auth::user()->companySetting->email ?? 'noreply@example.com';
+            $fromName = $title;
 
-                'primary_phone' => $book->customer->primary_phone,
+            // Queue the invoice email (pass booking ID, not PDF content)
+            Mail::to($to_email, $to_name)->queue(new InvoiceMailable(
+                $detail_array,
+                $to_email,
+                $to_name,
+                $subject,
+                $fromAddress,
+                $fromName,
+                $id
+            ));
 
-                'email' => $book->customer->email,
+            return response()->json(['success' => 'E-mail has been queued and will be sent shortly']);
 
-                'address' =>$book->customer->address ,
-
-                'comment' => $book->comment,
-
-                'payment_method' => $payment_method,
-
-                'payment_days' => $book->payment_days,
-
-                'vat' => $book->vat,
-
-                'chequenumber' => $chequenumber,
-
-                'postcode' => $book->customer->zip,
-
-                'services' => $this->get_services($book->id),
-
-                );
-
+        } catch (\Exception $e) {
+            Log::error('Invoice email error: ' . $e->getMessage());
+            return response()->json(['error' => 'There is error in sending mail: ' . $e->getMessage()], 500);
         }
-
-        $title = 'Diary Mastter';
-
-        $subject = 'B Saloon Invoice';
-
-
-
-        $detail_array["header"] = '';
-
-        $detail_array["footer"] = '';
-
-        $detail_array["company_logo"] = '';
-
-
-
-        $company_email = DB::table('email_settings')->where('company_id', auth()->user()->company_id)->get();
-
-        if(!$company_email->isEmpty()){
-
-            $title = $company_email[0]->title;
-
-            $subject = $company_email[0]->subject;
-
-            $detail_array["header"] = $company_email[0]->header;
-
-            $detail_array["footer"] = $company_email[0]->footer;
-
-            $detail_array["company_logo"] = $company_email[0]->image;
-
-        }
-
-        // return view('emails.invoicepdf', compact('detail_array'));
-
-        // exit();
-
-        $pdf = \PDF::loadView('emails.invoicepdf', compact('detail_array')); 
-        // return $pdf->stream('invoice.pdf');
-        // exit();
-
-        $to_name = $detail_array['last_name'];
-
-        $to_email = $detail_array['email'];
-
-
-
-        \Mail::send('emails.invoice', compact('detail_array'), function($message) use ($to_name, $to_email,$title,$subject,$pdf) {
-
-            $message->to($to_email, $to_name)->subject($subject);
-
-            $message->from(Auth::user()->companySetting->email ?? 'noreply@example.com', $title);
-
-            $message->attachData($pdf->output(), "invoice.pdf");
-
-        });
-
-        // check for failures
-
-        $failures =  Mail:: failures();
-
-        if(count($failures)>0){
-
-            
-
-            return response()->json(['error' => 'There is error in sending mail.']);
-
-           // return back()->with('error','There is error in sending mail.');
-
-        }
-
-        else{
-
-            return response()->json(['success'=>'E-mail has been sent successfully']);
-
-            //return back()->with('success','E-mail has been sent successfully!');
-
-        }
-
     }
 
 
@@ -239,9 +183,9 @@ class MailController extends Controller
 
         }
 
-        $title = 'Diary Mastter';
+        $title = 'ABC Company';
 
-        $subject = 'B Saloon Invoice';
+        $subject = 'Booking Invoice';
 
 
 

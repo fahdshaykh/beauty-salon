@@ -273,9 +273,6 @@ class SettingController extends Controller
 
 
     public function message_status(Request $request)
-
-
-
     {
 
 
@@ -295,6 +292,37 @@ class SettingController extends Controller
         $data['message_permissions'] = $request->message_permissions;
 
 
+
+        DB::table('company_settings')->where('company_id',$id)->update($data);
+
+
+
+        return response()->json(['success'=>'Status changed successfully.']);
+
+
+
+    }
+
+
+
+    public function email_status(Request $request)
+    {
+
+
+
+        $data = $request->all();
+
+
+
+        $data = $request->except('_token','_method');
+
+
+
+        $id = $request->id;
+
+
+
+        $data['email_permissions'] = $request->email_permissions;
 
         DB::table('company_settings')->where('company_id',$id)->update($data);
 

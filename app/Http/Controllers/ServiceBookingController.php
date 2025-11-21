@@ -32,6 +32,7 @@ use App\InventoryPurchases;
 use App\User;
 
 use App\Mail\NotificationEmail;
+use App\Mail\BookingMailable;
 use App\Models\Setting;
 use App\Models\UserSetting;
 use Carbon\Carbon;
@@ -313,6 +314,47 @@ class ServiceBookingController extends Controller
 
         $message_status = DB::table('company_settings')->select('*')->where('company_id', auth()->user()->company_id)->get();
 
+        if($message_status['0']->email_permissions == 1){
+            try {
+                // Fetch the booking that was just created
+                $booking = ServiceBooking::findOrFail($booking->id);
+                $customer = Customer::findOrFail($booking->customer_id);
+                
+                if($customer->email){
+                    $services = DB::table('booking_details')
+                        ->join('services', 'services.id', '=', 'booking_details.service_id')
+                        ->where('booking_details.booking_id', $booking->id)
+                        ->pluck('services.name')->implode(', ');
+                    
+                    $total_price = $booking->total_price;
+                    $vat_amount = ($total_price * ($message_status['0']->vat ?? 0)) / 100;
+                    $company_setting = $message_status['0'];
+                    
+                    $bookingData = [
+                        'customer_name' => $customer->customer_name ?? $customer->first_name . ' ' . $customer->last_name,
+                        'invoice_number' => 'BK-' . str_pad($booking->id, 5, '0', STR_PAD_LEFT),
+                        'due_date' => date('d/m/Y', strtotime($booking->due_date)),
+                        'due_time' => $booking->due_time,
+                        'services' => $services,
+                        'total_price' => number_format($total_price, 2),
+                        'vat' => number_format($vat_amount, 2),
+                        'comment' => $booking->comment ?? '',
+                        'company_title' => $company_setting->site_name ?? 'Beauty Salon',
+                    ];
+                    
+                    Mail::to($customer->email)->queue(new BookingMailable(
+                        $bookingData,
+                        $customer->email,
+                        'Booking Confirmation',
+                        $company_setting->from_email ?? 'noreply@salon.com',
+                        $company_setting->site_name ?? 'Beauty Salon',
+                        auth()->user()->company_id
+                    ));
+                }
+            } catch (\Exception $e) {
+                Log::error('Booking email error on store: ' . $e->getMessage());
+            }
+        }
         if($message_status['0']->message_permissions == 1){
 
             if($message_status['0']->sms_count<=0){
@@ -321,7 +363,7 @@ class ServiceBookingController extends Controller
 
             }
 
-           $response =  $this->send_message($request->booking_id, 'Booking');
+           $response =  $this->send_message($booking->id, 'Booking');
 
            if(isset($response->error)){
 
@@ -752,6 +794,49 @@ class ServiceBookingController extends Controller
         //         $this->mobile_notification($request->service_id,auth()->user()->id,$data['due_date']);
 
         $message_status = DB::table('company_settings')->select('*')->where('company_id', auth()->user()->company_id)->get();
+
+        if($message_status['0']->email_permissions == 1){
+            
+            try {
+                // Fetch the booking that was just updated
+                $booking = ServiceBooking::findOrFail($request->booking_id);
+                $customer = Customer::findOrFail($booking->customer_id);
+                
+                if($customer->email){
+                    $services = DB::table('booking_details')
+                        ->join('services', 'services.id', '=', 'booking_details.service_id')
+                        ->where('booking_details.booking_id', $booking->id)
+                        ->pluck('services.name')->implode(', ');
+                    
+                    $total_price = $booking->total_price;
+                    $vat_amount = ($total_price * ($message_status['0']->vat ?? 0)) / 100;
+                    $company_setting = $message_status['0'];
+                    
+                    $bookingData = [
+                        'customer_name' => $customer->customer_name ?? $customer->first_name . ' ' . $customer->last_name,
+                        'invoice_number' => 'BK-' . str_pad($booking->id, 5, '0', STR_PAD_LEFT),
+                        'due_date' => date('d/m/Y', strtotime($booking->due_date)),
+                        'due_time' => $booking->due_time,
+                        'services' => $services,
+                        'total_price' => number_format($total_price, 2),
+                        'vat' => number_format($vat_amount, 2),
+                        'comment' => $booking->comment ?? '',
+                        'company_title' => $company_setting->site_name ?? 'Beauty Salon',
+                    ];
+                    
+                    Mail::to($customer->email)->queue(new BookingMailable(
+                        $bookingData,
+                        $customer->email,
+                        'Booking Updated',
+                        $company_setting->from_email ?? 'noreply@salon.com',
+                        $company_setting->site_name ?? 'Beauty Salon',
+                        auth()->user()->company_id
+                    ));
+                }
+            } catch (\Exception $e) {
+                Log::error('Booking email error on update: ' . $e->getMessage());
+            }
+        }
 
         if($message_status['0']->message_permissions == 1){
 

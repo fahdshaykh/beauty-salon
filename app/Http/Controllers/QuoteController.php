@@ -148,30 +148,36 @@ class QuoteController extends Controller
 
         // dd($data["logo"]);
 
-        if($to_email)
+        if ($to_email)
 
         {
 
-            \Mail::send('emails.quote', $data, function($message) use ($to_email,$subject,$title) {
+            // Prepare mailable data
+            $mailableData = [
+                'quote' => $quote,
+                'header' => $data['header'] ?? '',
+                'footer' => $data['footer'] ?? '',
+                'logo' => $data['logo'] ?? '',
+                'subject' => $subject,
+                'title' => $title,
+                'from' => Auth::user()->companySetting->email ?? null,
+            ];
 
-                $message->to($to_email)->subject($subject);
-
-                $message->from(Auth::user()->companySetting->email ?? 'noreply@example.com', $title);
-
-            });
-
-            // check for failures
-
-            if (Mail::failures()) {
-
-                return back()->with('error','Email Sending Error, Please try again!');
-
-            }
-
-            else{
-
-            return back()->with('success','Quote has been sent successfully!');
-
+            try {
+                // Queue the mailable (requires a running queue worker)
+                \Mail::to($to_email)->queue(new \App\Mail\QuoteMailable($mailableData));
+                return back()->with('success','Quote has been queued for sending.');
+            } catch (\Exception $e) {
+                // Fallback to synchronous send if queuing fails
+                try {
+                    \Mail::send('emails.quote', $data, function($message) use ($to_email, $subject, $title) {
+                        $message->to($to_email)->subject($subject);
+                        $message->from(Auth::user()->companySetting->email ?? 'noreply@example.com', $title);
+                    });
+                    return back()->with('success','Quote has been sent successfully (fallback).');
+                } catch (\Exception $ex) {
+                    return back()->with('error','Email Sending Error, Please try again!');
+                }
             }
 
         }

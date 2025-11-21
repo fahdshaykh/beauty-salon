@@ -279,6 +279,7 @@ Route::middleware(['auth', 'company'])->group(function () {
     // ── Settings ──
     Route::get('message-setting', [SettingController::class, 'message_index'])->name('settings.message');
     Route::get('message-status', [SettingController::class, 'message_status'])->name('settings.message_status');
+    Route::get('email-status', [SettingController::class, 'email_status'])->name('settings.email_status');
     Route::get('tax-status', [SettingController::class, 'tax_status'])->name('settings.tax_status');
     Route::post('tax-settings-update', [SettingController::class, 'tax_settings_update'])->name('settings.tax_update');
     Route::post('voodoosms-settings-update', [SettingController::class, 'voodoosms_settings_update'])->name('settings.voodoosms_update');

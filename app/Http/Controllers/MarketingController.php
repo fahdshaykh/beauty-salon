@@ -464,18 +464,27 @@ class MarketingController extends Controller
             }
             //echo $title; exit;
             $emails = $all_email;
-            //sending mail function
-            Mail::send('emails.marketing', $detail_array, function($message) use ($emails, $title,$subject)
-            {    
-                $message->to($emails)->subject($subject);
-                $message->from(Auth::user()->companySetting->email ?? 'noreply@example.com', $title);  
-            });
-            $failures =  Mail:: failures();
-            if(count($failures)>0){
-                return redirect('marketing')->with('destroy', 'There is error in sending mail');
-            }
-            else{
-                return redirect('marketing')->with('success', 'Email has been Sent Successfully.');
+            // Queue the marketing email. If queuing fails, fall back to synchronous send.
+            try {
+                \Mail::to($emails)->queue(new \App\Mail\MarketingMailable($detail_array, 'emails.marketing', $subject, Auth::user()->companySetting->email ?? null));
+                return redirect('marketing')->with('success', 'Emails have been queued for sending.');
+            } catch (\Exception $e) {
+                try {
+                    Mail::send('emails.marketing', $detail_array, function($message) use ($emails, $title,$subject)
+                    {    
+                        $message->to($emails)->subject($subject);
+                        $message->from(Auth::user()->companySetting->email ?? 'noreply@example.com', $title);  
+                    });
+                    $failures =  Mail:: failures();
+                    if(count($failures)>0){
+                        return redirect('marketing')->with('destroy', 'There is error in sending mail');
+                    }
+                    else{
+                        return redirect('marketing')->with('success', 'Email has been Sent Successfully.');
+                    }
+                } catch (\Exception $ex) {
+                    return redirect('marketing')->with('destroy', 'There is error in sending mail');
+                }
             }
             
 

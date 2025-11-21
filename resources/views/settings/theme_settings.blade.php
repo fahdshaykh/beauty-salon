@@ -229,6 +229,18 @@
 
                         </li>
 
+                        <!-- add permission here  -->
+
+                        <li class="nav-item">
+
+                          <a class="nav-link" id="email-tab-custom" data-toggle="tab" href="#email-3" role="tab" aria-controls="email-3" aria-selected="false">
+
+                            Booking email <i  class="fas fa-chevron-right"></i>
+
+                          </a>
+
+                        </li>
+
 
 
                         <li class="nav-item">
@@ -278,7 +290,7 @@
                           </li> -->
 
 
-                          <!-- <li class="nav-item">
+                          <li class="nav-item">
 
                             <a class="nav-link" id="postcard" data-toggle="tab" href="#socialmedia-tab" role="tab" aria-controls="booking_sms" aria-selected="false">
 
@@ -286,7 +298,7 @@
 
                             </a>
 
-                          </li> -->
+                          </li>
 
                       </ul>
 
@@ -560,10 +572,6 @@
 
                                   <div class="accordion accordion-solid-header" id="accordion-4" role="tablist">
 
-                                    
-
-                                    <div class="card">
-
                                       <!-- <div class="card-header" role="tab" id="heading-11">
 
                                         <h6 class="mb-0">
@@ -578,17 +586,17 @@
 
                                       </div> -->
 
+
                                       <div>
 
                                         <div class="row">
 
                                             <div class="col-12 grid-margin">
 
-                                                <div class="card">
 
-                                                    <div class="card-body">
 
-                                                        <h4 class="card-title">Email Settings</h4>
+
+                                                        <h4 class="card-title">General Email Settings</h4>
 
                                                         <form id="email_settings" class="forms-sample" enctype="multipart/form-data" >
 
@@ -707,19 +715,11 @@
 
                                                         </form>
 
-                                                    </div>
-
-                                                </div>
-
                                             </div>
 
                                         </div>
 
                                       </div>
-
-                                    </div>
-
-
 
                                   </div>
 
@@ -735,6 +735,57 @@
 
 
                              <!-- tab-4 -->
+
+                                                         <!-- add permission here  -->
+
+                        <div class="tab-pane fade" id="email-3" role="tabpanel" aria-labelledby="profile-tab-custom">
+
+                            <div class="card">
+
+                                <div class="card-body">
+
+                                    <div class="row">
+
+                                        <div class="col-lg-6"> 
+                                            <b> Booking Email Acticvate / Disable Messages  </b>
+                                        </div>
+                                        
+
+                                        <div class="col-lg-6">
+
+                                    
+
+                                            <label class="switch" style="float: right;">
+
+                                                
+
+                                                <input type="checkbox" id="email-{{$settings->company_id}}"
+
+            
+
+                                                    onclick="changeEmailStatus(event.target, {{ $settings->company_id }});"
+
+            
+
+                                                    {{($settings->email_permissions) ? 'checked' : ''}}>
+
+        
+
+                                                <span class="slider round"></span>
+
+            
+
+                                            </label>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
 
                             <!-- add permission here  -->
 
@@ -1154,7 +1205,7 @@
 
 
 
-                            <!-- <div class="tab-pane fade" id="socialmedia-tab" role="tabpanel"aria-labelledby="profile-tab-custom">
+                            <div class="tab-pane fade" id="socialmedia-tab" role="tabpanel"aria-labelledby="profile-tab-custom">
 
                                 <div class="row">
 
@@ -1224,7 +1275,7 @@
 
                                     
 
-                            </div> -->
+                            </div>
 
                         </div>
 
@@ -1446,7 +1497,49 @@ $.ajax({
 
 
 
+function changeEmailStatus(_this, id) {
 
+
+
+var status = $(_this).prop('checked') == true ? 1 : 0;
+
+
+
+
+
+$.ajax({
+
+    url: "{{url('email-status')}}",
+
+    type: 'GET',
+
+    data: {
+
+        id: id,
+
+        email_permissions: status
+
+    },
+
+    success: function(result) {
+
+        if(result.success){
+
+                    showSuccessToast(result.success);
+
+                }
+
+                else{
+
+                    showDangerToast(result.error);
+
+                }
+
+    }
+
+});
+
+}
 
 function changeTaxStatus(_this) {
 

@@ -183,11 +183,17 @@ class PowerMailingController extends Controller
             //echo $request->schedule_date.'>>>>>>>'.$request->schedule_time; exit;
         }
         else{
-            // dd('not schedule');
-            Mail::send(['html' => 'emails.template'], $data, function($message) use ($emails,$subject,$title) {
-                $message->to($emails)->subject($subject);
-                $message->from(Auth::user()->companySetting->email ?? 'noreply@example.com', $title);
-            });
+            
+            try {
+                \Mail::to($emails)->queue(new \App\Mail\MarketingMailable($data, 'emails.template', $subject, Auth::user()->companySetting->email ?? null));
+            } catch (\Exception $e) {
+                // fallback to sync send
+                Mail::send(['html' => 'emails.template'], $data, function($message) use ($emails,$subject,$title) {
+                    $message->to($emails)->subject($subject);
+                    $message->from(Auth::user()->companySetting->email ?? 'noreply@example.com', $title);
+                });
+            }
+
             foreach($emails as $email){
                 $history = array(
                     'email'=> $email,
@@ -201,12 +207,10 @@ class PowerMailingController extends Controller
                 DB::table('email_marketing_history')->insert($history);
             }
             //$this->UnlinkImage($first_image,$second_image);
-            if (Mail::failures()) {
+            if (isset($e) && $e instanceof \Exception) {
                 return redirect()->route('power_mailing.create')->with('error','Email Sending Error, Please try again!');
             }
-            else{
-                return redirect()->route('power_mailing.create')->with('success','Email sent successfully!');
-            }
+            return redirect()->route('power_mailing.create')->with('success','Email sent successfully!');
             
         }
 

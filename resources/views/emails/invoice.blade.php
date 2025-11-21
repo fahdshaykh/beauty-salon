@@ -34,7 +34,7 @@ $address = $detail_array['address'];
 
 $comment = $detail_array['comment'];
 
-$payment_method = $detail_array['payment_method'];
+$payment_instrument = $detail_array['payment_instrument'];
 
 $chequenumber = $detail_array['chequenumber'];
 
@@ -70,7 +70,7 @@ $services = $detail_array['services'];
 
                 <td>
 
-                    <img src="@if($company_logo){{asset('email_logo/'.$company_logo)}} @else {{asset('profiles/power_diary.png')}} @endif" width="250" height="50" alt="logo" />
+                    <img src="@if(!empty($detail_array['company_logo_base64'])){{ $detail_array['company_logo_base64'] }}@elseif($company_logo){{ asset('email_logo/'.$company_logo) }}@else{{ asset('email_logo/invoice_logo.png') }}@endif" width="250" height="50" alt="logo" />
 
                 </td>
 
@@ -126,15 +126,13 @@ $services = $detail_array['services'];
 
                     <p>{!! $header !!}</p>
 
-                    <p>Payment Method: {{ucfirst(trans($payment_method))}}</p>
+                    <p>Payment Method: {{ucfirst(trans($payment_instrument))}}</p>
 
-                    @if($payment_method=='cheque')
+                    @if($payment_instrument=='cheque')
 
                     <br />
 
                     Cheque#: {{$chequenumber}}. @endif
-
-                    <span>Payment Days: {{$payment_days}}</span>
 
                     
 
