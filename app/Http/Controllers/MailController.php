@@ -89,12 +89,15 @@ class MailController extends Controller
             $company_email = DB::table('email_settings')->where('company_id', auth()->user()->company_id)->get();
             // dd($company_email[0]->image);
             if(!$company_email->isEmpty()){
-                $title = $company_email[0]->title;
-                $subject = $company_email[0]->subject;
-                $detail_array["header"] = $company_email[0]->header;
-                $detail_array["footer"] = $company_email[0]->footer;
-                $detail_array["company_logo"] = $company_email[0]->image;
+                $title = $company_email[0]->title ?? 'ABC Company';
+                $subject = $company_email[0]->subject ?? 'Booking Invoice';
+                $detail_array["header"] = $company_email[0]->header ?? '';
+                $detail_array["footer"] = $company_email[0]->footer ?? '';
+                $detail_array["company_logo"] = $company_email[0]->image ?? '';
             }
+
+            // Ensure subject is never null
+            $subject = trim($subject) ?: 'Booking Invoice';
 
             // Generate PDF
             $pdf = \PDF::loadView('emails.invoicepdf', compact('detail_array'));

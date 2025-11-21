@@ -163,7 +163,7 @@
                     <div class="row">
 
                             <div class="col-md-3 input-group-prepend">
-                                <select id="tags" name="country_code" class="js-example-basic-single w-100">
+                                <select id="tags" name="country_code" class="js-example-basic-single w-100" required>
 
                                 @foreach ($countries as $country)
                                     

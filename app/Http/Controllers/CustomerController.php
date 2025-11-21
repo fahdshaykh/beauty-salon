@@ -110,6 +110,8 @@ class CustomerController extends Controller
 
                 'last_name' => 'required',
 
+                'country_code' => 'required',
+
                 'primary_phone' => 'required',
 
                 'email' => 'nullable',
@@ -125,6 +127,8 @@ class CustomerController extends Controller
                 'first_name.required' => 'Please enter first name',
 
                 'last_name.required' => 'Please enter last name',
+
+                'country_code.required' => 'Please Select Country Code',
 
                 'primary_phone.required' => 'Please Enter Phone number',
 
