@@ -35,53 +35,6 @@
         </div>
 
 
-
-        <div class="alert alert-success" style="display:none;" id="status-success"></div>
-
-
-
-        @if(Session::has('success'))
-
-        <div class="alert alert-success alert-dismissible">
-
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-
-            {{Session::get('success')}}
-
-        </div>
-
-
-
-        @elseif(Session::has('destroy'))
-
-        <div class="alert alert-danger alert-dismissible">
-
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-
-            {{Session::get('destroy')}}
-
-        </div>
-
-        @endif
-
-
-
-        @if(Session::has('update'))
-
-        <div class="alert alert-success alert-dismissible">
-
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-
-            {{Session::get('update')}}
-
-        </div>
-
-        @endif
-
-
-
-
-
         <div class="col-lg-12 grid-margin stretch-card">
 
       

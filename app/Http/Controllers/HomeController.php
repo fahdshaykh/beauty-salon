@@ -16,7 +16,10 @@ use App\ServiceBooking;
 
 use App\Customer;
 
-use DB;
+use Illuminate\Support\Facades\DB;
+use App\Expense;
+use App\Models\Supplier;
+use Carbon\Carbon;
 
 class HomeController extends Controller
 
@@ -40,141 +43,131 @@ class HomeController extends Controller
 
     }
 
-
-
     public function index()
-
     {
+        $user = auth()->user();
+        $companyId = $user->company_id ?? null;
 
-         
+        if (auth()->user()->hasRole('admin')) {
 
-        if(Auth::user()->is_active !== 1){
+            // Your existing totals
+            $totalCustomers = Customer::where('company_id', $companyId)->count();
+            $totalSuppliers = Supplier::where('company_id', $companyId)->count();
+            $totalExpense   = Expense::where('company_id', $companyId)->sum('amount');
 
-            Session::flush();
+            $bookings = ServiceBooking::where('company_id', $companyId);
+            $totalBookings = $bookings->count();
+            $totalSales = $bookings->sum(DB::raw('CAST(total_price AS DECIMAL(10,2))'));
+            $totalProfit = $totalSales - $totalExpense;
 
-            auth()->logout();
+            return view('home', compact(
+                'totalCustomers',
+                'totalBookings',
+                'totalSuppliers',
+                'totalExpense',
+                'totalSales',
+                'totalProfit',
+            ));
 
-            return redirect('/login')->with('inactive','Sorry Your Account have been In-Active.');
+        } else {
+            $bookingsAssign = ServiceBooking::where('company_id', $companyId)
+                ->where('user_id', $user->id)
+                ->whereDate('created_at', today())
+                ->where('service_status', '1')
+                ->orWhere('service_status', '2')
+                ->count();
 
+            $bookingsCompleted = ServiceBooking::where('company_id', $companyId)
+                ->where('user_id', $user->id)
+                ->whereDate('created_at', today())
+                ->where('service_status', '3')
+                ->count();
+
+            return view('home', compact(
+                'bookingsAssign',
+                'bookingsCompleted'
+            ));
         }
 
-        if( auth()->user()->company_id==1){
-
-            $active_company = DB::table('companies')->where('is_active',1)->count();
-
-            $inactive_company = DB::table('companies')->where('is_active',0)->count();
-
-            $users = DB::table('users')->select('id','name')->where('company_id', auth()->user()->company_id)->where('is_deleted',0)->get();
-
-            return view('home',compact('active_company','inactive_company', 'users'));
-
-        }
-
-        else{
-
-            $users = DB::table('users')->select('id','name')->where('company_id', auth()->user()->company_id)->where('is_deleted',0)->get();
-
-            return view('home',compact('users'));
-
-        }
-
-
-
-       
-
+        
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    /**
-
-
-
-
-
-
-
-     * Show the application dashboard.
-
-
-
-
-
-
-
-     *
-
-
-
-
-
-
-
-     * @return \Illuminate\Contracts\Support\Renderable
-
-
-
-
-
-
-
-     */
-
-
-
-
-
-
-
-    // public function index()
-
-
-
-
-
-
-
-    // {
-
-
-
-
-
-
-
-    //     return view('home');
-
-
-
-
-
-
-
-    // }
-
-
-
-
-
-
+    public function bookingOverviewData(Request $request)
+    {
+        $companyId = auth()->user()->company_id;
+
+        // Get monthly booking count for current year
+        $monthlyData = ServiceBooking::where('company_id', $companyId)
+            ->whereYear('created_at', now()->year)
+            ->selectRaw('MONTH(created_at) as month, COUNT(*) as total')
+            ->groupBy('month')
+            ->orderBy('month')
+            ->pluck('total', 'month');
+
+        $months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        $data = [];
+
+        for ($i = 1; $i <= 12; $i++) {
+            $data[] = $monthlyData->get($i, 0);
+        }
+
+        return response()->json([
+            'labels' => $months,
+            'data'   => $data
+        ]);
+    }
+
+    public function salesStatusData(Request $request)
+    {
+        $companyId = auth()->user()->company_id;
+        $today = Carbon::today();
+
+        $todayBooked = ServiceBooking::where('company_id', $companyId)
+            ->whereDate('created_at', $today)
+            ->count();
+
+        $todayInProgress = ServiceBooking::where('company_id', $companyId)
+            ->whereDate('created_at', $today)
+            ->where('service_status', '2')
+            ->count();
+
+        $todayCompleted = ServiceBooking::where('company_id', $companyId)
+            ->whereDate('created_at', $today)
+            ->where('service_status', '3')
+            ->count();
+
+        $todayCancelled = ServiceBooking::where('company_id', $companyId)
+            ->whereDate('created_at', $today)
+            ->where('service_status', '4')
+            ->count();
+
+        return response()->json([
+            'data' => [$todayBooked, $todayInProgress, $todayCompleted, $todayCancelled],
+            'labels' => ['Today Booked', 'Today In Progress', 'Today Completed', 'Today Cancelled']
+        ]);
+    }
+
+    public function dailySalesData(Request $request)
+    {
+        $companyId = auth()->user()->company_id;
+        $today = Carbon::today();
+
+        $todayExpense = Expense::where('company_id', $companyId)
+            ->whereDate('payable', $today)
+            ->sum('amount');
+
+        $todaySales = ServiceBooking::where('company_id', $companyId)
+            ->whereDate('created_at', $today)
+            ->where('service_status', '3')
+            ->sum(DB::raw('CAST(total_price AS DECIMAL(10,2))'));
+
+        $todayProfit = $todaySales - $todayExpense;
+
+        return response()->json([
+            'data' => [$todayExpense, $todaySales, $todayProfit > 0 ? $todayProfit : 0],
+            'labels' => ['Today Expense', 'Today Sales', 'Today Profit'],
+            'profit' => $todayProfit
+        ]);
+    }
 
 }
-
-
-
-
-
-
-

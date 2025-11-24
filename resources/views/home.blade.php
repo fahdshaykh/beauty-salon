@@ -1,21 +1,3 @@
-@section('pagescript')
-
-
-
-<script src="{{asset('js/calendar.js')}}"></script>
-
-
-
-<script src="{{asset('js/select2.js')}}"></script>
-
-<script src="{{asset('js/js-grid.js')}}"></script>
-
-<script src="{{asset('js/formpickers.js')}}"></script>
-
-
-
-@stop
-
 @extends('layouts.admin')
 
 
@@ -30,213 +12,168 @@
 
 @section('content')
 
-
-
-<link rel="stylesheet" href="<?php echo asset('css/jobmodal.css')?>" type="text/css"> 
-
-<style>
-
-.popper,
-
-.tooltipevent {
-
-  position: absolute;
-
-  z-index: 9999;
-
-  background: black;
-
-  color: white;
-
-  width: 250px;
-
-  border-radius: 3px;
-
-  box-shadow: 0 0 2px rgba(0,0,0,0.5);
-
-  padding: 10px;
-
-  text-align: center;
-
-}
-
-.style5 .tooltipevent {
-
-  background: #1E252B;
-
-  color: #FFFFFF;
-
-  max-width: 200px;
-
-  width: auto;
-
-  font-size: .8rem;
-
-  padding: .5em 1em;
-
-}
-
-.fc-event{
-
-    cursor: pointer;
-
-}
-
-.holiday {
-    background: lightgray;
-    pointer-events: none;
-}
-
-      
-
-</style>
-
 <div class="main-panel">
-
     <div class="content-wrapper">
-
         <div class="page-header">
-
             <h3 class="page-title">
-
                 Dashboard
-
             </h3>
-
-              
-
-          @if(Session::has('success'))
-
-
-
-            <div class="alert alert-success alert-dismissible">
-
-
-
-                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-
-
-
-                {{Session::get('success')}}
-
-
-
-            </div>
-
-        @endif
-
-     
-
         </div>
-
+        
+        @role('admin')
+        <div class="row grid-margin">
+            <div class="col-12">
+                <div class="card card-statistics">
+                <div class="card-body">
+                    <div class="d-flex flex-column flex-md-row align-items-center justify-content-between">
+                        <div class="statistics-item">
+                        <p>
+                            <i class="icon-sm fa fa-user mr-2"></i>
+                            Total Customers
+                        </p>
+                        <h2>{{ number_format($totalCustomers ?? 0) }}</h2>
+                        
+                        </div>
+                        <div class="statistics-item">
+                        <p>
+                            <i class="icon-sm fas fa-calendar-alt mr-2"></i>
+                            Total Bookings
+                        </p>
+                        <h2>{{ number_format($totalBookings ?? 0) }}</h2>
+                        
+                        </div>
+                        <div class="statistics-item">
+                        <p>
+                            <i class="icon-sm fas fa-boxes mr-2"></i>
+                            Total Suppliers
+                        </p>
+                        <h2>{{ number_format($totalSuppliers ?? 0) }}</h2>
+                        
+                        </div>
+                        <div class="statistics-item">
+                        <p>
+                            <i class="icon-sm fas fa-money-bill-wave mr-2"></i>
+                            Total Expense
+                        </p>
+                        <h2>{{ number_format($totalExpense ?? 0) }}</h2>
+                        
+                        </div>
+                        <div class="statistics-item">
+                        <p>
+                            <i class="icon-sm fas fa-chart-line mr-2"></i>
+                            Total Sales
+                        </p>
+                        <h2>{{ number_format($totalSales ?? 0) }}</h2>
+                        
+                        </div>
+                        <div class="statistics-item">
+                        <p>
+                            <i class="icon-sm fas fa-chart-bar mr-2"></i>
+                            Total Profit
+                        </p>
+                        <h2>{{ number_format($totalProfit ?? 0) }}</h2>
+                        
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="card-title">
+                    <i class="fas fa-gift"></i>
+                    Booking Overview
+                  </h4>
+                  <canvas id="home-orders-chart"></canvas>
+                  <div id="home-orders-chart-legend" class="home-orders-chart-legend"></div>                  
+                </div>
+              </div>
+            </div>
+        </div>
 
         <div class="row">
-
-
-
-            <div class="col-md-12">
-
-
-
-            @role('admin')
-                <div class="form-group col-md-3">
-
-
-
-                    <select id="user_id" name="user_id" class="form-control js-example-basic-single w-100"
-
-
-
-                        style="width:100%">
-
-
-
-                        <option value="0">All Bookings</option>
-
-
-
-                        @foreach($users as $user)
-
-
-
-                        <option value="{{$user->id}}">{{$user->name}}</option>
-
-
-
-                        @endforeach
-
-
-
-                    </select>
-
-
-
-                </div>
-            @endrole
-
-
-
-                <div class="card">
-
-
-                    <?php 
-                        $permvalue = 'no'; 
-                    ?>
-
-                    @can('calendar create booking')
-                    <?php 
-                        $permvalue = 'yes'; 
-                    ?>
-                    @endcan
-
-                    @can('view calendar')
-                    <div class="card-body">
-
-                    <input type="hidden" id="creat-booking-perm" value="{{$permvalue}}">
-
-                        <h4 class="card-title">Booking Calender</h4>
-
-
-
-                        <div id="calendar" class="full-calendar"></div>
-
-
-
+            <div class="col-md-6 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body d-flex flex-column">
+                  <h4 class="card-title">
+                    <i class="fas fa-chart-pie"></i>
+                    Sales status
+                  </h4>
+                  <div class="flex-grow-1 d-flex flex-column justify-content-between">
+                    <canvas id="home-sales-status-chart" class="mt-3"></canvas>
+                    <div class="pt-4">
+                      <div id="home-sales-status-chart-legend" class="home-sales-status-chart-legend"></div>
                     </div>
-                    @endcan
-
-
-
+                  </div>
                 </div>
-
-
-
+              </div>
             </div>
-
-
-
+            <div class="col-md-6 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body d-flex flex-column">
+                  <h4 class="card-title">
+                    <i class="fas fa-tachometer-alt"></i>
+                    Daily Sales
+                  </h4>
+                  <div class="flex-grow-1 d-flex flex-column justify-content-between">
+                    <canvas id="home-daily-sales-chart" class="mt-3 mb-3 mb-md-0"></canvas>
+                    <div id="home-daily-sales-chart-legend" class="home-daily-sales-chart-legend pt-4 border-top"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
         </div>
 
 
 
+        @else
+        <div class="row">
+            <div class="col-md-6 grid-margin">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title mb-0">Today Order Assigned</h4>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="d-inline-block pt-3">
+                                <div class="d-md-flex">
+                                    <h2 class="mb-0">{{ $bookingsAssign }}</h2>
+                                </div>
+                            </div>
+                            <div class="d-inline-block">
+                                <i class="fas fa-calendar-alt text-warning icon-lg"></i>                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 grid-margin">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title mb-0">Today Order Completed</h4>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="d-inline-block pt-3">
+                                <div class="d-md-flex">
+                                    <h2 class="mb-0">{{ $bookingsCompleted }}</h2>
+                                </div>
+                            </div>
+                            <div class="d-inline-block">
+                                <i class="fas fa-calendar-check text-info icon-lg"></i>                                    
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @endif
     </div>
-
-
-
     <!-- content-wrapper ends -->
-
-
-
-</div>
-
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-
-                    
-
+    <!-- partial:partials/_footer.html -->
+    
+    <!-- partial -->
 </div>
 
 <!-- main-panel ends -->
-
-
 
 @endsection

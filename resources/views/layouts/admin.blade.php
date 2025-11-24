@@ -280,17 +280,19 @@
 
           </li>
 
-          <!-- <li class="nav-item">
+          @can('view calendar')
+          <li class="nav-item">
 
-            <a class="nav-link" href="pages/widgets.html">
+            <a class="nav-link" href="{{url('/calendar')}}">
 
               <i class="fa fa-puzzle-piece menu-icon"></i>
 
-              <span class="menu-title">Widgets</span>
+              <span class="menu-title">Calendar</span>
 
             </a>
 
-          </li> -->
+          </li>
+          @endcan
          
 
          @can('view categories')
@@ -849,7 +851,7 @@
 
         <!-- partial -->
 
-      </div>
+      
 
       <!-- main-panel ends -->    
 
@@ -939,6 +941,8 @@
   <script src="{{asset('js/dropify.js')}}"></script>
 
   <script src="{{asset('js/dashboard.js')}}"></script>
+
+  <script src="{{ asset('js/home.js') }}"></script>
 
   <script src="{{asset('js/company-report.js')}}"></script>
 

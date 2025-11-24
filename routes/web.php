@@ -34,6 +34,7 @@ use App\Http\Controllers\{
     PayrollController,
     AwardController,
     BookingController,
+    CalendarController,
     EmailTemplateController,
     StripeController,
     WorkScheduleController
@@ -124,6 +125,9 @@ Route::middleware(['auth', 'company'])->group(function () {
 
     // Home
     Route::get('/home', [HomeController::class, 'index'])->name('home');
+
+    // Home
+    Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar');
 
     // ── Notifications ──
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.all');
@@ -257,6 +261,9 @@ Route::middleware(['auth', 'company'])->group(function () {
     Route::get('get-heat-chart', [ReportController::class, 'heat_graph_report'])->name('chart.heat');
     Route::post('show-heat-chart', [ReportController::class, 'show_heat_report'])->name('chart.show_heat');
 
+    Route::get('/dashboard/booking-overview', [HomeController::class, 'bookingOverviewData'])->name('dashboard.booking-overview');
+    Route::get('/dashboard/sales-status', [HomeController::class, 'salesStatusData'])->name('dashboard.sales-status');
+    Route::get('/dashboard/daily-sales', [HomeController::class, 'dailySalesData'])->name('dashboard.daily-sales');
     // ── Users & Roles ──
     Route::get('users', [UserController::class, 'index'])->name('users.index');
     Route::get('user/user-create', [UserController::class, 'create'])->name('users.create');

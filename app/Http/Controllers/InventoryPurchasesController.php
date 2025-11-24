@@ -172,32 +172,38 @@ class InventoryPurchasesController extends Controller
         ]);
     
         // If amount paid has changed, update or add new SupplierPayment
-        $totalPaid = $purchase->payments()->sum('amount'); // Total paid amount for this purchase
-        if ($request->amount_paid > $totalPaid) {
-            // Add new payment if the amount paid is greater
-            SupplierPayment::create([
-                'supplier_id' => $request->supplier_id,
-                'company_id' => auth()->user()->company_id,
-                'inventory_purchase_id' => $purchase->id,
-                'amount' => $request->amount_paid - $totalPaid,
-                'note' => 'Updated payment during purchase',
-            ]);
-        } elseif ($request->amount_paid < $totalPaid) {
-            // If amount paid decreases, reverse some payments
-            $amountToReverse = $totalPaid - $request->amount_paid;
-            $paymentsToReverse = SupplierPayment::where('inventory_purchase_id', $purchase->id)
-                                                ->where('amount', '>=', $amountToReverse)
-                                                ->orderByDesc('created_at')
-                                                ->limit(1)
-                                                ->get();
+        // $totalPaid = $purchase->payments()->sum('amount'); // Total paid amount for this purchase
+        // if ($request->amount_paid > $totalPaid) {
+        //     // Add new payment if the amount paid is greater
+        //     SupplierPayment::create([
+        //         'supplier_id' => $request->supplier_id,
+        //         'company_id' => auth()->user()->company_id,
+        //         'inventory_purchase_id' => $purchase->id,
+        //         'amount' => $request->amount_paid - $totalPaid,
+        //         'note' => 'Updated payment during purchase',
+        //     ]);
+        // } elseif ($request->amount_paid < $totalPaid) {
+        //     // If amount paid decreases, reverse some payments
+        //     $amountToReverse = $totalPaid - $request->amount_paid;
+        //     $paymentsToReverse = SupplierPayment::where('inventory_purchase_id', $purchase->id)
+        //                                         ->where('amount', '>=', $amountToReverse)
+        //                                         ->orderByDesc('created_at')
+        //                                         ->limit(1)
+        //                                         ->get();
     
-            foreach ($paymentsToReverse as $payment) {
-                $payment->delete();
-                $amountToReverse -= $payment->amount;
-                if ($amountToReverse <= 0) {
-                    break;
-                }
-            }
+        //     foreach ($paymentsToReverse as $payment) {
+        //         $payment->delete();
+        //         $amountToReverse -= $payment->amount;
+        //         if ($amountToReverse <= 0) {
+        //             break;
+        //         }
+        //     }
+        // }
+
+        if ($request->amount_paid) {
+            $supplierPayment = SupplierPayment::where('inventory_purchase_id', $purchase->id)->first();
+            $supplierPayment->amount = $request->amount_paid;
+            $supplierPayment->save();
         }
     
         // Redirect to the list of purchases

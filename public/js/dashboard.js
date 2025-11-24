@@ -687,7 +687,7 @@
                         success: function(response) {
                             console.log(response);
                             
-                            var titles = ['Expenses', 'Sales', 'Profit'];
+                            var titles = ['All cost Expenses', 'Total Sales', 'Profit'];
                             var totals = [];
                             if (response !== null) {
                                 totals.push(response.expense);
