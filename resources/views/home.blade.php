@@ -29,7 +29,7 @@
                         <div class="statistics-item">
                         <p>
                             <i class="icon-sm fa fa-user mr-2"></i>
-                            Total Customers
+                            {{ $monthName }} Customers
                         </p>
                         <h2>{{ number_format($totalCustomers ?? 0) }}</h2>
                         
@@ -37,7 +37,7 @@
                         <div class="statistics-item">
                         <p>
                             <i class="icon-sm fas fa-calendar-alt mr-2"></i>
-                            Total Bookings
+                            {{ $monthName }} Bookings
                         </p>
                         <h2>{{ number_format($totalBookings ?? 0) }}</h2>
                         
@@ -45,7 +45,7 @@
                         <div class="statistics-item">
                         <p>
                             <i class="icon-sm fas fa-boxes mr-2"></i>
-                            Total Suppliers
+                            {{ $monthName }} Suppliers
                         </p>
                         <h2>{{ number_format($totalSuppliers ?? 0) }}</h2>
                         
@@ -53,7 +53,7 @@
                         <div class="statistics-item">
                         <p>
                             <i class="icon-sm fas fa-money-bill-wave mr-2"></i>
-                            Total Expense
+                            {{ $monthName }} Expense
                         </p>
                         <h2>{{ number_format($totalExpense ?? 0) }}</h2>
                         
@@ -61,7 +61,7 @@
                         <div class="statistics-item">
                         <p>
                             <i class="icon-sm fas fa-chart-line mr-2"></i>
-                            Total Sales
+                            {{ $monthName }} Sales
                         </p>
                         <h2>{{ number_format($totalSales ?? 0) }}</h2>
                         
@@ -69,7 +69,7 @@
                         <div class="statistics-item">
                         <p>
                             <i class="icon-sm fas fa-chart-bar mr-2"></i>
-                            Total Profit
+                            {{ $monthName }} Profit
                         </p>
                         <h2>{{ number_format($totalProfit ?? 0) }}</h2>
                         
@@ -100,7 +100,7 @@
                 <div class="card-body d-flex flex-column">
                   <h4 class="card-title">
                     <i class="fas fa-chart-pie"></i>
-                    Sales status
+                    Today orders status
                   </h4>
                   <div class="flex-grow-1 d-flex flex-column justify-content-between">
                     <canvas id="home-sales-status-chart" class="mt-3"></canvas>
@@ -116,7 +116,7 @@
                 <div class="card-body d-flex flex-column">
                   <h4 class="card-title">
                     <i class="fas fa-tachometer-alt"></i>
-                    Daily Sales
+                    Today Sales
                   </h4>
                   <div class="flex-grow-1 d-flex flex-column justify-content-between">
                     <canvas id="home-daily-sales-chart" class="mt-3 mb-3 mb-md-0"></canvas>

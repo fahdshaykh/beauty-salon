@@ -41,70 +41,96 @@
 
             <div class="card-body">
 
-
             <!-- Filter Form -->
-        <!-- Filter Form -->
-                <div class="row mb-3">
-                    <div class="col-md-12">
-                        <form method="GET" action="{{ route('service-bookings.index') }}">
-                            <div class="row">
-                                <!-- Service Filter -->
-                                <div class="col-md-3">
-                                    <label for="service_id">Service</label>
-                                    <select name="service_id" id="service_id" class="form-control">
-                                        <option value="">All Services</option>
-                                        @foreach($services as $service)
-                                            <option value="{{ $service->id }}" {{ request('service_id') == $service->id ? 'selected' : '' }}>
-                                                {{ $service->name }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </div>
+            <div class="card mb-3">
+                <div class="card-body">
+                    <form method="GET" action="{{ route('service-bookings.index') }}">
+                        <div class="row g-3">
+                            <!-- Employee Filter -->
+                            <div class="col-md-4">
+                                <label for="user_id" class="form-label">Employee</label>
+                                <select name="user_id" id="user_id" class="form-select">
+                                    <option value="">All Employees</option>
+                                    @foreach($users as $user)
+                                        <option value="{{ $user->id }}" {{ request('user_id') == $user->id ? 'selected' : '' }}>
+                                            {{ $user->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
 
-                                <!-- Date Range Filter -->
-                                <div class="col-md-3">
-                                    <label for="start_date">Start Date</label>
-                                    <input type="date" name="start_date" id="start_date" class="form-control" value="{{ request('start_date') }}">
-                                </div>
-                                <div class="col-md-3">
-                                    <label for="end_date">End Date</label>
-                                    <input type="date" name="end_date" id="end_date" class="form-control" value="{{ request('end_date') }}">
-                                </div>
+                            <!-- Service Filter -->
+                            <div class="col-md-4">
+                                <label for="service_id" class="form-label">Service</label>
+                                <select name="service_id" id="service_id" class="form-select">
+                                    <option value="">All Services</option>
+                                    @foreach($services as $service)
+                                        <option value="{{ $service->id }}" {{ request('service_id') == $service->id ? 'selected' : '' }}>
+                                            {{ $service->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
 
-                                <!-- Status Filter -->
-                                <div class="col-md-3">
-                                    <label for="status">Status</label>
-                                    <select name="status" id="status" class="form-control">
-                                        <option value="">All Statuses</option>
-                                        @foreach(['1' => 'Booked', '2' => 'In-Progress', '3' => 'Completed', '4' => 'Cancel'] as $key => $label)
-                                            <option value="{{ $key }}" {{ request('status') == $key ? 'selected' : '' }}>
-                                                {{ $label }}
-                                            </option>
-                                        @endforeach
-                                    </select>
+                            <!-- Status Filter -->
+                            <div class="col-md-4">
+                                <label for="status" class="form-label">Status</label>
+                                <select name="status" id="status" class="form-select">
+                                    <option value="">All Statuses</option>
+                                    @foreach(['1' => 'Booked', '2' => 'In-Progress', '3' => 'Completed', '4' => 'Cancel'] as $key => $label)
+                                        <option value="{{ $key }}" {{ request('status') == $key ? 'selected' : '' }}>
+                                            {{ $label }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mt-2">
+                            <!-- Date Range Filter -->
+                            <div class="col-md-6">
+                                <label for="start_date" class="form-label">Start Date</label>
+                                <div id="datepicker-popup-new" class="input-group date datepicker">
+                                    <input type="text" name="start_date" id="start-date" class="form-control" value="{{ request('start_date') }}">
+                                    <span class="input-group-addon input-group-append border-left">
+                                    <span class="far fa-calendar input-group-text"></span>
+                                    </span>
                                 </div>
                             </div>
-                            <div class="row mt-3">
-                                <!-- Customer Name Filter -->
-                                <div class="col-md-3">
-                                    <label for="customer_name">Customer Name</label>
-                                    <input type="text" name="customer_name" id="customer_name" class="form-control" value="{{ request('customer_name') }}" placeholder="Enter customer name">
-                                </div>
-                                <!-- Primary Phone Filter -->
-                                <div class="col-md-3">
-                                    <label for="primary_phone">Phone</label>
-                                    <input type="text" name="primary_phone" id="primary_phone" class="form-control" value="{{ request('primary_phone') }}" placeholder="Enter phone number">
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="d-none d-md-block">&nbsp;</label>
-                                    <button type="submit" class="btn btn-primary">Apply Filters</button>
-                                    <a href="{{ route('service-bookings.index') }}" class="btn btn-secondary">Clear Filters</a>
+                            <div class="col-md-6">
+                                <label for="end_date" class="form-label">End Date</label>
+                                <div id="datepicker-popup-new2" class="input-group date datepicker">
+                                    <input type="text" name="end_date" id="end-date" class="form-control" value="{{ request('end_date') }}">
+                                    <span class="input-group-addon input-group-append border-left">
+                                    <span class="far fa-calendar input-group-text"></span>
+                                    </span>
                                 </div>
                             </div>
-                            
-                        </form>
-                    </div>
+                        </div>
+
+                        <div class="row g-3 mt-2 align-items-end">
+                            <!-- Customer Name Filter -->
+                            <div class="col-md-3">
+                                <label for="customer_name" class="form-label">Customer Name</label>
+                                <input type="text" name="customer_name" id="customer_name" class="form-control" value="{{ request('customer_name') }}" placeholder="Enter customer name">
+                            </div>
+
+                            <!-- Primary Phone Filter -->
+                            <div class="col-md-3">
+                                <label for="primary_phone" class="form-label">Phone</label>
+                                <input type="text" name="primary_phone" id="primary_phone" class="form-control" value="{{ request('primary_phone') }}" placeholder="Enter phone number">
+                            </div>
+
+                            <!-- Buttons -->
+                            <div class="col-md-6 d-flex gap-2">
+                                <button type="submit" class="btn btn-primary w-50">Apply Filters</button>
+                                <a href="{{ route('service-bookings.index') }}" class="btn btn-secondary w-50">Clear Filters</a>
+                            </div>
+                        </div>
+                    </form>
                 </div>
+            </div>
+
 
                 <h4 class="card-title"></h4>
 

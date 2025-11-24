@@ -95,42 +95,51 @@
           @endcan
 
         <li class="nav-item dropdown">
-              <a class="nav-link count-indicator dropdown-toggle" id="notificationDropdown" href="#" data-toggle="dropdown">
-                  <i class="fas fa-bell mx-0"></i>
-                  <span class="count">{{ auth()->user()->unreadNotifications->count() }}</span>
-              </a>
-              <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="notificationDropdown">
-                  
-                  <div class="dropdown-header">
-                      <p class="mb-0 font-weight-normal float-left">
-                          You have {{ auth()->user()->unreadNotifications->count() }} new notifications
-                      </p>
-                      <a href="{{ route('notifications.all') }}" class="badge badge-pill badge-warning float-right">View all</a>
-                  </div>
+          <a class="nav-link count-indicator dropdown-toggle" id="notificationDropdown" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <i class="fas fa-bell"></i>
+              @if(auth()->user()->unreadNotifications->count() > 0)
+                  <span class="count bg-danger">{{ auth()->user()->unreadNotifications->count() }}</span>
+              @endif
+          </a>
 
-                  <div class="dropdown-divider mt-5"></div>
+          <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="notificationDropdown" style="width: 300px;">
+              
+              <!-- Header -->
+              <div class="dropdown-header d-flex justify-content-between align-items-center px-3 py-2">
+                  <span class="font-weight-medium small mb-0">
+                      You have {{ auth()->user()->unreadNotifications->count() }} new notifications
+                  </span>
+                  <a href="{{ route('notifications.all') }}" class="badge badge-pill badge-warning">View all</a>
+              </div>
+              
+              <div class="dropdown-divider"></div>
 
+              <!-- Notifications List -->
+              <div class="notifications-scroll" style="max-height: 300px; overflow-y: auto;">
                   @forelse(auth()->user()->unreadNotifications as $notification)
                       @if($notification->data['company_id'] == auth()->user()->company_id)
-                          <a href="{{ route('customers.edit', $notification->data['customer_id']) }}" class="dropdown-item preview-item">
-                              <div class="preview-thumbnail">
-                                  <div class="preview-icon bg-info">
-                                      <i class="far fa-envelope mx-0"></i>
+                          <a href="{{ route('customers.edit', $notification->data['customer_id']) }}" class="dropdown-item preview-item d-flex align-items-start px-3 py-2">
+                              <div class="preview-thumbnail mr-2">
+                                  <div class="preview-icon bg-info text-white d-flex align-items-center justify-content-center rounded-circle" style="width: 40px; height: 40px;">
+                                      <i class="far fa-envelope"></i>
                                   </div>
                               </div>
-                              <div class="preview-item-content">
-                                  <h6 class="preview-subject font-weight-medium">{{ $notification->data['message'] }}</h6>
-                                  <p class="font-weight-light small-text">
+                              <div class="preview-item-content flex-grow-1">
+                                  <h6 class="preview-subject mb-1 font-weight-medium">{{ $notification->data['message'] }}</h6>
+                                  <p class="small text-muted mb-0">
                                       {{ $notification->created_at->diffForHumans() }}
                                   </p>
                               </div>
                           </a>
+                          <div class="dropdown-divider"></div>
                       @endif
                   @empty
-                      <a class="dropdown-item text-center text-muted">No new notifications</a>
+                      <div class="text-center text-muted py-3">No new notifications</div>
                   @endforelse
               </div>
-          </li>
+          </div>
+      </li>
+
 
         
 
@@ -285,7 +294,7 @@
 
             <a class="nav-link" href="{{url('/calendar')}}">
 
-              <i class="fa fa-puzzle-piece menu-icon"></i>
+              <i class="fa fa-calendar menu-icon"></i>
 
               <span class="menu-title">Calendar</span>
 
@@ -435,7 +444,7 @@
 
             <a class="nav-link" data-toggle="collapse" href="#editors" aria-expanded="{{ request()->routeIs('service-bookings.index', 'service-bookings.create', 'service-bookings.show', 'service-bookings.edit', 'service-bookings.job_detail') ? 'true' : 'false' }}" aria-controls="editors">
 
-              <i class="fa fa-truck menu-icon"></i>
+              <i class="fa fa-clipboard-list menu-icon"></i>
 
               <span class="menu-title">Bookings</span>
 

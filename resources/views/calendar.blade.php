@@ -103,30 +103,6 @@
 
             </h3>
 
-              
-
-          @if(Session::has('success'))
-
-
-
-            <div class="alert alert-success alert-dismissible">
-
-
-
-                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-
-
-
-                {{Session::get('success')}}
-
-
-
-            </div>
-
-        @endif
-
-     
-
         </div>
 
 
@@ -172,7 +148,33 @@
 
 
                 </div>
-            @endrole
+
+                @else
+
+                <div class="form-group col-md-3">
+
+
+
+                    <select id="service_status" name="service_status" class="form-control js-example-basic-single w-100"
+
+
+
+                        style="width:100%">
+
+
+                        <option value="0">All Orders</option>
+                        <option value="1">Booked</option>
+                        <option value="2">In-progress</option>
+                        <option value="3">Completed</option>
+
+
+                    </select>
+
+
+
+                </div>
+
+                @endrole
 
 
 

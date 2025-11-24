@@ -208,6 +208,7 @@ Route::middleware(['auth', 'company'])->group(function () {
     Route::get('get-booking-date/{date?}', [ServiceBookingController::class, 'create'])->name('service-bookings.date');
     Route::get('get-booking-date/{date?}/success', [ServiceBookingController::class, 'create'])->name('service-bookings.date_success');
     Route::get('get-user-bookings/{user_id}', [ServiceBookingController::class, 'get_user_bookings'])->name('service-bookings.user_bookings');
+    Route::get('get-service-status-bookings/{service_status}', [ServiceBookingController::class, 'get_service_status_bookings'])->name('service-bookings.service_status_bookings');
     Route::get('/get-employee-services', [ServiceBookingController::class, 'getEmployeeServices'])->name('getEmployeeServices');
     Route::post('booking-status', [ServiceBookingController::class, 'change_boking_status'])->name('service-bookings.booking_status');
     Route::get('/send_review_sms/{invoice}', [ServiceBookingController::class, 'send_review_sms'])->name('service-bookings.send_review_sms');

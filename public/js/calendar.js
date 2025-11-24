@@ -18,6 +18,16 @@
 
         });
 
+        $('#service_status').on('change', function() {
+
+            var service_status = $(this).val();
+
+            base_path = "get-service-status-bookings/" + service_status;
+            chageUser = true;
+
+            loadCalendar(base_path);
+
+        });
 
 
         function loadCalendar(base_path) {
@@ -311,7 +321,7 @@
                                             sum += parseFloat(holder[el]);
                                         }
                                     }
-                                    $('.fc-header-toolbar').append('<span id="turnover" style="color:red;">Turnover- $' + sum + '</span>')
+                                    // $('.fc-header-toolbar').append('<span id="turnover" style="color:red;">Turnover- $' + sum + '</span>')
                                 } else {
                                     $('span[id^="turnover"]').remove();
                                 }

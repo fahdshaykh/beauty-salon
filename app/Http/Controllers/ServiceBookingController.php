@@ -85,6 +85,13 @@ class ServiceBookingController extends Controller
             });
         }
 
+        // Apply service filter
+        if ($request->filled('user_id')) {
+            $query->whereHas('bookingdetail', function ($q) use ($request) {
+                $q->where('user_id', $request->input('user_id'));
+            });
+        }
+
         // Apply date range filter
         if ($request->filled('start_date')) {
             $query->whereDate('due_date', '>=', $request->input('start_date'));
@@ -145,7 +152,10 @@ class ServiceBookingController extends Controller
         // Fetch all services for the filter dropdown
         $services = Services::where('company_id', auth()->user()->company_id)->where('is_active', 1)->get();
 
-        return view('service_bookings.index', compact('data_array', 'bookings', 'rows', 'services'));
+        // Fetch all users for the filter dropdown
+        $users = User::where('company_id', auth()->user()->company_id)->where('is_active', 1)->get();
+
+        return view('service_bookings.index', compact('data_array', 'bookings', 'rows', 'services', 'users'));
     }
 
 
@@ -988,7 +998,6 @@ class ServiceBookingController extends Controller
 
 
     public function get_user_bookings($user_id)
-
     {
         // Authorization: ensure user can view bookings
         $this->authorize('viewAny', ServiceBooking::class);
@@ -1088,6 +1097,106 @@ class ServiceBookingController extends Controller
 
     }
 
+    public function get_service_status_bookings($service_status)
+    {
+        // Authorization: ensure user can view bookings
+        $this->authorize('viewAny', ServiceBooking::class);
+
+
+
+        $bookings = ServiceBooking::with('customer','user')->where('service_status',"!=",4)->where('company_id', auth()->user()->company_id);
+
+        if($service_status){
+            $bookings->where('service_status', $service_status)->where('user_id', auth()->user()->id);
+
+        } else {
+            $bookings->where('user_id', auth()->user()->id);
+        }
+
+        $data = $bookings->orderBy('created_at', 'desc')->get();
+
+        if(count($data) > 0)
+
+        {
+
+            foreach($data as $key=>$value)
+
+            {
+
+              
+
+                $services ='';
+
+                $service_color = '';
+
+                $servicenames = DB::table('booking_details')->join('services','services.id','=','booking_details.service_id')->where('booking_details.booking_id', $value['id']);
+
+                $snames = $servicenames->get();
+
+                // echo "<pre>"; print_r($snames); exit;
+
+                foreach($snames as $service){
+
+                   $services .= $service->name.',';
+
+                   $service_color =  $service->service_color;
+
+                }
+
+                $services = rtrim($services, ',');
+
+
+
+                $calender_array[$key] = array(
+
+                    'id' => $value->id,
+
+                    'customer_name' => $value->customer->first_name.' '.$value->customer->last_name,
+
+                    'customer_address'=>$value->customer->address,
+
+                    'customer_zip'=>$value->customer->zip,
+
+                    'user_name' => $value->user->name,
+
+                    'total_price' => $value->total_price,
+
+                    'due_date' => $value->due_date,
+
+                    'due_time' => $value->due_time,
+
+                    'finish_time' => $value->finish_time,
+
+                    'service_status' => $value->service_status,
+
+                    'service_color' => $service_color, 
+
+                    'services' => $services,
+
+                    'comment' =>  $value->comment,
+
+                );
+
+            }
+
+            
+            $holidays = DB::table('calendar_holidays')->where('company_id',auth()->user()->company_id)->get();
+            return response()->json(['events'=>$calender_array,'holidays'=>$holidays]);
+            // return response()->json($calender_array);
+
+        } else {
+
+            $calender_array = [];
+            $holidays = [];
+            return response()->json(['events'=>$calender_array,'holidays'=>$holidays]);
+            // $calender_array = [];
+            // return response()->json($calender_array);
+
+        }
+
+
+
+    }
 
 
     public function fetch_job_notes($booking_id){

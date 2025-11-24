@@ -50,14 +50,37 @@ class HomeController extends Controller
 
         if (auth()->user()->hasRole('admin')) {
 
-            // Your existing totals
-            $totalCustomers = Customer::where('company_id', $companyId)->count();
-            $totalSuppliers = Supplier::where('company_id', $companyId)->count();
-            $totalExpense   = Expense::where('company_id', $companyId)->sum('amount');
+            $currentMonth = now()->month;
+            $currentYear  = now()->year;
 
-            $bookings = ServiceBooking::where('company_id', $companyId);
-            $totalBookings = $bookings->count();
-            $totalSales = $bookings->sum(DB::raw('CAST(total_price AS DECIMAL(10,2))'));
+            $monthName = now()->format('F');
+
+            // Customers this month
+            $totalCustomers = Customer::where('company_id', $companyId)
+                ->whereMonth('created_at', $currentMonth)
+                ->whereYear('created_at', $currentYear)
+                ->count();
+
+            // Suppliers this month
+            $totalSuppliers = Supplier::where('company_id', $companyId)
+                ->whereMonth('created_at', $currentMonth)
+                ->whereYear('created_at', $currentYear)
+                ->count();
+
+            // Expenses this month
+            $totalExpense = Expense::where('company_id', $companyId)
+                ->whereMonth('created_at', $currentMonth)
+                ->whereYear('created_at', $currentYear)
+                ->sum('amount');
+
+            // Bookings this month
+            $bookingsQuery = ServiceBooking::where('company_id', $companyId)
+                ->whereMonth('created_at', $currentMonth)
+                ->whereYear('created_at', $currentYear);
+
+            $totalBookings = $bookingsQuery->count();
+            $totalSales    = $bookingsQuery->sum(DB::raw('CAST(total_price AS DECIMAL(10,2))'));
+
             $totalProfit = $totalSales - $totalExpense;
 
             return view('home', compact(
@@ -67,6 +90,7 @@ class HomeController extends Controller
                 'totalExpense',
                 'totalSales',
                 'totalProfit',
+                'monthName'
             ));
 
         } else {
