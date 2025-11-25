@@ -296,7 +296,7 @@ $(document).ready(function() {
 
                       <div class="form-group">
 
-                        <label for="name">Select Supplier</label>
+                        <label for="name">Select payment</label>
 
                         <select class="form-control" id="name" name="paypemnt_type">
                            
@@ -320,6 +320,18 @@ $(document).ready(function() {
 
 
 
+                      </div>
+
+
+
+                      <div class="form-group">
+                        <label for="price">Purchasing date</label>
+                        <div id="datepicker-popup-new" class="input-group date datepicker">
+                          <input type="text" name="purchase_date" value="{{ old('purchase_date') }}" class="form-control" required>
+                          <span class="input-group-addon input-group-append border-left">
+                            <span class="far fa-calendar input-group-text"></span>
+                          </span>
+                        </div>
                       </div>
 
                       <div class="form-group">

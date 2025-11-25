@@ -39,38 +39,54 @@ class ExpenseController extends Controller
     public function index(Request $request)
     {
         $user = auth()->user();
-        
-        // Check viewAny permission via policy
+
+        // Authorization
         if (!($user && method_exists($user, 'hasRole') && $user->hasRole('admin'))) {
             $this->authorize('viewAny', Expense::class);
         }
 
-        // get rows per page if passed with request
-        if (request('rows')) {
-
-            $rows = 500 < intval(request('rows')) ? 500 : intval(request('rows'));
-            $rows = 5 > $rows ? 5 : $rows;
-            Auth::user()->setSettings(['expenses_rows_per_page' => $rows]);
+        // Rows per page
+        if ($request->filled('rows')) {
+            $rows = max(5, min(500, (int)$request->rows));
+            $user->setSettings(['expenses_rows_per_page' => $rows]);
         }
-        // otherwise retrieve from user's settings
-        $rows = Auth::user()->getSetting('expenses_rows_per_page', auth()->user()->default_rows);
+        $rows = $user->getSetting('expenses_rows_per_page', $user->default_rows ?? 15);
 
-        // Build query with joins and enforce company isolation
-        $query = Expense::select('expenses.*','expense_types.type','payment_methods.method')
-            ->join('expense_types', function($join) use ($user) {
+        // Base query with joins (kept your structure)
+        $query = Expense::select('expenses.*', 'expense_types.type', 'payment_methods.method')
+            ->join('expense_types', function ($join) use ($user) {
                 $join->on('expense_types.id', '=', 'expenses.expense_type')
-                     ->where('expense_types.company_id', '=', $user->company_id);
+                    ->where('expense_types.company_id', '=', $user->company_id);
             })
             ->join('payment_methods', 'payment_methods.id', '=', 'expenses.payment_method')
-            ->where('expenses.company_id', $user->company_id); // Always enforce company isolation
-        
+            ->where('expenses.company_id', $user->company_id);
+
+        // Filter by Expense Type
+        if ($request->filled('expense_type_id') && $request->expense_type_id !== '') {
+            $query->where('expenses.expense_type', $request->expense_type_id);
+        }
+
+        // Filter by Date Range (using expense date or created_at — adjust if needed)
+        if ($request->filled('start_date')) {
+            $query->whereDate('expenses.created_at', '>=', $request->start_date);
+            // Or use: 'expenses.date' if you have a separate date column
+        }
+
+        if ($request->filled('end_date')) {
+            $query->whereDate('expenses.created_at', '<=', $request->end_date);
+        }
+
+        // Execute with pagination + preserve all filters
         $expenses = $query->orderBy('expenses.created_at', 'desc')
-            ->paginate($rows);
+                        ->paginate($rows)
+                        ->withQueryString();
 
+        // Load expense types for dropdown
+        $expense_types = ExpenseType::where('company_id', $user->company_id)
+                                            ->orderBy('type')
+                                            ->get();
 
-
-        return view('expenses.index',compact('expenses', 'rows'));
-
+        return view('expenses.index', compact('expenses', 'rows', 'expense_types'));
     }
 
 

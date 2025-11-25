@@ -20,138 +20,126 @@
 
             </h3>
 
-            <nav aria-label="breadcrumb">
-
-                <ol class="breadcrumb">
-
-                    <li class="breadcrumb-item"><a href="{{url('expense-types')}}">Expense Types</a></li>
-
-                    <li class="breadcrumb-item active" aria-current="page">Expense Type Listing</li>
-
-                </ol>
-
-            </nav>
+            @can('create expense types')
+                <h4 class="card-title" style="float:right;"><a class="btn btn-primary btn-fw" href="{{url('expense-types/create')}}"> Add Expense Type</a></h4>
+            @endcan
 
         </div>
 
 
-        <div class="col-lg-12 grid-margin stretch-card">
 
-      
+        <div class="card">
 
-              <div class="card">
+            <div class="card-body">
 
-              <!-- <a class="btn btn-primary btn-fw {{ Request::is('expenses*') ? 'active' : '' }}" href="{{url('expense-types/creat')}}"> Add Expense Type</a> -->
-
-                <div class="card-body">
-
-                    @can('create expense types')
-                        <h4 class="card-title" style="float:right;"><a class="btn btn-primary btn-fw" href="{{url('expense-types/create')}}"> Add Expense Type</a></h4>
-                    @endcan
-
-                  <div class="row">
-                        <div class="col-md-3">
-                            <div class="pagination-dropdown">
-                                <form class="form-inline">
-                                    <div class="form-group">
-                                        <label for="rows">Records:&nbsp;</label>
-                                        <select class="form-control" id="rows" name="rows">
-                                            <option value="5" @if($rows == 5) selected @endif > 5 </option>
-                                            <option value="10" @if($rows == 10) selected @endif > 10 </option>
-                                            <option value="20" @if($rows == 20) selected @endif > 20 </option>
-                                            <option value="50" @if($rows == 50) selected @endif > 50 </option>
-                                            <option value="100" @if($rows == 100) selected @endif > 100 </option>
-                                            <option value="500" @if($rows == 500) selected @endif > 500 </option>                        
-                                        </select>
-                                    </div>
-                                </form>
-                            </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="pagination-dropdown">
+                            <form class="form-inline">
+                                <div class="form-group">
+                                    <label for="rows">Records:&nbsp;</label>
+                                    <select class="form-control" id="rows" name="rows">
+                                        <option value="5" @if($rows == 5) selected @endif > 5 </option>
+                                        <option value="10" @if($rows == 10) selected @endif > 10 </option>
+                                        <option value="20" @if($rows == 20) selected @endif > 20 </option>
+                                        <option value="50" @if($rows == 50) selected @endif > 50 </option>
+                                        <option value="100" @if($rows == 100) selected @endif > 100 </option>
+                                        <option value="500" @if($rows == 500) selected @endif > 500 </option>                        
+                                    </select>
+                                </div>
+                            </form>
                         </div>
                     </div>
+                </div>
 
-                  <div class="table-responsive">
+                <div class="table-responsive">
 
-                    <table class="table table-hover">
+                <table class="table table-hover">
 
-                      <thead>
+                    <thead>
 
-                        <tr class="bg-primary text-white">
+                    <tr class="bg-primary text-white">
 
-                          <th>Sr No#</th>
+                        <th>Sr No#</th>
 
-                          <th>Type</th>
+                        <th>Type</th>
 
-                          <th>Status</th>
+                        <th>Status</th>
 
-                          <th>Action</th>
+                        <th>Action</th>
 
-                        </tr>
+                    </tr>
 
-                      </thead>
+                    </thead>
 
-                      <tbody>
+                    <tbody>
 
-                      <?php $num = 1; ?>
+                    <?php $num = 1; ?>
 
-                    
+                
 
-                        @forelse($expense_types as $expense_type)
+                    @forelse($expense_types as $expense_type)
 
-                        <tr>
+                    <tr>
 
-                            <td>{{$num}}</td>
+                        <td>{{$num}}</td>
 
-                            <td>{{$expense_type->type}}</td>
+                        <td>{{$expense_type->type}}</td>
 
-                            <td>
-                                <label class="switch">
-                                    <input type="checkbox"
-                                        id="expensetype-{{ $expense_type->id }}"
-                                        data-name="{{ $expense_type->type }}"
-                                        onclick="changeExpenseTypeStatus(this, {{ $expense_type->id }})"
-                                        {{ $expense_type->is_active ? 'checked' : '' }}>
-                                    <span class="slider round"></span>
-                                </label>
-                            </td>
-
-
-                            <td>
-                                <div class="d-flex gap-1">
-                                    @can('edit expense types')
-                                    <a href="{{url('expense-types/edit',$expense_type->id)}}"
-                                    class="btn btn-sm btn-outline-primary" title="Edit">
-                                        <i class="fas fa-pencil-alt"></i>
-                                    </a>
-                                    @endcan
-                                </div>
-                            </td>
+                        <td>
+                            <label class="switch">
+                                <input type="checkbox"
+                                    id="expensetype-{{ $expense_type->id }}"
+                                    data-name="{{ $expense_type->type }}"
+                                    onclick="changeExpenseTypeStatus(this, {{ $expense_type->id }})"
+                                    {{ $expense_type->is_active ? 'checked' : '' }}>
+                                <span class="slider round"></span>
+                            </label>
+                        </td>
 
 
-                        </tr>
+                        <td>
+                            <div class="d-flex gap-1">
+                                @can('edit expense types')
+                                <a href="{{url('expense-types/edit',$expense_type->id)}}"
+                                class="btn btn-sm btn-outline-primary" title="Edit">
+                                    <i class="fas fa-pencil-alt"></i>
+                                </a>
+                                @endcan
 
-                        @empty
+                                @can('delete expense types')
+                                <a href="{{ route('expense_types.destroy', $expense_type->id) }}"
+                                class="btn btn-sm btn-outline-danger ml-2" title="Delete">
+                                    <i class="fas fa-trash-alt"></i>
+                                </a>
+                                @endcan
+                            </div>
+                        </td>
 
-                        <tr class="text-center">
-                            <td colspan='6'> No Data Available</td>
-                        </tr>
 
-                        <?php $num++; ?>
+                    </tr>
 
-                        @endforelse
+                    @empty
 
-                 
+                    <tr class="text-center">
+                        <td colspan='6'> No Data Available</td>
+                    </tr>
 
-                      </tbody>
+                    <?php $num++; ?>
 
-                    </table>
+                    @endforelse
 
-                  </div>
+                
+
+                    </tbody>
+
+                </table>
 
                 </div>
 
-              </div>
-
             </div>
+
+        </div>
 
     </div>
 

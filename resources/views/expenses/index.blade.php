@@ -22,17 +22,9 @@
 
             </h3>
 
-            <nav aria-label="breadcrumb">
-
-                <ol class="breadcrumb">
-
-                    <li class="breadcrumb-item"><a href="{{url('expenses')}}">Expenses</a></li>
-
-                    <li class="breadcrumb-item active" aria-current="page">Expenses Listing</li>
-
-                </ol>
-
-            </nav>
+            @can('create expenses')
+                <a href="{{ route('expenses.create') }}" class="btn btn-primary">Add New Expense</a>
+            @endcan
 
         </div>
 
@@ -42,7 +34,55 @@
 
             <div class="card-body">
 
-                <h4 class="card-title"></h4>
+                <!-- Filter & Search Card -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body pt-4">
+                        <form method="GET" action="{{ route('expenses.index') }}" class="row g-3">
+                            <!-- Employee Filter -->
+                            <div class="col-md-4 mt-1">
+                                <label for="name">Expense Types</label>
+                                <select class="js-example-basic-single w-100" id="name" name="expense_type_id">
+                                    @foreach($expense_types as $expense_type)
+                                    <option value="{{ $expense_type->id }}" {{ request('expense_type_id') == $expense_type->id ? 'selected' : '' }}>
+                                        {{ $expense_type->type }}
+                                    </option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <!-- Start Date -->
+                            <div class="col-md-4">
+                                <label for="start_date" class="form-label">Start Date</label>
+                                <div id="datepicker-popup-new" class="input-group date datepicker">
+                                    <input type="text" name="start_date" id="start-date" class="form-control"
+                                        value="{{ request('start_date') }}">
+                                    <span class="input-group-addon input-group-append border-left">
+                                        <span class="far fa-calendar input-group-text"></span>
+                                    </span>
+                                </div>
+                            </div>
+                            <!-- End Date -->
+                            <div class="col-md-4">
+                                <label for="end_date" class="form-label">End Date</label>
+                                <div id="datepicker-popup-new2" class="input-group date datepicker">
+                                    <input type="text" name="end_date" id="end-date" class="form-control"
+                                        value="{{ request('end_date') }}">
+                                    <span class="input-group-addon input-group-append border-left">
+                                        <span class="far fa-calendar input-group-text"></span>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Buttons -->
+                            <div class="col-md-4 mt-3">
+                                <div class="d-flex gap-2">
+                                    <button type="submit" class="btn btn-primary w-100">Apply</button>
+                                    <a href="{{ route('expenses.index') }}" class="btn btn-outline-secondary w-100 ml-1">Clear</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
 
                 <!-- paginations per page  -->
                     <div class="row">

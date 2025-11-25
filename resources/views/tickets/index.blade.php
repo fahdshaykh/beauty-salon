@@ -11,6 +11,57 @@
 
         <div class="card">
             <div class="card-body">
+
+                <!-- Filter & Search Card -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body pt-4">
+                        <form method="GET" action="{{ route('tickets.index') }}" class="row g-3">
+                            <!-- Employee Filter -->
+                            <div class="col-md-4 mt-1">
+                                <label for="priority">Ticket Priority</label>
+                                <select name="priority" id="priority" class="js-example-basic-single w-100">
+                                    <option value="">All Priorities</option>
+                                    <option value="low"    {{ request('priority') == 'low'    ? 'selected' : '' }}>Low</option>
+                                    <option value="medium" {{ request('priority') == 'medium' ? 'selected' : '' }}>Medium</option>
+                                    <option value="high"   {{ request('priority') == 'high'   ? 'selected' : '' }}>High</option>
+                                    <option value="urgent" {{ request('priority') == 'urgent' ? 'selected' : '' }}>Urgent</option>
+                                </select>
+                            </div>
+
+                            <!-- Start Date -->
+                            <div class="col-md-4">
+                                <label for="start_date" class="form-label">Start Date</label>
+                                <div id="datepicker-popup-new" class="input-group date datepicker">
+                                    <input type="text" name="start_date" id="start-date" class="form-control"
+                                        value="{{ request('start_date') }}">
+                                    <span class="input-group-addon input-group-append border-left">
+                                        <span class="far fa-calendar input-group-text"></span>
+                                    </span>
+                                </div>
+                            </div>
+                            <!-- End Date -->
+                            <div class="col-md-4">
+                                <label for="end_date" class="form-label">End Date</label>
+                                <div id="datepicker-popup-new2" class="input-group date datepicker">
+                                    <input type="text" name="end_date" id="end-date" class="form-control"
+                                        value="{{ request('end_date') }}">
+                                    <span class="input-group-addon input-group-append border-left">
+                                        <span class="far fa-calendar input-group-text"></span>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Buttons -->
+                            <div class="col-md-4 mt-3">
+                                <div class="d-flex gap-2">
+                                    <button type="submit" class="btn btn-primary w-100">Apply</button>
+                                    <a href="{{ route('tickets.index') }}" class="btn btn-outline-secondary w-100 ml-1">Clear</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
                 <!-- Pagination Dropdown -->
                 <div class="row">
                     <div class="col-md-3">

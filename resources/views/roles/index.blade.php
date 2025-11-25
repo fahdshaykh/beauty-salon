@@ -7,37 +7,58 @@
     <div class="content-wrapper">
         <div class="page-header">
             <h3 class="page-title">All Roles</h3>
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ route('roles.index') }}">Roles</a></li>
-                    <li class="breadcrumb-item active">Role Listing</li>
-                </ol>
-            </nav>
+            @can('create roles')
+                <a href="{{ route('roles.create') }}" class="btn btn-primary">Add New Role</a>
+            @endcan
         </div>
 
         <div class="card">
             <div class="card-body">
 
-                <div class="row">
-
-                    <div class="col-md-3">
-
-                        <h4 class="card-title">Roles Listing</h4>
-
+                <!-- Filter & Search Card -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body pt-4">
+                        <form method="GET" action="{{ route('roles.index') }}" class="row g-3">
+                            <!-- Search Field -->
+                            <div class="col-md-4 mt-1">
+                                <label for="search" class="form-label">Role name</label>
+                                <input type="text" name="search" id="search" class="form-control"
+                                    value="{{ request('search') }}"
+                                    placeholder="Enter name...">
+                            </div>
+                            <!-- Start Date -->
+                            <div class="col-md-4">
+                                <label for="start_date" class="form-label">Start Date</label>
+                                <div id="datepicker-popup-new" class="input-group date datepicker">
+                                    <input type="text" name="start_date" id="start-date" class="form-control"
+                                        value="{{ request('start_date') }}">
+                                    <span class="input-group-addon input-group-append border-left">
+                                        <span class="far fa-calendar input-group-text"></span>
+                                    </span>
+                                </div>
+                            </div>
+                            <!-- End Date -->
+                            <div class="col-md-4">
+                                <label for="end_date" class="form-label">End Date</label>
+                                <div id="datepicker-popup-new2" class="input-group date datepicker">
+                                    <input type="text" name="end_date" id="end-date" class="form-control"
+                                        value="{{ request('end_date') }}">
+                                    <span class="input-group-addon input-group-append border-left">
+                                        <span class="far fa-calendar input-group-text"></span>
+                                    </span>
+                                </div>
+                            </div>
+                            <!-- Buttons -->
+                            <div class="col-md-4 mt-3">
+                                <div class="d-flex gap-2">
+                                    <button type="submit" class="btn btn-primary w-100">Apply</button>
+                                    <a href="{{ route('roles.index') }}" class="btn btn-outline-secondary w-100 ml-1">Clear</a>
+                                </div>
+                            </div>
+                        </form>
                     </div>
-
-                    <div class="col-md-6"></div>
-
-                    <div class="col-md-3">
-
-                        <div class="text-center" style="float: center;">
-
-                            <a href="{{ route('roles.create') }}" class="btn btn-primary btn-sm">Add New Role</a>
-
-                        </div>
-                    </div>
-
                 </div>
+                
                 <!-- Pagination Dropdown -->
                 <div class="row mb-3">
                     <div class="row">

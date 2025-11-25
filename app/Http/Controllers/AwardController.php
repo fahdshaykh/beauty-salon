@@ -18,24 +18,47 @@ class AwardController extends Controller
      */
     public function index(Request $request)
     {
-        // Authorize listing
         $this->authorize('viewAny', Award::class);
 
-        // get rows per page if passed with request
-        if (request('rows')) {
-
-            $rows = 500 < intval(request('rows')) ? 500 : intval(request('rows'));
-            $rows = 5 > $rows ? 5 : $rows;
-            Auth::user()->setSettings(['awards_rows_per_page' => $rows]);
+        // Rows per page
+        if ($request->filled('rows')) {
+            $rows = max(5, min(500, (int)$request->rows));
+            auth()->user()->setSettings(['awards_rows_per_page' => $rows]);
         }
-        // otherwise retrieve from user's settings
-        $rows = Auth::user()->getSetting('awards_rows_per_page', auth()->user()->default_rows);
-        
+        $rows = auth()->user()->getSetting('awards_rows_per_page', auth()->user()->default_rows ?? 15);
 
-        $awards = Award::where('company_id', auth()->user()->company_id)
-        ->paginate($rows);
+        // Build query
+        $query = Award::where('company_id', auth()->user()->company_id);
 
-        return view('awards.index', compact('awards', 'rows'));
+        // Filter by Employee (user_id)
+        if ($request->filled('user_id') && $request->user_id !== '') {
+            $query->where('user_id', $request->user_id);
+        }
+
+        // Filter by Date Range (assuming award_date or created_at — adjust if needed)
+        if ($request->filled('start_date')) {
+            $query->whereDate('date', '>=', $request->start_date);
+            // Or use: 'created_at' if you don't have a separate award_date column
+            // $query->whereDate('created_at', '>=', $request->start_date);
+        }
+
+        if ($request->filled('end_date')) {
+            $query->whereDate('date', '<=', $request->end_date);
+            // Or: $query->whereDate('created_at', '<=', $request->end_date);
+        }
+
+        // Execute with latest first + preserve all filters in pagination
+        $awards = $query->latest('date')
+                        ->paginate($rows)
+                        ->withQueryString();
+
+        // Load users (employees) for the Select2 dropdown
+        $users = User::where('company_id', auth()->user()->company_id)
+                                ->where('is_deleted', 0)
+                                ->latest()
+                                ->get();
+
+        return view('awards.index', compact('awards', 'rows', 'users'));
     }
 
     /**

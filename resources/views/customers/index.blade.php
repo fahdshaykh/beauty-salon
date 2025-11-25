@@ -8,28 +8,72 @@
     <div class="content-wrapper">
         <div class="page-header">
             <h3 class="page-title">All Customers</h3>
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ route('customers.index') }}">Customers</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Customers Listing</li>
-                </ol>
-            </nav>
+
+            @can('create customers')
+                <a href="{{url('customers/create')}}" class="btn btn-primary">Add New Customer</a>
+            @endcan
+            
         </div>
 
 
         <div class="card">
             <div class="card-body">
-                <div class="row">
+                
+                <div class="row mb-2">
                     <div class="col-md-3">
                         <h4 class="card-title">Customers Listing</h4>
                     </div>
                     <div class="col-md-6"></div>
-                    <div class="col-md-3">
+                    <div class="col-md-3 mb-3">
                         @can('export customers')
                         <div class="text-center" style="float: center;">
                             <span data-href="/all-customer-export" id="export" class="btn btn-primary" onclick="exportTasks(event.target);">Export Customers</span>
                         </div>
                         @endcan
+                    </div>
+                </div>
+
+                <!-- Filter & Search Card -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body pt-4">
+                        <form method="GET" action="{{ route('customers.index') }}" class="row g-3">
+                            <!-- Search Field -->
+                            <div class="col-md-4 mt-1">
+                                <label for="search" class="form-label">Customer</label>
+                                <input type="text" name="search" id="search" class="form-control"
+                                    value="{{ request('search') }}"
+                                    placeholder="Enter name, phone, email, referred by...">
+                            </div>
+                            <!-- Start Date -->
+                            <div class="col-md-4">
+                                <label for="start_date" class="form-label">Start Date</label>
+                                <div id="datepicker-popup-new" class="input-group date datepicker">
+                                    <input type="text" name="start_date" id="start-date" class="form-control"
+                                        value="{{ request('start_date') }}">
+                                    <span class="input-group-addon input-group-append border-left">
+                                        <span class="far fa-calendar input-group-text"></span>
+                                    </span>
+                                </div>
+                            </div>
+                            <!-- End Date -->
+                            <div class="col-md-4">
+                                <label for="end_date" class="form-label">End Date</label>
+                                <div id="datepicker-popup-new2" class="input-group date datepicker">
+                                    <input type="text" name="end_date" id="end-date" class="form-control"
+                                        value="{{ request('end_date') }}">
+                                    <span class="input-group-addon input-group-append border-left">
+                                        <span class="far fa-calendar input-group-text"></span>
+                                    </span>
+                                </div>
+                            </div>
+                            <!-- Buttons -->
+                            <div class="col-md-4 mt-3">
+                                <div class="d-flex gap-2">
+                                    <button type="submit" class="btn btn-primary w-100">Apply</button>
+                                    <a href="{{ route('customers.index') }}" class="btn btn-outline-secondary w-100 ml-1">Clear</a>
+                                </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
 

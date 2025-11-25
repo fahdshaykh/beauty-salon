@@ -4,50 +4,16 @@
 @section('content')
 <div class="main-panel">
         <div class="content-wrapper">
-          <div class="page-header">
-            <h3 class="page-title">
-             Templates
+          
+            <div class="page-header">
+                <h3 class="page-title">
+                    Templates
+                </h3>
 
-            </h3>
-          </div>
-          <div class="alert alert-success" style="display:none;" id="status-success"></div>
-          @if(Session::has('success'))
-
-            <div class="alert alert-success alert-dismissible">
-
-                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-
-                {{Session::get('success')}}
-
+                @can('create templates')
+                <a style="float:right;" href="{{route('template.create')}}" class="btn btn-primary btn-add-template mb-2"> Add SMS Template </a>
+                @endcan
             </div>
-
-
-
-            @elseif(Session::has('destroy'))
-
-            <div class="alert alert-danger alert-dismissible">
-
-                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-
-                {{Session::get('destroy')}}
-
-            </div>
-
-            @endif
-
-
-
-            @if(Session::has('update'))
-
-            <div class="alert alert-success alert-dismissible">
-
-                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-
-                {{Session::get('update')}}
-
-            </div>
-
-            @endif
           
           <div class="card">
 
@@ -58,9 +24,7 @@
                 <div class="row">
                 
                     <div class="col-12">
-                        @can('create templates')
-                        <a style="float:right;" href="{{route('template.create')}}" class="btn btn-primary btn-add-template mb-2"> Add new</a>
-                        @endcan
+                        
                         <div class="table-responsive">
                                 
                             <table id="order-listing" class="table table-striped table-bordered">
@@ -118,8 +82,9 @@
                                             <td>
                                             
                                             @can('edit templates')
-                                            <a href="{{Route('template.edit',$templates->id)}}">
-                                             <i class="fa fa-pencil-alt text-primary"></i>
+                                            <a href="{{Route('template.edit',$templates->id)}}"
+                                            class="btn btn-sm btn-outline-primary" title="Edit">
+                                                <i class="fas fa-pencil-alt"></i>
                                             </a>
                                             @endcan
                                              

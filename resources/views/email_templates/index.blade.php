@@ -16,89 +16,13 @@
 
              Templates
 
-
-
             </h3>
 
+            @can('create email templates')
+            <a style="float:right;" href="{{url('/email-template-create')}}" class="btn btn-primary btn-add-template mb-2"> Add Email Template</a>
+            @endcan
+
           </div>
-
-          <div class="alert alert-success" style="display:none;" id="status-success"></div>
-
-          @if(Session::has('success'))
-
-
-
-<div class="alert alert-success alert-dismissible">
-
-
-
-    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-
-
-
-    {{Session::get('success')}}
-
-
-
-</div>
-
-
-
-
-
-
-
-@elseif(Session::has('destroy'))
-
-
-
-<div class="alert alert-danger alert-dismissible">
-
-
-
-    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-
-
-
-    {{Session::get('destroy')}}
-
-
-
-</div>
-
-
-
-@endif
-
-
-
-
-
-
-
-@if(Session::has('update'))
-
-
-
-<div class="alert alert-success alert-dismissible">
-
-
-
-    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-
-
-
-    {{Session::get('update')}}
-
-
-
-</div>
-
-
-
-@endif
-
-          
 
           <div class="card">
 
@@ -115,12 +39,7 @@
                 <div class="row">
 
                 
-
                     <div class="col-12">
-
-
-
-                        <a style="float:right;" href="{{url('/email-template-create')}}" class="btn btn-primary btn-add-template mb-2"> Add new</a>
 
 
                         <div class="table-responsive">
@@ -179,12 +98,15 @@
                                             <td>
 
 
-                                            <a href="{{url('/email-template-edit',$templates->id)}}">
-
-                                             <i class="fa fa-pencil-alt text-primary"></i></a>
-                                             |
-                                             <a target="_blank" href="{{url('get-template-preview',$templates->id)}}">
-                                             <i class="fa fa-eye text-primary"></i></a>
+                                            <a href="{{url('/email-template-edit',$templates->id)}}"
+                                            class="btn btn-sm btn-outline-primary" title="Edit">
+                                                <i class="fas fa-pencil-alt"></i>
+                                            </a>
+                                             
+                                            <a target="_blank" href="{{url('get-template-preview',$templates->id)}}"
+                                            class="btn btn-sm btn-outline-primary" title="Edit">
+                                                <i class="fa fa-eye text-primary"></i>
+                                            </a>
 
 
                                             </td>

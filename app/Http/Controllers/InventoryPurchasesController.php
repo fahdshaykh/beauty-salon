@@ -21,26 +21,47 @@ class InventoryPurchasesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
     public function index(Request $request)
     {
         if (! (auth()->user() && auth()->user()->can('view inventory purchases'))) {
             abort(403);
         }
 
-        // get rows per page if passed with request
-        if (request('rows')) {
-
-            $rows = 500 < intval(request('rows')) ? 500 : intval(request('rows'));
-            $rows = 5 > $rows ? 5 : $rows;
-            Auth::user()->setSettings(['inventories_purchases_rows_per_page' => $rows]);
+        // Rows per page logic
+        if ($request->filled('rows')) {
+            $rows = max(5, min(500, (int)$request->rows));
+            auth()->user()->setSettings(['inventories_purchases_rows_per_page' => $rows]);
         }
-        // otherwise retrieve from user's settings
-        $rows = Auth::user()->getSetting('inventories_purchases_rows_per_page', auth()->user()->default_rows);
+        $rows = auth()->user()->getSetting('inventories_purchases_rows_per_page', auth()->user()->default_rows ?? 15);
 
-        $purchases = InventoryPurchases::where('company_id', auth()->user()->company_id)->orderBy('created_at', 'desc')
-        ->paginate($rows);
+        // Start building the query
+        $query = InventoryPurchases::where('company_id', auth()->user()->company_id);
 
-        return view('inventories.inventories_purchase.index', compact('purchases', 'rows'));
+        // Filter by Supplier
+        if ($request->filled('supplier_id') && $request->supplier_id !== '') {
+            $query->where('supplier_id', $request->supplier_id);
+        }
+
+        // Filter by Date Range
+        if ($request->filled('start_date')) {
+            $query->whereDate('purchase_date', '>=', $request->start_date);
+            // or use 'created_at' if you store purchase date there
+            // $query->whereDate('created_at', '>=', $request->start_date);
+        }
+
+        if ($request->filled('end_date')) {
+            $query->whereDate('purchase_date', '<=', $request->end_date);
+            // or: $query->whereDate('created_at', '<=', $request->end_date);
+        }
+
+        // Execute query with pagination
+        $purchases = $query->orderBy('created_at', 'desc')->paginate($rows)->withQueryString();
+
+        // Get suppliers for dropdown
+        $suppliers = Supplier::where('company_id', auth()->user()->company_id)->get();
+
+        return view('inventories.inventories_purchase.index', compact('purchases', 'rows', 'suppliers'));
     }
 
     /**
@@ -78,7 +99,8 @@ class InventoryPurchasesController extends Controller
             'price'          => 'required|numeric|min:0',
             'supplier_id'    => 'required|exists:suppliers,id',
             'paypemnt_type'  => 'required|in:cash,check',
-            'amount_paid'    => 'nullable|numeric|min:0|lte:price',
+            'amount_paid'    => 'required|numeric|min:0|lte:price',
+            'purchase_date'  => 'required|date',
             'description'    => 'nullable|string|max:160',
         ]);
 

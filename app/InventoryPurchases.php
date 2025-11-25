@@ -24,6 +24,7 @@ class InventoryPurchases extends Model
         'payment_type',
         'image',
         'supplier_id',
+        'purchase_date',
         'expiry_date'
     ];
 

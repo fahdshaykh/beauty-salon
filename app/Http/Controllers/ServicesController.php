@@ -28,31 +28,39 @@ class ServicesController extends Controller
      */
 
     public function index(Request $request)
-
     {
-
         $this->authorize('viewAny', Services::class);
 
-        // get rows per page if passed with request
-        if (request('rows')) {
-
-            $rows = 500 < intval(request('rows')) ? 500 : intval(request('rows'));
-            $rows = 5 > $rows ? 5 : $rows;
+        // Rows per page logic
+        if ($request->filled('rows')) {
+            $rows = max(5, min(500, (int)$request->rows));
             Auth::user()->setSettings(['services_rows_per_page' => $rows]);
         }
-        // otherwise retrieve from user's settings
-        $rows = Auth::user()->getSetting('services_rows_per_page', auth()->user()->default_rows);
+        $rows = Auth::user()->getSetting('services_rows_per_page', auth()->user()->default_rows ?? 15);
 
-        $services = Services::select('*')->where('company_id', auth()->user()->company_id)
-                                ->orderBy('created_at', 'desc')
-                                ->paginate($rows);
+        // Build query
+        $query = Services::where('company_id', auth()->user()->company_id);
 
-    //    echo "<pre>"; print_r($services); exit;
+        // Search by category id
+        if ($request->filled('category_id')) {
+            $query->where('category_id', $request->category_id);
+        }
 
-        return view('services.index',compact('services', 'rows'));
+        // Filter by creation date range
+        if ($request->filled('start_date')) {
+            $query->whereDate('created_at', '>=', $request->start_date);
+        }
 
+        if ($request->filled('end_date')) {
+            $query->whereDate('created_at', '<=', $request->end_date);
+        }
 
+        // Execute: latest first + preserve all filters in pagination links
+        $services = $query->latest()->paginate($rows)->withQueryString();
+        
+        $categories = Category::select('*')->where('company_id', auth()->user()->company_id)->where('is_active', 1)->get();
 
+        return view('services.index', compact('services', 'rows', 'categories'));
     }
 
 

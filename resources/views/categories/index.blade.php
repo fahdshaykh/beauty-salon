@@ -29,40 +29,61 @@
 
 
 
-            <nav aria-label="breadcrumb">
-
-
-
-                <ol class="breadcrumb">
-
-
-
-                    <li class="breadcrumb-item"><a href="{{route('categories.index')}}">Categories</a></li>
-
-
-
-                    <li class="breadcrumb-item active" aria-current="page">Categories Listing</li>
-
-
-
-                </ol>
-
-
-
-            </nav>
+            @can('create categories')
+            <a href="{{url('categories/create')}}" class="btn btn-primary">Add New Category</a>
+            @endcan
 
 
 
         </div>
 
-
-        <div class="alert alert-success" style="display:none;" id="status-success"></div>
-
         <div class="card">
 
             <div class="card-body">
 
-                <h4 class="card-title"></h4>
+                <!-- Filter & Search Card -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body pt-4">
+                        <form method="GET" action="{{ route('categories.index') }}" class="row g-3">
+                            <!-- Search Field -->
+                            <div class="col-md-4 mt-1">
+                                <label for="search" class="form-label">Search Category</label>
+                                <input type="text" name="search" id="search" class="form-control"
+                                    value="{{ request('search') }}"
+                                    placeholder="Enter category name">
+                            </div>
+                            <!-- Start Date -->
+                            <div class="col-md-4">
+                                <label for="start_date" class="form-label">Start Date</label>
+                                <div id="datepicker-popup-new" class="input-group date datepicker">
+                                    <input type="text" name="start_date" id="start-date" class="form-control"
+                                        value="{{ request('start_date') }}">
+                                    <span class="input-group-addon input-group-append border-left">
+                                        <span class="far fa-calendar input-group-text"></span>
+                                    </span>
+                                </div>
+                            </div>
+                            <!-- End Date -->
+                            <div class="col-md-4">
+                                <label for="end_date" class="form-label">End Date</label>
+                                <div id="datepicker-popup-new2" class="input-group date datepicker">
+                                    <input type="text" name="end_date" id="end-date" class="form-control"
+                                        value="{{ request('end_date') }}">
+                                    <span class="input-group-addon input-group-append border-left">
+                                        <span class="far fa-calendar input-group-text"></span>
+                                    </span>
+                                </div>
+                            </div>
+                            <!-- Buttons -->
+                            <div class="col-md-4 mt-3">
+                                <div class="d-flex gap-2">
+                                    <button type="submit" class="btn btn-primary w-100">Apply</button>
+                                    <a href="{{ route('categories.index') }}" class="btn btn-outline-secondary w-100 ml-1">Clear</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
 
                 <!-- Pagination Dropdown -->
                 <div class="row">

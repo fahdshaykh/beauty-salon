@@ -18,23 +18,40 @@ class TicketController extends Controller
     {
         $user = Auth::user();
 
+        // Base query with relationships
         $query = Ticket::with(['user', 'assignedTo', 'latestReply'])
-            ->where('company_id', $user->company_id);
+                    ->where('company_id', $user->company_id);
 
+        // Non-admin users can only see their own tickets
         if (!$user->hasRole('admin')) {
             $query->where('user_id', $user->id);
         }
 
-        // get rows per page if passed with request
-        if (request('rows')) {
-            $rows = 500 < intval(request('rows')) ? 500 : intval(request('rows'));
-            $rows = 5 > $rows ? 5 : $rows;
-            Auth::user()->setSettings(['tickets_rows_per_page' => $rows]);
+        // Filter by Priority
+        if ($request->filled('priority') && in_array($request->priority, ['low', 'medium', 'high', 'urgent'])) {
+            $query->where('priority', $request->priority);
         }
-        // otherwise retrieve from user's settings
-        $rows = Auth::user()->getSetting('tickets_rows_per_page', auth()->user()->default_rows);
 
-        $tickets = $query->latest()->paginate($rows);
+        // Filter by Date Range (using created_at — most common for tickets)
+        if ($request->filled('start_date')) {
+            $query->whereDate('created_at', '>=', $request->start_date);
+        }
+
+        if ($request->filled('end_date')) {
+            $query->whereDate('created_at', '<=', $request->end_date);
+        }
+
+        // Rows per page
+        if ($request->filled('rows')) {
+            $rows = max(5, min(500, (int)$request->rows));
+            $user->setSettings(['tickets_rows_per_page' => $rows]);
+        }
+        $rows = $user->getSetting('tickets_rows_per_page', $user->default_rows ?? 15);
+
+        // Execute query with pagination + preserve all filters
+        $tickets = $query->latest('created_at')
+                        ->paginate($rows)
+                        ->withQueryString();
 
         return view('tickets.index', compact('tickets', 'rows'));
     }

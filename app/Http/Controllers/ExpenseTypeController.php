@@ -4,8 +4,7 @@
 
 namespace App\Http\Controllers;
 
-
-
+use App\Expense;
 use Illuminate\Http\Request;
 
 use App\ExpenseType;
@@ -272,37 +271,37 @@ class ExpenseTypeController extends Controller
 
 
 
-    // public function destroy($id)
+    public function destroy($id)
+    {
+        $cat = Expense::where('expense_type',$id)->where('company_id',auth()->user()->company_id)->count();
 
-    // {
+        if($cat>0){
 
+            session()->flash('destroy','Operation Denied. Expense Type Is Related To Expenses Table.');
 
+            return redirect('expense-types');
 
-    //     $cat = ExpenseType::where('id',$id)->where('company_id',auth()->user()->company_id)->where('is_deleted',0)->count();
+        }
 
-    //     if($cat>0){
+        else{
 
-    //         session()->flash('destroy','Operation Denied. Expense Type Is Related To Expenses Table.');
+            $user = auth()->user();
 
-    //         return redirect('expense-types');
+            $expense_type = ExpenseType::find($id);
+            // Still check the policy for permission-based access
+            if (!($user && method_exists($user, 'hasRole') && $user->hasRole('admin'))) {
+                $this->authorize('delete', $expense_type);
+            }
 
-    //     }
+            $expense_type->delete();
 
-    //     else{
+            session()->flash('destroy','Expense Type deleted Successfully');
 
-    //         $expense_type = ExpenseType::find($id);
+            return redirect('expense-types');
 
-    //         $expense_type->is_deleted = 1;
+        }
 
-    //         $expense_type->save();
-
-    //         session()->flash('destroy','Expense Type deleted Successfully');
-
-    //         return redirect('expense-types');
-
-    //     }
-
-    // }
+    }
 
 }
 

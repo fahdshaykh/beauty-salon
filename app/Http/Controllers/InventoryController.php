@@ -25,19 +25,36 @@ class InventoryController extends Controller
             abort(403);
         }
 
-        // get rows per page if passed with request
-        if (request('rows')) {
-
-            $rows = 500 < intval(request('rows')) ? 500 : intval(request('rows'));
-            $rows = 5 > $rows ? 5 : $rows;
-            Auth::user()->setSettings(['inventories_rows_per_page' => $rows]);
+        // Rows per page logic
+        if ($request->filled('rows')) {
+            $rows = max(5, min(500, (int)$request->rows));
+            auth()->user()->setSettings(['inventories_rows_per_page' => $rows]);
         }
-        // otherwise retrieve from user's settings
-        $rows = Auth::user()->getSetting('inventories_rows_per_page', auth()->user()->default_rows);
+        $rows = auth()->user()->getSetting('inventories_rows_per_page', auth()->user()->default_rows ?? 15);
 
-        $inventories = Inventory::where('company_id', auth()->user()->company_id)
-        ->paginate($rows);
-        
+        // Build query
+        $query = Inventory::where('company_id', auth()->user()->company_id);
+
+        // Search by product name or code
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'LIKE', "%{$search}%");
+            });
+        }
+
+        // Date range filter (based on created_at or any date column)
+        if ($request->filled('start_date')) {
+            $query->whereDate('created_at', '>=', $request->start_date);
+        }
+
+        if ($request->filled('end_date')) {
+            $query->whereDate('created_at', '<=', $request->end_date);
+        }
+
+        // Order by latest
+        $inventories = $query->latest()->paginate($rows)->withQueryString();
+
         return view('inventories.index', compact('inventories', 'rows'));
     }
 

@@ -268,38 +268,69 @@ input:checked+.slider:before {
 
     <div class="content-wrapper">
 
-
-
         <div class="page-header">
 
-
-
             <h3 class="page-title">
-
-
-
                 All Inventories
-
-
-
             </h3>
 
             @can('create inventories')
             <a href="{{url('inventories/create')}}" class="btn btn-primary">Add New Item</a>
             @endcan
 
-
         </div>
 
 
         <div class="card">
 
-
-
             <div class="card-body">
 
+                <!-- Filter & Search Card -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body pt-4">
+                        <form method="GET" action="{{ route('inventories.index') }}" class="row g-3">
+                            <!-- Search Field -->
+                            <div class="col-md-4 mt-1">
+                                <label for="search" class="form-label">Search Product</label>
+                                <input type="text" name="search" id="search" class="form-control"
+                                    value="{{ request('search') }}"
+                                    placeholder="Enter product name or code...">
+                            </div>
+                            <!-- Start Date -->
+                            <div class="col-md-4">
+                                <label for="start_date" class="form-label">Start Date</label>
+                                <div id="datepicker-popup-new" class="input-group date datepicker">
+                                    <input type="text" name="start_date" id="start-date" class="form-control"
+                                        value="{{ request('start_date') }}">
+                                    <span class="input-group-addon input-group-append border-left">
+                                        <span class="far fa-calendar input-group-text"></span>
+                                    </span>
+                                </div>
+                            </div>
+                            <!-- End Date -->
+                            <div class="col-md-4">
+                                <label for="end_date" class="form-label">End Date</label>
+                                <div id="datepicker-popup-new2" class="input-group date datepicker">
+                                    <input type="text" name="end_date" id="end-date" class="form-control"
+                                        value="{{ request('end_date') }}">
+                                    <span class="input-group-addon input-group-append border-left">
+                                        <span class="far fa-calendar input-group-text"></span>
+                                    </span>
+                                </div>
+                            </div>
+                            <!-- Buttons -->
+                            <div class="col-md-4 mt-3">
+                                <div class="d-flex gap-2">
+                                    <button type="submit" class="btn btn-primary w-100">Apply</button>
+                                    <a href="{{ route('inventories.index') }}" class="btn btn-outline-secondary w-100 ml-1">Clear</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
 
-            <!-- Pagination Dropdown -->
+
+                <!-- Pagination Dropdown -->
                 <div class="row">
                     <div class="col-md-3">
                         <div class="pagination-dropdown">

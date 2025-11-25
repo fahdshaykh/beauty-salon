@@ -270,106 +270,75 @@ input:checked+.slider:before {
 
     <div class="content-wrapper">
 
-
-
         <div class="page-header">
-
-
 
             <h3 class="page-title">
 
-
-
                 All Awards
-
-
 
             </h3>
 
 
-
-            <nav aria-label="breadcrumb">
-
-
-
-                <ol class="breadcrumb">
-
-
-
-                    <li class="breadcrumb-item"><a href="{{route('awards.index')}}"> Awards </a></li>
-
-
-
-                    <li class="breadcrumb-item active" aria-current="page">Awards Listing</li>
-
-
-
-                </ol>
-
-
-
-            </nav>
-
+            @can('create awards')
+                <a href="{{ route('awards.create') }}" class="btn btn-primary">Add New Award</a>
+            @endcan
 
 
         </div>
 
-
-
-
-
-
-
-        <div class="alert alert-success" style="display:none;" id="status-success"></div>
-
-
         <div class="card">
-
-
 
             <div class="card-body">
 
-                <div class="row">
+                <!-- Filter & Search Card -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body pt-4">
+                        <form method="GET" action="{{ route('awards.index') }}" class="row g-3">
+                            <!-- Employee Filter -->
+                            <div class="col-md-4 mt-1">
+                                <label for="user_id">All Employees</label>
+                                <select class="js-example-basic-single w-100" id="user_id" name="user_id">
+                                    <option value="">Select Employee</option>
+                                    @foreach($users as $user)
+                                    <option value="{{ $user->id }}" {{ request('user_id') == $user->id ? 'selected' : '' }}>
+                                        {{ $user->name }}
+                                    </option>
+                                    @endforeach
+                                </select>
+                            </div>
 
+                            <!-- Start Date -->
+                            <div class="col-md-4">
+                                <label for="start_date" class="form-label">Start Date</label>
+                                <div id="datepicker-popup-new" class="input-group date datepicker">
+                                    <input type="text" name="start_date" id="start-date" class="form-control"
+                                        value="{{ request('start_date') }}">
+                                    <span class="input-group-addon input-group-append border-left">
+                                        <span class="far fa-calendar input-group-text"></span>
+                                    </span>
+                                </div>
+                            </div>
+                            <!-- End Date -->
+                            <div class="col-md-4">
+                                <label for="end_date" class="form-label">End Date</label>
+                                <div id="datepicker-popup-new2" class="input-group date datepicker">
+                                    <input type="text" name="end_date" id="end-date" class="form-control"
+                                        value="{{ request('end_date') }}">
+                                    <span class="input-group-addon input-group-append border-left">
+                                        <span class="far fa-calendar input-group-text"></span>
+                                    </span>
+                                </div>
+                            </div>
 
-
-                    <div class="col-md-3">
-
-
-
-                    <h4 class="card-title">Supplier Listing</h4>
-
-
-
+                            <!-- Buttons -->
+                            <div class="col-md-4 mt-3">
+                                <div class="d-flex gap-2">
+                                    <button type="submit" class="btn btn-primary w-100">Apply</button>
+                                    <a href="{{ route('awards.index') }}" class="btn btn-outline-secondary w-100 ml-1">Clear</a>
+                                </div>
+                            </div>
+                        </form>
                     </div>
-
-
-
-                    <div class="col-md-6"></div>
-
-
-
-                    <div class="col-md-3">
-
-
-
-                        <div class="text-center" style="float: center;">
-
-
-
-                        @can('create awards')
-                            <a href="{{ route('awards.create') }}" class="btn btn-primary btn-sm">Add Award</a>
-                        @endcan
-
-
-                        </div>
-
-
-
-                    </div>
-
-
-
                 </div>
 
 

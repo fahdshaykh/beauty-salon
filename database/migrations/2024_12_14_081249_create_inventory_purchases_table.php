@@ -25,6 +25,7 @@ class CreateInventoryPurchasesTable extends Migration
             $table->decimal('amount_pending', 10, 2)->default(0.00);
             $table->string('payment_type', 255)->nullable();
             $table->string('image', 255)->nullable();
+            $table->date('purchase_date')->nullable();
             $table->date('expiry_date')->nullable();
             $table->timestamps();
 

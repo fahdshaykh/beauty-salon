@@ -55,27 +55,45 @@ class UserController extends Controller
 
 
     public function index(Request $request)
-
     {
-
-        // get rows per page if passed with request
-        if (request('rows')) {
-
-            $rows = 500 < intval(request('rows')) ? 500 : intval(request('rows'));
-            $rows = 5 > $rows ? 5 : $rows;
+        // Rows per page logic
+        if ($request->filled('rows')) {
+            $rows = max(5, min(500, (int)$request->rows));
             Auth::user()->setSettings(['users_rows_per_page' => $rows]);
         }
-        // otherwise retrieve from user's settings
-        $rows = Auth::user()->getSetting('users_rows_per_page', auth()->user()->default_rows);
+        $rows = Auth::user()->getSetting('users_rows_per_page', auth()->user()->default_rows ?? 15);
 
+        // Build query
+        $query = User::where('company_id', auth()->user()->company_id)
+                    ->where('is_deleted', 0);
 
-        $users = User::where('is_deleted', 0)->where('company_id', auth()->user()->company_id)
-                                ->orderBy('created_at', 'desc')
-                                ->paginate($rows);
+        // Search by name (first_name + last_name), phone, or email
+        if ($request->filled('search')) {
+            $search = $request->search;
 
-        return view('users.index',compact('users', 'rows'));
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'LIKE', "%{$search}%")
+                // ->orWhereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", ["%{$search}%"])
+                ->orWhere('phone', 'LIKE', "%{$search}%")
+                ->orWhere('email', 'LIKE', "%{$search}%");
+            });
+        }
 
+        // Date range filter (based on created_at)
+        if ($request->filled('start_date')) {
+            $query->whereDate('created_at', '>=', $request->start_date);
+        }
 
+        if ($request->filled('end_date')) {
+            $query->whereDate('created_at', '<=', $request->end_date);
+        }
+
+        // Execute with pagination + keep all filters in URL
+        $users = $query->latest('created_at')
+                    ->paginate($rows)
+                    ->withQueryString();
+
+        return view('users.index', compact('users', 'rows'));
     }
 
 

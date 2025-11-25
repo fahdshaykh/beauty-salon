@@ -286,27 +286,13 @@ input:checked+.slider:before {
 
 
 
-            <nav aria-label="breadcrumb">
+            @can('create inventory purchases')
+            <div class="text-center" style="float: center;">
 
-
-
-                <ol class="breadcrumb">
-
-
-
-                    <li class="breadcrumb-item"><a href="{{ route('inventories_purchases.index') }}">purchases</a></li>
-
-
-
-                    <li class="breadcrumb-item active" aria-current="page">Inventory Listing</li>
-
-
-
-                </ol>
-
-
-
-            </nav>
+                <a href="{{ route('inventories_purchases.create') }}" class="btn btn-primary">Purchase Inventory</a>
+            
+            </div>
+            @endcan
 
 
 
@@ -321,22 +307,53 @@ input:checked+.slider:before {
 
             <div class="card-body">
 
-                <div class="row">
-                    <div class="col-md-3">
-
-                        <h4 class="card-title">Inventory Listing</h4>
-
-                    </div>
-                    <div class="col-md-6"></div>
-                    <div class="col-md-3">
-
-                        @can('create inventory purchases')
-                        <div class="text-center" style="float: center;">
-
-                            <a href="{{ route('inventories_purchases.create') }}" class="btn btn-primary btn-sm">Add Inventory</a>
-                        
-                        </div>
-                        @endcan
+                <!-- Purchases Filter Card -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body pt-4">
+                        <form method="GET" action="{{ route('inventories_purchases.index') }}" class="row g-3">
+                            <!-- Search Field -->
+                            <div class="col-md-4 mt-2">
+                                <label for="name">Select Supplier</label>
+                                <div class="form-group">
+                                    <select class="js-example-basic-single w-100" id="name" name="supplier_id">
+                                        @foreach($suppliers as $supplier)
+                                            <option value="{{ $supplier->id }}">
+                                                {{ $supplier->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <!-- Start Date -->
+                            <div class="col-md-4">
+                                <label for="start_date" class="form-label">Start Date</label>
+                                <div id="datepicker-popup-new" class="input-group date datepicker">
+                                    <input type="text" name="start_date" id="start-date" class="form-control"
+                                        value="{{ request('start_date') }}">
+                                    <span class="input-group-addon input-group-append border-left">
+                                        <span class="far fa-calendar input-group-text"></span>
+                                    </span>
+                                </div>
+                            </div>
+                            <!-- End Date -->
+                            <div class="col-md-4">
+                                <label for="end_date" class="form-label">End Date</label>
+                                <div id="datepicker-popup-new2" class="input-group date datepicker">
+                                    <input type="text" name="end_date" id="end-date" class="form-control"
+                                        value="{{ request('end_date') }}">
+                                    <span class="input-group-addon input-group-append border-left">
+                                        <span class="far fa-calendar input-group-text"></span>
+                                    </span>
+                                </div>
+                            </div>
+                            <!-- Buttons -->
+                            <div class="col-md-4">
+                                <div class="d-flex gap-2">
+                                    <button type="submit" class="btn btn-primary w-100">Apply</button>
+                                    <a href="{{ route('inventories_purchases.index') }}" class="btn btn-outline-secondary w-100 ml-1">Clear</a>
+                                </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
 

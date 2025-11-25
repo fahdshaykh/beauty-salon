@@ -61,6 +61,7 @@
                             </div>
 
                             <div class="form-group">
+                                <label for="date">Award Date</label>
                               <div id="datepicker-popup-new" class="input-group date datepicker">
                                 <input type="text" name="date" value="{{ old('date', $award->date) }}" class="form-control" required>
                                 <span class="input-group-addon input-group-append border-left">

@@ -26,8 +26,29 @@ class SupplierController extends Controller
         // otherwise retrieve from user's settings
         $rows = Auth::user()->getSetting('suppliers_rows_per_page', auth()->user()->default_rows);
 
-        $suppliers = Supplier::where('company_id', auth()->user()->company_id)
-        ->paginate($rows);
+        // Build query
+        $query = Supplier::where('company_id', auth()->user()->company_id);
+
+        // Search by name or phone
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'LIKE', "%{$search}%")
+                ->orWhere('phone', 'LIKE', "%{$search}%");
+            });
+        }
+
+        // Filter by created_at date range (common for suppliers)
+        if ($request->filled('start_date')) {
+            $query->whereDate('created_at', '>=', $request->start_date);
+        }
+
+        if ($request->filled('end_date')) {
+            $query->whereDate('created_at', '<=', $request->end_date);
+        }
+
+        // Execute with pagination + preserve filters in URL
+        $suppliers = $query->latest()->paginate($rows);
 
         return view('suppliers.index', compact('suppliers', 'rows'));
     }

@@ -35,24 +35,37 @@ class RoleController extends Controller
 
     public function index(Request $request)
     {
-        // get rows per page if passed with request
-        if (request('rows')) {
-
-            $rows = 500 < intval(request('rows')) ? 500 : intval(request('rows'));
-            $rows = 5 > $rows ? 5 : $rows;
+        // Rows per page
+        if ($request->filled('rows')) {
+            $rows = max(5, min(500, (int)$request->rows));
             Auth::user()->setSettings(['roles_rows_per_page' => $rows]);
         }
-        // otherwise retrieve from user's settings
-        $rows = Auth::user()->getSetting('roles_rows_per_page', auth()->user()->default_rows);
+        $rows = Auth::user()->getSetting('roles_rows_per_page', auth()->user()->default_rows ?? 15);
 
-        $roles = Role::where('company_id', auth()->user()->company_id)
-                 ->with('permissions')
-                 ->paginate($rows);
+        // Build query
+        $query = Role::where('company_id', auth()->user()->company_id)
+                    ->with('permissions');
 
+        // Search by role name
+        if ($request->filled('search')) {
+            $query->where('name', 'LIKE', '%' . $request->search . '%');
+        }
 
+        // Filter by creation date (most common for roles)
+        if ($request->filled('start_date')) {
+            $query->whereDate('created_at', '>=', $request->start_date);
+        }
 
-        return view('roles.index',compact('roles','rows'));
+        if ($request->filled('end_date')) {
+            $query->whereDate('created_at', '<=', $request->end_date);
+        }
 
+        // Execute with pagination + preserve filters
+        $roles = $query->latest('created_at')
+                    ->paginate($rows)
+                    ->withQueryString();
+
+        return view('roles.index', compact('roles', 'rows'));
     }
 
 
