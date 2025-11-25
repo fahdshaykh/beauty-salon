@@ -284,30 +284,9 @@ input:checked+.slider:before {
 
             </h3>
 
-
-
-            <nav aria-label="breadcrumb">
-
-
-
-                <ol class="breadcrumb">
-
-
-
-                    <li class="breadcrumb-item"><a href="{{route('inventories.index')}}">Inventories</a></li>
-
-
-
-                    <li class="breadcrumb-item active" aria-current="page">Inventory Listing</li>
-
-
-
-                </ol>
-
-
-
-            </nav>
-
+            @can('create inventories')
+            <a href="{{url('inventories/create')}}" class="btn btn-primary">Add New Item</a>
+            @endcan
 
 
         </div>
@@ -318,50 +297,6 @@ input:checked+.slider:before {
 
 
             <div class="card-body">
-
-                <div class="row">
-
-
-
-                    <div class="col-md-3">
-
-
-
-                        <h4 class="card-title">Inventory Listing</h4>
-
-
-
-                    </div>
-
-
-
-                    <div class="col-md-6"></div>
-
-
-
-                    <div class="col-md-3">
-
-
-
-                        <div class="text-center" style="float: center;">
-
-                        @can('create inventories')
-
-                            <a href="{{url('inventories/create')}}" class="btn btn-primary btn-sm">Add New Item</a>
-
-                        @endcan
-
-
-
-                        </div>
-
-
-
-                    </div>
-
-
-
-                </div>
 
 
             <!-- Pagination Dropdown -->

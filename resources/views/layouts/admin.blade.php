@@ -830,6 +830,15 @@
           </li>
           @endcan
 
+          
+          <li class="nav-item">
+            <a class="nav-link" href="{{ route('tickets.index') }}" >
+              <i class="fas fa-ticket-alt menu-icon"></i>
+              <span class="menu-title">Support Tickets</span>
+              <i class="menu-arrow"></i>
+            </a>
+          </li>
+
         </ul>
 
       </nav>

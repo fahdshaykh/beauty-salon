@@ -352,7 +352,7 @@ input:checked+.slider:before {
                         </div>
 
 
-                    <!-- Pagination Dropdown -->
+                <!-- Pagination Dropdown -->
                 <div class="row">
                     <div class="col-md-3">
                         <div class="pagination-dropdown">

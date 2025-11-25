@@ -237,17 +237,17 @@ Admin
 
           </li>
 
-          <!-- <li class="nav-item">
+          <li class="nav-item">
 
-            <a class="nav-link" href="pages/widgets.html">
+            <a class="nav-link" href="{{ route('admin.tickets.index') }}">
 
               <i class="fa fa-puzzle-piece menu-icon"></i>
 
-              <span class="menu-title">Widgets</span>
+              <span class="menu-title">Support tickets</span>
 
             </a>
 
-          </li> -->
+          </li>
 
           
 

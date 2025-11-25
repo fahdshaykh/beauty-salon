@@ -5,6 +5,7 @@ use App\Http\Controllers\{
     Admin\DashboardController,
     Admin\CompanyController,
     Admin\CompanyReportController,
+    Admin\AdminTicketController,
     HomeController,
     CategoryController,
     ServicesController,
@@ -37,6 +38,7 @@ use App\Http\Controllers\{
     CalendarController,
     EmailTemplateController,
     StripeController,
+    TicketController,
     WorkScheduleController
 };
 
@@ -76,6 +78,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('company/record/expense', [CompanyReportController::class, 'expense_record'])->name('company.expense_record');
         Route::get('company-inventory-reports', [CompanyReportController::class, 'inventory_index'])->name('company.inventory');
         Route::get('company/record/inventory', [CompanyReportController::class, 'inventory_record'])->name('company.inventory_record');
+
+        Route::prefix('tickets')->name('tickets.')->group(function () {
+        Route::get('/', [AdminTicketController::class, 'index'])->name('index');
+        Route::get('/{ticket}', [AdminTicketController::class, 'show'])->name('show');
+        Route::post('/{ticket}/reply', [AdminTicketController::class, 'reply'])->name('reply');
+        Route::patch('/{ticket}/status', [AdminTicketController::class, 'updateStatus'])->name('updateStatus');
+        });
     });
 });
 
@@ -449,4 +458,12 @@ Route::middleware(['auth', 'company'])->group(function () {
     Route::get('/work-schedule', [WorkScheduleController::class, 'index'])->name('work_schedule.index');
     Route::patch('/work-schedule/{id}', [WorkScheduleController::class, 'update'])->name('work_schedule.update');
     Route::get('schedule-status', [WorkScheduleController::class, 'categoryStatus'])->name('schedule.status');
+
+    Route::resource('tickets', TicketController::class);
+
+    Route::post('tickets/{ticket}/reply', [TicketController::class, 'reply'])
+        ->name('tickets.reply');
+
+    Route::patch('tickets/{ticket}/status', [TicketController::class, 'updateStatus'])
+        ->name('tickets.updateStatus');
 });
