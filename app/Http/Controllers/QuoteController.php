@@ -4,8 +4,7 @@
 
 namespace App\Http\Controllers;
 
-
-
+use App\Helpers\LimitHelper;
 use Illuminate\Http\Request;
 
 use App\Quote;
@@ -59,8 +58,10 @@ class QuoteController extends Controller
 
 
     public function quote_mail(Request $request)
-
     {
+        if (!LimitHelper::canCreate('quotations')) {
+            return back()->withError('You have reached your monthly quotations creation limit.');
+        }
 
         $this->validate($request, 
 
@@ -166,7 +167,11 @@ class QuoteController extends Controller
             try {
                 // Queue the mailable (requires a running queue worker)
                 \Mail::to($to_email)->queue(new \App\Mail\QuoteMailable($mailableData));
+
+                LimitHelper::increment('quotations');
+
                 return back()->with('success','Quote has been queued for sending.');
+
             } catch (\Exception $e) {
                 // Fallback to synchronous send if queuing fails
                 try {
@@ -174,8 +179,13 @@ class QuoteController extends Controller
                         $message->to($to_email)->subject($subject);
                         $message->from(Auth::user()->companySetting->email ?? 'noreply@example.com', $title);
                     });
+
+                    LimitHelper::increment('quotations');
+
                     return back()->with('success','Quote has been sent successfully (fallback).');
+
                 } catch (\Exception $ex) {
+
                     return back()->with('error','Email Sending Error, Please try again!');
                 }
             }

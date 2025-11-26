@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Customer;
+use App\Helpers\LimitHelper;
 use App\ServiceBooking;
 use App\Models\Setting;
 use App\Models\UserSetting;
@@ -128,6 +129,10 @@ class CustomerController extends Controller
 
         $this->authorize('create', Customer::class);
 
+        if (!LimitHelper::canCreate('customers')) {
+            return back()->withError('You have reached your monthly customer creation limit.');
+        }
+
         $this->validate($request, 
 
             [
@@ -242,6 +247,8 @@ class CustomerController extends Controller
             return redirect('get-booking-date/'.$date.'/success')->with('success','Customer created successfully');
 
             }
+
+            LimitHelper::increment('customers');
 
             return redirect()->back()->with('success', 'Customer created successfully');  
 

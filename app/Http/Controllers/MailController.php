@@ -8,12 +8,7 @@
 
 namespace App\Http\Controllers;
 
-
-
-
-
-
-
+use App\Helpers\LimitHelper;
 use Illuminate\Http\Request;
 
 
@@ -47,6 +42,12 @@ class MailController extends Controller
     public function invoice_mail($id)
     {
         try {
+
+            if (!LimitHelper::canCreate('invoices')) {
+
+                return response()->json(['error'=>'You have reached your monthly invoices creation limit.']);
+            }
+
             $booking_detail = ServiceBooking::with('customer')->where('id', $id)->get();
 
             $detail_array = "";
@@ -119,7 +120,9 @@ class MailController extends Controller
                 $id
             ));
 
-            return response()->json(['success' => 'E-mail has been queued and will be sent shortly']);
+            LimitHelper::increment('invoices');
+
+            return response()->json(['success' => 'E-mail has been sent successfully.']);
 
         } catch (\Exception $e) {
             Log::error('Invoice email error: ' . $e->getMessage());

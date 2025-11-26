@@ -228,13 +228,7 @@ input:checked+.slider:before {
 
                                         <th>Company Phone</th>
 
-                                        <!-- <th>Plan price</th> -->
-
-                                        <!-- <th>SMS Count</th> -->
-
-                                        <!-- <th>WhatsApp Count</th> -->
-
-                                        <!-- <th>End Date</th> -->
+                                        <th>Expire Date</th>
 
                                         <th>Status</th>
 
@@ -260,15 +254,7 @@ input:checked+.slider:before {
 
                                         <td>{{$company->company_phone}}</td>
 
-                                        <!-- <td>{{$company->email}}</td> -->
-
-                                        
-
-                                        <!-- <td><i class="fas fa-dollar-sign"></i>{{$company->plan_price}}</td> -->
-
-                                        <!-- <td>{{$company->sms_count}}</td> -->
-
-                                        <!-- <td>{{date('m-d-Y', strtotime($company->plan_end_date))}}</td> -->
+                                        <td>{{date('m-d-Y', strtotime($company->plan_expire_date))}}</td>
 
                                         <td>
 
@@ -291,6 +277,13 @@ input:checked+.slider:before {
                                             <a href="{{route('admin.companies.edit',$company->id)}}">
 
                                                 <i class="fas fa-pencil-alt text-primary" aria-hidden="true"></i>
+
+                                            </a>
+
+
+                                            <a href="{{route('admin.limits.edit',$company->id)}}">
+
+                                                <i class="fas fa-tachometer-alt text-success" aria-hidden="true"></i>
 
                                             </a>
 

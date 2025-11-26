@@ -8,6 +8,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\LimitHelper;
 use App\Models\Payroll;
 use Illuminate\Http\Request;
 
@@ -114,6 +115,10 @@ public function create()
 
 public function store(Request $request)
 {
+    if (!LimitHelper::canCreate('employees')) {
+        return back()->withError('You have reached your monthly user creation limit.');
+    }
+
     $request->validate([
         'name' => 'required|string|max:255',
         'email' => 'required|email|unique:users,email',
@@ -160,6 +165,8 @@ public function store(Request $request)
 
     // ASSIGN ROLE (Spatie)
     $user->assignRole($request->role);
+
+    LimitHelper::increment('employees');
 
     return redirect()->route('users.index')
         ->with('success', 'User created successfully');

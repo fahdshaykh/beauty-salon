@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\LimitHelper;
 use Illuminate\Http\Request;
 use App\Templates;
 use Str;
@@ -146,6 +147,10 @@ class PowerMailingController extends Controller
         if (! (auth()->user() && auth()->user()->can('email marketing'))) {
             abort(403);
         }
+
+        if (!LimitHelper::canCreate('emails')) {
+            return back()->withError('You have reached your monthly customer creation limit.');
+        }
         
         $this->validate($request, 
         [
@@ -179,6 +184,9 @@ class PowerMailingController extends Controller
                 );
                 DB::table('email_marketing_history')->insert($history);
             }
+
+            LimitHelper::increment('emails');
+
             return back()->with('success','Emails scheduled successfully!');
             //echo $request->schedule_date.'>>>>>>>'.$request->schedule_time; exit;
         }
@@ -210,6 +218,9 @@ class PowerMailingController extends Controller
             if (isset($e) && $e instanceof \Exception) {
                 return redirect()->route('power_mailing.create')->with('error','Email Sending Error, Please try again!');
             }
+
+            LimitHelper::increment('emails');
+            
             return redirect()->route('power_mailing.create')->with('success','Email sent successfully!');
             
         }

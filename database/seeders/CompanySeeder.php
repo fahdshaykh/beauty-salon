@@ -17,12 +17,12 @@ class CompanySeeder extends Seeder
     {
         // 1. Create default company
         $company = Company::create([
-            'company_name'   => 'Beauty Salon HQ',
-            'owner_name'     => 'Admin Owner',
+            'company_name'   => 'Beauty Salon',
+            'smart_name'     => 'fadeshifu',
+            'owner_name'     => 'fahd shifu',
             'company_phone'  => '03001234567',
-            'plan_name'      => 'Pro Plan',
-            'plan_price'     => 4999,
-            'plan_end_date'  => Carbon::now()->addMonths(6),
+            'subscription_plan_id' => 1, // Default plan id
+            'plan_expire_date'  => now()->addYear()->format('Y-m-d'), //Carbon::now()->addMonths(6),
             'company_address'=> 'Main Road, Lahore, Pakistan',
         ]);
 

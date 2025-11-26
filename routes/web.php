@@ -6,6 +6,7 @@ use App\Http\Controllers\{
     Admin\CompanyController,
     Admin\CompanyReportController,
     Admin\AdminTicketController,
+    Admin\CompanyLimitController,
     HomeController,
     CategoryController,
     ServicesController,
@@ -41,7 +42,7 @@ use App\Http\Controllers\{
     TicketController,
     WorkScheduleController
 };
-
+// use App\Http\Controllers\Admin\CompanyLimitController;
 use Illuminate\Support\Facades\Route;
 
 // ──────────────────────────────────────
@@ -85,6 +86,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/{ticket}/reply', [AdminTicketController::class, 'reply'])->name('reply');
         Route::patch('/{ticket}/status', [AdminTicketController::class, 'updateStatus'])->name('updateStatus');
         });
+
+        Route::get('companies/{company}/limits', [CompanyLimitController::class, 'edit'])->name('limits.edit');
+        Route::post('companies/{company}/limits', [CompanyLimitController::class, 'update'])->name('limits.update');
+
     });
 });
 

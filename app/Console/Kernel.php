@@ -21,6 +21,7 @@ class Kernel extends ConsoleKernel
         \App\Console\Commands\SendCustomerBirthdayNotifications::class,
         \App\Console\Commands\CalculatePayroll::class,
         \App\Console\Commands\AutoCheckoutCommand::class,
+        \App\Console\Commands\ResetMonthlyLimits::class,
     ];
 
     /**
@@ -50,6 +51,12 @@ class Kernel extends ConsoleKernel
         $schedule->command('calculate:payroll')->monthlyOn(1, '01:00');
 
         $schedule->command('attendance:auto-checkout')->dailyAt('00:00');
+
+        // Run at midnight on the 1st of every month
+        $schedule->command('limits:reset-monthly')
+                ->monthlyOn(1, '00:00')
+                // ->timezone('Asia/Karachi') // Change to your timezone
+                ->appendOutputTo(storage_path('logs/limits-reset.log'));
     }
 
     /**

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Company;
 use App\Models\Permission;
 use App\Models\Role;
+use App\Models\SubscriptionPlan;
 use Carbon\Carbon;
 use App\User;
 use Hash;
@@ -60,10 +61,11 @@ class CompanyController extends Controller
      */
 
     public function create()
-
     {
 
-        return view('admin.companies.create');
+        $plans = SubscriptionPlan::all();
+
+        return view('admin.companies.create', compact('plans'));
 
     }
 
@@ -101,13 +103,11 @@ class CompanyController extends Controller
 
                 'password' => 'required',
 
-                // 'plan_name' => 'required',
+                'subscription_plan_id' => 'required',
 
-                // 'plan_price' => 'required',
+                // 'plan_expire_date' => 'required',
 
-                // 'plan_end_date' => 'required',
-
-                'company_address' => 'required'
+                // 'company_address' => 'nullable'
 
             ],
 
@@ -123,13 +123,11 @@ class CompanyController extends Controller
 
                 'password.required' => 'Please enter password.',
 
-                // 'plan_name.required' => 'Please enter plan name.',
+                'subscription_plan_id.required' => 'Please select a subscription plan.',
 
-                // 'plan_price.required' => 'Please enter plan price.',
+                // 'plan_expire_date.required' => 'Please enter plan expire date',
 
-                // 'plan_end_date.required' => 'Please enter plan end date',
-
-                'company_address.required' => 'Please enter plan end date'
+                // 'company_address.nullable' => 'Please enter plan end date'
 
             ],
 
@@ -147,11 +145,9 @@ class CompanyController extends Controller
 
         $company->company_phone = $request->input('company_phone');
 
-        $company->plan_name = $request->input('plan_name');
+        $company->subscription_plan_id = $request->input('subscription_plan_id');
 
-        $company->plan_price = $request->input('plan_price');
-
-        $company->plan_end_date = $request->input('plan_end_date');
+        $company->plan_expire_date = now()->addYear()->format('Y-m-d'); //$request->input('plan_expire_date');
 
         $company->company_address = $request->input('company_address');
 
@@ -498,13 +494,11 @@ class CompanyController extends Controller
 
                 'email' => 'required|email|unique:users,email,'.$result->id,
 
-                // 'plan_name' => 'required',
-
-                // 'plan_price' => 'required',
+                'subscription_plan_id' => 'required',
 
                 // 'plan_end_date' => 'required',
 
-                'company_address' => 'required'
+                // 'company_address' => 'required'
 
             ],
 
@@ -518,13 +512,13 @@ class CompanyController extends Controller
 
                 'email.required' => 'Please enter email address.',
 
-                // 'plan_name.required' => 'Please enter plan name.',
+                'subscription_plan_id.required' => 'Please enter plan name.',
 
                 // 'plan_price.required' => 'Please enter plan price.',
 
                 // 'plan_end_date.required' => 'Please enter plan end date',
 
-                'company_address.required' => 'Please enter plan end date'
+                // 'company_address.required' => 'Please enter plan end date'
 
             ],
 
@@ -542,11 +536,9 @@ class CompanyController extends Controller
 
         $company_data->company_phone = $request->input('company_phone');
 
-        $company_data->plan_name = $request->input('plan_name');
+        $company_data->subscription_plan_id = $request->input('subscription_plan_id');
 
-        $company_data->plan_price = $request->input('plan_price');
-
-        $company_data->plan_end_date = $request->input('plan_end_date');
+        $company_data->plan_expire_date = now()->addYear()->format('Y-m-d'); //$request->input('plan_expire_date');
 
         $company_data->company_address = $request->input('company_address');
 

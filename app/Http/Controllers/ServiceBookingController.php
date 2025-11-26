@@ -24,7 +24,7 @@ use App\Customer;
 use App\Category;
 
 use App\BookingDetail;
-
+use App\Helpers\LimitHelper;
 use App\Inventory;
 
 use App\InventoryPurchases;
@@ -209,6 +209,10 @@ class ServiceBookingController extends Controller
         // Authorization: ensure user can create service bookings
         $this->authorize('create', ServiceBooking::class);
 
+        if (!LimitHelper::canCreate('bookings')) {
+            return back()->withError('You have reached your monthly bookings creation limit.');
+        }
+
         $this->validate($request, [
             'due_date' => 'required',
             'due_time' => 'required',
@@ -369,13 +373,17 @@ class ServiceBookingController extends Controller
 
             if($message_status['0']->sms_count<=0){
 
-                return redirect('service-bookings')->with('success', 'Booking Updated successfully. Message not sent due to insufficient SMS balance.');
+                LimitHelper::increment('bookings');
+                
+                return redirect('service-bookings')->with('success', 'Booking created successfully. Message not sent due to insufficient SMS balance.');
 
             }
 
            $response =  $this->send_message($booking->id, 'Booking');
 
            if(isset($response->error)){
+
+                LimitHelper::increment('bookings');
 
                 return redirect('service-bookings')->with('destroy', 'Booking created successfully. Message not sent to customer. Ask bSaloon to check this error: '.$response->error->msg.'.');
 
@@ -389,6 +397,8 @@ class ServiceBookingController extends Controller
 
                 ]);
 
+                LimitHelper::increment('bookings');
+
                 return redirect('service-bookings')->with('success', 'Booking created successfully & Message sent to customer.');
 
             }
@@ -396,6 +406,8 @@ class ServiceBookingController extends Controller
 
 
         }
+
+        LimitHelper::increment('bookings');
     
         return redirect('service-bookings')->with('success', 'Booking created successfully.');
         

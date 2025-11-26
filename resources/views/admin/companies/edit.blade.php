@@ -208,6 +208,16 @@
 
                             </div> -->
 
+                            <div class="form-group">
+                                <label for="subscription_plan_id">Subscription Plan</label>
+                                <select name="subscription_plan_id" id="subscription_plan_id" class="form-control" required>
+                                    <option value="">Select a Plan</option>
+                                    @foreach($plans as $plan)
+                                        <option value="{{ $plan->id }}" @if($company_detail['0']->subscription_plan_id == $plan->id) selected @endif>{{ $plan->name }} - ${{ $plan->price_yearly }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
 
 
                             <div class="form-group">
