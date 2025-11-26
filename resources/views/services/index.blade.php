@@ -43,7 +43,7 @@
 
 
             @can('create services')
-            <a href="{{url('services/create')}}" class="btn btn-primary">Add New Service</a>
+            <a href="{{url('services/create')}}" class="btn btn-primary">New Service</a>
             @endcan
 
 

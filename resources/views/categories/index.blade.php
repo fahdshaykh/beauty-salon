@@ -30,7 +30,7 @@
 
 
             @can('create categories')
-            <a href="{{url('categories/create')}}" class="btn btn-primary">Add New Category</a>
+            <a href="{{url('categories/create')}}" class="btn btn-primary">New Category</a>
             @endcan
 
 

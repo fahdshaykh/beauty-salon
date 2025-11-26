@@ -108,11 +108,11 @@ $(document).ready(function() {
 
 
 
-                    <li class="breadcrumb-item"><a href="{{url('/users')}}">Inventories</a></li>
+                    <li class="breadcrumb-item"><a href="{{ route('inventories_purchases.index') }}">Inventories</a></li>
 
 
 
-                    <li class="breadcrumb-item active" aria-current="page">Create New Inventory</li>
+                    <li class="breadcrumb-item active" aria-current="page">Edit purchase inventory</li>
 
 
 

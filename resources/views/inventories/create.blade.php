@@ -90,9 +90,9 @@
 
 
 
-                    <li class="breadcrumb-item"><a href="{{url('/users')}}">Inventories</a></li>
+                    <li class="breadcrumb-item"><a href="{{url('/inventories')}}">Inventories</a></li>
 
-                    <li class="breadcrumb-item active" aria-current="page">Inventory Purchase</li>
+                    <li class="breadcrumb-item active" aria-current="page">Create inventory</li>
 
 
 

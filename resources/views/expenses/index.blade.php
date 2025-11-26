@@ -23,7 +23,7 @@
             </h3>
 
             @can('create expenses')
-                <a href="{{ route('expenses.create') }}" class="btn btn-primary">Add New Expense</a>
+                <a href="{{ route('expenses.create') }}" class="btn btn-primary">New Expense</a>
             @endcan
 
         </div>
@@ -42,6 +42,7 @@
                             <div class="col-md-4 mt-1">
                                 <label for="name">Expense Types</label>
                                 <select class="js-example-basic-single w-100" id="name" name="expense_type_id">
+                                    <option value="">All Expense Types</option>
                                     @foreach($expense_types as $expense_type)
                                     <option value="{{ $expense_type->id }}" {{ request('expense_type_id') == $expense_type->id ? 'selected' : '' }}>
                                         {{ $expense_type->type }}

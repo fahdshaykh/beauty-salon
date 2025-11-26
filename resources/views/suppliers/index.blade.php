@@ -289,7 +289,7 @@ input:checked+.slider:before {
             @can('create suppliers')
                 <div class="text-center" style="float: center;">
 
-                    <a href="{{ route('suppliers.create') }}" class="btn btn-primary">Add Supplier</a>
+                    <a href="{{ route('suppliers.create') }}" class="btn btn-primary">New Supplier</a>
 
                 </div>
             @endcan

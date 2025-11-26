@@ -10,7 +10,7 @@
             <h3 class="page-title">All Customers</h3>
 
             @can('create customers')
-                <a href="{{url('customers/create')}}" class="btn btn-primary">Add New Customer</a>
+                <a href="{{url('customers/create')}}" class="btn btn-primary">New Customer</a>
             @endcan
             
         </div>

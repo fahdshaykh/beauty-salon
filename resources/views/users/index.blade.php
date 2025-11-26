@@ -287,7 +287,7 @@ input:checked+.slider:before {
 
 
             @can('create users')
-                <a href="{{url('user/user-create')}}" class="btn btn-primary">Add New User</a>
+                <a href="{{url('user/user-create')}}" class="btn btn-primary">New User</a>
             @endcan
 
         </div>

@@ -8,7 +8,7 @@
         <div class="page-header">
             <h3 class="page-title">All Roles</h3>
             @can('create roles')
-                <a href="{{ route('roles.create') }}" class="btn btn-primary">Add New Role</a>
+                <a href="{{ route('roles.create') }}" class="btn btn-primary">New Role</a>
             @endcan
         </div>
 
