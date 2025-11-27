@@ -250,23 +250,14 @@ class SettingController extends Controller
 
         $data['smart_name'] = $request->smart_name;
         $data['financial_year'] = $request->financial_year;
+        $data['timezone'] = $request->timezone; // ← NEW LINE
         // $data['site_logo'] = time().$originalImage->getClientOriginalName();
-
-
 
         $data['company_id'] = auth()->user()->company_id;
 
-       
-
         DB::table('company_settings')->where('company_id', $id)->update($data);
 
-
-
-     
-
         return redirect('theme-settings')->with(['success'=>'Theme Setting updated successfully.']);
-
-
 
     }
 

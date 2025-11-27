@@ -358,6 +358,32 @@
                                                     </div>
                                                 </div>
 
+                                                <!-- ADD THIS NEW BLOCK -->
+                                                <div class="form-group">
+                                                    <label><i class="fas fa-globe-asia"></i> Company Timezone</label>
+                                                    <select name="timezone" class="form-control" required>
+                                                        <option value="">Select Timezone</option>
+                                                        @php $grouped = collect(DateTimeZone::listIdentifiers())->groupBy(function($tz) {
+                                                            return explode('/', $tz)[0];
+                                                        }); @endphp
+
+                                                        @foreach($grouped as $region => $timezones)
+                                                            <optgroup label="{{ ucfirst(strtolower($region)) }}">
+                                                                @foreach($timezones as $tz)
+                                                                    <option value="{{ $tz }}" {{ $settings->timezone == $tz ? 'selected' : '' }}>
+                                                                        {{ str_replace(['_', '/'], [' ', ' → '], $tz) }}
+                                                                        → {{ \Carbon\Carbon::now($tz)->format('h:i A') }}
+                                                                    </option>
+                                                                @endforeach
+                                                            </optgroup>
+                                                        @endforeach
+                                                    </select>
+                                                    <small class="text-success">
+                                                        Current time in your zone: 
+                                                        <strong>{{ now()->setTimezone($settings->timezone ?? 'UTC')->format('d M Y, h:i A') }}</strong>
+                                                    </small>
+                                                </div>
+
                                                 <div class="row">
 
                                                     <div class="col-lg-6">

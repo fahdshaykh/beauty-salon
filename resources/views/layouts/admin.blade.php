@@ -82,7 +82,13 @@
 
           <span class="fas fa-bars"></span>
 
-        </button>       
+        </button>
+        
+        <div class="large mx-3 mt-4 text-white">
+            <i class="fas fa-clock"></i> 
+            {{ auth()->user()->company->settings->timezone ?? 'UTC' }}
+            → {{ now()->format('h:i A') }}
+        </div>
 
         <ul class="navbar-nav navbar-nav-right">
 
