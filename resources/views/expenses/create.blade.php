@@ -110,83 +110,11 @@
 
 
 
-          @if ($errors->any())
-
-
-
-              <div class="alert alert-danger alert-dismissible">
-
-
-
-                  <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-
-
-
-                  <ul>
-
-
-
-                      @foreach ($errors->all() as $error)
-
-
-
-                          <li>{{ $error }}</li>
-
-
-
-                      @endforeach
-
-
-
-                  </ul>
-
-
-
-              </div>
-
-
-
-          @endif
-
-
-
-
-
-
-
-          @if(Session::has('error'))
-
-
-
-            <div class="alert alert-danger alert-dismissible">
-
-
-
-                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-
-
-
-                {{Session::get('error')}}
-
-
-
-            </div>
-
-
-
-          @endif
-
-
-
-          
-
-
-
           <div class="row">
 
 
 
-            <div class="col-md-6 grid-margin stretch-card">
+            <div class="col-md-12 grid-margin stretch-card">
 
 
 
@@ -214,7 +142,7 @@
 
 
 
-                      <select id="expense_type" name="expense_type" class="js-example-basic-single w-100" required>
+                      <select id="expense_type" name="expense_type" class="form-control @error('expense_type') is-invalid @enderror js-example-basic-single w-100" required>
 
 
 
@@ -232,6 +160,11 @@
 
                       </select>
 
+                      @error('expense_type')
+                          <div class="invalid-feedback d-block">
+                              {{ $message }}
+                          </div>
+                      @enderror
 
 
                     </div>
@@ -246,7 +179,7 @@
 
 
 
-                      <select id="payment_method" name="payment_method" class="js-example-basic-single w-100" required>
+                      <select id="payment_method" name="payment_method" class="form-control @error('user_id') is-invalid @enderror js-example-basic-single w-100" required>
 
 
 
@@ -264,6 +197,11 @@
 
                       </select>
 
+                      @error('user_id')
+                          <div class="invalid-feedback d-block">
+                              {{ $message }}
+                          </div>
+                      @enderror
 
 
                     </div>
@@ -278,7 +216,7 @@
 
 
 
-                        <input type="text" name="payable" value="" class="form-control" required>
+                        <input type="text" name="payable" value="" class="form-control @error('payable') is-invalid @enderror" required>
 
 
 
@@ -291,6 +229,12 @@
 
 
                         </span>
+
+                        @error('payable')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                        @enderror
 
 
 
@@ -330,9 +274,13 @@
 
 
 
-                        <input type="text" name="amount" class="form-control" aria-label="Amount (to the nearest dollar)" required>
+                        <input type="text" name="amount" class="form-control @error('amount') is-invalid @enderror" aria-label="Amount (to the nearest dollar)" required>
 
-
+                        @error('amount')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                        @enderror
 
                       </div>
 

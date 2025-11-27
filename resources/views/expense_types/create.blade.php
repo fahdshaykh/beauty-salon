@@ -78,35 +78,11 @@
 
 
 
-        @if(Session::has('error'))
-
-
-
-        <div class="alert alert-danger alert-dismissible">
-
-
-
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-
-
-
-            {{Session::get('error')}}
-
-
-
-        </div>
-
-
-
-        @endif
-
-
-
         <div class="row">
 
 
 
-            <div class="col-md-6 grid-margin stretch-card">
+            <div class="col-md-12 grid-margin stretch-card">
 
 
 

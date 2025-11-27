@@ -127,46 +127,6 @@ $(document).ready(function() {
 
 
 
-          @if ($errors->any())
-
-
-
-              <div class="alert alert-danger alert-dismissible">
-
-
-
-                  <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-
-
-
-                  <ul>
-
-
-
-                      @foreach ($errors->all() as $error)
-
-
-
-                          <li>{{ $error }}</li>
-
-
-
-                      @endforeach
-
-
-
-                  </ul>
-
-
-
-              </div>
-
-
-
-          @endif
-
-
-
         <div class="row">
 
 
@@ -199,12 +159,17 @@ $(document).ready(function() {
 
                         <label for="name">Select Item</label>
 
-                        <select class="js-example-basic-single w-100" id="name" name="inventory_id">
+                        <select class="form-control @error('inventory_id') is-invalid @enderror js-example-basic-single w-100" id="name" name="inventory_id">
                            @foreach($inventories as   $inventory)
                              <option value="{{ $inventory->id }}">{{ $inventory->name }}</option>
                             @endforeach
                          </select>
 
+                          @error('inventory_id')
+                              <div class="invalid-feedback d-block">
+                                  {{ $message }}
+                              </div>
+                          @enderror
                       </div>
 
 
@@ -217,8 +182,13 @@ $(document).ready(function() {
 
 
 
-                        <input type="number" class="form-control" name="quantity" value="{{old('quantity')}}" id="quantity" placeholder="quantity">
-
+                        <input type="number" class="form-control @error('quantity') is-invalid @enderror" name="quantity" value="{{old('quantity')}}" id="quantity" placeholder="quantity">
+                        
+                        @error('quantity')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                        @enderror
 
 
                       </div>
@@ -235,8 +205,13 @@ $(document).ready(function() {
 
 
 
-                        <input type="number" class="form-control" name="price" id="price" placeholder="Enter price">
+                        <input type="number" class="form-control @error('price') is-invalid @enderror" name="price" id="price" placeholder="Enter price">
 
+                        @error('price')
+                            <div class="invalid-feedback d-block">
+                                {{ $message }}
+                            </div>
+                        @enderror
 
 
                       </div>
@@ -246,12 +221,17 @@ $(document).ready(function() {
 
                         <label for="name">Select Supplier</label>
 
-                        <select class="js-example-basic-single w-100" id="name" name="supplier_id">
+                        <select class="form-control @error('supplier_id') is-invalid @enderror js-example-basic-single w-100" id="name" name="supplier_id">
                            @foreach($suppliers as   $supplier)
                              <option value="{{ $supplier->id }}">{{ $supplier->name }}</option>
                             @endforeach
                          </select>
 
+                          @error('supplier_id')
+                              <div class="invalid-feedback d-block">
+                                  {{ $message }}
+                              </div>
+                          @enderror
                       </div>
 
 
@@ -298,7 +278,7 @@ $(document).ready(function() {
 
                         <label for="name">Select payment</label>
 
-                        <select class="form-control" id="name" name="paypemnt_type">
+                        <select class="form-control @error('paypemnt_type') is-invalid @enderror" id="name" name="paypemnt_type">
                            
                              <option value="cash">Cash</option>
 
@@ -306,6 +286,11 @@ $(document).ready(function() {
                             
                          </select>
 
+                          @error('paypemnt_type')
+                              <div class="invalid-feedback d-block">
+                                  {{ $message }}
+                              </div>
+                          @enderror
                       </div>
 
                       <div class="form-group">
@@ -316,21 +301,28 @@ $(document).ready(function() {
 
 
 
-                      <input type="number" class="form-control" name="amount_paid" id="price" placeholder="Enter Amount Paid">
+                      <input type="number" class="form-control @error('amount_paid') is-invalid @enderror" name="amount_paid" id="price" placeholder="Enter Amount Paid">
 
-
+                      @error('amount_paid')
+                          <div class="invalid-feedback d-block">
+                              {{ $message }}
+                          </div>
+                      @enderror
 
                       </div>
 
-
-
                       <div class="form-group">
-                        <label for="price">Purchasing date</label>
-                        <div id="datepicker-popup-new" class="input-group date datepicker">
-                          <input type="text" name="purchase_date" value="{{ old('purchase_date') }}" class="form-control" required>
+                          <label for="date">Purchase Date</label>
+                        <div id="datepicker-popup-new" class="input-group date datepicker ">
+                          <input type="text" name="purchase_date" value="{{ old('purchase_date') }}" class="form-control @error('purchase_date') is-invalid @enderror" >
                           <span class="input-group-addon input-group-append border-left">
                             <span class="far fa-calendar input-group-text"></span>
                           </span>
+                          @error('purchase_date')
+                              <div class="invalid-feedback">
+                                  {{ $message }}
+                              </div>
+                          @enderror
                         </div>
                       </div>
 
@@ -342,9 +334,14 @@ $(document).ready(function() {
 
 
 
-                      <input type="number" class="form-control" name="amount_pending" id="price" disabled>
+                      <input type="number" class="form-control @error('amount_pending') is-invalid @enderror" name="amount_pending" id="price" disabled>
 
 
+                      @error('amount_pending')
+                          <div class="invalid-feedback d-block">
+                              {{ $message }}
+                          </div>
+                      @enderror
 
                       </div>
 

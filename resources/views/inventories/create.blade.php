@@ -108,46 +108,6 @@
 
 
 
-          @if ($errors->any())
-
-
-
-              <div class="alert alert-danger alert-dismissible">
-
-
-
-                  <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-
-
-
-                  <ul>
-
-
-
-                      @foreach ($errors->all() as $error)
-
-
-
-                          <li>{{ $error }}</li>
-
-
-
-                      @endforeach
-
-
-
-                  </ul>
-
-
-
-              </div>
-
-
-
-          @endif
-
-
-
         <div class="row">
 
 
@@ -184,9 +144,13 @@
 
 
 
-                        <input type="text" class="form-control" value="{{old('name')}}" name="name" id="name" placeholder="Name">
+                        <input type="text" class="form-control @error('name') is-invalid @enderror" value="{{old('name')}}" name="name" id="name" placeholder="Name">
 
-
+                        @error('name')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                        @enderror
 
                       </div>
 
@@ -200,22 +164,13 @@
 
 
 
-                      <input type="text" class="form-control" value="{{old('low_alert')}}" name="low_alert" id="low_alert" placeholder="Minimum Alert">
+                      <input type="text" class="form-control @error('low_alert') is-invalid @enderror" value="{{old('low_alert')}}" name="low_alert" id="low_alert" placeholder="Minimum Alert">
 
-
-
-                      </div>
-
-                      <div class="form-group">
-
-
-
-                      <label for="name">Max Alert</label>
-
-
-
-                      <input type="text" class="form-control" value="{{old('max_alert')}}" name="max_alert" id="max_alert" placeholder="Maximum Alert">
-
+                      @error('low_alert')
+                          <div class="invalid-feedback">
+                              {{ $message }}
+                          </div>
+                      @enderror
 
 
                       </div>

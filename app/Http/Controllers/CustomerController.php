@@ -145,7 +145,7 @@ class CustomerController extends Controller
 
                 'primary_phone' => 'required',
 
-                'email' => 'nullable',
+                'email' => 'nullable|email',
 
                
 
@@ -163,7 +163,7 @@ class CustomerController extends Controller
 
                 'primary_phone.required' => 'Please Enter Phone number',
 
-                // 'email.required' => 'Please enter Email',
+                'email.nullable' => 'Please enter Email',
 
              
 

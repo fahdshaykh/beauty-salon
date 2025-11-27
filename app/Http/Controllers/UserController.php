@@ -123,7 +123,7 @@ public function store(Request $request)
         'name' => 'required|string|max:255',
         'email' => 'required|email|unique:users,email',
         'password' => 'required|min:6',
-        'phone' => 'nullable|string|max:15',
+        'phone' => 'required|string|max:15',
         'base_salary' => 'nullable|numeric',
         'commission_rate' => 'nullable|numeric',
         'is_transport' => 'required|in:yes,no',
@@ -244,7 +244,7 @@ public function store(Request $request)
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $id,
-            'phone' => 'nullable|string|max:15',
+            'phone' => 'required|string|max:15',
             'base_salary' => 'nullable|numeric',
             'commission_rate' => 'nullable|numeric',
             'is_transport' => 'required|in:yes,no',

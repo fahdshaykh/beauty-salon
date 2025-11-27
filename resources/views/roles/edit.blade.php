@@ -16,17 +16,6 @@
             </nav>
         </div>
 
-        @if($errors->any())
-            <div class="alert alert-danger alert-dismissible">
-                <a href="#" class="close" data-dismiss="alert">&times;</a>
-                <ul>
-                    @foreach($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
-
         <div class="row">
             <div class="col-lg-12">
                 <div class="card">
@@ -36,7 +25,12 @@
 
                             <div class="form-group">
                                 <label>Role Name</label>
-                                <input type="text" name="name" value="{{ old('name', $role->name) }}" class="form-control" required>
+                                <input type="text" name="name" value="{{ old('name', $role->name) }}" class="form-control @error('name') is-invalid @enderror" required>
+                                @error('name')
+                                    <div class="invalid-feedback d-block">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
                             </div>
 
                             <div class="form-group">

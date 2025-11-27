@@ -82,7 +82,7 @@
 
 
 
-            <div class="col-md-6 grid-margin stretch-card">
+            <div class="col-md-12 grid-margin stretch-card">
 
 
 

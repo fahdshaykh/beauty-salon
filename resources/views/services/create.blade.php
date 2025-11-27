@@ -74,43 +74,9 @@
 
           </div>
 
-          @if ($errors->any())
-
-              <div class="alert alert-danger alert-dismissible">
-
-                  <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-
-                  <ul>
-
-                      @foreach ($errors->all() as $error)
-
-                          <li>{{ $error }}</li>
-
-                      @endforeach
-
-                  </ul>
-
-              </div>
-
-          @endif
-
-          @if(Session::has('error'))
-
-            <div class="alert alert-danger alert-dismissible">
-
-                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-
-                {{Session::get('error')}}
-
-            </div>
-
-          @endif
-
-          
-
           <div class="row">
 
-            <div class="col-md-6 grid-margin stretch-card">
+            <div class="col-md-12 grid-margin stretch-card">
 
               <div class="card">
 
@@ -126,7 +92,7 @@
 
                       <label>Select Category</label>
 
-                      <select id="category_id" name="category_id" class="js-example-basic-single w-100" required>
+                      <select id="category_id" name="category_id" class="form-control @error('category_id') is-invalid @enderror js-example-basic-single w-100" required>
 
                         @foreach($categories as $category)
 
@@ -135,6 +101,11 @@
                         @endforeach
 
                       </select>
+                      @error('category_id')
+                          <div class="invalid-feedback d-block">
+                              {{ $message }}
+                          </div>
+                      @enderror
 
                     </div>
 
@@ -142,45 +113,57 @@
 
                       <label for="exampleInputUsername1">Service Name</label>
 
-                      <input type="text" class="form-control" name="name" id="exampleInputUsername1" placeholder="Enter Service Name" required>
+                      <input type="text" class="form-control @error('name') is-invalid @enderror" name="name" id="exampleInputUsername1" placeholder="Enter Service Name" required>
 
+                      @error('name')
+                          <div class="invalid-feedback">
+                              {{ $message }}
+                          </div>
+                      @enderror
                     </div>
 
                     <div class="form-group">
 
                       <label for="employees">Assign Employees</label>
                       
-                      <select name="employees[]" class="form-control js-example-basic-multiple w-100" multiple="multiple" required>
+                      <select name="employees[]" class="form-control @error('employees') is-invalid @enderror js-example-basic-multiple w-100" multiple="multiple" required>
                           @foreach($employees as $employee)
                               <option value="{{ $employee->id }}">{{ $employee->name }}</option>
                           @endforeach
                       </select>
-
+                      @error('employees')
+                          <div class="invalid-feedback d-block">
+                              {{ $message }}
+                          </div>
+                      @enderror
                     </div>
 
-                    <div class="form-group">
-    <label class="d-block mb-2 font-weight-bold">Service Type</label>
+<div class="row">
+    <div class="col-md-3">
+        <div class="form-group">
+            <label class="d-block mb-2 font-weight-bold">Service Type</label>
 
-    <input type="radio" name="risk_status" value="risky" id="risky"
-        class="radio-toggle">
-    <label for="risky" class="radio-pill">Risky</label>
+            <input type="radio" name="risk_status" value="risky" id="risky" class="radio-toggle">
+            <label for="risky" class="radio-pill">Risky</label>
 
-    <input type="radio" name="risk_status" value="not_risky" id="not_risky"
-        class="radio-toggle" checked>
-    <label for="not_risky" class="radio-pill">Not Risky</label>
+            <input type="radio" name="risk_status" value="not_risky" id="not_risky" class="radio-toggle" checked>
+            <label for="not_risky" class="radio-pill">Not Risky</label>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="form-group">
+            <label class="d-block mb-2 font-weight-bold">Price Type</label>
+
+            <input type="radio" name="price_type" value="fixed" id="fixed" class="radio-toggle" checked>
+            <label for="fixed" class="radio-pill">Fixed</label>
+
+            <input type="radio" name="price_type" value="modify" id="modify" class="radio-toggle">
+            <label for="modify" class="radio-pill">Modify Able</label>
+        </div>
+    </div>
 </div>
 
-<div class="form-group">
-    <label class="d-block mb-2 font-weight-bold">Price Type</label>
-
-    <input type="radio" name="price_type" value="fixed" id="fixed"
-        class="radio-toggle" checked>
-    <label for="fixed" class="radio-pill">Fixed</label>
-
-    <input type="radio" name="price_type" value="modify" id="modify"
-        class="radio-toggle">
-    <label for="modify" class="radio-pill">Modify Able</label>
-</div>
 
                     <div class="form-group">
 
@@ -192,8 +175,13 @@
 
                         </div>
 
-                        <input type="text" name="price" value="0" class="form-control" aria-label="Amount (to the nearest dollar)">
+                        <input type="text" name="price" value="0" class="form-control @error('price') is-invalid @enderror" aria-label="Amount (to the nearest dollar)">
 
+                        @error('price')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                              </div>
+                        @enderror
                       </div>
 
                     </div>

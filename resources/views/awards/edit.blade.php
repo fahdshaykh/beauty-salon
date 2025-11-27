@@ -20,13 +20,6 @@
             </nav>
         </div>
 
-        @if($errors->any())
-            <div class="alert alert-danger alert-dismissible">
-                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                <ul>@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul>
-            </div>
-        @endif
-
         <div class="row">
             <div class="col-md-12 grid-margin stretch-card">
                 <div class="card">
@@ -38,36 +31,58 @@
 
                             <div class="form-group">
 
-                              <label>Employee</label>
+                                <label>Employee</label>
 
-                              <select id="name" name="user_id" class="js-example-basic-single w-100">
+                                <select id="name" name="user_id" class="form-control @error('user_id') is-invalid @enderror js-example-basic-single w-100">
 
-                                <option value="" disabled selected>Please Select Awardee Name</option>
-                                @foreach($users as $user)
-                                    <option value="{{ $user->id }}" {{ $award->user_id == $user->id ? 'selected' : '' }}>{{ $user->name }}</option>
-                                @endforeach
+                                    <option value="" disabled selected>Please Select Awardee Name</option>
+                                    @foreach($users as $user)
+                                        <option value="{{ $user->id }}" {{ $award->user_id == $user->id ? 'selected' : '' }}>{{ $user->name }}</option>
+                                    @endforeach
 
-                              </select>
+                                </select>
 
+                                @error('user_id')
+                                    <div class="invalid-feedback d-block">
+                                        {{ $message }}
+                                    </div>
+                                @else
+                                    <small class="text-muted">Select the employee who received the award</small>
+                                @enderror
                             </div>
 
                             <div class="form-group">
                                 <label for="award">Award</label>
-                                <input type="text" class="form-control" name="award" value="{{ old('award', $award->award) }}" placeholder="Award">
+                                <input type="text" class="form-control @error('award') is-invalid @enderror" name="award" value="{{ old('award', $award->award) }}" placeholder="Award">
+                                @error('award')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
                             </div>
 
                             <div class="form-group">
                                 <label for="gift">Award Gift</label>
-                                <input type="gift" class="form-control" name="gift" value="{{ old('gift', $award->gift) }}" placeholder="Gift">
+                                <input type="gift" class="form-control @error('gift') is-invalid @enderror" name="gift" value="{{ old('gift', $award->gift) }}" placeholder="Gift">
+                                @error('gift')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
                             </div>
 
                             <div class="form-group">
                                 <label for="date">Award Date</label>
                               <div id="datepicker-popup-new" class="input-group date datepicker">
-                                <input type="text" name="date" value="{{ old('date', $award->date) }}" class="form-control" required>
+                                <input type="text" name="date" value="{{ old('date', $award->date) }}" class="form-control @error('date') is-invalid @enderror" required>
                                 <span class="input-group-addon input-group-append border-left">
                                   <span class="far fa-calendar input-group-text"></span>
                                 </span>
+                                @error('date')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
                               </div>
                             </div>
 

@@ -53,10 +53,15 @@
                         }
                     ?>
                     <div id="datepicker-popup-booking" class="input-group date datepicker">
-                        <input type="text" name="due_date" id="due_date" value="@if(isset($due_date)){{$due_date}}@else{{$now_date}}@endif" class="form-control" required>
+                        <input type="text" name="due_date" id="due_date" value="@if(isset($due_date)){{$due_date}}@else{{$now_date}}@endif" class="form-control @error('due_date') is-invalid @enderror" required>
                         <span class="input-group-addon input-group-append border-left">
                             <span class="far fa-calendar input-group-text"></span>
                         </span>
+                        @error('due_date')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                        @enderror
                     </div>
                 </div>
 
@@ -72,25 +77,35 @@
                         <label>Booking Time:</label>
                         <div class="input-group date" id="timepicker-example" data-target-input="nearest">
                             <div class="input-group" data-target="#timepicker-example" data-toggle="datetimepicker">
-                                <input type="text" name="due_time" value="@if(isset($due_time)){{$due_time}}@else '' @endif" id="due_time" class="form-control form-control-sm datetimepicker-input" data-target="#timepicker-example" required/>
+                                <input type="text" name="due_time" value="@if(isset($due_time)){{$due_time}}@else '' @endif" id="due_time" class="form-control form-control-sm  datetimepicker-input @error('due_time') is-invalid @enderror" data-target="#timepicker-example" required/>
                                 <div class="input-group-addon input-group-append"><i class="far fa-clock input-group-text"></i></div>
                             </div>
+                            @error('due_time')
+                                <div class="invalid-feedback d-block">
+                                    {{ $message }}
+                                </div>
+                            @enderror
                         </div>
                     </div>
                     <div class="col-md-4">
                         <label>Finish Time (minutes):</label>
                         <div class="input-group date" data-target-input="nearest">
                             <div class="input-group">
-                                <input type="text" name="finish_time" value="@if(isset($finish_time)){{$finish_time}}@else 30 @endif" class="form-control" maxlength="4"/>
+                                <input type="text" name="finish_time" value="@if(isset($finish_time)){{$finish_time}}@else 30 @endif" class="form-control @error('finish_time') is-invalid @enderror" maxlength="4"/>
                                 <div class="input-group-addon input-group-append"><i class="far fa-clock input-group-text"></i></div>
                             </div>
+                            @error('finish_time')
+                                <div class="invalid-feedback d-block">
+                                    {{ $message }}
+                                </div>
+                            @enderror
                         </div>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label>Select Customer</label>
-                    <select id="customer_id" name="customer_id" class="form-control js-example-basic-single w-100" required>
+                    <select id="customer_id" name="customer_id" class="form-control @error('customer_id') is-invalid @enderror js-example-basic-single w-100" required>
                         @if($booking_detail == '')
                             <option value="">Select Customer</option>
                             @foreach($customers as $customer)
@@ -103,11 +118,16 @@
                             @endforeach
                         @endif
                     </select>
+                    @error('customer_id')
+                        <div class="invalid-feedback d-block">
+                            {{ $message }}
+                        </div>
+                    @enderror
                 </div>
 
                 <div class="form-group">
                     <label>Select Employee</label>
-                    <select id="user_id" name="user_id" class="form-control js-example-basic-single w-100" required>
+                    <select id="user_id" name="user_id" class="form-control @error('user_id') is-invalid @enderror js-example-basic-single w-100" required>
                         @if($booking_detail == '')
                             <option value="">Select employee</option>
                             @foreach($users as $user)
@@ -120,6 +140,11 @@
                             @endforeach
                         @endif
                     </select>
+                    @error('user_id')
+                        <div class="invalid-feedback d-block">
+                            {{ $message }}
+                        </div>
+                    @enderror
                 </div>
                 <br>
 
@@ -127,8 +152,13 @@
 
                 <div class="form-group">
                     <label>Select Services</label>
-                    <select id="service_id" name="service_id[]" class="form-control js-example-basic-multiple w-100" multiple="multiple" required>
+                    <select id="service_id" name="service_id[]" class="form-control @error('service_id') is-invalid @enderror js-example-basic-multiple w-100" multiple="multiple" required>
                     </select>
+                    @error('service_id')
+                        <div class="invalid-feedback d-block">
+                            {{ $message }}
+                        </div>
+                    @enderror
                 </div>
 
                 <div class="form-group">
@@ -156,7 +186,12 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text bg-primary text-white"><i class="fas fa-dollar-sign"></i></span>
                                 </div>
-                                <input type="text" name="total_price" class="form-control" value="@if(isset($total_price)){{$total_price}}@else{{old('total_price')}}@endif" id="total_price" readonly>
+                                <input type="text" name="total_price" class="form-control @error('total_price') is-invalid @enderror" value="@if(isset($total_price)){{$total_price}}@else{{old('total_price')}}@endif" id="total_price" readonly>
+                                @error('total_price')
+                                    <div class="invalid-feedback d-block">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
                             </div>
                         </div>
                     </div>

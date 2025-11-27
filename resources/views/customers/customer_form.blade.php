@@ -1,48 +1,5 @@
 
 
-@if ($errors->any())
-
-
-
-    <div class="alert alert-danger alert-dismissible">
-
-
-
-        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-
-
-
-        <ul>
-
-
-
-            @foreach ($errors->all() as $error)
-
-
-
-                <li>{{ $error }}</li>
-
-
-
-            @endforeach
-
-
-
-        </ul>
-
-
-
-    </div>
-
-
-
-@endif
-
-
-
-
-
-
 <p class="card-description">
 
 
@@ -75,7 +32,12 @@
 
 
 
-                <input type="text" id="firstname" name="first_name" minlength="2" value="@if(isset($customer->first_name)){{$customer->first_name}}@else{{old('first_name')}}@endif" class="form-control" placeholder="" />
+                <input type="text" id="firstname" name="first_name" minlength="2" value="@if(isset($customer->first_name)){{$customer->first_name}}@else{{old('first_name')}}@endif" class="form-control @error('first_name') is-invalid @enderror" placeholder="" />
+                @error('first_name')
+                    <div class="invalid-feedback">
+                        {{ $message }}
+                    </div>
+                @enderror
 
 
 
@@ -107,7 +69,12 @@
 
 
 
-                <input type="text" id="lastname" name="last_name" value="@if(isset($customer->last_name)){{$customer->last_name}}@else{{old('last_name')}}@endif" class="form-control" placeholder="" />
+                <input type="text" id="lastname" name="last_name" value="@if(isset($customer->last_name)){{$customer->last_name}}@else{{old('last_name')}}@endif" class="form-control @error('last_name') is-invalid @enderror" placeholder="" />
+                @error('last_name')
+                    <div class="invalid-feedback">
+                        {{ $message }}
+                    </div>
+                @enderror
 
 
 
@@ -163,7 +130,7 @@
                     <div class="row">
 
                             <div class="col-md-3 input-group-prepend">
-                                <select id="tags" name="country_code" class="js-example-basic-single w-100" required>
+                                <select id="tags" name="country_code" class="js-example-basic-single w-100 @error('country_code') is-invalid @enderror" required>
 
                                 @foreach ($countries as $country)
                                     
@@ -175,10 +142,20 @@
                                 @endforeach
 
                                 </select>
+                                @error('country_code')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
                             </div>
 				
                             <div class="col-md-9">
-                                <input type="text" id="primary_phone" name="primary_phone" minlength="10"  maxlength="14" value="@if(isset($customer->primary_phone)){{$customer->primary_phone}}@else{{old('primary_phone')}}@endif" class="form-control" maxlength="11"  placeholder=""/>
+                                <input type="text" id="primary_phone" name="primary_phone" minlength="10"  maxlength="14" value="@if(isset($customer->primary_phone)){{$customer->primary_phone}}@else{{old('primary_phone')}}@endif" class="form-control @error('primary_phone') is-invalid @enderror" maxlength="11"  placeholder=""/>
+                                @error('primary_phone')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
                             </div>
 
                     </div>
@@ -198,7 +175,7 @@
         <div class="form-group row">
             <label class="col-sm-3 col-form-label">Date Of Birth</label>
             <div id="datepicker-popup-new" class="col-sm-9 input-group date datepicker">
-                <input type="text"name="date_of_birth" value="@if(isset($customer->date_of_birth)){{$customer->date_of_birth}}@else{{ old('date_of_birth')}}@endif" class="form-control" required>
+                <input type="text"name="date_of_birth" value="@if(isset($customer->date_of_birth)){{$customer->date_of_birth}}@else{{ old('date_of_birth')}}@endif" class="form-control">
                 <span class="input-group-addon input-group-append border-left">
                     <span class="far fa-calendar input-group-text"></span>
                 </span>

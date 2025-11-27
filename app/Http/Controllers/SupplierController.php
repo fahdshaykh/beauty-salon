@@ -69,7 +69,10 @@ class SupplierController extends Controller
         }
 
         $request->validate([
-            'name' => 'required|string|max:255'
+            'name' => 'required|string|max:255',
+            'phone' => 'required|numeric',
+            'email' => 'nullable|email',
+            'address' => 'nullable|string|max:500',
         ]);
 
         $data = $request->all();
@@ -99,7 +102,10 @@ class SupplierController extends Controller
         }
 
         $request->validate([
-            'name' => 'required|string|max:255'
+            'name' => 'required|string|max:255',
+            'phone' => 'required|numeric',
+            'email' => 'nullable|email',
+            'address' => 'nullable|string|max:500',
         ]);
 
         $data = $request->all();

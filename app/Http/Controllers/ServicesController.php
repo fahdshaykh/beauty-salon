@@ -143,7 +143,7 @@ class ServicesController extends Controller
              'category_id' => 'required',
              'name' => 'required|max:255|unique:services,name,NULL,id,company_id,' . auth()->user()->company_id . ',category_id,' . $request->input('category_id'),
              'price_type' => 'required|max:255',
-             'price' => 'numeric|nullable',
+             'price' => 'required|numeric',
          ]);
      
          $service = new Services;

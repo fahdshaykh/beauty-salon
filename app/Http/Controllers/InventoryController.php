@@ -88,7 +88,6 @@ class InventoryController extends Controller
         $validate = $request->validate([
             'name'         => 'required|string|max:255|unique:inventories,name,NULL,id,company_id,' . auth()->user()->company_id,
             'low_alert'    => 'required|numeric|min:0',
-            'max_alert'    => 'required|numeric|gt:low_alert',
             'description'  => 'nullable|string|max:160',
         ]);
 
@@ -154,7 +153,6 @@ class InventoryController extends Controller
                     ->ignore($id),
             ],
             'low_alert'    => 'required|numeric|min:0',
-            'max_alert'    => 'required|numeric|gt:low_alert',
             'description'  => 'nullable|string|max:160',
         ]);
 

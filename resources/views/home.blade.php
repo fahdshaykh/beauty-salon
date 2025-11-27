@@ -44,34 +44,10 @@
                         </div>
                         <div class="statistics-item">
                         <p>
-                            <i class="icon-sm fas fa-boxes mr-2"></i>
-                            {{ $monthName }} Suppliers
-                        </p>
-                        <h2>{{ number_format($totalSuppliers ?? 0) }}</h2>
-                        
-                        </div>
-                        <div class="statistics-item">
-                        <p>
-                            <i class="icon-sm fas fa-money-bill-wave mr-2"></i>
-                            {{ $monthName }} Expense
-                        </p>
-                        <h2>{{ number_format($totalExpense ?? 0) }}</h2>
-                        
-                        </div>
-                        <div class="statistics-item">
-                        <p>
                             <i class="icon-sm fas fa-chart-line mr-2"></i>
                             {{ $monthName }} Sales
                         </p>
                         <h2>{{ number_format($totalSales ?? 0) }}</h2>
-                        
-                        </div>
-                        <div class="statistics-item">
-                        <p>
-                            <i class="icon-sm fas fa-chart-bar mr-2"></i>
-                            {{ $monthName }} Profit
-                        </p>
-                        <h2>{{ number_format($totalProfit ?? 0) }}</h2>
                         
                         </div>
                     </div>

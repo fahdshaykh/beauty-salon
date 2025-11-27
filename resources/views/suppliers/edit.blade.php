@@ -25,12 +25,22 @@
 
                             <div class="form-group">
                                 <label for="name">Supplier Name</label>
-                                <input type="text" class="form-control" name="name" value="{{ old('name', $supplier->name ?? '') }}" required>
+                                <input type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name', $supplier->name ?? '') }}">
+                                @error('name')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
                             </div>
 
                             <div class="form-group">
                                 <label for="phone">Phone</label>
-                                <input type="text" class="form-control" name="phone" value="{{ old('phone', $supplier->phone ?? '') }}">
+                                <input type="text" class="form-control @error('phone') is-invalid @enderror" name="phone" value="{{ old('phone', $supplier->phone ?? '') }}">
+                                @error('phone')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
                             </div>
 
                             <div class="form-group">

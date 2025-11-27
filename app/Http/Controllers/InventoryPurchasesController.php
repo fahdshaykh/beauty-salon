@@ -101,6 +101,7 @@ class InventoryPurchasesController extends Controller
             'paypemnt_type'  => 'required|in:cash,check',
             'amount_paid'    => 'required|numeric|min:0|lte:price',
             'purchase_date'  => 'required|date',
+            'amount_pending' => 'nullable|numeric|min:0',
             'description'    => 'nullable|string|max:160',
         ]);
 
@@ -172,7 +173,8 @@ class InventoryPurchasesController extends Controller
             'price'          => 'required|numeric|min:0',
             'supplier_id'    => 'required|exists:suppliers,id',
             'paypemnt_type'  => 'required|in:cash,check',
-            'amount_paid'    => 'nullable|numeric|min:0|lte:price',
+            'amount_paid'    => 'required|numeric|min:0|lte:price',
+            'amount_pending' => 'nullable|numeric|min:0',
             'description'    => 'nullable|string|max:160',
         ]);
 
