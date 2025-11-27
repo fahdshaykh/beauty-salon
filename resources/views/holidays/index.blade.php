@@ -12,7 +12,7 @@
 
 
 
-@section('title', 'Add Holidays | '.Session::get('site_name'))
+@section('title', 'Add Holidays | '. (auth()->user()->companySetting->site_name ?? ''))
 
 
 

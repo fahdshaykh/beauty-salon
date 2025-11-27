@@ -5,7 +5,7 @@
 @stop
 @extends('layouts.admin')
 
-@section('title', 'Services Heat Map | '.Session::get('site_name'))
+@section('title', 'Services Heat Map | '. (auth()->user()->companySetting->site_name ?? ''))
 
 @section('content')
 <div class="main-panel">

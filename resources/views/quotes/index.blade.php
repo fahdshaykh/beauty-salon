@@ -30,7 +30,7 @@
 
 
 
-@section('title', 'Quotations | '.Session::get('site_name'))
+@section('title', 'Quotations | '. (auth()->user()->companySetting->site_name ?? ''))
 
 
 

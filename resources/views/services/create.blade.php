@@ -16,7 +16,7 @@
 
 
 
-@section('title', 'Create New Service | '.Session::get('site_name'))
+@section('title', 'Create New Service | '. (auth()->user()->companySetting->site_name ?? ''))
 
 <style>
 /* reusable pill‑style radios */

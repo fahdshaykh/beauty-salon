@@ -6,7 +6,7 @@
 
 
 
-@section('title', 'Services | '.Session::get('site_name'))
+@section('title', 'Services | '. (auth()->user()->companySetting->site_name ?? ''))
 
 
 

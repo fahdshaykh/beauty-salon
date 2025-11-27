@@ -52,7 +52,7 @@ $(document).ready(function() {
 
 
 
-@section('title', 'Create User | '.Session::get('site_name'))
+@section('title', 'Edit Inventory Purchase | '. (auth()->user()->companySetting->site_name ?? ''))
 
 
 

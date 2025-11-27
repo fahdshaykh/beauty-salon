@@ -39,7 +39,7 @@
 
 
 
-@section('title', ' Settings | '.Session::get('site_name'))
+@section('title', 'General Settings | '. (auth()->user()->companySetting->site_name ?? ''))
 
 
 

@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Create Customer | ' . Session::get('site_name'))
+@section('title', 'Create Customer | ' . (auth()->user()->companySetting->site_name ?? ''))
 
 @section('pagescript')
     <script src="{{ asset('js/select2.js') }}"></script>

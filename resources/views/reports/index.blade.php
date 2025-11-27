@@ -10,7 +10,7 @@
 
 
 
-@section('title', 'Booking Reports by Date | '.Session::get('site_name'))
+@section('title', 'Booking Reports by Date | '. (auth()->user()->companySetting->site_name ?? ''))
 
 
 

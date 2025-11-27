@@ -16,7 +16,7 @@
 
 
 
-@section('title', 'Create New Service | '.Session::get('site_name'))
+@section('title', 'Add supplier Payment | '. (auth()->user()->companySetting->site_name ?? ''))
 
 
 

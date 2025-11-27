@@ -1,7 +1,7 @@
 {{-- resources/views/admin/roles/edit.blade.php --}}
 @extends('layouts.admin')
 
-@section('title', 'Edit Role | '.Session::get('site_name'))
+@section('title', 'Edit Role | '. (auth()->user()->companySetting->site_name ?? ''))
 
 @section('content')
 <div class="main-panel">

@@ -1,5 +1,6 @@
 @extends('layouts.admin')
-@section('title', 'Edit Supplier | ' . Session::get('site_name'))
+
+@section('title', 'Edit Supplier | ' . (auth()->user()->companySetting->site_name ?? ''))
 
 @section('content')
 <div class="main-panel">

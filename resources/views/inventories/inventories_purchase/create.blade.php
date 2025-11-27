@@ -51,7 +51,7 @@ $(document).ready(function() {
 
 
 
-@section('title', 'Create User | '.Session::get('site_name'))
+@section('title', 'Create Inventory Purchase | '. (auth()->user()->companySetting->site_name ?? ''))
 
 
 

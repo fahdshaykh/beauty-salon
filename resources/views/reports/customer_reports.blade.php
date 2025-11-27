@@ -4,7 +4,7 @@
 
 
 
-@section('title', 'Customer Report Records | '.Session::get('site_name'))
+@section('title', 'Customer Report Records | '. (auth()->user()->companySetting->site_name ?? ''))
 
 
 

@@ -6,7 +6,7 @@
 
 
 
-@section('title', 'Expense Type Edit | '.Session::get('site_name'))
+@section('title', 'Expense Type Edit | '. (auth()->user()->companySetting->site_name ?? ''))
 
 
 

@@ -34,7 +34,7 @@
 
 
 
-@section('title', 'Edit Expense | '.Session::get('site_name'))
+@section('title', 'Edit Expense | '. (auth()->user()->companySetting->site_name ?? ''))
 
 
 

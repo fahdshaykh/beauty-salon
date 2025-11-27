@@ -6,7 +6,7 @@
 
 @extends('layouts.admin')
 
-@section('title', 'Service Bookings | '.Session::get('site_name'))
+@section('title', 'Service Bookings | '. (auth()->user()->companySetting->site_name ?? ''))
 
 @section('content')
 

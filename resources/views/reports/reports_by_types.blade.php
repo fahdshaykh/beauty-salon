@@ -8,7 +8,7 @@
 
 
 
-@section('title', 'Booking Report Records | '.Session::get('site_name'))
+@section('title', 'Booking Report Records | '. (auth()->user()->companySetting->site_name ?? ''))
 
 
 

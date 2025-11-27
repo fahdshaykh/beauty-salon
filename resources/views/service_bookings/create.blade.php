@@ -6,7 +6,7 @@
 
 
 
-@section('title', 'Create Booking | '.Session::get('site_name'))
+@section('title', 'Create Booking | '. (auth()->user()->companySetting->site_name ?? ''))
 
 
 

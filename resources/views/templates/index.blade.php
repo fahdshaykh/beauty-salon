@@ -1,5 +1,6 @@
 @extends('layouts.admin')
-@section('title', 'Template | B Saloon')
+    
+@section('title', 'Template | '. (auth()->user()->companySetting->site_name ?? ''))
 
 @section('content')
 <div class="main-panel">

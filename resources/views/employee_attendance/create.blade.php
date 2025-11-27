@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Add Employee Attendance | '.Session::get('site_name'))
+@section('title', 'Add Employee Attendance | '. (auth()->user()->companySetting->site_name ?? ''))
 
 @section('pagescript')
     <script src="{{ asset('js/file-upload.js') }}"></script>

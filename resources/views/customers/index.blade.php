@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Customers | '.Session::get('site_name'))
+@section('title', 'Customers | '. (auth()->user()->companySetting->site_name ?? ''))
 
 @section('content')
 

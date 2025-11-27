@@ -4,7 +4,7 @@
 
 @extends('layouts.admin')
 
-@section('title', 'E-Mail Compaign | '.Session::get('site_name'))
+@section('title', 'E-Mail Compaign | '. (auth()->user()->companySetting->site_name ?? ''))
 
 @section('content')
 <style>

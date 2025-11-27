@@ -5,7 +5,7 @@
 @stop
 @extends('layouts.admin')
 
-@section('title', 'Sales&Expenses Report | '.Session::get('site_name'))
+@section('title', 'Sales & Expenses Report | '. (auth()->user()->companySetting->site_name ?? ''))
 
 @section('content')
 

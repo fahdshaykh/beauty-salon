@@ -16,7 +16,7 @@
 
 
 
-@section('title', 'Edit Service | '.Session::get('site_name'))
+@section('title', 'Edit Service | '. (auth()->user()->companySetting->site_name ?? ''))
 
 
 <style>

@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Create User | '.Session::get('site_name'))
+@section('title', 'Create User | '. (auth()->user()->companySetting->site_name ?? ''))
 
 @section('content')
 <div class="main-panel">

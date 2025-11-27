@@ -1,5 +1,6 @@
 @extends('layouts.admin')
-@section('title', $ticket->ticket_id . ' | Support Ticket')
+
+@section('title', $ticket->ticket_id . ' | Support Ticket | '. (auth()->user()->companySetting->site_name ?? ''))
 
 @section('content')
 <div class="main-panel">

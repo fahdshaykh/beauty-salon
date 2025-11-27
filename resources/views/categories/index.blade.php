@@ -1,13 +1,11 @@
 @extends('layouts.admin')
 
-@section('title', 'Categories | '.Session::get('site_name'))
+@section('title', 'Categories | ' . (auth()->user()->companySetting->site_name ?? ''))
 
 
 @section('content')
 
 <div class="main-panel">
-
-
 
     <div class="content-wrapper">
 

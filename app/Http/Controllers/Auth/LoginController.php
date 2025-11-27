@@ -55,13 +55,13 @@ class LoginController extends Controller
 
         $company_settings = DB::table('company_settings')->where('company_id', $user->company_id)->first();
 
-        if($user->company_id !== 1 && $company_settings){
-            Session::put('site_logo', $company_settings->site_logo);
-            Session::put('smart_logo', $company_settings->smart_logo);
-            Session::put('site_name', $company_settings->site_name);
-            Session::put('message_permissions', $company_settings->message_permissions);
-            Session::put('email_permissions', $company_settings->email_permissions);
-        }
+        // if($user->company_id !== 1 && $company_settings){
+        //     Session::put('site_logo', $company_settings->site_logo);
+        //     Session::put('smart_logo', $company_settings->smart_logo);
+        //     Session::put('site_name', $company_settings->site_name);
+        //     Session::put('message_permissions', $company_settings->message_permissions);
+        //     Session::put('email_permissions', $company_settings->email_permissions);
+        // }
 
         return redirect()->route('home');
     }

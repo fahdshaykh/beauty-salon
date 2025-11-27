@@ -6,7 +6,7 @@
 
 
 
-@section('title', 'Users | '.Session::get('site_name'))
+@section('title', 'Inventories Remain | '. (auth()->user()->companySetting->site_name ?? ''))
 
 
 
@@ -278,7 +278,7 @@ input:checked+.slider:before {
 
 
 
-                All Inventories
+                Remaining inventories
 
 
 
@@ -318,48 +318,6 @@ input:checked+.slider:before {
 
 
             <div class="card-body">
-
-            <div class="row">
-
-
-
-                            <div class="col-md-3">
-
-
-
-                            <h4 class="card-title">Remaining inventories</h4>
-
-
-
-                            </div>
-
-
-
-                        <div class="col-md-6"></div>
-
-
-
-                        <div class="col-md-3">
-
-
-
-                            <div class="text-center" style="float: center;">
-
-
-
-
-
-
-
-                            </div>
-
-
-
-                        </div>
-
-
-
-                        </div>
 
                     <!-- Pagination Dropdown -->
                         <div class="row">

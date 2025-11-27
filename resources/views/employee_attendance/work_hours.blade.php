@@ -1,5 +1,5 @@
 @extends('layouts.admin')
-@section('title', 'Daily Work Hours | '.Session::get('site_name'))
+@section('title', 'Daily Work Hours | '. (auth()->user()->companySetting->site_name ?? ''))
 
 @section('pagescript')
 <script src="{{asset('js/file-upload.js')}}"></script>

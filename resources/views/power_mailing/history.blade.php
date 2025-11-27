@@ -20,7 +20,7 @@
 
 
 
-@section('title', 'E-Mail History | '.Session::get('site_name'))
+@section('title', 'E-Mail History | '. (auth()->user()->companySetting->site_name ?? ''))
 
 
 

@@ -6,7 +6,8 @@
 @stop
 
 @extends('layouts.admin')
-@section('title', 'Create Support Ticket | '.Session::get('site_name'))
+
+@section('title', 'Create Support Ticket | '. (auth()->user()->companySetting->site_name ?? ''))
 
 @section('content')
 <div class="main-panel">

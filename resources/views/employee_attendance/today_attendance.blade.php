@@ -14,7 +14,7 @@
 
 @extends('layouts.admin')
 
-@section('title', 'Attendance Listing | '.Session::get('site_name'))
+@section('title', 'Attendance Listing | '. (auth()->user()->companySetting->site_name ?? ''))
 
 @section('content')
 
@@ -25,20 +25,15 @@
             <h3 class="page-title">
               Today Attendance
             </h3>
-            <nav aria-label="breadcrumb">
-              <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ route('attendance') }}">Attendance</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Today Attendance</li>
-              </ol>
-            </nav>
-          </div>
-          <li class="nav-item d-none d-lg-flex">
+            
             @can('create attendance')
             <a class="nav-link" href="{{ route('employee_attendance') }}">
               <span class="btn btn-primary">+ Mark Attendance</span>
             </a>
             @endcan
-          </li>
+            
+          </div>
+
           <div class="row">
             <div class="col-12">
               <div class="card">

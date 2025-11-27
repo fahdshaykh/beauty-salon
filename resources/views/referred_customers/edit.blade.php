@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Update Referred Source | '.Session::get('site_name'))
+@section('title', 'Update Referred Source | '. (auth()->user()->companySetting->site_name ?? ''))
 
 @section('content')
 

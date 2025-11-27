@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Supplier Balance Summary | ' . Session::get('site_name'))
+@section('title', 'Supplier Balance Summary | ' . (auth()->user()->companySetting->site_name ?? ''))
 
 @section('content')
 <div class="main-panel">

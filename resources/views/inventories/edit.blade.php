@@ -34,7 +34,7 @@
 
 
 
-@section('title', 'Create User | '.Session::get('site_name'))
+@section('title', 'Edit inventory item | '. (auth()->user()->companySetting->site_name ?? ''))
 
 
 

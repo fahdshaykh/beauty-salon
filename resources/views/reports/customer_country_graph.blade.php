@@ -5,7 +5,7 @@
 @stop
 @extends('layouts.admin')
 
-@section('title', 'Customers Graph | '.Session::get('site_name'))
+@section('title', 'Customers Graph | '. (auth()->user()->companySetting->site_name ?? ''))
 
 @section('content')
 

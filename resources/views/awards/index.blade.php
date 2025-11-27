@@ -8,7 +8,7 @@
 
 
 
-@section('title', 'Users | '.Session::get('site_name'))
+@section('title', 'Awards | '. (auth()->user()->companySetting->site_name ?? ''))
 
 
 
