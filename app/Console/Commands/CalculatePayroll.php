@@ -67,25 +67,31 @@ class CalculatePayroll extends Command
                                ->sum('total_price') * ($user->commission_rate / 100);
 
             // -------------------------------------------------
-            // 5. Attendances (filtered by period)
+            // 5. Attendances – use check_in date instead of non-existent 'date' column
             // -------------------------------------------------
             $attendances = $user->attendances()
-                                ->whereBetween('date', [$start, $end]);
+                ->whereNotNull('check_in')
+                ->whereBetween('check_in', [$start->startOfDay(), $end->endOfDay()]);
+
+            // If no attendance records in the month
+            if ($attendances->count() === 0) {
+                $this->warn("  → No attendance records for {$user->name} in this period");
+            }
 
             // Overtime
             $overtimeMinutes = $attendances->sum('overtime_minutes');
             $overtimePay     = ($overtimeMinutes / 60) * $hourlyRate;
 
-            // Late penalty (e.g., 100 PKR per late)
+            // Late penalty
             $lateCount   = $attendances->where('is_late', 1)->count();
             $latePenalty = $lateCount * 100;
 
-            // Unpaid leaves (assume column `status = 'A'` or `absent = 1`)
-            $unpaidLeaves = $attendances->where('status', 'A')->count();
+            // Unpaid leaves / Absent days
+            $absentDays = $attendances->where('status', 'A')->count(); // assuming 'A' = Absent
             $leaveDeduction = 0;
-            if ($unpaidLeaves > 2) {
-                $extra = $unpaidLeaves - 2;
-                $leaveDeduction = $extra * 8 * $hourlyRate; // 8h per day
+            if ($absentDays > 2) {
+                $extraDays = $absentDays - 2;
+                $leaveDeduction = $extraDays * 8 * $hourlyRate; // 8 hours per day deduction
             }
 
             // -------------------------------------------------
@@ -134,33 +140,69 @@ class CalculatePayroll extends Command
     /**
      * Calculate total scheduled working hours for a company in a date range.
      */
+    // private function getScheduledHours(int $companyId, Carbon $start, Carbon $end): float
+    // {
+    //     $schedules = WorkSchedule::where('company_id', $companyId)
+    //                              ->where('is_active', 1)
+    //                              ->get();
+
+    //     if ($schedules->isEmpty()) {
+    //         return 0;
+    //     }
+
+    //     $totalMinutes = 0;
+
+    //     $current = $start->copy();
+    //     while ($current->lte($end)) {
+    //         $dayName = $current->englishDayOfWeek; // Monday, Tuesday...
+
+    //         $schedule = $schedules->firstWhere('day', $dayName);
+    //         if ($schedule) {
+    //             $startTime = Carbon::createFromFormat('H:i:s', $schedule->start_time);
+    //             $endTime   = Carbon::createFromFormat('H:i:s', $schedule->end_time);
+    //             $minutes   = $endTime->diffInMinutes($startTime);
+    //             $totalMinutes += $minutes;
+    //         }
+
+    //         $current->addDay();
+    //     }
+
+    //     return $totalMinutes / 60; // return hours
+    // }
+
     private function getScheduledHours(int $companyId, Carbon $start, Carbon $end): float
     {
+        // Get only active schedules for this company
         $schedules = WorkSchedule::where('company_id', $companyId)
-                                 ->where('is_active', 1)
-                                 ->get();
+                                ->where('is_active', 1)
+                                ->get()
+                                ->keyBy('day'); // Key by day name: ['Monday' => model, ...]
 
-        if ($schedules->isEmpty()) {
-            return 0;
-        }
+        if ($schedules->isEmpty()) return 0;
 
         $totalMinutes = 0;
+        $date = $start->copy();
 
-        $current = $start->copy();
-        while ($current->lte($end)) {
-            $dayName = $current->englishDayOfWeek; // Monday, Tuesday...
+        while ($date->lte($end)) {
+            $dayName = $date->format('l'); // Returns: Monday, Tuesday, etc. → matches your DB
 
-            $schedule = $schedules->firstWhere('day', $dayName);
-            if ($schedule) {
-                $startTime = Carbon::createFromFormat('H:i:s', $schedule->start_time);
-                $endTime   = Carbon::createFromFormat('H:i:s', $schedule->end_time);
-                $minutes   = $endTime->diffInMinutes($startTime);
-                $totalMinutes += $minutes;
+            if ($schedules->has($dayName)) {
+                $schedule = $schedules[$dayName];
+
+                // Use Carbon::parse() → super safe, handles 09:00:00 perfectly
+                $from = Carbon::parse($schedule->start_time);
+                $to   = Carbon::parse($schedule->end_time);
+
+                if ($to->lte($from)) {
+                    $to->addDay(); // overnight shift
+                }
+
+                $totalMinutes += $to->diffInMinutes($from);
             }
 
-            $current->addDay();
+            $date->addDay();
         }
 
-        return $totalMinutes / 60; // return hours
+        return round($totalMinutes / 60, 2);
     }
 }

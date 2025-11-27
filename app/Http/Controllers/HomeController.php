@@ -79,7 +79,7 @@ class HomeController extends Controller
                 ->whereYear('created_at', $currentYear);
 
             $totalBookings = $bookingsQuery->count();
-            $totalSales    = $bookingsQuery->sum(DB::raw('CAST(total_price AS DECIMAL(10,2))'));
+            $totalSales    = $bookingsQuery->where('service_status', '3')->sum(DB::raw('CAST(total_price AS DECIMAL(10,2))'));
 
             $totalProfit = $totalSales - $totalExpense;
 
