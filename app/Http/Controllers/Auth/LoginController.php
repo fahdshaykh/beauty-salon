@@ -5,11 +5,11 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use App\RolePermissions;
-use Session;
-use Auth;
 use App\User;
 use App\Role;
-use DB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 
 class LoginController extends Controller
 {
@@ -43,6 +43,13 @@ class LoginController extends Controller
         $user->update([
             'last_login_ip' => $request->ip(),
         ]);
+
+        if($user->is_active == 0){
+            Auth::logout();
+            return redirect()->back()->withInput($request->only('email', 'remember'))->withErrors([
+                'email' => 'Your account is deactivated. Please contact administrator.',
+            ]);
+        }
 
         Session::put('user_company', auth()->user()->company_id);
 

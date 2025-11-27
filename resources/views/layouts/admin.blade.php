@@ -534,6 +534,8 @@
                 @endcan
 
 
+                <li class="nav-item"> <a class="nav-link" href="{{ route('company.limits') }}">Plan Limits</a></li>
+
 
               </ul>
 

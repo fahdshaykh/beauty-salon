@@ -11,7 +11,7 @@ use App\Models\SubscriptionPlan;
 use Carbon\Carbon;
 use App\User;
 use Hash;
-use DB;
+use Illuminate\Support\Facades\DB;
 use Mail;
 
 class CompanyController extends Controller
@@ -397,9 +397,7 @@ class CompanyController extends Controller
 
 
     public function company_status(Company $company, Request $request)
-
     {
-
         DB::table('companies')
 
             ->where('id', $request->id)
@@ -452,9 +450,9 @@ class CompanyController extends Controller
 
 
 
-        // dd($message_permission[0]->permission);
+        $plans = SubscriptionPlan::all();
 
-        return view('admin.companies.edit',compact('company_detail'));
+        return view('admin.companies.edit',compact('company_detail', 'plans'));
 
     }
 
@@ -475,12 +473,12 @@ class CompanyController extends Controller
      */
 
     public function update(Request $request, Company $company)
-
     {
 
   
 
-        $result =  DB::table('users')->select('id')->where('company_id', $company->id)->first(); 
+        // $result =  DB::table('users')->select('id')->where('company_id', $company->id)->first();
+        $user = User::where('company_id', $company->id)->first();
 
         $this->validate($request, 
 
@@ -492,7 +490,7 @@ class CompanyController extends Controller
 
                 'company_phone' => 'required',
 
-                'email' => 'required|email|unique:users,email,'.$result->id,
+                'email' => 'required|email|unique:users,email,' . $user->id,
 
                 'subscription_plan_id' => 'required',
 
@@ -562,7 +560,8 @@ class CompanyController extends Controller
 
         // print_r($user_data);exit;
 
-        DB::table('users')->where('company_id', $company->id)->update($user_data);
+        // DB::table('users')->where('company_id', $company->id)->update($user_data);
+        $user->update($user_data);
 
 
 

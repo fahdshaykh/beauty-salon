@@ -24,6 +24,7 @@ class CreateCompaniesTable extends Migration
             $table->date('plan_expire_date')->nullable();
             $table->integer('is_active')->default(1);
             $table->integer('is_deleted')->default(0);
+            $table->timestamp('deactivated_at')->nullable();
             $table->timestamps();
         });
     }

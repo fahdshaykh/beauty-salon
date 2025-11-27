@@ -170,33 +170,14 @@
 
 
 
-                            <!-- <div class="form-group">
-
-                                <label for="exampleInputUsername1">Plan Name</label>
-
-                                <input type="text" name="plan_name" value="{{$company_detail['0']->plan_name}}" class="form-control" placeholder="Enter Plan Name" required/>
-
-                            </div>
-
-                            <div class="form-group">
-
-                                <label for="exampleInputUsername1">Plan Price</label>
-
-                                <input type="text" name="plan_price" value="{{$company_detail['0']->plan_price}}" class="form-control" placeholder="Enter Plan Price" required/>
-
-                            </div>
-
-
-
-
-
+                            
                             <div class="form-group">
 
                             <label>Plan End Date</label>
 
                             <div id="datepicker-popup-booking" class="input-group date datepicker">
 
-                                <input type="text" name="plan_end_date" value="{{$company_detail['0']->plan_end_date}}" class="form-control" required>
+                                <input type="text" name="plan_end_date" value="{{$company_detail['0']->plan_expire_date}}" class="form-control" required>
 
                                 <span class="input-group-addon input-group-append border-left">
 
@@ -206,7 +187,7 @@
 
                             </div>
 
-                            </div> -->
+                            </div>
 
                             <div class="form-group">
                                 <label for="subscription_plan_id">Subscription Plan</label>

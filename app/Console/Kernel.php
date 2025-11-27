@@ -22,6 +22,7 @@ class Kernel extends ConsoleKernel
         \App\Console\Commands\CalculatePayroll::class,
         \App\Console\Commands\AutoCheckoutCommand::class,
         \App\Console\Commands\ResetMonthlyLimits::class,
+        \App\Console\Commands\ExpireCompanySubscriptions::class,
     ];
 
     /**
@@ -57,7 +58,19 @@ class Kernel extends ConsoleKernel
                 ->monthlyOn(1, '00:00')
                 // ->timezone('Asia/Karachi') // Change to your timezone
                 ->appendOutputTo(storage_path('logs/limits-reset.log'));
-    }
+
+        // Run every day at 1:00 AM
+        $schedule->command('companies:expire-subscriptions')
+                ->dailyAt('01:00')
+                // ->timezone('Asia/Karachi')  // Change to your timezone
+                ->appendOutputTo(storage_path('logs/expired-companies.log'))
+                ->onSuccess(function () {
+                    \Log::info('Expired companies check completed successfully.');
+                })
+                ->onFailure(function () {
+                    \Log::error('Expired companies check failed!');
+                });
+        }
 
     /**
      * Register the commands for the application.

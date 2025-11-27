@@ -323,7 +323,7 @@ input:checked+.slider:before {
 
         $.ajax({
 
-            url: "{{url('company-status')}}",
+            url: "{{url('admin/company-status')}}",
 
             type: 'GET',
 

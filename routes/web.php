@@ -466,9 +466,9 @@ Route::middleware(['auth', 'company'])->group(function () {
 
     Route::resource('tickets', TicketController::class);
 
-    Route::post('tickets/{ticket}/reply', [TicketController::class, 'reply'])
-        ->name('tickets.reply');
+    Route::post('tickets/{ticket}/reply', [TicketController::class, 'reply'])->name('tickets.reply');
 
-    Route::patch('tickets/{ticket}/status', [TicketController::class, 'updateStatus'])
-        ->name('tickets.updateStatus');
+    Route::patch('tickets/{ticket}/status', [TicketController::class, 'updateStatus'])->name('tickets.updateStatus');
+
+    Route::get('company/limits', [ReportController::class, 'limits'])->name('company.limits');
 });

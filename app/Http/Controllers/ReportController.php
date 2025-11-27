@@ -4031,6 +4031,16 @@ class ReportController extends Controller
     }
 
 
+    public function limits()
+    {
+        $company = auth()->user()->company;
+
+        $limits = $company->currentLimits() ?? $company->limits()->create(['current_month' => now()->format('Y-m')]);
+
+        return view('reports.plan_limits', compact('company','limits'));
+    }
+
+
 
 }
 
