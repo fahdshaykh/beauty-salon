@@ -122,7 +122,7 @@ class InventoryPurchasesController extends Controller
         }
     
 
-        return redirect(route('inventories_purchases.index'))->with('success', 'Inventory item purchased successfully');
+        return back()->with('success', 'Inventory item purchased successfully');
     }
 
     /**
@@ -231,7 +231,7 @@ class InventoryPurchasesController extends Controller
         }
     
         // Redirect to the list of purchases
-        return redirect(route('inventories_purchases.index'))->with('success', 'Inventory item updated successfully');
+        return back()->with('success', 'Inventory item updated successfully');
     }
     
 
@@ -254,6 +254,6 @@ class InventoryPurchasesController extends Controller
     
         $purchase->delete();
     
-        return redirect()->back()->with('destroy', 'Purchase and payments reversed.');
+        return back()->with('destroy', 'Purchase and payments reversed.');
     }
 }

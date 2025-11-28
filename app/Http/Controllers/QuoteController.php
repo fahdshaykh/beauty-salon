@@ -60,7 +60,7 @@ class QuoteController extends Controller
     public function quote_mail(Request $request)
     {
         if (!LimitHelper::canCreate('quotations')) {
-            return back()->withError('You have reached your monthly quotations creation limit.');
+            return back()->with('warning', 'You have reached your monthly quotations sending limit.');
         }
 
         $this->validate($request, 

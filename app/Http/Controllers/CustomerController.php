@@ -130,7 +130,7 @@ class CustomerController extends Controller
         $this->authorize('create', Customer::class);
 
         if (!LimitHelper::canCreate('customers')) {
-            return back()->withError('You have reached your monthly customer creation limit.');
+            return back()->with('warning', 'You have reached your monthly customer creation limit.');
         }
 
         $this->validate($request, 
@@ -218,7 +218,7 @@ class CustomerController extends Controller
 
             }
 
-            return redirect()->back()->with('error','Customer already exists with this mobile# '.$request->input("primary_phone"));
+            return back()->with('error','Customer already exists with this mobile# '.$request->input("primary_phone"));
 
 
 
@@ -250,7 +250,7 @@ class CustomerController extends Controller
 
             LimitHelper::increment('customers');
 
-            return redirect()->back()->with('success', 'Customer created successfully');  
+            return back()->with('success', 'Customer created successfully');  
 
         }
 
@@ -698,7 +698,7 @@ class CustomerController extends Controller
 
 
 
-        return redirect('customers')->with('success', 'Cusotmer updated successfully');
+        return back()->with('success', 'Cusotmer updated successfully');
 
 
 
@@ -760,9 +760,7 @@ class CustomerController extends Controller
 
         $customer->save();
 
-        session()->flash('destroy','Customer deleted Successfully');
-
-        return redirect('customers');
+        return back()->with('destroy','Customer deleted Successfully');
 
     }
 

@@ -51,7 +51,7 @@ class ReferredCustomerController extends Controller
 
         ReferredCustomer::create($data);
 
-        return redirect()->route('referred_customers.index')->with('success', 'Referred source created.');
+        return back()->with('success', 'Referred source created.');
     }
 
     public function show($id)
@@ -84,7 +84,7 @@ class ReferredCustomerController extends Controller
 
         $referred->update($data);
 
-        return redirect()->route('referred_customers.index')->with('update', 'Referred source updated.');
+        return back()->with('update', 'Referred source updated.');
     }
 
     public function destroy($id)
@@ -93,7 +93,7 @@ class ReferredCustomerController extends Controller
         $this->authorize('delete', $referred);
 
         $referred->delete();
-        return redirect()->route('referred_customers.index')->with('destroy', 'Referred source deleted.');
+        return back()->with('destroy', 'Referred source deleted.');
     }
 
     public function referredStatus(Request $request)

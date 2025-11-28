@@ -78,7 +78,7 @@ class SupplierController extends Controller
         $data = $request->all();
         $data['company_id'] = auth()->user()->company_id;
         Supplier::create($data);
-        return redirect()->route('suppliers.index')->with('success', 'Supplier created successfully.');
+        return back()->with('success', 'Supplier created successfully.');
     }
 
     public function show(Supplier $supplier)
@@ -112,7 +112,7 @@ class SupplierController extends Controller
         $data['company_id'] = auth()->user()->company_id;
 
         $supplier->update($data);
-        return redirect()->route('suppliers.index')->with('success', 'Supplier updated successfully.');
+        return back()->with('success', 'Supplier updated successfully.');
     }
 
     public function destroy(Supplier $supplier)
@@ -122,7 +122,7 @@ class SupplierController extends Controller
         }
 
         $supplier->delete();
-        return redirect()->route('suppliers.index')->with('destroy', 'Supplier deleted successfully.');
+        return back()->with('destroy', 'Supplier deleted successfully.');
     }
 
     public function balanceSummary($supplierId)

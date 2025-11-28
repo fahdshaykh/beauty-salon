@@ -215,7 +215,7 @@ function changeCustomerStatus(_this, id) {
             iziToast.success({
                 title: custName + (status ? ' Activated!' : ' Deactivated!'),
                 message: result.success || 'Status updated successfully.',
-                position: 'topRight',
+                position: 'bottomRight',
                 icon: status ? 'fas fa-check-circle' : 'fas fa-ban',
                 timeout: 5000
             });
@@ -227,7 +227,7 @@ function changeCustomerStatus(_this, id) {
             iziToast.error({
                 title: custName + ' – Update Failed!',
                 message: 'Could not update status. Please try again.',
-                position: 'topRight',
+                position: 'bottomRight',
                 icon: 'fas fa-exclamation-triangle',
                 timeout: 6000
             });

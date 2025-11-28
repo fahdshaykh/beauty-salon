@@ -97,7 +97,7 @@ class InventoryController extends Controller
         Inventory::create($data);
     
 
-        return redirect('/inventories')->with('success', 'Inventory item created successfully');
+        return back()->with('success', 'Inventory item created successfully');
     }
 
     /**
@@ -164,7 +164,7 @@ class InventoryController extends Controller
         $inventory->update($data);
     
 
-        return redirect('/inventories')->with('success', 'Inventory item updated successfully');
+        return back()->with('success', 'Inventory item updated successfully');
     }
 
     /**
@@ -186,7 +186,7 @@ class InventoryController extends Controller
         $inventory->delete();
 
         // Redirect back with a success message
-        return redirect()->route('inventories.index')->with('destroy', 'Inventory item deleted successfully.');
+        return back()->with('destroy', 'Inventory item deleted successfully.');
     }
 
     /**

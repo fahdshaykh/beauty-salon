@@ -133,7 +133,7 @@ class ExpenseTypeController extends Controller
 
         ExpenseType::create($data);
 
-        return redirect('expense-types')->with('success', 'Expense Type created successfully');
+        return back()->with('success', 'Expense Type created successfully');
 
     }
 
@@ -228,7 +228,7 @@ class ExpenseTypeController extends Controller
         $data['company_id'] = $user->company_id; // Ensure company_id stays correct
         $expense_type->update($data);
 
-        return redirect('expense-types')->with('success', 'Expense Type updated successfully');
+        return back()->with('success', 'Expense Type updated successfully');
 
     }
 
@@ -279,7 +279,7 @@ class ExpenseTypeController extends Controller
 
             session()->flash('destroy','Operation Denied. Expense Type Is Related To Expenses Table.');
 
-            return redirect('expense-types');
+            return back();
 
         }
 
@@ -297,7 +297,7 @@ class ExpenseTypeController extends Controller
 
             session()->flash('destroy','Expense Type deleted Successfully');
 
-            return redirect('expense-types');
+            return back();
 
         }
 

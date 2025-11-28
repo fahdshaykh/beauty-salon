@@ -149,7 +149,7 @@ class PowerMailingController extends Controller
         }
 
         if (!LimitHelper::canCreate('emails')) {
-            return back()->withError('You have reached your monthly customer creation limit.');
+            return back()->with('warning', 'You have reached your monthly email sending limit.');
         }
         
         $this->validate($request, 

@@ -97,7 +97,7 @@ class AwardController extends Controller
         ]);
         
     
-        return redirect('/awards')->with('success', 'Award created successfully.');
+        return back()->with('success', 'Award created successfully.');
     }
 
     /**
@@ -139,7 +139,7 @@ class AwardController extends Controller
         $data['company_id'] = auth()->user()->company_id;
         $award->update($data);
 
-        return redirect('/awards')->with('success', 'Award updated successfully.');
+        return back()->with('success', 'Award updated successfully.');
     }
 
     /**
@@ -150,7 +150,7 @@ class AwardController extends Controller
         // Authorize delete (policy will enforce company scope)
         $this->authorize('delete', $award);
         $award->delete();
-        return redirect('/awards')->with('destroy', 'Award deleted successfully.');
+        return back()->with('destroy', 'Award deleted successfully.');
     }
     
 }

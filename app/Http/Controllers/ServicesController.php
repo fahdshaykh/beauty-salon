@@ -161,7 +161,7 @@ class ServicesController extends Controller
             $service->employees()->attach($request->employees);
         }
      
-         return redirect('services')->with('success', 'Service Created Successfully');
+         return back()->with('success', 'Service Created Successfully');
      }
      
 
@@ -371,7 +371,7 @@ class ServicesController extends Controller
 
          $service->employees()->sync($request->employees);
      
-         return redirect('services')->with('success', 'Service has been Updated Successfully');
+         return back()->with('success', 'Service has been Updated Successfully');
      }
 
 
@@ -417,7 +417,7 @@ class ServicesController extends Controller
 
     //     session()->flash('destroy','Service deleted Successfully');
 
-    //     return redirect('services');
+    //     return back();
 
 
 

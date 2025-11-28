@@ -166,7 +166,7 @@ function changeTemplateStatus(_this, id) {
             iziToast.success({
                 title: templateName + (status ? ' Activated!' : ' Deactivated!'),
                 message: result.success || 'Template status updated successfully.',
-                position: 'topRight',
+                position: 'bottomRight',
                 icon: status ? 'fas fa-check-circle' : 'fas fa-ban',
                 timeout: 5000
             });
@@ -178,7 +178,7 @@ function changeTemplateStatus(_this, id) {
             iziToast.error({
                 title: templateName + ' – Update Failed!',
                 message: 'Could not update status. Please try again.',
-                position: 'topRight',
+                position: 'bottomRight',
                 icon: 'fas fa-exclamation-triangle',
                 timeout: 6000
             });

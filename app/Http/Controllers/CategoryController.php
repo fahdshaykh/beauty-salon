@@ -178,7 +178,7 @@ class CategoryController extends Controller
 
             Category::create($data);
 
-            return redirect('categories')->with('success', 'Category created successfully');
+            return back()->with('success', 'Category created successfully');
 
         }
 
@@ -390,7 +390,7 @@ class CategoryController extends Controller
 
         DB::table('categories')->where('id', $category->id)->update($data);
 
-        return redirect('categories')->with('success', 'Category updated successfully');
+        return back()->with('success', 'Category updated successfully');
 
 
 
@@ -431,13 +431,13 @@ class CategoryController extends Controller
 
         // Check if the category has any associated services
         if ($category->services()->exists()) {
-            return redirect()->back()->with('destroy', 'Cannot delete category. It is linked to one or more services.');
+            return back()->with('destroy', 'Cannot delete category. It is linked to one or more services.');
         }
 
         // If no services are linked, proceed with deletion
         $category->delete();
         
-        return redirect()->route('categories.index')->with('destroy', 'Category deleted successfully.');
+        return back()->with('destroy', 'Category deleted successfully.');
     }
 
 }

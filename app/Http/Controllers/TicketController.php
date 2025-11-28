@@ -78,8 +78,7 @@ class TicketController extends Controller
             'status' => 'open',
         ]);
 
-        return redirect()->route('tickets.index')
-            ->with('success', 'Ticket created successfully!');
+        return back()->with('success', 'Ticket created successfully!');
     }
 
     public function show(Ticket $ticket)

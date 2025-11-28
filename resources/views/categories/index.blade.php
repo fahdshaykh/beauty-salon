@@ -264,7 +264,7 @@ function changeCategoryStatus(_this, id) {
             iziToast.success({
                 title: catName + (status ? ' Activated!' : ' Deactivated!'),
                 message: 'Status updated successfully.',
-                position: 'topRight',
+                position: 'bottomRight',
                 icon: 'fas fa-check-circle',
                 timeout: 5000
             });
@@ -276,7 +276,7 @@ function changeCategoryStatus(_this, id) {
             iziToast.error({
                 title: catName + ' – Update Failed!',
                 message: 'Could not update status. Please try again.',
-                position: 'topRight',
+                position: 'bottomRight',
                 icon: 'fas fa-exclamation-triangle',
                 timeout: 6000
             });

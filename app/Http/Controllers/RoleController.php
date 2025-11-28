@@ -108,8 +108,7 @@ class RoleController extends Controller
         // Clear Spatie permission cache so users immediately see updated permissions
         app(PermissionRegistrar::class)->forgetCachedPermissions();
 
-        return redirect()->route('roles.index')
-            ->with('success', 'Role created successfully');
+        return back()->with('success', 'Role created successfully');
     }
 
 
@@ -160,8 +159,7 @@ class RoleController extends Controller
     // Clear Spatie permission cache so users immediately see updated permissions
     app(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
 
-        return redirect()->route('roles.index')
-            ->with('update', 'Role updated successfully');
+        return back()->with('update', 'Role updated successfully');
     }
 
 
@@ -193,8 +191,7 @@ class RoleController extends Controller
     // Clear cached permissions to reflect deletion
     app(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
 
-        return redirect()->route('roles.index')
-            ->with('destroy', 'Role deleted successfully');
+        return back()->with('destroy', 'Role deleted successfully');
     }
 
 }

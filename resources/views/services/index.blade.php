@@ -302,7 +302,7 @@ function changeServiceStatus(_this, id) {
             iziToast.success({
                 title: serviceName + (status ? ' Activated!' : ' Deactivated!'),
                 message: result.success || 'Status updated successfully.',
-                position: 'topRight',
+                position: 'bottomRight',
                 icon: status ? 'fas fa-check-circle' : 'fas fa-ban',
                 timeout: 5000
             });
@@ -314,7 +314,7 @@ function changeServiceStatus(_this, id) {
             iziToast.error({
                 title: serviceName + ' – Update Failed!',
                 message: 'Could not update status. Please try again.',
-                position: 'topRight',
+                position: 'bottomRight',
                 icon: 'fas fa-exclamation-triangle',
                 timeout: 6000
             });

@@ -171,7 +171,7 @@ function changeExpenseTypeStatus(_this, id) {
             iziToast.success({
                 title: typeName + (status ? ' Activated!' : ' Deactivated!'),
                 message: result.success || 'Status updated successfully.',
-                position: 'topRight',
+                position: 'bottomRight',
                 icon: status ? 'fas fa-check-circle' : 'fas fa-ban',
                 timeout: 5000
             });
@@ -183,7 +183,7 @@ function changeExpenseTypeStatus(_this, id) {
             iziToast.error({
                 title: typeName + ' – Update Failed!',
                 message: 'Could not update status. Please try again.',
-                position: 'topRight',
+                position: 'bottomRight',
                 icon: 'fas fa-exclamation-triangle',
                 timeout: 6000
             });

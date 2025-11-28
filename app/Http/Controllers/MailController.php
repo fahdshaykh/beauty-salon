@@ -45,7 +45,7 @@ class MailController extends Controller
 
             if (!LimitHelper::canCreate('invoices')) {
 
-                return response()->json(['error'=>'You have reached your monthly invoices creation limit.']);
+                return response()->json(['warning' => 'You have reached your monthly invoices sending limit.']);
             }
 
             $booking_detail = ServiceBooking::with('customer')->where('id', $id)->get();

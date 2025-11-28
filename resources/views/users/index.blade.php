@@ -582,7 +582,7 @@ function changeUserStatus(_this, id) {
             iziToast.success({
                 title: userName,
                 message: result.success || 'User status updated successfully.',
-                position: 'topRight',
+                position: 'bottomRight',
                 icon: status ? 'fas fa-check-circle' : 'fas fa-ban',
                 timeout: 5000
             });
@@ -594,7 +594,7 @@ function changeUserStatus(_this, id) {
             iziToast.error({
                 title: userName + ' – Update Failed!',
                 message: 'Could not update status. Please try again.',
-                position: 'topRight',
+                position: 'bottomRight',
                 icon: 'fas fa-exclamation-triangle',
                 timeout: 6000
             });

@@ -181,7 +181,7 @@ class ExpenseController extends Controller
 
 
 
-        return redirect('expenses')->with('success', 'Expense created successfully');
+        return back()->with('success', 'Expense created successfully');
 
     }
 
@@ -297,7 +297,7 @@ class ExpenseController extends Controller
 
         $expense->update($data);
 
-        return redirect('expenses')->with('success', 'Expenses updated successfully');
+        return back()->with('success', 'Expenses updated successfully');
 
     }
 
@@ -334,7 +334,7 @@ class ExpenseController extends Controller
 
         $expense->delete();
         session()->flash('destroy', 'Expense deleted Successfully');
-        return redirect('expenses');
+        return back();
     }
 
 }

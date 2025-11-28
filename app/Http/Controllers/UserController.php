@@ -116,7 +116,7 @@ public function create()
 public function store(Request $request)
 {
     if (!LimitHelper::canCreate('employees')) {
-        return back()->withError('You have reached your monthly user creation limit.');
+        return back()->with('warning', 'You have reached your monthly user creation limit.');
     }
 
     $request->validate([
@@ -168,8 +168,7 @@ public function store(Request $request)
 
     LimitHelper::increment('employees');
 
-    return redirect()->route('users.index')
-        ->with('success', 'User created successfully');
+    return back()->with('success', 'User created successfully');
 }
 
 
@@ -293,8 +292,7 @@ public function store(Request $request)
         // SYNC ROLE (Spatie)
         $user->syncRoles([$request->role]);
 
-        return redirect()->route('users.index')
-            ->with('success', 'User updated successfully');
+        return back()->with('success', 'User updated successfully');
     }
 
     public function destroy($id)

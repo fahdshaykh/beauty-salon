@@ -4,17 +4,16 @@
 
 @section('content')
 <div class="main-panel">
-        <div class="content-wrapper">
-          
-            <div class="page-header">
-                <h3 class="page-title">
-                    Templates
-                </h3>
+    <div class="content-wrapper">
+        <div class="page-header">
+            <h3 class="page-title">
+                Templates
+            </h3>
 
-                @can('create templates')
-                <a style="float:right;" href="{{route('template.create')}}" class="btn btn-primary btn-add-template mb-2"> Add SMS Template </a>
-                @endcan
-            </div>
+            @can('create templates')
+            <a style="float:right;" href="{{route('template.create')}}" class="btn btn-primary btn-add-template mb-2"> Add SMS Template </a>
+            @endcan
+        </div>
           
           <div class="card">
 
@@ -73,7 +72,8 @@
                                             <td>
                                             <label class="switch">
                                                 <input type="checkbox" id="user--{{$templates->id}}"
-                                                    onclick="changeTemplateStatus(event.target, {{ $templates->id }})" {{($templates->status) ? 'checked' : ''}}>
+                                                    data-name="{{ $templates->title }}"
+                                                    onclick="changeSMSTemplateStatus(event.target, {{ $templates->id }})" {{($templates->status) ? 'checked' : ''}}>
 
                                                 <span class="slider round"></span>
 
@@ -113,12 +113,18 @@
                 </div>
 
             </div>
-
         </div>
+    </div>
+</div>
+@endsection
 
 <script>
-function changeTemplateStatus(_this, id) {
-    var status = $(_this).prop('checked') == true ? 1 : 0;
+function changeSMSTemplateStatus(_this, id) {
+
+    var $checkbox = $(_this);
+    var status    = $checkbox.prop('checked') ? 1 : 0;
+    var templateName = $checkbox.data('name'); // Get template name
+
     $.ajax({
 
         url: "{{url('template-status')}}",
@@ -134,26 +140,28 @@ function changeTemplateStatus(_this, id) {
         },
 
         success: function (result) {
+            iziToast.success({
+                title: templateName + (status ? ' Activated!' : ' Deactivated!'),
+                message: result.success || 'Template status updated successfully.',
+                position: 'bottomRight',
+                icon: status ? 'fas fa-check-circle' : 'fas fa-ban',
+                timeout: 5000
+            });
+        },
+        error: function () {
+            // Revert checkbox on error
+            $checkbox.prop('checked', !status);
 
-          $("#status-success").show();
-
-          $("#status-success").html(result.success);
-
-          setTimeout(function() {
-
-            $("#status-success").hide()
-
-          }, 3000);
-
+            iziToast.error({
+                title: templateName + ' – Update Failed!',
+                message: 'Could not update status. Please try again.',
+                position: 'bottomRight',
+                icon: 'fas fa-exclamation-triangle',
+                timeout: 6000
+            });
         }
 
     });
 
 }
 </script>
-</div>
-</div>
-@endsection
-
-
-

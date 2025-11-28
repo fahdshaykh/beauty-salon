@@ -210,7 +210,7 @@ class ServiceBookingController extends Controller
         $this->authorize('create', ServiceBooking::class);
 
         if (!LimitHelper::canCreate('bookings')) {
-            return back()->withError('You have reached your monthly bookings creation limit.');
+            return back()->with('warning', 'You have reached your monthly bookings creation limit.');
         }
 
         $this->validate($request, [
@@ -375,7 +375,7 @@ class ServiceBookingController extends Controller
 
                 LimitHelper::increment('bookings');
                 
-                return redirect('service-bookings')->with('success', 'Booking created successfully. Message not sent due to insufficient SMS balance.');
+                return back()->with('success', 'Booking created successfully. Message not sent due to insufficient SMS balance.');
 
             }
 
@@ -385,7 +385,7 @@ class ServiceBookingController extends Controller
 
                 LimitHelper::increment('bookings');
 
-                return redirect('service-bookings')->with('destroy', 'Booking created successfully. Message not sent to customer. Ask bSaloon to check this error: '.$response->error->msg.'.');
+                return back()->with('destroy', 'Booking created successfully. Message not sent to customer. Ask bSaloon to check this error: '.$response->error->msg.'.');
 
             }else{
 
@@ -399,7 +399,7 @@ class ServiceBookingController extends Controller
 
                 LimitHelper::increment('bookings');
 
-                return redirect('service-bookings')->with('success', 'Booking created successfully & Message sent to customer.');
+                return back()->with('success', 'Booking created successfully & Message sent to customer.');
 
             }
 
@@ -409,7 +409,7 @@ class ServiceBookingController extends Controller
 
         LimitHelper::increment('bookings');
     
-        return redirect('service-bookings')->with('success', 'Booking created successfully.');
+        return back()->with('success', 'Booking created successfully.');
         
     }
     
@@ -864,7 +864,7 @@ class ServiceBookingController extends Controller
 
             if($message_status['0']->sms_count<=0){
 
-                return redirect('service-bookings')->with('success', 'Booking Updated successfully. Message not sent due to insufficient SMS balance.');
+                return back()->with('success', 'Booking Updated successfully. Message not sent due to insufficient SMS balance.');
 
             }
 
@@ -872,7 +872,7 @@ class ServiceBookingController extends Controller
 
            if(isset($response->error)){
 
-                return redirect('service-bookings')->with('destroy', 'Booking Updated successfully. Message not sent to customer. Ask bSaloon to check this error: '.$response->error->msg.'.');
+                return back()->with('destroy', 'Booking Updated successfully. Message not sent to customer. Ask bSaloon to check this error: '.$response->error->msg.'.');
 
             }else{
 
@@ -884,7 +884,7 @@ class ServiceBookingController extends Controller
 
                 ]);
 
-                return redirect('service-bookings')->with('success', 'Booking Updated successfully & Message sent to customer.');
+                return back()->with('success', 'Booking Updated successfully & Message sent to customer.');
 
             }
 
@@ -896,7 +896,7 @@ class ServiceBookingController extends Controller
 
         
 
-        return redirect('service-bookings')->with('success', 'Booking Updated successfully');
+        return back()->with('success', 'Booking Updated successfully');
 
         // }
 
