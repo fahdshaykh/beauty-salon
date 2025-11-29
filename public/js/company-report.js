@@ -52,7 +52,7 @@
 
                                 $.each(response, function(index, value) {
 
-                                    booking_titles.push(value.company_name + '- $' + value.total_amount);
+                                    booking_titles.push(value.company_name + '- '+ window.currencySymbol + value.total_amount);
 
                                     booking_totals.push(value.total_bookings);
 
@@ -254,7 +254,7 @@
 
                         $.each(response, function(index, value) {
 
-                            booking_titles.push(value.company_name + '- $' + value.total_amount);
+                            booking_titles.push(value.company_name + '- '+ window.currencySymbol + value.total_amount);
 
                             booking_totals.push(value.total_bookings);
 
@@ -734,7 +734,7 @@
                                             if (chart.data.labels[i]) {
                                                 text.push(chart.data.labels[i]);
                                             }
-                                            text.push('<label class="badge badge-light badge-pill legend-percentage ml-auto">$' + chart.data.datasets[0].data[i] + '</label>');
+                                            text.push('<label class="badge badge-light badge-pill legend-percentage ml-auto">'+ window.currencySymbol + chart.data.datasets[0].data[i] + '</label>');
                                             text.push('</li>');
                                         }
                                         text.push('</ul>');

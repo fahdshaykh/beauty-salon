@@ -184,7 +184,7 @@
                         <div class="form-group">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="input-group-text bg-primary text-white"><i class="fas fa-dollar-sign"></i></span>
+                                    <span class="input-group-text bg-primary text-white">{{ currency_symbol() }}</span>
                                 </div>
                                 <input type="text" name="total_price" class="form-control @error('total_price') is-invalid @enderror" value="@if(isset($total_price)){{$total_price}}@else{{old('total_price')}}@endif" id="total_price" readonly>
                                 @error('total_price')

@@ -122,7 +122,7 @@
 
                       <div style="text-align:center">
 
-                          <p>Grand Total: <i class="fas fa-dollar-sign"></i>{{$total_amount}}</p>
+                          <p>Grand Total: {{ currency_symbol() }}{{$total_amount}}</p>
 
                       </div>
 
@@ -178,7 +178,7 @@
 
                                         <td style="max-width:160px;">{{$book['services']}}</td> <!--  showing service names -->
 
-                                        <td><i class="fas fa-dollar-sign"></i>{{$book['total_price']}}</td>
+                                        <td>{{ currency_symbol() }}{{$book['total_price']}}</td>
 
                                         <td>{{$book['due_date']}}</td>
 

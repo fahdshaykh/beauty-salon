@@ -250,7 +250,9 @@ class SettingController extends Controller
 
         $data['smart_name'] = $request->smart_name;
         $data['financial_year'] = $request->financial_year;
-        $data['timezone'] = $request->timezone; // ← NEW LINE
+        $data['timezone'] = $request->timezone;
+        $data['currency_code']    = $request->currency_code;
+        $data['currency_symbol']  = $request->currency_symbol;
         // $data['site_logo'] = time().$originalImage->getClientOriginalName();
 
         $data['company_id'] = auth()->user()->company_id;

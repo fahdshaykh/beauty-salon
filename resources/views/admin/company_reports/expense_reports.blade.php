@@ -50,7 +50,7 @@
 
                       <div style="text-align:center">
 
-                          <p>Grand Total: <i class="fas fa-dollar-sign"></i>{{ $total_amount ?? 0}}</p>
+                          <p>Grand Total: {{ currency_symbol() }}{{ $total_amount ?? 0}}</p>
 
                       </div>
 
@@ -98,7 +98,7 @@
 
                                         <td>{{$expense->company_name}}</td>
 
-                                        <td><i class="fas fa-dollar-sign"></i>{{$expense->amount}}</td>
+                                        <td>{{ currency_symbol() }}{{$expense->amount}}</td>
 
                                         <td>{{$expense->method}}</td>
 

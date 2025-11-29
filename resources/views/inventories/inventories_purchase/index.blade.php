@@ -456,7 +456,7 @@ input:checked+.slider:before {
                                             
                                         </td>
 
-                                        <td>{{$inventory->price}}</td>
+                                        <td>{{ currency_symbol() }}{{$inventory->price}}</td>
 
                                         <td>{{$inventory->quantity}}</td>
 

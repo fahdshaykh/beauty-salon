@@ -384,6 +384,25 @@
                                                     </small>
                                                 </div>
 
+                                                <a href="https://www.eurochange.co.uk/travel/tips/world-currency-abbreviations-symbols-and-codes-travel-money" 
+                                                    target="_blank">
+                                                    Click here to view currency symbols and codes
+                                                </a>
+                                                <div class="form-group">
+
+                                                    <label for="exampleInputUsername1">Currency Code</label>
+
+                                                    <input type="theme" name="currency_code" value="{{$settings->currency_code}}" class="form-control" placeholder="USD" required/>
+
+                                                </div>
+                                                <div class="form-group">
+
+                                                    <label for="exampleInputUsername1">Currency Symbol</label>
+
+                                                    <input type="theme" name="currency_symbol" value="{{$settings->currency_symbol}}" class="form-control" placeholder="$" required/>
+
+                                                </div>
+
                                                 <div class="row">
 
                                                     <div class="col-lg-6">

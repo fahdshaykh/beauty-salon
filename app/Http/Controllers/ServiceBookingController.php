@@ -162,8 +162,7 @@ class ServiceBookingController extends Controller
 
     public function create($date=null)
 
-    { 
-
+    {
         // $inventories = Inventory::where('company_id', auth()->user()->company_id)->get();
             // Authorization: ensure user can create service bookings
             $this->authorize('create', ServiceBooking::class);

@@ -177,7 +177,7 @@
 
                                         <td>{{$service->name}}</td>
 
-                                        <td><i class="fas fa-dollar-sign"></i>{{$service->price}}</td>
+                                        <td>{{ currency_symbol() }}{{$service->price}}</td>
 
                                         <td>{{date('m-d-Y', strtotime($service->created_at))}}</td>
 

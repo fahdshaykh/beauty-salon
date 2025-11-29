@@ -148,7 +148,7 @@
 
                                         <td>{{$expense->payable}}</td>
 
-                                        <td><i class="fas fa-dollar-sign"></i>{{$expense->amount}}</td>
+                                        <td>{{ currency_symbol() }}{{$expense->amount}}</td>
 
                                         <td>{{$expense->method}}</td>
 

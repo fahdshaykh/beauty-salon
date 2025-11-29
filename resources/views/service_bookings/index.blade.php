@@ -205,7 +205,7 @@
 
                                         <td style="max-width:160px;">{{$book['services']}}</td>
 
-                                        <td><i class="fas fa-dollar-sign"></i>{{$book['total_price']}}</td>
+                                        <td>{{ currency_symbol() }}{{$book['total_price']}}</td>
 
                                         <td style="width: 10%;">{{$book['due_date']}}</td>
 

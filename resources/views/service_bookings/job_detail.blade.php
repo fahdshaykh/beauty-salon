@@ -261,7 +261,7 @@ color:#FFF !important;
 
                                     <div class="col-6">
 
-                                        <b>Price:</b> <span class="customer-data">$<?php echo $booking_detail['total_price']; ?> </span>
+                                        <b>Price:</b> <span class="customer-data">{{ currency_symbol() }}<?php echo $booking_detail['total_price']; ?> </span>
 
                                     </div>
 
@@ -431,7 +431,7 @@ color:#FFF !important;
 
                                     <td>
 
-                                    <?php echo $alljobs->total_price ?>
+                                    <?php echo currency_symbol().$alljobs->total_price ?>
 
                                     </td>
 

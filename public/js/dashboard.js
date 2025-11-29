@@ -52,7 +52,7 @@
 
                                 $.each(response, function(index, value) {
 
-                                    booking_titles.push(value.name + '- $' + value.total_amount);
+                                    booking_titles.push(value.name + '- '+ window.currencySymbol + value.total_amount);
 
                                     booking_totals.push(value.total);
 
@@ -254,7 +254,7 @@
 
                         $.each(response, function(index, value) {
 
-                            booking_titles.push(value.name + '- $' + value.total_amount);
+                            booking_titles.push(value.name + '- '+ window.currencySymbol + value.total_amount);
 
                             booking_totals.push(value.total);
 
@@ -736,7 +736,7 @@
                                             if (chart.data.labels[i]) {
                                                 text.push(chart.data.labels[i]);
                                             }
-                                            text.push('<label class="badge badge-light badge-pill legend-percentage ml-auto">$' + chart.data.datasets[0].data[i] + '</label>');
+                                            text.push('<label class="badge badge-light badge-pill legend-percentage ml-auto">'+ window.currencySymbol + chart.data.datasets[0].data[i] + '</label>');
                                             text.push('</li>');
                                         }
                                         text.push('</ul>');
@@ -804,7 +804,7 @@
             //                         if (chart.data.labels[i]) {
             //                             text.push(chart.data.labels[i]);
             //                         }
-            //                         text.push('<label class="badge badge-light badge-pill legend-percentage ml-auto">$' + chart.data.datasets[0].data[i] + '</label>');
+            //                         text.push('<label class="badge badge-light badge-pill legend-percentage ml-auto">'+ window.currencySymbol + chart.data.datasets[0].data[i] + '</label>');
             //                         text.push('</li>');
             //                     }
             //                     text.push('</ul>');
@@ -1003,7 +1003,7 @@
 
                                 $.each(response, function(index, value) {
 
-                                    revenue_titles.push(value.employee_name + '- $' + value.total_revenue);
+                                    revenue_titles.push(value.employee_name + '- '+ window.currencySymbol + value.total_revenue);
 
                                     services_totals.push(value.total_services);
 
@@ -1205,7 +1205,7 @@
 
             //             $.each(response, function(index, value) {
 
-            //                 revenue_titles.push(value.employee_name + '- $' + value.total_revenue);
+            //                 revenue_titles.push(value.employee_name + '- '+ window.currencySymbol + value.total_revenue);
 
             //                 services_totals.push(value.total_services);
 

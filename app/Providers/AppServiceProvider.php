@@ -58,8 +58,11 @@ class AppServiceProvider extends ServiceProvider
     {
 
         Paginator::useBootstrap();
+
         Schema::defaultStringLength(191);
 
+        require_once app_path('Helpers/Currency.php');
+        
         // REGISTER SPATIE BLADE DIRECTIVES MANUALLY
         // Blade::if('role', function ($role) {
         //     return auth()->check() && auth()->user()->hasRole($role);

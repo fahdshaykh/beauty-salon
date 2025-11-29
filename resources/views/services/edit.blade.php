@@ -185,7 +185,7 @@
 
                         <div class="input-group-prepend">
 
-                          <span class="input-group-text bg-primary text-white"><i class="fas fa-dollar-sign"></i></span>
+                          <span class="input-group-text bg-primary text-white">{{ currency_symbol() }}</span>
 
                         </div>
 

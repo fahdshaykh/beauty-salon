@@ -436,7 +436,7 @@
 
 
 
-                                    <td>@if($book[1]>0)<i class="fas fa-dollar-sign"></i> {{$book[1]}} @endif</td>
+                                    <td>@if($book[1]>0){{ currency_symbol() }} {{$book[1]}} @endif</td>
 
 
 
@@ -472,15 +472,15 @@
 
 
 
-                          <h6 class="text-right">Sub Total : <i class="fas fa-dollar-sign"></i>{{$total_price}}</h6>
+                          <h6 class="text-right">Sub Total : {{ currency_symbol() }}{{$total_price}}</h6>
 
                           @if($vat>0)
 
-                          <h6 class="text-right">Vat : <i class="fas fa-dollar-sign"></i>{{$vat}}</h6>
+                          <h6 class="text-right">Vat : {{ currency_symbol() }}{{$vat}}</h6>
 
                           @endif
 
-                          <h6 class="text-right">Grand Total : <i class="fas fa-dollar-sign"></i>{{$total_price+$vat}}</h6>
+                          <h6 class="text-right">Grand Total : {{ currency_symbol() }}{{$total_price+$vat}}</h6>
 
                           <hr id="non-printable">
 

@@ -112,9 +112,9 @@
 
                                 id: value.id,
 
-                                title: value.customer_name + ' - ' + value.due_time + ' Price: $' + value.total_price + ', Services: ' + value.services + ', Comments: ' + value.comments + ', Address: ' + value.customer_address,
+                                title: value.customer_name + ' - ' + value.due_time + ' Price: '+ window.currencySymbol + value.total_price + ', Services: ' + value.services + ', Comments: ' + value.comments + ', Address: ' + value.customer_address,
 
-                                description: survey + ' Price: $' + value.total_price + ', Services: ' + value.services + ', Comments: ' + jobcomment + ', Address: ' + value.customer_address + '',
+                                description: survey + ' Price: '+ window.currencySymbol + value.total_price + ', Services: ' + value.services + ', Comments: ' + jobcomment + ', Address: ' + value.customer_address + '',
 
                                 start: value.due_date + 'T' + book_time + ':00',
 
@@ -321,7 +321,7 @@
                                             sum += parseFloat(holder[el]);
                                         }
                                     }
-                                    // $('.fc-header-toolbar').append('<span id="turnover" style="color:red;">Turnover- $' + sum + '</span>')
+                                    // $('.fc-header-toolbar').append('<span id="turnover" style="color:red;">Turnover- '+ window.currencySymbol + sum + '</span>')
                                 } else {
                                     $('span[id^="turnover"]').remove();
                                 }
@@ -329,7 +329,7 @@
 
                                 totals.forEach(function(d) {
 
-                                    $('th.fc-day-header[data-date="' + d.name + '"]').append('<br><span style="color:red;"> $' + d.value + '</span>');
+                                    $('th.fc-day-header[data-date="' + d.name + '"]').append('<br><span style="color:red;"> '+ window.currencySymbol + d.value + '</span>');
                                 });
                             }
 

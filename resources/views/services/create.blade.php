@@ -138,31 +138,31 @@
                       @enderror
                     </div>
 
-<div class="row">
-    <div class="col-md-3">
-        <div class="form-group">
-            <label class="d-block mb-2 font-weight-bold">Service Type</label>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label class="d-block mb-2 font-weight-bold">Service Type</label>
 
-            <input type="radio" name="risk_status" value="risky" id="risky" class="radio-toggle">
-            <label for="risky" class="radio-pill">Risky</label>
+                                <input type="radio" name="risk_status" value="risky" id="risky" class="radio-toggle">
+                                <label for="risky" class="radio-pill">Risky</label>
 
-            <input type="radio" name="risk_status" value="not_risky" id="not_risky" class="radio-toggle" checked>
-            <label for="not_risky" class="radio-pill">Not Risky</label>
-        </div>
-    </div>
+                                <input type="radio" name="risk_status" value="not_risky" id="not_risky" class="radio-toggle" checked>
+                                <label for="not_risky" class="radio-pill">Not Risky</label>
+                            </div>
+                        </div>
 
-    <div class="col-md-3">
-        <div class="form-group">
-            <label class="d-block mb-2 font-weight-bold">Price Type</label>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label class="d-block mb-2 font-weight-bold">Price Type</label>
 
-            <input type="radio" name="price_type" value="fixed" id="fixed" class="radio-toggle" checked>
-            <label for="fixed" class="radio-pill">Fixed</label>
+                                <input type="radio" name="price_type" value="fixed" id="fixed" class="radio-toggle" checked>
+                                <label for="fixed" class="radio-pill">Fixed</label>
 
-            <input type="radio" name="price_type" value="modify" id="modify" class="radio-toggle">
-            <label for="modify" class="radio-pill">Modify Able</label>
-        </div>
-    </div>
-</div>
+                                <input type="radio" name="price_type" value="modify" id="modify" class="radio-toggle">
+                                <label for="modify" class="radio-pill">Modify Able</label>
+                            </div>
+                        </div>
+                    </div>
 
 
                     <div class="form-group">
@@ -171,7 +171,7 @@
 
                         <div class="input-group-prepend">
 
-                          <span class="input-group-text bg-primary text-white"><i class="fas fa-dollar-sign"></i></span>
+                          <span class="input-group-text bg-primary text-white">{{ currency_symbol() }}</span>
 
                         </div>
 

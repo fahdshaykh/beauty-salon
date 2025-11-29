@@ -931,6 +931,12 @@
 
   <!-- inject:js -->
 
+  <script>
+    // This makes currency symbol available globally in JS
+      window.currencySymbol = "{{ currency_symbol() }}";
+      window.currencyCode    = "{{ currency_code() }}";
+  </script>
+
   <script src="{{asset('js/off-canvas.js')}}"></script>
 
   <script src="{{asset('js/hoverable-collapse.js')}}"></script>
