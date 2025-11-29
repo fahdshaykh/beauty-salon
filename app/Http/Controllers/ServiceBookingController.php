@@ -127,24 +127,31 @@ class ServiceBookingController extends Controller
 
         if ($bookings->count() > 0) {
             foreach ($bookings as $key => $value) {
-                $services = $value->services->pluck('name')->implode(',');
+
+                // $services = $value->services->pluck('name')->implode(',');
+                $servicesWithColor = $value->services->map(function ($service) {
+                    return [
+                        'name'  => $service->name,
+                        'color' => $service->service_color ?? '#6c757d', // fallback gray if null
+                    ];
+                })->toArray();
 
                 $data_array[$key] = [
-                    'id' => $value->id,
-                    'status' => $value->status,
-                    'customer_name' => optional($value->customer)->first_name . ' ' . optional($value->customer)->last_name,
-                    'primary_phone' => optional($value->customer)->primary_phone,
-                    'customer_address' => optional($value->customer)->address,
-                    'customer_zip' => optional($value->customer)->zip,
-                    'user_name' => optional($value->user)->name,
-                    'price_type' => $value->price_type,
-                    'total_price' => $value->total_price,
-                    'due_date' => $value->due_date,
-                    'due_time' => $value->due_time,
-                    'finish_time' => $value->finish_time,
-                    'service_status' => $value->service_status,
-                    'services' => $services,
-                    'payment_days' => $value->payment_days,
+                    'id'              => $value->id,
+                    'status'          => $value->status,
+                    'customer_name'   => optional($value->customer)->first_name . ' ' . optional($value->customer)->last_name,
+                    'primary_phone'   => optional($value->customer)->primary_phone,
+                    'customer_address'=> optional($value->customer)->address,
+                    'customer_zip'    => optional($value->customer)->zip,
+                    'user_name'       => optional($value->user)->name,
+                    'price_type'      => $value->price_type,
+                    'total_price'     => $value->total_price,
+                    'due_date'        => $value->due_date,
+                    'due_time'        => $value->due_time,
+                    'finish_time'     => $value->finish_time,
+                    'service_status'  => $value->service_status,
+                    'services'        => $servicesWithColor,
+                    'payment_days'    => $value->payment_days,
                 ];
             }
         }
@@ -299,27 +306,46 @@ class ServiceBookingController extends Controller
 
         // code for manage inventory start here 
 
-        if (isset($data['inventory_id']) && !empty($data['inventory_id'])) {
-
+        if (!empty($data['inventory_id'] ?? [])) {
             foreach ($data['inventory_id'] as $index => $inventory_id) {
-                $quantity = $data['quantity'][$index] ?? 0;
-
-                if (empty($inventory_id) || $quantity <= 0) {
-                    \Log::warning("Skipping invalid entry: Inventory ID: {$inventory_id}, Quantity: {$quantity}");
+                // Skip if inventory_id is empty
+                if (empty($inventory_id)) {
                     continue;
                 }
 
+                $quantity = $data['quantity'][$index] ?? null;
+
+                // Convert to float and validate > 0
+                $quantity = is_numeric($quantity) ? (float) $quantity : 0;
+
+                if ($quantity <= 0) {
+                    \Log::warning("Skipping invalid quantity for inventory_id {$inventory_id}: {$quantity}");
+                    continue;
+                }
+
+                // Insert into inventory_books (quantity is now decimal)
                 DB::table('inventory_books')->insert([
-                    'booking_id' => $booking->id,
-                    'inventory_id' => $inventory_id,
-                    'quantity' => $quantity,
+                    'booking_id'    => $booking->id,
+                    'company_id'    => auth()->user()->company_id,
+                    'inventory_id'  => $inventory_id,
+                    'quantity'      => $quantity,
+                    'created_at'    => now(),
+                    'updated_at'    => now(),
                 ]);
 
-                $inventory_remain = InventoryRemain::firstOrNew(['inventory_id' => $inventory_id]);
-                $inventory_remain->total_quantity = max(0, ($inventory_remain->total_quantity ?? 0) - $quantity);
-                $inventory_remain->company_id = auth()->user()->company_id;
-                
-                $inventory_remain->save();
+                // Update inventory remain (deduct the decimal quantity)
+                $remain = InventoryRemain::firstOrNew([
+                    'inventory_id' => $inventory_id,
+                    'company_id'   => auth()->user()->company_id
+                ]);
+
+                if (!$remain->exists) {
+                    $remain->total_quantity = 0;
+                    $remain->company_id = auth()->user()->company_id;
+                }
+
+                $remain->total_quantity = max(0, $remain->total_quantity - $quantity);
+                $remain->save();
             }
         }
 
@@ -755,58 +781,77 @@ class ServiceBookingController extends Controller
             //     }
             // }
 
-            if (!empty($inventory_id)) {
-                // 1. Get existing inventory books
-                $oldBooks = InventoryBook::where('booking_id', $request->booking_id)->get()->keyBy('inventory_id');
+            if (!empty($data['inventory_id'])) {
 
-                // 2. Delete all existing inventory books
+                // -----------------------------------------------------------------
+                // 1. Get old inventory books (keyed by inventory_id)
+                // -----------------------------------------------------------------
+                $oldBooks = InventoryBook::where('booking_id', $request->booking_id)
+                            ->get()
+                            ->keyBy('inventory_id');
+
+                // -----------------------------------------------------------------
+                // 2. Delete ALL existing inventory books for this booking
+                // -----------------------------------------------------------------
                 InventoryBook::where('booking_id', $request->booking_id)->delete();
 
-                $newInventories = [];
-                foreach ($data['inventory_id'] as $index => $inventory_id) {
-                    $quantity = $data['quantity'][$index] ?? 0;
+                // -----------------------------------------------------------------
+                // 3. Build new list (skip empty rows)
+                // -----------------------------------------------------------------
+                $newInventories = [];   // inventory_id => quantity
+                if ($request->filled('inventory_id')) {
+                    foreach ($request->inventory_id as $index => $inventory_id) {
+                        if (empty($inventory_id)) continue;
 
-                    if (empty($inventory_id) || $quantity <= 0) {
-                        \Log::warning("Skipping invalid entry: Inventory ID: {$inventory_id}, Quantity: {$quantity}");
-                        continue;
+                        $quantity = $request->quantity[$index] ?? null;
+
+                        // Accept only positive numbers (integer or decimal)
+                        if (!$quantity || !is_numeric($quantity) || $quantity <= 0) {
+                            continue;
+                        }
+
+                        $quantity = (float) $quantity;  // convert "1" → 1.0, "0.5" → 0.5
+
+                        $newInventories[$inventory_id] = $quantity;
+
+                        DB::table('inventory_books')->insert([
+                            'booking_id'    => $request->booking_id,
+                            'company_id'    => auth()->user()->company_id,
+                            'inventory_id'  => $inventory_id,
+                            'quantity'      => $quantity,
+                            'created_at'    => now(),
+                            'updated_at'    => now(),
+                        ]);
                     }
-
-                    $newInventories[$inventory_id] = $quantity;
-
-                    // Insert new inventory book
-                    DB::table('inventory_books')->insert([
-                        'booking_id' => $request->booking_id,
-                        'inventory_id' => $inventory_id,
-                        'quantity' => $quantity,
-                    ]);
                 }
 
-                // 3. Compare old vs new and update InventoryRemain
-                // Handle removed inventories: restore their quantity
+                // -----------------------------------------------------------------
+                // 4. Adjust InventoryRemain
+                // -----------------------------------------------------------------
+                // a) Removed inventories → add back the old quantity
                 foreach ($oldBooks as $inventory_id => $book) {
                     if (!isset($newInventories[$inventory_id])) {
-                        // Inventory was removed, so add back the quantity
                         $remain = InventoryRemain::firstOrNew(['inventory_id' => $inventory_id]);
-                        $remain->total_quantity += $book->quantity;
+                        $remain->company_id     = auth()->user()->company_id;
+                        $remain->total_quantity = ($remain->total_quantity ?? 0) + $book->quantity;
                         $remain->save();
                     }
                 }
 
-                // Handle new/changed inventories
+                // b) New / changed → subtract the *difference*
                 foreach ($newInventories as $inventory_id => $newQty) {
                     $oldQty = $oldBooks[$inventory_id]->quantity ?? 0;
+                    $diff   = $newQty - $oldQty;               // positive = consume more
 
-                    // Calculate the difference
-                    $diff = $newQty - $oldQty;
-
-                    if ($diff != 0) {
+                    if ($diff !== 0) {
                         $remain = InventoryRemain::firstOrNew(['inventory_id' => $inventory_id]);
+                        $remain->company_id     = auth()->user()->company_id;
                         $remain->total_quantity = max(0, ($remain->total_quantity ?? 0) - $diff);
                         $remain->save();
                     }
                 }
-            }
 
+            }
 
             // code for manage inventory here end
 
@@ -2420,7 +2465,7 @@ class ServiceBookingController extends Controller
 
         $request->validate([
             'inventory_id.*' => 'nullable|exists:inventories,id',
-            'quantity.*'     => 'nullable|integer|min:1',
+            'quantity.*'     => 'nullable|numeric|gt:0', // This is the magic line
         ]);
 
         // -----------------------------------------------------------------
@@ -2441,20 +2486,26 @@ class ServiceBookingController extends Controller
         $newInventories = [];   // inventory_id => quantity
         if ($request->filled('inventory_id')) {
             foreach ($request->inventory_id as $index => $inventory_id) {
-                $quantity = $request->quantity[$index] ?? 0;
+                if (empty($inventory_id)) continue;
 
-                if (empty($inventory_id) || $quantity <= 0) {
+                $quantity = $request->quantity[$index] ?? null;
+
+                // Accept only positive numbers (integer or decimal)
+                if (!$quantity || !is_numeric($quantity) || $quantity <= 0) {
                     continue;
                 }
+
+                $quantity = (float) $quantity;  // convert "1" → 1.0, "0.5" → 0.5
 
                 $newInventories[$inventory_id] = $quantity;
 
                 DB::table('inventory_books')->insert([
-                    'booking_id'   => $id,
-                    'inventory_id' => $inventory_id,
-                    'quantity'     => $quantity,
-                    'created_at'   => now(),
-                    'updated_at'   => now(),
+                    'booking_id'    => $id,
+                    'company_id'    => auth()->user()->company_id,
+                    'inventory_id'  => $inventory_id,
+                    'quantity'      => $quantity,
+                    'created_at'    => now(),
+                    'updated_at'    => now(),
                 ]);
             }
         }

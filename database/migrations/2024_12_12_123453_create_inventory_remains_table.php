@@ -15,9 +15,9 @@ class CreateInventoryRemainsTable extends Migration
     {
         Schema::create('inventory_remains', function (Blueprint $table) {
             $table->id();
-            $table->integer('inventory_id');
-            $table->integer('company_id');
-            $table->float('total_quantity', 10,2);
+            $table->unsignedBigInteger('inventory_id');
+            $table->unsignedBigInteger('company_id');
+            $table->decimal('total_quantity', 10, 3);
             $table->timestamps();
         });
     }

@@ -15,10 +15,10 @@ class CreateInventoryBooksTable extends Migration
     {
         Schema::create('inventory_books', function (Blueprint $table) {
             $table->id();
-            $table->integer('company_id');
-            $table->integer('booking_id');
-            $table->integer('inventory_id');
-            $table->string('quantity');
+            $table->unsignedBigInteger('company_id');
+            $table->unsignedBigInteger('booking_id');
+            $table->unsignedBigInteger('inventory_id');
+            $table->decimal('quantity', 10, 3);
             $table->timestamps();
         });
     }

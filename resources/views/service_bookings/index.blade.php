@@ -203,7 +203,18 @@
 
                                         <td>{{$book['primary_phone']}}</td>
 
-                                        <td style="max-width:160px;">{{$book['services']}}</td>
+                                        <td style="max-width: 200px;">
+                                            @forelse($book['services'] as $service)
+                                                <span class="badge me-1 mb-1 badge-pill"
+                                                    style="background-color: {{ $service['color'] }}; 
+                                                            color: {{ \Illuminate\Support\Str::startsWith($service['color'], '#fff') || 
+                                                                    \Illuminate\Support\Str::startsWith($service['color'], '#FFF') ? '#000' : '#fff' }};">
+                                                    {{ $service['name'] }}
+                                                </span>
+                                            @empty
+                                                <span class="text-muted fst-italic">No services</span>
+                                            @endforelse
+                                        </td>
 
                                         <td>{{ currency_symbol() }}{{$book['total_price']}}</td>
 

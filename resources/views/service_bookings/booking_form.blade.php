@@ -216,13 +216,20 @@
                     </div>
                 </div>
 
-                <div class="form-group" id="basket_table" style="{{ $booking_detail != '' ? '' : 'display:none;' }}">
+                <div class="mt-2 form-group" id="basket_table" style="{{ $booking_detail != '' ? '' : 'display:none;' }}">
                     <h4>Basket</h4>
                     <table class="table table-bordered">
                         <thead>
                             <tr>
                                 <th>Inventory</th>
-                                <th>Quantity</th>
+                                <th>
+                                    Quantity
+                                    <span class="text-primary ms-1" 
+                                        style="cursor: help;" 
+                                        title="You can enter decimal quantities! Examples: 1, 0.25, 0.5, 1.75, etc.">
+                                        <i class="fas fa-info-circle"></i>
+                                    </span>
+                                </th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -234,7 +241,7 @@
                                             <input type="hidden" name="inventory_id[]" value="{{ $book->inventory_id }}"> {{ $book->inventory->name }}
                                         </td>
                                         <td>
-                                            <input type="number" name="quantity[]" value="{{ $book->quantity }}" class="form-control" min="1" required>
+                                            <input type="number" name="quantity[]" value="{{ $book->quantity }}" min="0.01" step="0.01" class="form-control" min="1" required>
                                         </td>
                                         <td>
                                             <button type="button" class="btn btn-danger btn-sm remove-row">Remove</button>
@@ -639,7 +646,7 @@ $(document).ready(function() {
                             ${inventoryName}
                         </td>
                         <td>
-                            <input type="number" class="form-control" name="quantity[]" value="1" min="1" max="${response.quantity}" required>
+                            <input type="number" class="form-control" name="quantity[]" min="0.01" step="0.01" value="1" max="${response.quantity}" required>
                         </td>
                         <td>
                             <button type="button" class="btn btn-danger btn-sm remove-row">Remove</button>

@@ -80,7 +80,14 @@
                                     <thead>
                                         <tr>
                                             <th>Inventory</th>
-                                            <th>Quantity</th>
+                                            <th>
+                                                Quantity
+                                                <span class="text-primary ms-1" 
+                                                    style="cursor: help;" 
+                                                    title="You can enter decimal quantities! Examples: 1, 0.25, 0.5, 1.75, etc.">
+                                                    <i class="fas fa-info-circle"></i>
+                                                </span>
+                                            </th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -98,7 +105,7 @@
                                                            name="quantity[]"
                                                            value="{{ $ib->quantity }}"
                                                            class="form-control"
-                                                           min="1"
+                                                           min="0.01" step="0.01"
                                                            required>
                                                 </td>
                                                 <td>
@@ -195,7 +202,7 @@ $(function () {
                         ${invName}
                     </td>
                     <td>
-                        <input type="number" name="quantity[]" class="form-control" min="1" value="1" max="${res.quantity}" required>
+                        <input type="number" name="quantity[]" class="form-control" min="0.01" step="0.01" value="1" max="${res.quantity}" required>
                     </td>
                     <td>
                         <button type="button" class="btn btn-danger btn-sm remove-row">Remove</button>
