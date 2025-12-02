@@ -604,7 +604,7 @@
                                     
                                 <option value="{{ $country->phone_code }}" 
                                     {{ old('country_code', $customer->country_code ?? '') == $country->phone_code ? 'selected' : '' }}>
-                                    +{{ $country->phone_code }}
+                                    {{ $country->phone_code }}
                                 </option>
 
                                 @endforeach
