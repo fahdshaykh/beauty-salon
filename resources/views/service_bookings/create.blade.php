@@ -311,7 +311,7 @@
     //                                 var row = `<tr>
     //                                     <td>${slot.due_date}</td>
     //                                     <td>${slot.due_time}</td>
-    //                                     <td>${slot.finish_time}</td>
+    //                                     <td>${slot.service_time}</td>
     //                                 </tr>`;
     //                                 tableBody.append(row);
     //                             });
@@ -377,7 +377,7 @@
                                     var row = `<tr>
                                         <td>${slot.due_date}</td>
                                         <td>${slot.due_time}</td>
-                                        <td>${slot.finish_time}</td>
+                                        <td>${slot.service_time}</td>
                                     </tr>`;
                                     tableBody.append(row);
                                 });

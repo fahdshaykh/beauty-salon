@@ -3614,7 +3614,7 @@ CREATE TABLE IF NOT EXISTS `service_bookings` (
   `vat` float NOT NULL DEFAULT '0',
   `due_date` date DEFAULT NULL,
   `due_time` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `finish_time` int DEFAULT NULL,
+  `service_time` int DEFAULT NULL,
   `comment` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `service_status` int NOT NULL DEFAULT '1',
   `payment_instrument` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -3629,7 +3629,7 @@ CREATE TABLE IF NOT EXISTS `service_bookings` (
 -- Dumping data for table `service_bookings`
 --
 
-INSERT INTO `service_bookings` (`id`, `invoice`, `company_id`, `user_id`, `customer_id`, `total_price`, `vat`, `due_date`, `due_time`, `finish_time`, `comment`, `service_status`, `payment_instrument`, `payment_instrument_number`, `created_at`, `updated_at`, `payment_days`) VALUES
+INSERT INTO `service_bookings` (`id`, `invoice`, `company_id`, `user_id`, `customer_id`, `total_price`, `vat`, `due_date`, `due_time`, `service_time`, `comment`, `service_status`, `payment_instrument`, `payment_instrument_number`, `created_at`, `updated_at`, `payment_days`) VALUES
 (1030, 1, 74, 134, 275, 200.00, 0, '2021-08-30', '07:47 PM', 45, 'WQQWEWEWER', 3, 'cash', NULL, '2021-08-30 17:47:55', '2021-08-30 17:47:55', 0),
 (1031, 2, 74, 134, 275, 240.00, 0, '2021-09-02', '07:00 PM', 45, 'dgsdfg', 3, 'card', NULL, '2021-08-30 17:59:47', '2021-08-30 17:59:47', 0),
 (1032, 3, 74, 135, 275, 180.00, 0, '2021-09-01', '07:35 PM', 45, 'dfasdfasdfsdd', 1, NULL, NULL, '2021-08-31 13:36:26', '2021-08-31 13:36:26', 0),
@@ -3969,7 +3969,7 @@ INSERT INTO `service_bookings` (`id`, `invoice`, `company_id`, `user_id`, `custo
 (1568, 254, 75, 136, 546, 85.00, 0, '2021-12-29', '09:00 AM', 60, 'Lounge & hall', 3, 'Cash', NULL, '2021-12-23 14:54:34', '2021-12-23 14:55:47', 0),
 (1570, 255, 75, 136, 548, 85.00, 0, '2021-12-30', '9:30 AM', 60, '2 sets of stairs', 3, 'Cash', NULL, '2021-12-29 11:34:21', '2021-12-29 11:34:21', 0),
 (1572, 257, 75, 136, 550, 110.00, 0, '2022-01-05', '9:30 AM', 75, 'Lounge & stairs', 1, NULL, NULL, '2022-01-02 13:38:43', '2022-01-02 13:38:43', 0);
-INSERT INTO `service_bookings` (`id`, `invoice`, `company_id`, `user_id`, `customer_id`, `total_price`, `vat`, `due_date`, `due_time`, `finish_time`, `comment`, `service_status`, `payment_instrument`, `payment_instrument_number`, `created_at`, `updated_at`, `payment_days`) VALUES
+INSERT INTO `service_bookings` (`id`, `invoice`, `company_id`, `user_id`, `customer_id`, `total_price`, `vat`, `due_date`, `due_time`, `service_time`, `comment`, `service_status`, `payment_instrument`, `payment_instrument_number`, `created_at`, `updated_at`, `payment_days`) VALUES
 (1573, 258, 75, 136, 551, 60.00, 0, '2022-01-05', '11:30 AM', 60, 'Lounge', 1, NULL, NULL, '2022-01-02 13:40:27', '2022-01-03 20:56:29', 0),
 (1574, 259, 75, 136, 552, 170.00, 0, '2022-01-07', '10:00 AM', 120, 'Lounge hall - 2x2 seaters', 1, NULL, NULL, '2022-01-03 12:39:59', '2022-01-04 14:51:31', 0),
 (1575, 260, 75, 136, 553, 70.00, 0, '2022-01-05', '01:00 PM', 60, '2 bedrooms', 1, NULL, NULL, '2022-01-04 11:16:51', '2022-01-04 11:16:51', 0),
@@ -4297,7 +4297,7 @@ INSERT INTO `service_bookings` (`id`, `invoice`, `company_id`, `user_id`, `custo
 (1913, 594, 75, 136, 844, 55.00, 0, '2022-04-01', '8:00 AM', 45, '2 bedrooms', 1, NULL, NULL, '2022-03-30 13:39:01', '2022-03-30 13:39:01', 0),
 (1914, 595, 75, 136, 858, 120.00, 0, '2022-04-04', '11:15 AM', 120, '2 bed empty flat', 1, NULL, NULL, '2022-03-30 14:56:25', '2022-03-30 14:58:28', 0),
 (1915, 596, 75, 136, 859, 55.00, 0, '2022-04-06', '10:45 AM', 60, 'Stairs landing', 1, NULL, NULL, '2022-03-30 16:21:37', '2022-03-30 16:21:37', 0);
-INSERT INTO `service_bookings` (`id`, `invoice`, `company_id`, `user_id`, `customer_id`, `total_price`, `vat`, `due_date`, `due_time`, `finish_time`, `comment`, `service_status`, `payment_instrument`, `payment_instrument_number`, `created_at`, `updated_at`, `payment_days`) VALUES
+INSERT INTO `service_bookings` (`id`, `invoice`, `company_id`, `user_id`, `customer_id`, `total_price`, `vat`, `due_date`, `due_time`, `service_time`, `comment`, `service_status`, `payment_instrument`, `payment_instrument_number`, `created_at`, `updated_at`, `payment_days`) VALUES
 (1916, 597, 75, 136, 860, 55.00, 0, '2022-04-08', '10:00 AM', 45, 'Stairs landing', 1, NULL, NULL, '2022-03-31 10:22:00', '2022-03-31 10:22:00', 0),
 (1917, 598, 75, 136, 861, 55.00, 0, '2022-04-01', '1:45 PM', 60, 'One bedroom', 1, NULL, NULL, '2022-03-31 19:30:08', '2022-03-31 19:30:08', 0),
 (1918, 599, 75, 136, 862, 120.00, 0, '2022-04-08', '11:15 AM', 105, '2 and 1 seater - lounge carpet', 1, NULL, NULL, '2022-04-01 06:34:14', '2022-04-04 11:14:02', 0),

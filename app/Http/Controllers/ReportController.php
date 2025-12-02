@@ -3062,7 +3062,7 @@ class ReportController extends Controller
 
                     'due_time' => $value->due_time,
 
-                    'finish_time' => $value->finish_time,
+                    'service_time' => $value->service_time,
 
                     'service_status' => $value->service_status,
 

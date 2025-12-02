@@ -35,6 +35,7 @@ class CreateServicesTable extends Migration
             $table->string('name')->nullable();
             $table->string('price_type')->default('modify_able');
             $table->string('service_color')->nullable();
+            $table->string('service_time')->nullable();
             $table->string('risk_status')->default('not_risky');
 
             $table->float('price', 5, 2)->nullable();

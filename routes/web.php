@@ -234,6 +234,7 @@ Route::middleware(['auth', 'company'])->group(function () {
         'index'   => 'service-bookings.index',
         'store'   => 'service-bookings.store',
     ]);
+    Route::get('customer-detail', [CustomerController::class, 'customer_detail'])->name('customers.booking.history');
 
     // ── Mailing & Marketing ──
     // Route::post('/customer-email-filter', [PowerMailingController::class, 'email_filter'])->name('mailing.email_filter');

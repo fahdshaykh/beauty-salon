@@ -15,7 +15,7 @@ class AddVatFinishTimePaymentDaysToServiceBookingsTable extends Migration
     {
         Schema::table('service_bookings', function (Blueprint $table) {
             $table->float('vat')->default(0)->after('total_price');
-            $table->integer('finish_time')->nullable()->after('due_time');
+            $table->integer('service_time')->nullable()->after('due_time');
             $table->integer('payment_days')->after('payment_instrument_number');
         });
     }
@@ -28,7 +28,7 @@ class AddVatFinishTimePaymentDaysToServiceBookingsTable extends Migration
     public function down()
     {
         Schema::table('service_bookings', function (Blueprint $table) {
-            $table->dropColumn(['vat', 'finish_time', 'payment_days']);
+            $table->dropColumn(['vat', 'service_time', 'payment_days']);
         });
     }
 }

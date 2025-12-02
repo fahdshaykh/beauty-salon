@@ -201,13 +201,25 @@
                     </div>
 
                     <div class="form-group">
-
+                      <label for="Service_color">Service Color</label>
                       <div class="col" style="margin-left: -8px;">
 
                           <input type='text' class="color-picker" name="service_color" value="{{ $services->service_color }}" />
 
                       </div>
 
+                    </div>
+
+                    <div class="form-group">
+                      <label for="Service_time">Service Time</label>
+                        <div class="input-group">
+                            <input type="text" name="service_time" value="{{ $services->service_time }}" class="form-control" />
+                            <div class="input-group-append">
+                                <span class="input-group-text">
+                                    <i class="far fa-clock"></i>
+                                </span>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="form-group">

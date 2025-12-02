@@ -194,7 +194,7 @@ class ServiceBookingController extends BaseController
 
                         'start_time' => $value['due_time'],
 
-                        'end_time' => $value['finish_time'],
+                        'end_time' => $value['service_time'],
 
                         'comment' => $value['comment'],
 
@@ -436,7 +436,7 @@ class ServiceBookingController extends BaseController
 
                         'start_time' => $value['due_time'],
 
-                        'end_time' => $value['finish_time'],
+                        'end_time' => $value['service_time'],
 
                         'comment' => $value['comment'],
 
@@ -826,7 +826,7 @@ class ServiceBookingController extends BaseController
 
                             'comments' => $val['comment'],
 
-                            'finish_time' => $val['finish_time'],
+                            'service_time' => $val['service_time'],
 
                             'booking_id' => $val['id'],
 
@@ -1014,7 +1014,7 @@ class ServiceBookingController extends BaseController
 
                             'comments' => $val['comment'],
 
-                            'finish_time' => $val['finish_time'],
+                            'service_time' => $val['service_time'],
 
                             'id' => $val['id'],
 
@@ -1177,8 +1177,7 @@ class ServiceBookingController extends BaseController
     {
 
         $data = $request->all();
-
-
+        // dd($data);
 
         // return $this->sendResponse($data, 'Appointment booked”.'); exit();
 
@@ -1196,12 +1195,11 @@ class ServiceBookingController extends BaseController
 
             'service_id' => 'required',
 
-            'total_price' => 'required',
+            // 'total_price' => 'required',
 
-            'finish_time' => 'required',
+            // 'service_time' => 'required',
 
         ]);
-
 
 
         if ($validator->fails()) {
@@ -1209,7 +1207,29 @@ class ServiceBookingController extends BaseController
             return $this->sendError('Validation Error.', $validator->errors());
 
         }
-        $tax_info = DB::table('company_settings')->select('tax_status', 'vat','amount','financial_year')->where('company_id', $request->company_id)->get();
+
+        // === AUTO CALCULATE TOTAL PRICE FROM DATABASE ===
+        $serviceIds = array_filter(array_map('trim', explode(',', $request->service_id)));
+
+        if (empty($serviceIds)) {
+            return $this->sendError('Validation Error.', ['service_id' => ['Please select at least one service.']]);
+        }
+
+        $services = Services::select('id', 'name', 'price')
+            ->whereIn('id', $serviceIds)
+            ->where('company_id', $request->company_id)
+            ->where('is_active', 1)
+            ->get();
+
+        // Security check: make sure all requested services exist and belong to company
+        if ($services->count() !== count($serviceIds)) {
+            return $this->sendError('Invalid service selection.', ['service_id' => ['One or more services are invalid or not available.']]);
+        }
+
+        $data['total_price'] = $services->sum('price'); // This is now trusted & accurate
+        // ===============================================
+
+        $tax_info = DB::table('company_settings')->select('*')->where('company_id', $request->company_id)->get();
 
         $financialyear = $this->check_if_financial_year($tax_info[0]->financial_year,$request->company_id);
         if($financialyear){
@@ -1250,7 +1270,10 @@ class ServiceBookingController extends BaseController
 
 
         }
-        $service_status = ($request->survey=='no')?'1':'5';
+        // $service_status = ($request->survey=='no')?'1':'5';
+
+        $service_status = 1; //($request->survey=='no')?'1':'5';
+
         $data_array = [
 
             'payment_days' => $data['paymentDays'],
@@ -1269,9 +1292,10 @@ class ServiceBookingController extends BaseController
 
             'due_time' => $data['due_time'],
 
-            'finish_time' => $data['finish_time'],
+            'service_time' => $data['service_time'],
 
             'comment' => $data['comment'],
+
             'service_status'=> $service_status
 
         ];
@@ -1284,7 +1308,7 @@ class ServiceBookingController extends BaseController
 
         $services = explode(",", $data['service_id']);
 
-        //return $this->sendResponse($services, 'Appointment booked”.'); exit();
+        // return $this->sendResponse($services, 'Appointment booked”.'); exit();
 
         foreach ($services as $service) {
 
@@ -1321,63 +1345,63 @@ class ServiceBookingController extends BaseController
 
 
 
-        $firebaseToken = User::select('device_token')
+        // $firebaseToken = User::select('device_token')
 
-            ->where('id', $request->user_id)
+        //     ->where('id', $request->user_id)
 
-            ->get();
-
-
-
-        $SERVER_API_KEY = 'AAAAgxBV8ro:APA91bEHYf564XZw4oiY3eeZl9T798KSnSagwXlfYSUtZ_MVDXmIMK1uSE0IKCoVdpRZX75N6Z3ygRWbbit5l4OOZkTj7llpGiZbRxFVsS8by0hEOlPfSc_EPgwn7NlgVkRx0KbSBS_H';
+        //     ->get();
 
 
 
-        $data = [
-
-            "to" => $firebaseToken[0]->device_token,
-
-            "priority" => "high",
-
-            "notification" => [
-
-                "title" => "bSaloon",
-
-                "body" => $service_name . "Booked. Date: ". $data['due_date']." Time: " .  $data['due_time'],
-
-            ],
-
-        ];
+        // $SERVER_API_KEY = 'AAAAgxBV8ro:APA91bEHYf564XZw4oiY3eeZl9T798KSnSagwXlfYSUtZ_MVDXmIMK1uSE0IKCoVdpRZX75N6Z3ygRWbbit5l4OOZkTj7llpGiZbRxFVsS8by0hEOlPfSc_EPgwn7NlgVkRx0KbSBS_H';
 
 
 
-        $dataString = json_encode($data);
+        // $data = [
+
+        //     "to" => $firebaseToken[0]->device_token,
+
+        //     "priority" => "high",
+
+        //     "notification" => [
+
+        //         "title" => "bSaloon",
+
+        //         "body" => $service_name . "Booked. Date: ". $data['due_date']." Time: " .  $data['due_time'],
+
+        //     ],
+
+        // ];
 
 
 
-        $headers = ['Authorization: key=' . $SERVER_API_KEY, 'Content-Type: application/json'];
+        // $dataString = json_encode($data);
 
 
 
-        $ch = curl_init();
+        // $headers = ['Authorization: key=' . $SERVER_API_KEY, 'Content-Type: application/json'];
 
 
 
-        curl_setopt($ch, CURLOPT_URL, 'https://fcm.googleapis.com/fcm/send');
-
-        curl_setopt($ch, CURLOPT_POST, true);
-
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $dataString);
+        // $ch = curl_init();
 
 
 
-        $response = curl_exec($ch);
+        // curl_setopt($ch, CURLOPT_URL, 'https://fcm.googleapis.com/fcm/send');
+
+        // curl_setopt($ch, CURLOPT_POST, true);
+
+        // curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+        // curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+
+        // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        // curl_setopt($ch, CURLOPT_POSTFIELDS, $dataString);
+
+
+
+        // $response = curl_exec($ch);
 
 
 
@@ -1389,7 +1413,7 @@ class ServiceBookingController extends BaseController
 
                 if($message_status[0]->sms_count<=0){
 
-                    return $this->sendResponse('destroy','Insufficient SMS Balance. Contact bSaloon');
+                    return $this->sendResponse('destroy','Insufficient SMS Balance.');
 
                 }
                 $bookingmessage = ($request->survey=='no')?'Booking':'Survey';
@@ -1397,7 +1421,7 @@ class ServiceBookingController extends BaseController
 
                 if (isset($response->error)) {
 
-                    return $this->sendResponse('destroy', $bookingmessage.' created successfully. Message is not sent to customer. Ask bSaloon to check this error: ' . $response->error->msg . '.');;
+                    return $this->sendResponse('destroy', $bookingmessage.' created successfully. Message is not sent to customer. Please check this error: ' . $response->error->msg . '.');;
 
                 } else {
 
@@ -2126,7 +2150,7 @@ class ServiceBookingController extends BaseController
 
             'due_time' => 'required',
 
-            'finish_time' => 'required',
+            'service_time' => 'required',
 
             'total_price' => 'required',
 
@@ -2162,7 +2186,7 @@ class ServiceBookingController extends BaseController
 
             'due_time' => $data['due_time'],
 
-            'finish_time' => $data['finish_time'],
+            'service_time' => $data['service_time'],
 
             'comment' => $data['comment'],
 
@@ -2632,7 +2656,7 @@ class ServiceBookingController extends BaseController
 
 
 
-                    $title = 'Diary Mastter';
+                    $title = 'ABC Company';
 
                     $subject = 'B Saloon Invoice';
 

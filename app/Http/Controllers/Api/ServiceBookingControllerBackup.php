@@ -176,7 +176,7 @@ class ServiceBookingController extends BaseController
 
                         'start_time' => $value['due_time'],
 
-                        'end_time' => $value['finish_time'],
+                        'end_time' => $value['service_time'],
 
                         'comment' => $value['comment'],
 
@@ -416,7 +416,7 @@ class ServiceBookingController extends BaseController
 
                         'start_time' => $value['due_time'],
 
-                        'end_time' => $value['finish_time'],
+                        'end_time' => $value['service_time'],
 
                         'comment' => $value['comment'],
 
@@ -806,7 +806,7 @@ bSaloon
 
                             'comments' => $val['comment'],
 
-                            'finish_time' => $val['finish_time'],
+                            'service_time' => $val['service_time'],
 
                             'booking_id' => $val['id'],
 
@@ -994,7 +994,7 @@ bSaloon
 
                             'comments' => $val['comment'],bSaloon
 
-                            'finish_time' => $val['finish_time'],
+                            'service_time' => $val['service_time'],
 
                             'id' => $val['id'],
 
@@ -1178,7 +1178,7 @@ bSaloon
 
             'total_price' => 'required',
 
-            'finish_time' => 'required',
+            'service_time' => 'required',
 
         ]);
 
@@ -1250,7 +1250,7 @@ bSaloon
 
             'due_time' => $data['due_time'],
 
-            'finish_time' => $data['finish_time'],
+            'service_time' => $data['service_time'],
 
             'comment' => $data['comment'],
 
@@ -2082,7 +2082,7 @@ bSaloon
 
             'due_time' => 'required',
 
-            'finish_time' => 'required',
+            'service_time' => 'required',
 
             'total_price' => 'required',
 
@@ -2118,7 +2118,7 @@ bSaloon
 
             'due_time' => $data['due_time'],
 
-            'finish_time' => $data['finish_time'],
+            'service_time' => $data['service_time'],
 
             'comment' => $data['comment'],
 

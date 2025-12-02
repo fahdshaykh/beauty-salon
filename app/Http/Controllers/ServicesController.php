@@ -153,6 +153,7 @@ class ServicesController extends Controller
          $service->risk_status = $request->input('risk_status');
          $service->price = $request->input('price');
          $service->service_color = $request->input('service_color');
+         $service->service_time = $request->input('service_time');
          $service->description = $request->input('description');
          $service->company_id = auth()->user()->company_id;
          $service->save();
@@ -365,6 +366,7 @@ class ServicesController extends Controller
          $service->risk_status = $request->input('risk_status');
          $service->price = $request->input('price');
          $service->service_color = $request->input('service_color');
+         $service->service_time = $request->input('service_time');
          $service->description = $request->input('description');
          $service->company_id = auth()->user()->company_id;
          $service->save();

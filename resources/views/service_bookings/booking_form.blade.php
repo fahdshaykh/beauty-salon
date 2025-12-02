@@ -17,7 +17,7 @@
             $user_id = $book->user_id;
             $due_date = $book->due_date;
             $due_time = $book->due_time;
-            $finish_time = $book->finish_time;
+            $service_time = $book->service_time;
             $total_price = $book->total_price;
             $comment = $book->comment;
             $pay_days = $book->payment_days;
@@ -88,13 +88,15 @@
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <label>Finish Time (minutes):</label>
+                        <label>Service Time (minutes):</label>
                         <div class="input-group date" data-target-input="nearest">
                             <div class="input-group">
-                                <input type="text" name="finish_time" value="@if(isset($finish_time)){{$finish_time}}@else 30 @endif" class="form-control @error('finish_time') is-invalid @enderror" maxlength="4"/>
+                                <input type="text" name="service_time" value="@if(isset($service_time)){{$service_time}}@endif" 
+                                    class="form-control @error('service_time') is-invalid @enderror" 
+                                    id="service_time">
                                 <div class="input-group-addon input-group-append"><i class="far fa-clock input-group-text"></i></div>
                             </div>
-                            @error('finish_time')
+                            @error('service_time')
                                 <div class="invalid-feedback d-block">
                                     {{ $message }}
                                 </div>
@@ -401,7 +403,12 @@ $(document).ready(function() {
                                 validSelectedServices.push(serviceId);
                             }
                             $('#service_id').append(
-                                `<option value="${service.id}" data-price="${service.price}" data-price-type="${service.price_type}" data-risk-status="${service.risk_status}" ${isSelected}>
+                                `<option value="${service.id}" 
+                                        data-price="${service.price}" 
+                                        data-price-type="${service.price_type}" 
+                                        data-risk-status="${service.risk_status}" 
+                                        data-time="${service.service_time || 30}" 
+                                        ${isSelected}>
                                     ${service.name}
                                 </option>`
                             );
@@ -457,7 +464,9 @@ $(document).ready(function() {
     $('#service_id').on('change', function(e) {
         var selectedOptions = $(this).find('option:selected');
         var totalPrice = 0;
+        var totalTime = 0;
         var lastServicePrice = 0;
+        var lastServiceTime = 30; // default fallback
         var isServicePriceFixed = false;
 
         // Update selected services
@@ -469,47 +478,61 @@ $(document).ready(function() {
         var newlySelectedId = currentSelectedIds.find(id => !selectedServices.includes(id));
         if (newlySelectedId) {
             lastSelectedServiceId = newlySelectedId;
-            // Check if the newly selected service is risky
             var selectedOption = $('#service_id option[value="' + newlySelectedId + '"]');
+            
+            // Risky service check
             if (selectedOption.data('risk-status') === 'risky' && !agreedRiskyServices.has(newlySelectedId)) {
                 $('#riskyServiceModalLabel').text('Risky Service Confirmation: ' + selectedOption.text());
                 $('#risky_service_id').val(newlySelectedId);
                 $('#riskyServiceModal').modal('show');
+                return; // Stop here until user agrees
             }
         }
 
         // Find deselected service
         var deselectedId = selectedServices.find(id => !currentSelectedIds.includes(id));
         if (deselectedId) {
-            agreedRiskyServices.delete(deselectedId); // Remove from agreed services
+            agreedRiskyServices.delete(deselectedId);
         }
 
-        // Update prices only for agreed or non-risky services
+        // Calculate totals only for allowed services
         if (selectedOptions.length > 0) {
             selectedOptions.each(function() {
                 var serviceId = $(this).val();
-                // Only include price if service is not risky or user has agreed
-                if ($(this).data('risk-status') !== 'risky' || agreedRiskyServices.has(serviceId)) {
+                var includeInCalc = $(this).data('risk-status') !== 'risky' || agreedRiskyServices.has(serviceId);
+
+                if (includeInCalc) {
                     var price = parseFloat($(this).data('price')) || 0;
+                    var time = parseFloat($(this).data('time')) || 30;
+
                     totalPrice += price;
+                    totalTime += time;
+
                     if (serviceId === lastSelectedServiceId) {
                         lastServicePrice = price;
+                        lastServiceTime = time;
                         isServicePriceFixed = $(this).data('price-type') === 'fixed';
                     }
                 }
             });
         } else {
             lastSelectedServiceId = null;
+            lastServiceTime = 30;
         }
 
-        // Update price inputs
-        $('#service_price').val(lastServicePrice.toFixed(2)).prop('readonly', isServicePriceFixed || selectedOptions.length === 0);
-        $('#total_price').val(totalPrice.toFixed(2)).prop('readonly', true);
+        // Update inputs
+        $('#service_price').val(lastServicePrice.toFixed(2))
+            .prop('readonly', isServicePriceFixed || selectedOptions.length === 0);
 
-        // Update selectedServices
+        $('#total_price').val(totalPrice.toFixed(2));
+
+        // === NEW: Update Service Time ===
+        $('#service_time').val(totalTime);
+
+        // Update selectedServices array
         selectedServices = currentSelectedIds;
-        console.log('Updated selectedServices:', selectedServices);
-        console.log('Updated agreedRiskyServices:', Array.from(agreedRiskyServices));
+
+        console.log('Total Service Time (minutes):', totalTime);
     });
 
     // Handle "I Agree" button for risky services

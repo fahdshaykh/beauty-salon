@@ -83,7 +83,7 @@
 
                             var book_time = moment(value.due_time, ["h:mm A"]).format("HH:mm");
 
-                            var end_time = moment(value.due_time, ["h:mm A"]).add(value.finish_time, 'minutes').format("HH:mm");
+                            var end_time = moment(value.due_time, ["h:mm A"]).add(value.service_time, 'minutes').format("HH:mm");
 
                             if (value.service_color != '') {
 

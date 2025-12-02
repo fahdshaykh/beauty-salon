@@ -205,7 +205,7 @@ color:#FFF !important;
 
                 <?php echo date('d-m-Y', strtotime($booking_detail['due_date'])); $booking_detail['due_date']; ?>
 
-                <span style="margin-left: 2em;"><?php echo $booking_detail['due_time']; ?></span><span style="margin-left: 2em;">Finish Time: <?php echo $booking_detail['finish_time']; ?> Minutes</span>
+                <span style="margin-left: 2em;"><?php echo $booking_detail['due_time']; ?></span><span style="margin-left: 2em;">Finish Time: <?php echo $booking_detail['service_time']; ?> Minutes</span>
 
             </p>
 

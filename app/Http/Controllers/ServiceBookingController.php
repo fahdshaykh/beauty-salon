@@ -148,7 +148,7 @@ class ServiceBookingController extends Controller
                     'total_price'     => $value->total_price,
                     'due_date'        => $value->due_date,
                     'due_time'        => $value->due_time,
-                    'finish_time'     => $value->finish_time,
+                    'service_time'     => $value->service_time,
                     'service_status'  => $value->service_status,
                     'services'        => $servicesWithColor,
                     'payment_days'    => $value->payment_days,
@@ -222,7 +222,7 @@ class ServiceBookingController extends Controller
         $this->validate($request, [
             'due_date' => 'required',
             'due_time' => 'required',
-            'finish_time' => 'required|numeric',
+            'service_time' => 'required|numeric',
             'customer_id' => 'required|numeric',
             'service_id' => 'required',
             'user_id' => 'required|numeric',
@@ -239,7 +239,7 @@ class ServiceBookingController extends Controller
         $existingBooking = ServiceBooking::where('user_id', $userId)
             ->where('due_date', $dueDate)
             ->where(function ($query) use ($dueTime) {
-                $query->whereRaw("? BETWEEN due_time AND ADDTIME(due_time, SEC_TO_TIME(finish_time * 60))", [$dueTime]);
+                $query->whereRaw("? BETWEEN due_time AND ADDTIME(due_time, SEC_TO_TIME(service_time * 60))", [$dueTime]);
             })
             ->exists();
            
@@ -285,7 +285,7 @@ class ServiceBookingController extends Controller
             'total_price' => $data['total_price'],
             'due_date' => $data['due_date'],
             'due_time' => $data['due_time'],
-            'finish_time' => $data['finish_time'],
+            'service_time' => $data['service_time'],
             'comment' => $data['comment'],
             'vat' => $vat,
             'service_status' => $service_status,
@@ -467,7 +467,7 @@ class ServiceBookingController extends Controller
         $existingBooking = ServiceBooking::where('user_id', $userId)
             ->where('due_date', $dueDate)
             ->where(function ($query) use ($dueTime) {
-                $query->whereRaw("? BETWEEN due_time AND ADDTIME(due_time, SEC_TO_TIME(finish_time * 60))", [$dueTime]);
+                $query->whereRaw("? BETWEEN due_time AND ADDTIME(due_time, SEC_TO_TIME(service_time * 60))", [$dueTime]);
             })
             ->exists();
 
@@ -477,9 +477,9 @@ class ServiceBookingController extends Controller
             $bookedSlots = ServiceBooking::where('user_id', $userId)
                 ->where('due_date', $dueDate)
                 ->where(function ($query) use ($dueTime) {
-                    $query->whereRaw("? BETWEEN due_time AND ADDTIME(due_time, SEC_TO_TIME(finish_time * 60))", [$dueTime]);
+                    $query->whereRaw("? BETWEEN due_time AND ADDTIME(due_time, SEC_TO_TIME(service_time * 60))", [$dueTime]);
                 })
-                ->get(['due_date', 'due_time', 'finish_time']);
+                ->get(['due_date', 'due_time', 'service_time']);
 
             return response()->json([
                 'error' => 'You already have a booking in this time range.',
@@ -699,7 +699,7 @@ class ServiceBookingController extends Controller
 
                 'due_time' => $data['due_time'],
 
-                'finish_time' => $data['finish_time'],
+                'service_time' => $data['service_time'],
 
                 'comment' => $data['comment'],
 
@@ -1022,7 +1022,7 @@ class ServiceBookingController extends Controller
 
                     'due_time' => $value->due_time,
 
-                    'finish_time' => $value->finish_time,
+                    'service_time' => $value->service_time,
 
                     'service_status' => $value->service_status,
 
@@ -1120,7 +1120,7 @@ class ServiceBookingController extends Controller
 
                     'due_time' => $value->due_time,
 
-                    'finish_time' => $value->finish_time,
+                    'service_time' => $value->service_time,
 
                     'service_status' => $value->service_status,
 
@@ -1221,7 +1221,7 @@ class ServiceBookingController extends Controller
 
                     'due_time' => $value->due_time,
 
-                    'finish_time' => $value->finish_time,
+                    'service_time' => $value->service_time,
 
                     'service_status' => $value->service_status,
 
@@ -1399,7 +1399,7 @@ class ServiceBookingController extends Controller
 
                     'due_time' => $value->due_time,
 
-                    'finish_time' => $value->finish_time,
+                    'service_time' => $value->service_time,
 
                     'service_status' => $value->service_status,
 

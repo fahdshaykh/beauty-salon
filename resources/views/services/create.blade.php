@@ -167,7 +167,10 @@
 
                     <div class="form-group">
 
+                      <label for="Service_time">Service Price</label>
+                      
                       <div class="input-group">
+
 
                         <div class="input-group-prepend">
 
@@ -188,12 +191,26 @@
 
                     <div class="form-group">
 
+                    <label for="Service_time">Service Color</label>
                       <div class="col" style="margin-left: -8px;">
 
                           <input type='text' class="color-picker" name="service_color" value="#ffe74c" />
 
                       </div>
 
+                    </div>
+
+
+                    <div class="form-group">
+                      <label for="Service_time">Service Time</label>
+                        <div class="input-group">
+                            <input type="text" name="service_time" value="" class="form-control" />
+                            <div class="input-group-append">
+                                <span class="input-group-text">
+                                    <i class="far fa-clock"></i>
+                                </span>
+                            </div>
+                        </div>
                     </div>
 
 
