@@ -498,7 +498,7 @@
 
                           <?php if($email!=""){ ?>
 
-                          <a href="javascript:void(0);" onclick="send_mail()" class="btn btn-success float-right mt-4"><i class="fa fa-share mr-1"></i>Send Invoice</a>
+                          <a href="javascript:void(0);" onclick="send_mail()" class="btn btn-info float-right mt-4"><i class="fa fa-share mr-1"></i>Send Invoice</a>
 
                           <?php } ?>
 

@@ -50,7 +50,7 @@
                                 </select>
                             </div>
 
-                            <button type="submit" class="btn btn-primary mr-2">Update</button>
+                            <button type="submit" class="btn btn-dark mr-2">Update</button>
                             <a class="btn btn-light" href="{{ route('referred_customers.index') }}">Cancel</a>
                         </form>
                     </div>

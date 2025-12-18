@@ -76,7 +76,10 @@
                             <div class="col-md-4 mt-3">
                                 <div class="d-flex gap-2">
                                     <button type="submit" class="btn btn-primary w-100">Apply</button>
-                                    <a href="{{ route('categories.index') }}" class="btn btn-outline-secondary w-100 ml-1">Clear</a>
+                                    <a href="{{ route('categories.index') }}" class="btn btn-outline-warning btn-icon-text w-100 ml-1">
+                                        <i class="fas fa-redo btn-icon-prepend"></i>
+                                        Reset
+                                    </a>
                                 </div>
                             </div>
                         </form>

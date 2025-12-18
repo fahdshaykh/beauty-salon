@@ -33,8 +33,11 @@
 </div>
 
 
-
-<button type="submit" class="btn btn-primary mr-2">Submit</button>
+@if(isset($expense_type->type))
+<button type="submit" class="btn btn-dark mr-2">Update</button>
+@else
+<button type="submit" class="btn btn-primary mr-2">Create</button>
+@endif
 
 
 

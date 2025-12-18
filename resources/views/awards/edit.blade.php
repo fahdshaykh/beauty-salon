@@ -86,7 +86,7 @@
                               </div>
                             </div>
 
-                            <button type="submit" class="btn btn-primary mr-2">Submit</button>
+                            <button type="submit" class="btn btn-dark mr-2">Update Award</button>
                             <a class="btn btn-light" href="{{ route('suppliers.index') }}">Cancel</a>
                         </form>
                     </div>

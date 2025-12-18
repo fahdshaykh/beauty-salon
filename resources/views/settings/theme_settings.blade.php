@@ -1296,7 +1296,7 @@
 
                                                                 </div>                                        
 
-                                                            <button type="submit" class="btn btn-primary mr-2">Update </button>
+                                                            <button type="submit" class="btn btn-dark mr-2">Update Setting</button>
 
                                         
 

@@ -267,8 +267,11 @@
     <label for="exampleTextarea1">Comment</label>
     <textarea class="form-control" id="exampleTextarea1" name="comment" rows="4">@if(isset($comment)){{$comment}}@else{{old('comment')}}@endif</textarea>
 </div>
-
-<button type="submit" class="btn btn-primary mr-2">Submit</button>
+@if(isset($service_time))
+<button type="submit" class="btn btn-dark mr-2">Update Booking</button>
+@else
+<button type="submit" class="btn btn-primary mr-2">Create Booking</button>
+@endif
 <a class="btn btn-light" href="{{route('service-bookings.index')}}">Cancel</a>
 
 <!-- Basket Modal -->

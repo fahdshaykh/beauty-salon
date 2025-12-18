@@ -337,7 +337,11 @@
 
                     </div>
 
-<button type="submit" class="btn btn-primary mr-2">Submit</button>
+@if(isset($customer->first_name))
+<button type="submit" class="btn btn-dark mr-2">Update Customer</button>
+@else
+<button type="submit" class="btn btn-primary mr-2">Create Customer</button>
+@endif
 
 
 

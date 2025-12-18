@@ -129,7 +129,7 @@
                                 </div>
                             </div>
 
-                            <button type="submit" class="btn btn-success">Update User</button>
+                            <button type="submit" class="btn btn-dark">Update User</button>
                             <a href="{{ route('users.index') }}" class="btn btn-light">Cancel</a>
                         </form>
                     </div>

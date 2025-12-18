@@ -53,7 +53,7 @@
                                 <textarea class="form-control" name="address" rows="3">{{ old('address', $supplier->address ?? '') }}</textarea>
                             </div>
 
-                            <button type="submit" class="btn btn-primary mr-2">Update</button>
+                            <button type="submit" class="btn btn-dark mr-2">Update</button>
                             <a class="btn btn-light" href="{{ route('suppliers.index') }}">Cancel</a>
                         </form>
                     </div>

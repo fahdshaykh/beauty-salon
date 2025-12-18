@@ -56,7 +56,7 @@
                                 <textarea class="form-control" name="address" rows="3" placeholder="Address"></textarea>
                             </div>
 
-                            <button type="submit" class="btn btn-primary mr-2">Submit</button>
+                            <button type="submit" class="btn btn-primary mr-2">Create</button>
                             <a class="btn btn-light" href="{{ route('suppliers.index') }}">Cancel</a>
                         </form>
                     </div>

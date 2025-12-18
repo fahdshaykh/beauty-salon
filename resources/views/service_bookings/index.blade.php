@@ -123,8 +123,11 @@
 
                                 <!-- Buttons -->
                                 <div class="col-md-6 d-flex gap-2">
-                                    <button type="submit" class="btn btn-primary w-50">Apply Filters</button>
-                                    <a href="{{ route('service-bookings.index') }}" class="btn btn-secondary w-50">Clear Filters</a>
+                                    <button type="submit" class="btn btn-primary w-50">Apply</button>
+                                    <a href="{{ route('service-bookings.index') }}" class="btn btn-outline-warning btn-icon-text w-100 ml-1">
+                                        <i class="fas fa-redo btn-icon-prepend"></i>
+                                        Reset
+                                    </a>
                                 </div>
                             </div>
                         </form>

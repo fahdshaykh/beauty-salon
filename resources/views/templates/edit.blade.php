@@ -104,7 +104,7 @@
                          
                                   @method('PUT')
                            
-                              <button type="submit" class="btn btn-lg btn-primary mt-3">Update</button>
+                              <button type="submit" class="btn btn-lg btn-dark mt-3">Update</button>
                         </form>
                         
 

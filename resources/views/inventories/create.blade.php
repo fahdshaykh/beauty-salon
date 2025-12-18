@@ -194,7 +194,7 @@
 
 
 
-                      <button type="submit" class="btn btn-primary mr-2">Submit</button>
+                      <button type="submit" class="btn btn-primary mr-2">Add Inventory</button>
 
 
 

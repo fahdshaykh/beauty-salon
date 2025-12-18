@@ -18,7 +18,10 @@
     <textarea class="form-control" id="exampleTextarea1" name="description" rows="4">@if(isset($category->description)){{$category->description}}@else{{old('description')}}@endif</textarea>
 
 </div>
-
-<button type="submit" class="btn btn-primary mr-2">Submit</button>
+@if(isset($category->description))
+<button type="submit" class="btn btn-dark mr-2">Update Category</button>
+@else
+<button type="submit" class="btn btn-primary mr-2">Create Category</button>
+@endif
 
 <a class="btn btn-light" href="{{route('categories.index')}}">Cancel</a>

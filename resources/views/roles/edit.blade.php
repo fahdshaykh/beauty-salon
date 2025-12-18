@@ -53,7 +53,7 @@
                                 </div>
                             </div>
 
-                            <button type="submit" class="btn btn-success">Update Role</button>
+                            <button type="submit" class="btn btn-dark">Update Role</button>
                             <a href="{{ route('roles.index') }}" class="btn btn-light">Cancel</a>
                         </form>
                     </div>
