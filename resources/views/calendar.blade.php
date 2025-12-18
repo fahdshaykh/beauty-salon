@@ -115,6 +115,8 @@
 
 
             @role('admin')
+                
+            <div class="row">
                 <div class="form-group col-md-3">
 
 
@@ -148,6 +150,33 @@
 
 
                 </div>
+
+                <div class="form-group col-md-3">
+
+
+
+                    <select id="service_status_admin" name="service_status_admin" class="form-control js-example-basic-single w-100"
+
+
+
+                        style="width:100%">
+
+
+
+                        <option value="0">All Orders</option>
+                        <option value="1">Booked</option>
+                        <option value="2">In-progress</option>
+                        <option value="3">Completed</option>
+
+
+
+                    </select>
+
+
+
+                </div>
+
+            </div>
 
                 @else
 

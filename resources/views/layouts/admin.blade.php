@@ -838,7 +838,7 @@
           </li>
           @endcan
 
-          
+          @role('admin')
           <li class="nav-item">
             <a class="nav-link" href="{{ route('tickets.index') }}" >
               <i class="fas fa-ticket-alt menu-icon"></i>
@@ -846,6 +846,7 @@
               <i class="menu-arrow"></i>
             </a>
           </li>
+          @endrole
 
         </ul>
 

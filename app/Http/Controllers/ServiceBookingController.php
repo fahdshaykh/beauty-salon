@@ -950,24 +950,31 @@ class ServiceBookingController extends Controller
 
 
 
-    public function get_booking_orders()
+    public function get_booking_orders(Request $request)
 
     {
 
         // $start_date = date("Y").'-'.date("m").'-'.'01';
-            // Authorization: ensure user can view bookings
-            $this->authorize('viewAny', ServiceBooking::class);
+        // Authorization: ensure user can view bookings
+        $this->authorize('viewAny', ServiceBooking::class);
 
-            // $start_date = date("Y").'-'.date("m").'-'.'01';
+        $userId = $request->query('user_id', 0);
+        $status = $request->query('service_status', 0); // note: name matches select
 
-        // $end_date = date("Y").'-'.date("m").'-'.'31';
+        $bookings = ServiceBooking::with('customer', 'user')
+            ->where('service_status', '!=', 4)
+            ->where('company_id', auth()->user()->company_id);
 
-        $bookings = ServiceBooking::with('customer','user')->where('service_status',"!=",4)->where('company_id', auth()->user()->company_id);
-
-        if (! (auth()->user() && auth()->user()->hasRole('admin'))) {
-
+        if (!auth()->user()->hasRole('admin')) {
             $bookings->where('user_id', auth()->user()->id);
+        }
 
+        if ($userId != 0) {
+            $bookings->where('user_id', $userId);
+        }
+
+        if ($status != 0) {
+            $bookings->where('service_status', $status);
         }
 
         $data = $bookings->orderBy('created_at', 'desc')->get();
