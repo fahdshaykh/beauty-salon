@@ -1,41 +1,21 @@
 <?php return array (
-  'barryvdh/laravel-cors' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'Fruitcake\\Cors\\CorsServiceProvider',
-    ),
-  ),
   'barryvdh/laravel-dompdf' => 
   array (
     'aliases' => 
     array (
-      'PDF' => 'Barryvdh\\DomPDF\\Facade',
+      'PDF' => 'Barryvdh\\DomPDF\\Facade\\Pdf',
+      'Pdf' => 'Barryvdh\\DomPDF\\Facade\\Pdf',
     ),
     'providers' => 
     array (
       0 => 'Barryvdh\\DomPDF\\ServiceProvider',
     ),
   ),
-  'beyondcode/laravel-dump-server' => 
+  'laravel/sail' => 
   array (
     'providers' => 
     array (
-      0 => 'BeyondCode\\DumpServer\\DumpServerServiceProvider',
-    ),
-  ),
-  'fideloper/proxy' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'Fideloper\\Proxy\\TrustedProxyServiceProvider',
-    ),
-  ),
-  'fruitcake/laravel-cors' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'Fruitcake\\Cors\\CorsServiceProvider',
+      0 => 'Laravel\\Sail\\SailServiceProvider',
     ),
   ),
   'laravel/tinker' => 
@@ -63,17 +43,6 @@
       0 => 'Maatwebsite\\Excel\\ExcelServiceProvider',
     ),
   ),
-  'mailersend/laravel-driver' => 
-  array (
-    'aliases' => 
-    array (
-      'LaravelDriver' => 'MailerSend\\LaravelDriver\\LaravelDriverFacade',
-    ),
-    'providers' => 
-    array (
-      0 => 'MailerSend\\LaravelDriver\\LaravelDriverServiceProvider',
-    ),
-  ),
   'nesbot/carbon' => 
   array (
     'providers' => 
@@ -86,6 +55,13 @@
     'providers' => 
     array (
       0 => 'NunoMaduro\\Collision\\Adapters\\Laravel\\CollisionServiceProvider',
+    ),
+  ),
+  'nunomaduro/termwind' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Termwind\\Laravel\\TermwindServiceProvider',
     ),
   ),
   'spatie/laravel-permission' => 
