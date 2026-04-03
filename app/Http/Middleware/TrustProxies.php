@@ -1,23 +1,37 @@
-<?php
-
-namespace App\Http\Middleware;
-
-use Illuminate\Http\Request;
-use Fideloper\Proxy\TrustProxies as Middleware;
-
-class TrustProxies extends Middleware
-{
-    /**
-     * The trusted proxies for this application.
-     *
-     * @var array|string
-     */
-    protected $proxies;
-
-    /**
-     * The headers that should be used to detect proxies.
-     *
-     * @var int
-     */
-    protected $headers = Request::HEADER_X_FORWARDED_ALL;
-}
+<?php
+
+namespace App\Http\Middleware;
+
+use Illuminate\Http\Request;
+use Illuminate\Http\Middleware\TrustProxies as Middleware;
+
+class TrustProxies extends Middleware
+{
+    /**
+     * The trusted proxies for this application.
+     *
+     * @var array|string
+     */
+    protected $proxies;
+
+    /**
+     * The headers that should be used to detect proxies.
+     *
+     * @var int
+     */
+    protected $headers =
+        Request::HEADER_X_FORWARDED_FOR |
+        Request::HEADER_X_FORWARDED_HOST |
+        Request::HEADER_X_FORWARDED_PORT |
+        Request::HEADER_X_FORWARDED_PROTO;
+
+    /**
+     * Get the proxy headers.
+     *
+     * @return int
+     */
+    protected function getTrustedHeaderTypes()
+    {
+        return $this->headers;
+    }
+}

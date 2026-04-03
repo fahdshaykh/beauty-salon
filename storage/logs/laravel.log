@@ -203672,3 +203672,111 @@ Trailing data at D:\\Working\\Code Disk\\works fahd\\beauty-salon\\vendor\\nesbo
 #7 D:/Working/Code Disk/works fahd/beauty-salon/artisan(68): Illuminate/Foundation/Console/Kernel->handle(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
 #8 {main}
 "} 
+[2026-04-03 16:25:56] local.ERROR: Target class [Fruitcake\Cors\HandleCors] does not exist. {"exception":"[object] (Illuminate\\Contracts\\Container\\BindingResolutionException(code: 0): Target class [Fruitcake\\Cors\\HandleCors] does not exist. at D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php:1124)
+[stacktrace]
+#0 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php(933): Illuminate/Container/Container->build('Fruitcake//Cors//...')
+#1 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1078): Illuminate/Container/Container->resolve('Fruitcake//Cors//...', Array, true)
+#2 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php(864): Illuminate/Foundation/Application->resolve('Fruitcake//Cors//...', Array)
+#3 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1058): Illuminate/Container/Container->make('Fruitcake//Cors//...', Array)
+#4 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(208): Illuminate/Foundation/Application->make('Fruitcake//Cors//...')
+#5 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(137): Illuminate/Pipeline/Pipeline->{closure:{closure:Illuminate/Pipeline/Pipeline::carry():194}:195}(Object(Illuminate/Http/Request))
+#6 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(175): Illuminate/Pipeline/Pipeline->then(Object(Closure))
+#7 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(144): Illuminate/Foundation/Http/Kernel->sendRequestThroughRouter(Object(Illuminate/Http/Request))
+#8 D:/Working/Code Disk/works fahd/beauty-salon/public/index.php(107): Illuminate/Foundation/Http/Kernel->handle(Object(Illuminate/Http/Request))
+#9 D:/Working/Code Disk/works fahd/beauty-salon/server.php(41): require_once('D://Working//Code...')
+#10 {main}
+
+[previous exception] [object] (ReflectionException(code: -1): Class \"Fruitcake\\Cors\\HandleCors\" does not exist at D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php:1122)
+[stacktrace]
+#0 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php(1122): ReflectionClass->__construct('Fruitcake//Cors//...')
+#1 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php(933): Illuminate/Container/Container->build('Fruitcake//Cors//...')
+#2 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1078): Illuminate/Container/Container->resolve('Fruitcake//Cors//...', Array, true)
+#3 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php(864): Illuminate/Foundation/Application->resolve('Fruitcake//Cors//...', Array)
+#4 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1058): Illuminate/Container/Container->make('Fruitcake//Cors//...', Array)
+#5 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(208): Illuminate/Foundation/Application->make('Fruitcake//Cors//...')
+#6 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(137): Illuminate/Pipeline/Pipeline->{closure:{closure:Illuminate/Pipeline/Pipeline::carry():194}:195}(Object(Illuminate/Http/Request))
+#7 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(175): Illuminate/Pipeline/Pipeline->then(Object(Closure))
+#8 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(144): Illuminate/Foundation/Http/Kernel->sendRequestThroughRouter(Object(Illuminate/Http/Request))
+#9 D:/Working/Code Disk/works fahd/beauty-salon/public/index.php(107): Illuminate/Foundation/Http/Kernel->handle(Object(Illuminate/Http/Request))
+#10 D:/Working/Code Disk/works fahd/beauty-salon/server.php(41): require_once('D://Working//Code...')
+#11 {main}
+"} 
+[2026-04-03 16:26:02] local.ERROR: Target class [Fruitcake\Cors\HandleCors] does not exist. {"exception":"[object] (Illuminate\\Contracts\\Container\\BindingResolutionException(code: 0): Target class [Fruitcake\\Cors\\HandleCors] does not exist. at D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php:1124)
+[stacktrace]
+#0 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php(933): Illuminate/Container/Container->build('Fruitcake//Cors//...')
+#1 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1078): Illuminate/Container/Container->resolve('Fruitcake//Cors//...', Array, true)
+#2 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php(864): Illuminate/Foundation/Application->resolve('Fruitcake//Cors//...', Array)
+#3 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1058): Illuminate/Container/Container->make('Fruitcake//Cors//...', Array)
+#4 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(257): Illuminate/Foundation/Application->make('Fruitcake//Cors//...')
+#5 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(215): Illuminate/Foundation/Http/Kernel->terminateMiddleware(Object(Illuminate/Http/Request), Object(Illuminate/Http/Response))
+#6 D:/Working/Code Disk/works fahd/beauty-salon/public/index.php(119): Illuminate/Foundation/Http/Kernel->terminate(Object(Illuminate/Http/Request), Object(Illuminate/Http/Response))
+#7 D:/Working/Code Disk/works fahd/beauty-salon/server.php(41): require_once('D://Working//Code...')
+#8 {main}
+
+[previous exception] [object] (ReflectionException(code: -1): Class \"Fruitcake\\Cors\\HandleCors\" does not exist at D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php:1122)
+[stacktrace]
+#0 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php(1122): ReflectionClass->__construct('Fruitcake//Cors//...')
+#1 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php(933): Illuminate/Container/Container->build('Fruitcake//Cors//...')
+#2 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1078): Illuminate/Container/Container->resolve('Fruitcake//Cors//...', Array, true)
+#3 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php(864): Illuminate/Foundation/Application->resolve('Fruitcake//Cors//...', Array)
+#4 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1058): Illuminate/Container/Container->make('Fruitcake//Cors//...', Array)
+#5 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(257): Illuminate/Foundation/Application->make('Fruitcake//Cors//...')
+#6 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(215): Illuminate/Foundation/Http/Kernel->terminateMiddleware(Object(Illuminate/Http/Request), Object(Illuminate/Http/Response))
+#7 D:/Working/Code Disk/works fahd/beauty-salon/public/index.php(119): Illuminate/Foundation/Http/Kernel->terminate(Object(Illuminate/Http/Request), Object(Illuminate/Http/Response))
+#8 D:/Working/Code Disk/works fahd/beauty-salon/server.php(41): require_once('D://Working//Code...')
+#9 {main}
+"} 
+[2026-04-03 16:26:11] local.ERROR: Target class [Fruitcake\Cors\HandleCors] does not exist. {"exception":"[object] (Illuminate\\Contracts\\Container\\BindingResolutionException(code: 0): Target class [Fruitcake\\Cors\\HandleCors] does not exist. at D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php:1124)
+[stacktrace]
+#0 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php(933): Illuminate/Container/Container->build('Fruitcake//Cors//...')
+#1 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1078): Illuminate/Container/Container->resolve('Fruitcake//Cors//...', Array, true)
+#2 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php(864): Illuminate/Foundation/Application->resolve('Fruitcake//Cors//...', Array)
+#3 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1058): Illuminate/Container/Container->make('Fruitcake//Cors//...', Array)
+#4 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(208): Illuminate/Foundation/Application->make('Fruitcake//Cors//...')
+#5 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(137): Illuminate/Pipeline/Pipeline->{closure:{closure:Illuminate/Pipeline/Pipeline::carry():194}:195}(Object(Illuminate/Http/Request))
+#6 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(175): Illuminate/Pipeline/Pipeline->then(Object(Closure))
+#7 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(144): Illuminate/Foundation/Http/Kernel->sendRequestThroughRouter(Object(Illuminate/Http/Request))
+#8 D:/Working/Code Disk/works fahd/beauty-salon/public/index.php(107): Illuminate/Foundation/Http/Kernel->handle(Object(Illuminate/Http/Request))
+#9 D:/Working/Code Disk/works fahd/beauty-salon/server.php(41): require_once('D://Working//Code...')
+#10 {main}
+
+[previous exception] [object] (ReflectionException(code: -1): Class \"Fruitcake\\Cors\\HandleCors\" does not exist at D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php:1122)
+[stacktrace]
+#0 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php(1122): ReflectionClass->__construct('Fruitcake//Cors//...')
+#1 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php(933): Illuminate/Container/Container->build('Fruitcake//Cors//...')
+#2 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1078): Illuminate/Container/Container->resolve('Fruitcake//Cors//...', Array, true)
+#3 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php(864): Illuminate/Foundation/Application->resolve('Fruitcake//Cors//...', Array)
+#4 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1058): Illuminate/Container/Container->make('Fruitcake//Cors//...', Array)
+#5 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(208): Illuminate/Foundation/Application->make('Fruitcake//Cors//...')
+#6 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(137): Illuminate/Pipeline/Pipeline->{closure:{closure:Illuminate/Pipeline/Pipeline::carry():194}:195}(Object(Illuminate/Http/Request))
+#7 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(175): Illuminate/Pipeline/Pipeline->then(Object(Closure))
+#8 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(144): Illuminate/Foundation/Http/Kernel->sendRequestThroughRouter(Object(Illuminate/Http/Request))
+#9 D:/Working/Code Disk/works fahd/beauty-salon/public/index.php(107): Illuminate/Foundation/Http/Kernel->handle(Object(Illuminate/Http/Request))
+#10 D:/Working/Code Disk/works fahd/beauty-salon/server.php(41): require_once('D://Working//Code...')
+#11 {main}
+"} 
+[2026-04-03 16:26:11] local.ERROR: Target class [Fruitcake\Cors\HandleCors] does not exist. {"exception":"[object] (Illuminate\\Contracts\\Container\\BindingResolutionException(code: 0): Target class [Fruitcake\\Cors\\HandleCors] does not exist. at D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php:1124)
+[stacktrace]
+#0 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php(933): Illuminate/Container/Container->build('Fruitcake//Cors//...')
+#1 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1078): Illuminate/Container/Container->resolve('Fruitcake//Cors//...', Array, true)
+#2 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php(864): Illuminate/Foundation/Application->resolve('Fruitcake//Cors//...', Array)
+#3 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1058): Illuminate/Container/Container->make('Fruitcake//Cors//...', Array)
+#4 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(257): Illuminate/Foundation/Application->make('Fruitcake//Cors//...')
+#5 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(215): Illuminate/Foundation/Http/Kernel->terminateMiddleware(Object(Illuminate/Http/Request), Object(Illuminate/Http/Response))
+#6 D:/Working/Code Disk/works fahd/beauty-salon/public/index.php(119): Illuminate/Foundation/Http/Kernel->terminate(Object(Illuminate/Http/Request), Object(Illuminate/Http/Response))
+#7 D:/Working/Code Disk/works fahd/beauty-salon/server.php(41): require_once('D://Working//Code...')
+#8 {main}
+
+[previous exception] [object] (ReflectionException(code: -1): Class \"Fruitcake\\Cors\\HandleCors\" does not exist at D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php:1122)
+[stacktrace]
+#0 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php(1122): ReflectionClass->__construct('Fruitcake//Cors//...')
+#1 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php(933): Illuminate/Container/Container->build('Fruitcake//Cors//...')
+#2 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1078): Illuminate/Container/Container->resolve('Fruitcake//Cors//...', Array, true)
+#3 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php(864): Illuminate/Foundation/Application->resolve('Fruitcake//Cors//...', Array)
+#4 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1058): Illuminate/Container/Container->make('Fruitcake//Cors//...', Array)
+#5 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(257): Illuminate/Foundation/Application->make('Fruitcake//Cors//...')
+#6 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(215): Illuminate/Foundation/Http/Kernel->terminateMiddleware(Object(Illuminate/Http/Request), Object(Illuminate/Http/Response))
+#7 D:/Working/Code Disk/works fahd/beauty-salon/public/index.php(119): Illuminate/Foundation/Http/Kernel->terminate(Object(Illuminate/Http/Request), Object(Illuminate/Http/Response))
+#8 D:/Working/Code Disk/works fahd/beauty-salon/server.php(41): require_once('D://Working//Code...')
+#9 {main}
+"} 

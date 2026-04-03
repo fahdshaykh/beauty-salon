@@ -29,11 +29,11 @@ class Kernel extends HttpKernel
      */
 
     protected $middleware = [
-        \Fruitcake\Cors\HandleCors::class,
+        \Illuminate\Http\Middleware\HandleCors::class,
    
         \App\Http\Middleware\TrustProxies::class,
 
-        \App\Http\Middleware\CheckForMaintenanceMode::class,
+        \Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance::class,
 
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
 
