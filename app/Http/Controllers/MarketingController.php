@@ -92,6 +92,7 @@ class MarketingController extends Controller
               
                 $customers = $customers->whereBetween('service_bookings.due_date', [$request->start_date." 00:00:00", $request->end_date." 23:59:59"]);
             }
+
             $customers = $customers->where('customers.company_id', auth()->user()->company_id)->where('customers.is_active', 1)->groupBy('customers.primary_phone')->orderBy('due_date', 'desc')->get();
             
 
@@ -116,7 +117,7 @@ class MarketingController extends Controller
           
             $booking_ids = DB::table('booking_details')->whereIn('service_id',$service_id)->groupBy('booking_id')->pluck('booking_id')->toArray();
 
-            $customers = DB::table('customers')->join('service_bookings', 'service_bookings.customer_id', '=', 'customers.id')->where('customers.sms_optout','!=', 1)->where('customers.primary_phone','!=', "")->whereIn('service_bookings.id',$booking_ids);
+            $customers = DB::table('customers')->select('customers.*')->join('service_bookings', 'service_bookings.customer_id', '=', 'customers.id')->where('customers.sms_optout','!=', 1)->where('customers.primary_phone','!=', "")->whereIn('service_bookings.id',$booking_ids);
             if($zip!=""){
                
                 $customers = $customers->Where(function ($query) use($zip) {
@@ -135,7 +136,7 @@ class MarketingController extends Controller
                 $customers = $customers->whereBetween('service_bookings.due_date', [$request->start_date." 00:00:00", $request->end_date." 23:59:59"]);
             }
             $customers = $customers->where('customers.is_active', 1)->where('customers.company_id', auth()->user()->company_id)->groupBy('customers.primary_phone')->get();
-            //echo "<pre>"; print_r($customers); exit;
+            // echo "<pre>"; print_r($customers); exit;
             if(count($customers)>0){
                 $all_services_by_customer = array();
                 foreach($customers as $data){

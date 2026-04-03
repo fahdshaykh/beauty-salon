@@ -22,17 +22,9 @@
 
             </h3>
 
-            <nav aria-label="breadcrumb">
-
-                <ol class="breadcrumb">
-
-                    <li class="breadcrumb-item"><a href="{{route('service-bookings.index')}}">Service Bookings</a></li>
-
-                    <li class="breadcrumb-item active" aria-current="page">Bookings Listing</li>
-
-                </ol>
-
-            </nav>
+            @can('create bookings')
+                <a href="{{ url('service-bookings/service-bookings-create') }}" class="btn btn-primary">New Booking</a>
+            @endcan
 
         </div>
 
