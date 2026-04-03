@@ -281,7 +281,6 @@ return [
          */
         // FruitCake\Cors\CorsServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
-        Barryvdh\DomPDF\ServiceProvider::class,
         Illuminate\Auth\AuthServiceProvider::class,
 
         Illuminate\Broadcasting\BroadcastServiceProvider::class,
@@ -385,7 +384,6 @@ return [
     'aliases' => [
 
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
-        'PDF' => Barryvdh\DomPDF\Facade::class,
         'App' => Illuminate\Support\Facades\App::class,
 
         'Arr' => Illuminate\Support\Arr::class,
