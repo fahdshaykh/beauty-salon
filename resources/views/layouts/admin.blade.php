@@ -500,7 +500,7 @@
 
 
                 @can('view services report')
-                <li class="nav-item"> <a class="nav-link" href="{{url('graph-report')}}">Services Report</a></li>
+                <li class="nav-item"> <a class="nav-link" href="{{url('graph-report')}}">Services Graph</a></li>
                 @endcan
 
 
@@ -513,7 +513,7 @@
                 <!-- reports permissions -->
 
                 @can('view employee report')
-                <li class="nav-item"> <a class="nav-link" href="{{url('employee-graph-report')}}">Employee Report</a></li>
+                <li class="nav-item"> <a class="nav-link" href="{{url('employee-graph-report')}}">Employee Graph</a></li>
                 @endcan
 
                 @can('view customer report')
@@ -521,7 +521,7 @@
                 @endcan
 
                 @can('view customer graph')
-                <li class="nav-item"> <a class="nav-link" href="{{url('customer-graph')}}">Customer Graph</a></li>
+                <li class="nav-item"> <a class="nav-link" href="{{url('customer-graph')}}">Customer Leads Graph</a></li>
                 @endcan
 
                 @can('view customer country graph')

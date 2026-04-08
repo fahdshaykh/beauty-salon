@@ -32,7 +32,7 @@
 
 
 
-                <input type="text" id="firstname" name="first_name" minlength="2" value="@if(isset($customer->first_name)){{$customer->first_name}}@else{{old('first_name')}}@endif" class="form-control @error('first_name') is-invalid @enderror" placeholder="" />
+                <input type="text" placeholder="John" id="firstname" name="first_name" minlength="2" value="@if(isset($customer->first_name)){{$customer->first_name}}@else{{old('first_name')}}@endif" class="form-control @error('first_name') is-invalid @enderror" placeholder="" />
                 @error('first_name')
                     <div class="invalid-feedback">
                         {{ $message }}
@@ -69,7 +69,7 @@
 
 
 
-                <input type="text" id="lastname" name="last_name" value="@if(isset($customer->last_name)){{$customer->last_name}}@else{{old('last_name')}}@endif" class="form-control @error('last_name') is-invalid @enderror" placeholder="" />
+                <input type="text" placeholder="Doe" id="lastname" name="last_name" value="@if(isset($customer->last_name)){{$customer->last_name}}@else{{old('last_name')}}@endif" class="form-control @error('last_name') is-invalid @enderror" placeholder="" />
                 @error('last_name')
                     <div class="invalid-feedback">
                         {{ $message }}
@@ -130,7 +130,7 @@
                     <div class="row">
 
                             <div class="col-md-3 input-group-prepend">
-                                <select id="tags" name="country_code" class="js-example-basic-single w-100 @error('country_code') is-invalid @enderror" required>
+                                {{-- <select id="tags" name="country_code" class="js-example-basic-single w-100 @error('country_code') is-invalid @enderror" required>
 
                                 @foreach ($countries as $country)
                                     
@@ -141,16 +141,14 @@
 
                                 @endforeach
 
-                                </select>
-                                @error('country_code')
-                                    <div class="invalid-feedback">
-                                        {{ $message }}
-                                    </div>
-                                @enderror
+                                </select> --}}
+
+                                <input type="text" placeholder="44" id="country_code" name="country_code" value="@if(isset($customer->country_code)){{$customer->country_code}}@else{{old('country_code')}}@endif" class="form-control @error('country_code') is-invalid @enderror" maxlength="2"  />
+                                
                             </div>
 				
                             <div class="col-md-9">
-                                <input type="text" id="primary_phone" name="primary_phone" minlength="10"  maxlength="14" value="@if(isset($customer->primary_phone)){{$customer->primary_phone}}@else{{old('primary_phone')}}@endif" class="form-control @error('primary_phone') is-invalid @enderror" maxlength="11"  placeholder=""/>
+                                <input type="text" placeholder="1234567890" id="primary_phone" name="primary_phone" minlength="10"  maxlength="14" value="@if(isset($customer->primary_phone)){{$customer->primary_phone}}@else{{old('primary_phone')}}@endif" class="form-control @error('primary_phone') is-invalid @enderror" maxlength="11"  placeholder=""/>
                                 @error('primary_phone')
                                     <div class="invalid-feedback">
                                         {{ $message }}
@@ -208,7 +206,7 @@
 
 
 
-                <input class="form-control" type="email" name="email" value="@if(isset($customer->email)){{$customer->email}}@else{{old('email')}}@endif"  placeholder=""/>
+                <input class="form-control" type="email" placeholder="example@gmail.com" name="email" value="@if(isset($customer->email)){{$customer->email}}@else{{old('email')}}@endif"  placeholder=""/>
 
 
 
