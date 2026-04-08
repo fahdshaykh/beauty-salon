@@ -331,34 +331,6 @@ color:#FFF !important;
 
                     <div class="col-lg-6 our-grid-margin our-map section">
 
-                        <!-- <div class="card our-card">
-
-                            <div class="card-body our-card-body">
-
-                                <h6 class="card-title our-card-title">Map</h6>
-
-                                <div class="job-map-container">
-
-                                    <iframe
-
-                                        src="https://maps.google.co.in/maps?q=<?php echo urlencode($booking_detail['customer_address']); ?>&output=embed"
-
-                                        height="150"
-
-                                        style="border: 0; width: 100%;"
-
-                                        allowfullscreen=""
-
-                                        loading="lazy"
-
-                                    ></iframe>
-
-                                </div>
-
-                            </div>
-
-                        </div> -->
-
                         <div class="card our-card" style="background: #b1b1b12e; height: 237px;">
 
                         <center><b style="margin-right: 20px;">Customer History</b></center>
@@ -447,17 +419,15 @@ color:#FFF !important;
 
                     </div> 
 
-                    <div class="col-md-6 our-grid-margin first-two-btns paid-cash-section-desktop paid-cash-section-ipad paid-cash-section-mobile">
+                    <div class="col-lg-6 col-md-6 our-grid-margin first-two-btns paid-cash-section-desktop paid-cash-section-ipad paid-cash-section-mobile">
 
-                        <div class="card our-card" style="background: #b1b1b112;">
+                        <div class="card our-card" style="background: #b1b1b112; height: 100%;">
 
-                            <div class="card-body our-card-body">
+                            <div class="paid-cash-div-desktop paid-cash-div-ipad paid-cash-div-mobile">
 
-                                <div class="paid-cash-div-desktop paid-cash-div-ipad paid-cash-div-mobile">
+                                    <p style="padding-top: 0; margin-top: 20px;"><?php if($booking_detail['payment_instrument']!=""){ ?>Paid by <?php echo $booking_detail['payment_instrument']; } else{ echo "Payment is Pending"; } ?></p>
 
-                                    <p style="padding-top: 0;"><?php if($booking_detail['payment_instrument']!=""){ ?>Paid by <?php echo $booking_detail['payment_instrument']; } else{ echo "Payment is Pending"; } ?></p>
-
-                                    <!-- <div style="text-align: center; margin-bottom: 10px;">
+                                    <div style="text-align: center; margin-bottom: 10px;">
 
                                     <?php if($booking_detail['customer_email']!=""){ ?>
 
@@ -469,19 +439,17 @@ color:#FFF !important;
 
                                    <?php } ?>
 
-                                    </div> -->
+                                    </div>
 
-                                    <!-- <div style="text-align: center;">
+                                    <div style="text-align: center;">
 
                                      <button class="btn first-two-btns" onclick="sendReviewSms('<?php echo $booking_detail['customer_mobile']; ?>');"><i class="fa fa-envelope"></i> SMS customers Review request</button>
 
-                                    </div> -->
+                                    </div>
 
                                 </div>
 
-                            </div>
-
-                            <div class="row last-three-btns  last-three-btns-mobile" style="margin-top: 10px;">
+                            <div class="row last-three-btns  last-three-btns-mobile" style="margin-top: 25px;">
 
                             
                                 <div class="col-lg-12 col-md-12 col-sm-12 ipad-pro">
@@ -489,7 +457,7 @@ color:#FFF !important;
                                     <ul>
 
                                     @can('calendar update booking status')
-                                        <li>
+                                        <li class="mt-1">
 
                                           
 
@@ -513,7 +481,7 @@ color:#FFF !important;
                                         @endcan
 
                                         @can('calendar view invoice')
-                                        <li>
+                                        <li class="mt-1">
 
                                         
 
@@ -523,7 +491,7 @@ color:#FFF !important;
                                         @endcan
 
                                         @can('calendar update booking')
-                                        <li>
+                                        <li class="mt-1">
 
                                         <a href="{{url('service-bookings/edit',$booking_detail['id'])}}"><button class="btn"><i class="fas fa-redo btn-icon-prepend"></i> Reschedule booking</button></a>
 
@@ -535,12 +503,45 @@ color:#FFF !important;
                                 </div>
 
 
-
                             </div>
 
                         </div>
 
                     </div>
+
+                    {{-- google map if booking is onsite --}}
+                    @if($booking_detail['is_home_service'] ?? false)
+                    <div class="col-md-12">
+                        <div class="card our-card">
+
+                            <div class="card-body our-card-body">
+
+                                <h6 class="card-title our-card-title">Home Service Location</h6>
+
+                                <div class="job-map-container">
+
+                                    <iframe
+
+                                        src="https://maps.google.co.in/maps?q=<?php echo urlencode($booking_detail['booking_address'] ?? $booking_detail['book_address'] ?? ''); ?>&output=embed"
+
+                                        height="150"
+
+                                        style="border: 0; width: 100%;"
+
+                                        allowfullscreen=""
+
+                                        loading="lazy"
+
+                                    ></iframe>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                    @endif
+                    {{-- map end here --}}
 
                 </div>
 

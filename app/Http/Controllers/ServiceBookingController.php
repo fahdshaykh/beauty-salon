@@ -228,6 +228,7 @@ class ServiceBookingController extends Controller
             'user_id' => 'required|numeric',
             'total_price' => 'required_if:survey,Yes',
             'inventory_id' => 'nullable|exists:inventories,id',
+            'booking_address' => 'required_if:is_home_service,1|string|max:500',
         ]);
        
         $userId = $request->user_id;
@@ -290,7 +291,9 @@ class ServiceBookingController extends Controller
             'vat' => $vat,
             'service_status' => $service_status,
             'payment_days' => $numdays,
-            'user_id' => $data['user_id'], 
+            'user_id' => $data['user_id'],
+            'is_home_service' => $request->has('is_home_service') ? 1 : 0,
+            'booking_address' => $request->has('is_home_service') ? ($data['booking_address'] ?? null) : null,
         ];
        
         $booking = ServiceBooking::create($booking_array);
@@ -606,42 +609,23 @@ class ServiceBookingController extends Controller
             // Authorization: ensure user can update this booking
             $this->authorize('update', $serviceBooking);
 
-        $this->validate($request, 
-
+        $this->validate($request,
             [
-
                 'due_date' => 'required',
-
                 'due_time' => 'required',
-
                 'customer_id' => 'required|numeric',
-
                 'service_id' => 'required',
-
                 'total_price' => 'required',
-
-               
-
+                'booking_address' => 'required_if:is_home_service,1|string|max:500',
             ],
-
             [
-
                 'due_date.required' => 'Please select date',
-
                 'due_time.required' => 'Please select time',
-
                 'customer_id.required' => 'Please select customer name',
-
                 'service_id.required' => 'Please select service',
-
                 'total_price.min' => 'Negative Value is not allowed',
-
                 'total_price.not_in' => 'Price should be greater than zero',
-
             ],
-
-
-
         );
 
         
@@ -686,27 +670,18 @@ class ServiceBookingController extends Controller
             $data['due_time'] = $dueTime;
 
             $data_array = array(
-
                 'user_id' => $data['user_id'],
-
                 'customer_id' => $data['customer_id'],
-
                 'user_id' => $data['user_id'],
-
                 'total_price' => $data['total_price'],
-
                 'due_date' => $data['due_date'],
-
                 'due_time' => $data['due_time'],
-
                 'service_time' => $data['service_time'],
-
                 'comment' => $data['comment'],
-
                 'payment_days' => $numdays,
-
                 'vat' => $vat,
-
+                'is_home_service' => $request->has('is_home_service') ? 1 : 0,
+                'booking_address' => $request->has('is_home_service') ? ($data['booking_address'] ?? null) : null,
             );
 
             ServiceBooking::where('id', $request->booking_id)->update($data_array);
@@ -1409,6 +1384,9 @@ class ServiceBookingController extends Controller
                     'service_time' => $value->service_time,
 
                     'service_status' => $value->service_status,
+
+                    'is_home_service' => $value->is_home_service,
+                    'booking_address' => $value->booking_address,
 
                     'payment_instrument' => $value->payment_instrument,
 

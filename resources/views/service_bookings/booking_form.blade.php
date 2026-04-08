@@ -36,6 +36,43 @@
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-body">
+                <!-- Home Service Checkbox -->
+                <div class="form-group row justify-content-end mb-3">
+                    <div class="col-md-4">
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="is_home_service" name="is_home_service" value="1" @if(is_array($booking_detail) && isset($booking_detail[0]) && $booking_detail[0]->is_home_service) checked @endif>
+                            <label class="custom-control-label" for="is_home_service">
+                                <strong>Home Service</strong>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Address Field (hidden by default) -->
+                <div class="form-group" id="address_field" style="display: none;">
+                    <label>Service Address <span class="text-danger">*</span></label>
+                    <div class="input-group">
+                        <input type="text" name="booking_address" id="booking_address"
+                            class="form-control @error('booking_address') is-invalid @enderror"
+                            placeholder="Start typing any address worldwide"
+                            list=""
+                            autocomplete="off"
+                            value="@if(is_array($booking_detail) && isset($booking_detail[0]) && $booking_detail[0]->booking_address){{ $booking_detail[0]->booking_address }}@else{{old('booking_address')}}@endif"
+                            @if(is_array($booking_detail) && isset($booking_detail[0]) && $booking_detail[0]->is_home_service) required @endif>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </span>
+                        </div>
+                    </div>
+                    @error('booking_address')
+                        <div class="invalid-feedback d-block">
+                            {{ $message }}
+                        </div>
+                    @enderror
+                    <small class="form-text text-muted">🌍 Free worldwide address autocomplete powered by OpenStreetMap</small>
+                </div>
+
                 <div class="form-group">
                     <div class="form-group row">
                         <!-- Survey section commented out -->
@@ -708,6 +745,23 @@ $(document).ready(function() {
         }
     });
 
+    // Handle home service checkbox
+    $('#is_home_service').on('change', function() {
+        if ($(this).is(':checked')) {
+            $('#address_field').slideDown();
+            $('#booking_address').prop('required', true);
+            // Free autocomplete is automatically enabled via event listener
+        } else {
+            $('#address_field').slideUp();
+            $('#booking_address').prop('required', false).val('');
+        }
+    });
+
+    // Show address field if home service is already checked (edit mode)
+    if ($('#is_home_service').is(':checked')) {
+        $('#address_field').show();
+    }
+
     // Initialize form for edit mode
     if ($('#user_id').val() && selectedServices.length > 0) {
         setTimeout(function() {
@@ -740,3 +794,67 @@ $(document).ready(function() {
 
 });
 </script>
+
+<!-- FREE ADDRESS AUTOCOMPLETE USING PHOTON API (OpenStreetMap) -->
+<script>
+(function() {
+    let photonDebounce = null;
+    const photonDatalistId = 'photon-places-list';
+
+    // Create datalist element once
+    if ($('#' + photonDatalistId).length === 0) {
+        $('<datalist id="' + photonDatalistId + '"></datalist>').appendTo('body');
+    }
+
+    // Initialize autocomplete on the address field
+    $(document).on('keyup', '#booking_address', function() {
+        const query = $(this).val().trim();
+        const $input = $(this);
+
+        if (query.length < 3) return;
+
+        clearTimeout(photonDebounce);
+
+        photonDebounce = setTimeout(function() {
+            // Use encodeURIComponent to properly encode the query
+            const apiUrl = 'https://photon.komoot.io/api/?q=' + encodeURIComponent(query) + '&limit=8&lang=en';
+
+            $.getJSON(apiUrl)
+            .done(function(data) {
+                if (!data.features || data.features.length === 0) return;
+
+                const $datalist = $('#' + photonDatalistId);
+                $datalist.empty();
+
+                data.features.forEach(function(feature) {
+                    const props = feature.properties;
+                    const addressParts = [];
+
+                    if (props.name) addressParts.push(props.name);
+                    if (props.street) addressParts.push(props.street);
+                    if (props.housenumber) addressParts.push(props.housenumber);
+                    if (props.postcode) addressParts.push(props.postcode);
+                    if (props.city) addressParts.push(props.city);
+                    if (props.state) addressParts.push(props.state);
+                    if (props.country) addressParts.push(props.country);
+
+                    const displayText = addressParts.filter(Boolean).join(', ');
+
+                    $datalist.append(
+                        $('<option></option>')
+                            .val(displayText)
+                            .attr('data-lat', feature.geometry.coordinates[1])
+                            .attr('data-lon', feature.geometry.coordinates[0])
+                    );
+                });
+
+                $input.attr('list', photonDatalistId);
+            })
+            .fail(function(xhr, status, error) {
+                console.log('Autocomplete error:', xhr.responseText || error);
+            });
+        }, 300);
+    });
+})();
+</script>
+
