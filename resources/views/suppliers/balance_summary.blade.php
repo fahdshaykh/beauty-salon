@@ -36,7 +36,7 @@
                 <h4 class="card-title">Payment History</h4>
                 <div class="table-responsive">
                     <table class="table table-bordered">
-                        <thead class="table-dark">
+                        <thead class="table-dark" style="background-color: #392C70;">
                             <tr>
                                 <th>#</th>
                                 <th>Date</th>
@@ -70,7 +70,7 @@
                 <h4 class="card-title">Purchase History</h4>
                 <div class="table-responsive">
                     <table class="table table-bordered">
-                        <thead class="table-dark">
+                        <thead class="table-dark" style="background-color: #392C70;">
                             <tr>
                                 <th>#</th>
                                 <th>Date</th>

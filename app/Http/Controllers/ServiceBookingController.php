@@ -228,7 +228,8 @@ class ServiceBookingController extends Controller
             'user_id' => 'required|numeric',
             'total_price' => 'required_if:survey,Yes',
             'inventory_id' => 'nullable|exists:inventories,id',
-            'booking_address' => 'required_if:is_home_service,1|string|max:500',
+            'is_home_service' => 'nullable|integer|in:0,1',
+            'booking_address' => 'nullable|string|max:500|required_if:is_home_service,1',
         ]);
        
         $userId = $request->user_id;
@@ -616,7 +617,8 @@ class ServiceBookingController extends Controller
                 'customer_id' => 'required|numeric',
                 'service_id' => 'required',
                 'total_price' => 'required',
-                'booking_address' => 'required_if:is_home_service,1|string|max:500',
+                'is_home_service' => 'nullable|integer|in:0,1',
+                'booking_address' => 'nullable|string|max:500|required_if:is_home_service,1',
             ],
             [
                 'due_date.required' => 'Please select date',

@@ -21,6 +21,9 @@
             $total_price = $book->total_price;
             $comment = $book->comment;
             $pay_days = $book->payment_days;
+
+            $is_home_service = $book->is_home_service;
+            $booking_address = $book->booking_address;
         ?>
     @endforeach
     <input type="hidden" name="booking_id" value="{{$booking_id}}">
@@ -40,18 +43,18 @@
                 <div class="form-group row justify-content-end mb-3">
                     <div class="col-md-3 text-right">
                         <div class="d-flex flex-column align-items-center">
-                            <input type="checkbox" class="form-check-input" id="is_home_service" name="is_home_service" value="1"
-                                style="width: 30px; height: 70px; cursor: pointer;margin-left: 175px;margin-top: -25px;"
+                            <input type="checkbox" class="form-check-input" id="is_home_service" name="is_home_service" value="1" @if(isset($is_home_service) && $is_home_service) checked @endif
+                                style="width: 25px; height: 25px; cursor: pointer; margin-left: 115px;"
                                 @if(is_array($booking_detail) && isset($booking_detail[0]) && $booking_detail[0]->is_home_service) checked @endif>
-                            <label for="is_home_service" class="mt-2 mb-0" style="cursor: pointer; font-size: 14px; font-weight: 600; margin-left: 50px;">
+                            <label for="is_home_service" class="mt-2 mb-0" style="cursor: pointer; font-size: 14px; font-weight: 600;">
                                 Home Service
                             </label>
                         </div>
                     </div>
                 </div>
 
-                <!-- Address Field (hidden by default) -->
-                <div class="form-group" id="address_field" style="display: none;">
+                <!-- Address Field -->
+                <div class="form-group" id="address_field" style="@if(is_array($booking_detail) && isset($booking_detail[0]) && $booking_detail[0]->is_home_service) display: block; @else display: none; @endif">
                     <label>Service Address <span class="text-danger">*</span></label>
                     <div class="input-group">
                         <input type="text" name="booking_address" id="booking_address"
@@ -59,7 +62,7 @@
                             placeholder="Start typing any address worldwide"
                             list=""
                             autocomplete="off"
-                            value="@if(is_array($booking_detail) && isset($booking_detail[0]) && $booking_detail[0]->booking_address){{ $booking_detail[0]->booking_address }}@else{{old('booking_address')}}@endif"
+                            value="@if(isset($booking_address)){{ $booking_address }}@else{{ old('booking_address') }}@endif"
                             @if(is_array($booking_detail) && isset($booking_detail[0]) && $booking_detail[0]->is_home_service) required @endif>
                         <div class="input-group-append">
                             <span class="input-group-text">
@@ -751,7 +754,6 @@ $(document).ready(function() {
         if ($(this).is(':checked')) {
             $('#address_field').slideDown();
             $('#booking_address').prop('required', true);
-            // Free autocomplete is automatically enabled via event listener
         } else {
             $('#address_field').slideUp();
             $('#booking_address').prop('required', false).val('');
