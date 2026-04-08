@@ -38,11 +38,13 @@
             <div class="card-body">
                 <!-- Home Service Checkbox -->
                 <div class="form-group row justify-content-end mb-3">
-                    <div class="col-md-4">
-                        <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" id="is_home_service" name="is_home_service" value="1" @if(is_array($booking_detail) && isset($booking_detail[0]) && $booking_detail[0]->is_home_service) checked @endif>
-                            <label class="custom-control-label" for="is_home_service">
-                                <strong>Home Service</strong>
+                    <div class="col-md-3 text-right">
+                        <div class="d-flex flex-column align-items-center">
+                            <input type="checkbox" class="form-check-input" id="is_home_service" name="is_home_service" value="1"
+                                style="width: 30px; height: 70px; cursor: pointer;margin-left: 175px;margin-top: -25px;"
+                                @if(is_array($booking_detail) && isset($booking_detail[0]) && $booking_detail[0]->is_home_service) checked @endif>
+                            <label for="is_home_service" class="mt-2 mb-0" style="cursor: pointer; font-size: 14px; font-weight: 600; margin-left: 50px;">
+                                Home Service
                             </label>
                         </div>
                     </div>
@@ -70,7 +72,6 @@
                             {{ $message }}
                         </div>
                     @enderror
-                    <small class="form-text text-muted">🌍 Free worldwide address autocomplete powered by OpenStreetMap</small>
                 </div>
 
                 <div class="form-group">
