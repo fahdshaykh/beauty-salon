@@ -524,9 +524,10 @@
                 <li class="nav-item"> <a class="nav-link" href="{{url('customer-graph')}}">Customer Leads Graph</a></li>
                 @endcan
 
-                @can('view customer country graph')
-                <li class="nav-item"> <a class="nav-link" href="{{url('customer-country-graph')}}">Customer Country Graph</a></li>
-                @endcan
+                
+              @can('view inventory reports')
+              <li class="nav-item"> <a class="nav-link {{ request()->routeIs('inventory-reports', 'inventory.record') ? 'active' : '' }}" href="{{ url('inventory-reports') }}"> Inventory Report </a></li>
+              @endcan
 
                 <!-- reports permissions -->
 

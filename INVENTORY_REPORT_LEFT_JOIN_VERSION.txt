@@ -1,0 +1,96 @@
+// ==================== ROBUST VERSION WITH LEFT JOINS ====================
+// This version will show records even if some joins fail
+// Replace inventory_record() with this version
+
+public function inventory_record(Request $request)
+{
+    $request->validate([
+        'start_date' => 'required|date',
+        'end_date' => 'required|date|after_or_equal:start_date',
+        'inventory_id' => 'nullable|integer|exists:inventories,id',
+    ], [
+        'start_date.required' => 'Please select a start date',
+        'end_date.required' => 'Please select an end date',
+        'end_date.after_or_equal' => 'End date must be after or equal to start date',
+    ]);
+
+    $start_date = $request->start_date;
+    $end_date = $request->end_date;
+    $inventory_id = $request->inventory_id;
+
+    // Use LEFT JOINs to avoid losing records due to orphaned data
+    $query = DB::table('inventory_books as ib')
+        ->leftJoin('inventories as inv', 'ib.inventory_id', '=', 'inv.id')
+        ->leftJoin('service_bookings as sb', 'ib.booking_id', '=', 'sb.id')
+        ->leftJoin('customers as c', 'sb.customer_id', '=', 'c.id')
+        ->leftJoin('users as u', 'sb.user_id', '=', 'u.id')
+        ->where(function($query) {
+            $query->where('sb.company_id', auth()->user()->company_id)
+                  ->where('sb.service_status', '!=', 5);
+        })
+        ->select([
+            'ib.id as inventory_book_id',
+            DB::raw('COALESCE(inv.name, "Unknown Inventory") as inventory_name'),
+            'ib.quantity',
+            'ib.booking_id',
+            DB::raw('COALESCE(c.first_name, "") . " " . COALESCE(c.last_name, "Unknown") as customer_name'),
+            DB::raw('COALESCE(u.name, "Unknown Employee") as employee_name'),
+            'sb.due_date as booking_date',
+            'sb.due_time as booking_time',
+            'sb.total_price',
+            'sb.service_status'
+        ]);
+
+    // Filter by date range
+    if ($start_date && $end_date) {
+        $query->whereDate('sb.due_date', '>=', $start_date)
+               ->whereDate('sb.due_date', '<=', $end_date);
+    }
+
+    // Filter by specific inventory if selected
+    if ($inventory_id) {
+        $query->where('ib.inventory_id', $inventory_id);
+    }
+
+    // Order by booking date descending
+    $query->orderBy('sb.due_date', 'desc');
+
+    $inventory_records = $query->get();
+
+    if (count($inventory_records) > 0) {
+        $data_array = [];
+        $total_quantity_used = 0;
+
+        foreach ($inventory_records as $key => $record) {
+            // Skip if no service booking exists (orphaned inventory_book)
+            if (!$record->booking_date) {
+                continue;
+            }
+
+            $total_quantity_used += $record->quantity;
+
+            $data_array[$key] = [
+                'inventory_book_id' => $record->inventory_book_id,
+                'inventory_name' => $record->inventory_name,
+                'booking_id' => $record->booking_id,
+                'customer_name' => $record->customer_name,
+                'employee_name' => $record->employee_name,
+                'quantity_used' => number_format($record->quantity, 2),
+                'booking_date' => $record->booking_date,
+                'booking_time' => $record->booking_time,
+                'total_price' => $record->total_price,
+                'service_status' => $record->service_status,
+            ];
+        }
+
+        return view('reports.inventory_reports', compact(
+            'data_array',
+            'total_quantity_used',
+            'start_date',
+            'end_date',
+            'inventory_id'
+        ));
+    } else {
+        return back()->with('error', 'Sorry, no inventory usage records found for the selected criteria.');
+    }
+}

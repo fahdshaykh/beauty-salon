@@ -3092,6 +3092,173 @@ class ReportController extends Controller
 
 
 
+
+    // Inventory Usage Report Methods
+    public function inventory_index()
+    {
+        // if (! (auth()->user() && auth()->user()->can('view inventory reports'))) {
+        //     abort(403);
+        // }
+
+        $inventories = DB::table('inventories')
+            ->where('company_id', auth()->user()->company_id)
+            ->select('id', 'name')
+            ->get();
+
+        return view('reports.inventory_index', compact('inventories'));
+    }
+
+
+    public function inventory_record(Request $request)
+    {
+        $request->validate([
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+            'inventory_id' => 'nullable|integer|exists:inventories,id',
+        ], [
+            'start_date.required' => 'Please select a start date',
+            'end_date.required' => 'Please select an end date',
+            'end_date.after_or_equal' => 'End date must be after or equal to start date',
+        ]);
+
+        $start_date = $request->start_date;
+        $end_date = $request->end_date;
+        $inventory_id = $request->inventory_id;
+
+        $query = DB::table('inventory_books as ib')
+            ->join('inventories as inv', 'ib.inventory_id', '=', 'inv.id')
+            ->join('service_bookings as sb', 'ib.booking_id', '=', 'sb.id')
+            ->join('customers as c', 'sb.customer_id', '=', 'c.id')
+            ->join('users as u', 'sb.user_id', '=', 'u.id')
+            ->where('sb.company_id', auth()->user()->company_id)
+            ->where('sb.service_status', '3')
+            ->orWhere('sb.service_status', '2')
+            ->whereDate('sb.created_at', '>=', $start_date . " 00:00:00")
+            ->whereDate('sb.created_at', '<=', $end_date . " 23:59:59")
+            ->where('sb.service_status', '!=', 5)
+            ->select([
+                'ib.id as inventory_book_id',
+                'inv.name as inventory_name',
+                'ib.quantity',
+                'ib.booking_id',
+                'c.first_name',
+                'c.last_name',
+                'u.name as employee_name',
+                'sb.due_date as booking_date',
+                'sb.due_time as booking_time',
+                'sb.total_price',
+                'sb.service_status',
+                'sb.created_at'
+            ]);
+
+        if ($inventory_id) {
+            $query->where('ib.inventory_id', $inventory_id);
+        }
+
+        $query->orderBy('sb.created_at', 'desc');
+
+        $inventory_records = $query->get();
+
+        if (count($inventory_records) > 0) {
+            $data_array = [];
+            $total_quantity_used = 0;
+
+            foreach ($inventory_records as $key => $record) {
+                $total_quantity_used += $record->quantity;
+
+                $data_array[$key] = [
+                    'inventory_book_id' => $record->inventory_book_id,
+                    'inventory_name' => $record->inventory_name,
+                    'booking_id' => $record->booking_id,
+                    'customer_name' => $record->first_name . "  " . $record->last_name,
+                    'employee_name' => $record->employee_name,
+                    'quantity_used' => number_format($record->quantity, 2),
+                    'booking_date' => $record->booking_date,
+                    'booking_time' => $record->booking_time,
+                    'total_price' => $record->total_price,
+                    'service_status' => $record->service_status,
+                ];
+            }
+
+            return view('reports.inventory_reports', compact(
+                'data_array',
+                'total_quantity_used',
+                'start_date',
+                'end_date',
+                'inventory_id'
+            ));
+        } else {
+            return back()->with('error', 'Sorry, no inventory usage records found for the selected criteria.');
+        }
+    }
+
+    // CSV Export for Inventory Report
+    public function reportInventoryCsv($start_date, $end_date, $inventory_id)
+    {
+        $fileName = 'inventory_usage_report_' . $start_date . '_to_' . $end_date . '.csv';
+
+        $headers = [
+            'Content-type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="' . $fileName . '"',
+        ];
+
+        $query = DB::table('inventory_books as ib')
+            ->join('inventories as inv', 'ib.inventory_id', '=', 'inv.id')
+            ->join('service_bookings as sb', 'ib.booking_id', '=', 'sb.id')
+            ->join('customers as c', 'sb.customer_id', '=', 'c.id')
+            ->join('users as u', 'sb.user_id', '=', 'u.id')
+            ->where('sb.company_id', auth()->user()->company_id)
+            ->where('sb.service_status', '!=', 5)
+            ->select([
+                'inv.name as inventory_name',
+                'ib.quantity',
+                'sb.id as booking_id',
+                DB::raw('CONCAT(c.first_name, " ", c.last_name) as customer_name'),
+                'u.name as employee_name',
+                'sb.due_date as booking_date',
+                'sb.due_time as booking_time',
+                'sb.total_price',
+                'sb.service_status'
+            ]);
+
+        // Filter by date range
+        if ($start_date && $end_date) {
+            $query->whereDate('sb.due_date', '>=', $start_date)
+                ->whereDate('sb.due_date', '<=', $end_date);
+        }
+
+        if ($inventory_id) {
+            $query->where('ib.inventory_id', $inventory_id);
+        }
+
+        $query->orderBy('sb.due_date', 'desc');
+
+        $records = $query->get();
+
+        $callback = function () use ($records) {
+            $FH = fopen('php://output', 'w');
+            fputcsv($FH, ['Inventory Name', 'Quantity Used', 'Booking ID', 'Customer Name', 'Employee Name', 'Booking Date', 'Booking Time', 'Total Price', 'Status']);
+
+            foreach ($records as $row) {
+                $statusMap = [1 => 'Booked', 2 => 'In-Progress', 3 => 'Completed', 4 => 'Cancelled'];
+                fputcsv($FH, [
+                    $row->inventory_name,
+                    $row->quantity,
+                    $row->booking_id,
+                    $row->customer_name,
+                    $row->employee_name,
+                    $row->booking_date,
+                    $row->booking_time,
+                    $row->total_price,
+                    $statusMap[$row->service_status] ?? 'Unknown'
+                ]);
+            }
+            fclose($FH);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
     public function expense_record(Request $request)
 
     {

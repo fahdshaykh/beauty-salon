@@ -282,6 +282,9 @@ Route::middleware(['auth', 'company'])->group(function () {
     Route::get('customer-country-graph-report', [ReportController::class, 'customer_country_graph_report'])->name('customer.country_graph_report');
     Route::get('customer-country-graph', [ReportController::class, 'customer_country_graph'])->name('customer.country_graph');
     Route::get('record/customer', [ReportController::class, 'customer_record'])->name('customer.record');
+    Route::get('inventory-reports', [ReportController::class, 'inventory_index'])->name('inventory-reports');
+    Route::get('record/inventory-usage', [ReportController::class, 'inventory_record'])->name('inventory.record');
+    Route::get('inventory-report-by-date/{start_date}/{end_date}/{inventory_id}', [ReportController::class, 'reportInventoryCsv'])->name('inventory.report_by_date');
     Route::get('profit-loss-report', [ReportController::class, 'profit_loss_report'])->name('profit_loss.report');
     Route::get('profit-loss-data', [ReportController::class, 'profit_loss_data'])->name('profit_loss.data');
     Route::get('zipcode-report', [ReportController::class, 'zipcode_report'])->name('zipcode.report');

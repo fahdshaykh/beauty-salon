@@ -46,7 +46,7 @@ class PermissionsSeeder extends Seeder
             'view reports',
 
             //sub-reports
-            'view services report', 'view bookings report', 'view employee report', 'view customer report', 'view customer graph', 'view customer country graph', 'view expense report', 'view profit & loss graph',
+            'view services report', 'view bookings report', 'view employee report', 'view customer report', 'view customer graph', 'view inventory reports', 'view expense report', 'view profit & loss graph',
 
             // Expenses
             'view expenses', 'create expenses', 'edit expenses', 'delete expenses',

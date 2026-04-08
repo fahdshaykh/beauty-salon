@@ -1,0 +1,101 @@
+// ==================== INVENTORY USAGE REPORT METHODS ====================
+// Add these methods to ReportController.php before the closing brace }
+
+public function inventory_index()
+{
+    if (! (auth()->user() && auth()->user()->can('view inventory reports'))) {
+        abort(403);
+    }
+
+    $inventories = DB::table('inventories')
+        ->where('company_id', auth()->user()->company_id)
+        ->select('id', 'name')
+        ->get();
+
+    return view('reports.inventory_index', compact('inventories'));
+}
+
+
+public function inventory_record(Request $request)
+{
+    $request->validate([
+        'start_date' => 'required|date',
+        'end_date' => 'required|date|after_or_equal:start_date',
+        'inventory_id' => 'nullable|integer|exists:inventories,id',
+    ], [
+        'start_date.required' => 'Please select a start date',
+        'end_date.required' => 'Please select an end date',
+        'end_date.after_or_equal' => 'End date must be after or equal to start date',
+    ]);
+
+    $start_date = $request->start_date;
+    $end_date = $request->end_date;
+    $inventory_id = $request->inventory_id;
+
+    // Build query for inventory usage in bookings
+    $query = DB::table('inventory_books as ib')
+        ->join('inventories as inv', 'ib.inventory_id', '=', 'inv.id')
+        ->join('service_bookings as sb', 'ib.booking_id', '=', 'sb.id')
+        ->join('customers as c', 'sb.customer_id', '=', 'c.id')
+        ->join('users as u', 'sb.user_id', '=', 'u.id')
+        ->where('sb.company_id', auth()->user()->company_id)
+        ->whereDate('sb.created_at', '>=', $start_date . " 00:00:00")
+        ->whereDate('sb.created_at', '<=', $end_date . " 23:59:59")
+        ->where('sb.service_status', '!=', 5)
+        ->select([
+            'ib.id as inventory_book_id',
+            'inv.name as inventory_name',
+            'ib.quantity',
+            'ib.booking_id',
+            'c.first_name',
+            'c.last_name',
+            'u.name as employee_name',
+            'sb.due_date as booking_date',
+            'sb.due_time as booking_time',
+            'sb.total_price',
+            'sb.service_status',
+            'sb.created_at'
+        ]);
+
+    // Filter by specific inventory if selected
+    if ($inventory_id) {
+        $query->where('ib.inventory_id', $inventory_id);
+    }
+
+    // Order by booking date descending
+    $query->orderBy('sb.created_at', 'desc');
+
+    $inventory_records = $query->get();
+
+    if (count($inventory_records) > 0) {
+        $data_array = [];
+        $total_quantity_used = 0;
+
+        foreach ($inventory_records as $key => $record) {
+            $total_quantity_used += $record->quantity;
+
+            $data_array[$key] = [
+                'inventory_book_id' => $record->inventory_book_id,
+                'inventory_name' => $record->inventory_name,
+                'booking_id' => $record->booking_id,
+                'customer_name' => $record->first_name . ' ' . $record->last_name,
+                'employee_name' => $record->employee_name,
+                'quantity_used' => number_format($record->quantity, 2),
+                'booking_date' => $record->booking_date,
+                'booking_time' => $record->booking_time,
+                'total_price' => $record->total_price,
+                'service_status' => $record->service_status,
+            ];
+        }
+
+        return view('reports.inventory_reports', compact(
+            'data_array',
+            'total_quantity_used',
+            'start_date',
+            'end_date',
+            'inventory_id'
+        ));
+    } else {
+        return back()->with('error', 'Sorry, no inventory usage records found for the selected criteria.');
+    }
+}

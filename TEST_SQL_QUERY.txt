@@ -1,0 +1,66 @@
+-- ==================== TEST SQL QUERY ====================
+-- Run this in your database or phpMyAdmin to verify your data exists
+
+-- 1. Check if inventory_books has data
+SELECT COUNT(*) as total_inventory_books
+FROM inventory_books;
+
+-- 2. Check inventory_books with booking details
+SELECT
+    ib.id,
+    ib.booking_id,
+    ib.inventory_id,
+    ib.quantity,
+    sb.due_date,
+    sb.service_status,
+    sb.company_id
+FROM inventory_books ib
+INNER JOIN service_bookings sb ON ib.booking_id = sb.id
+LIMIT 5;
+
+-- 3. Check your specific booking with inventory
+SELECT
+    ib.id,
+    ib.booking_id,
+    ib.inventory_id,
+    inv.name,
+    sb.due_date,
+    sb.service_status
+FROM inventory_books ib
+INNER JOIN inventories inv ON ib.inventory_id = inv.id
+INNER JOIN service_bookings sb ON ib.booking_id = sb.id
+WHERE sb.service_status = 3
+LIMIT 5;
+
+-- 4. Check company_id match
+SELECT
+    COUNT(*) as count,
+    MIN(sb.due_date) as earliest_date,
+    MAX(sb.due_date) as latest_date
+FROM inventory_books ib
+INNER JOIN service_bookings sb ON ib.booking_id = sb.id
+WHERE sb.company_id = 1  -- Replace with your actual company_id
+GROUP BY sb.company_id;
+
+-- 5. Test the exact query from the controller (replace dates as needed)
+SELECT
+    ib.id as inventory_book_id,
+    inv.name as inventory_name,
+    ib.quantity,
+    ib.booking_id,
+    c.first_name,
+    c.last_name,
+    u.name as employee_name,
+    sb.due_date as booking_date,
+    sb.due_time as booking_time,
+    sb.total_price,
+    sb.service_status
+FROM inventory_books ib
+INNER JOIN inventories inv ON ib.inventory_id = inv.id
+INNER JOIN service_bookings sb ON ib.booking_id = sb.id
+INNER JOIN customers c ON sb.customer_id = c.id
+INNER JOIN users u ON sb.user_id = u.id
+WHERE sb.company_id = 1  -- Replace with: auth()->user()->company_id
+  AND sb.service_status != 5
+ORDER BY sb.due_date DESC
+LIMIT 10;
