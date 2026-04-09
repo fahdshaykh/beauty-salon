@@ -454,7 +454,7 @@ return [
 
         'View' => Illuminate\Support\Facades\View::class,
 
-        
+        'PDF' => Barryvdh\DomPDF\Facade\Pdf::class,
 
 
 
