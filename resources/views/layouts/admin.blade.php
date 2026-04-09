@@ -1077,9 +1077,9 @@
       @endif
   });
   
-  // Close all collapsible menus and only open the active one
+  // Sidebar accordion behavior - only one menu open at a time
   $(function() {
-      // Close all collapses by default
+      // Close all collapses by default on page load
       $('.sidebar .collapse').collapse('hide');
 
       // 1) If a top-level nav-item is marked active, open its collapse
@@ -1102,6 +1102,21 @@
           var $toggler = $('.sidebar [data-toggle="collapse"][href="' + id + '"]');
           $toggler.closest('.nav-item').addClass('active');
         }
+      });
+
+      // 3) Accordion behavior: when one collapse opens, close all others
+      $('.sidebar [data-toggle="collapse"]').on('click', function() {
+        var $this = $(this);
+        var targetId = $this.attr('href');
+
+        // Close all other collapses except the one being clicked
+        $('.sidebar .collapse').not(targetId).collapse('hide');
+
+        // Remove active class from all nav-items
+        $('.sidebar .nav-item').removeClass('active');
+
+        // Add active class to the clicked item's parent
+        $this.closest('.nav-item').addClass('active');
       });
   });
   </script>
