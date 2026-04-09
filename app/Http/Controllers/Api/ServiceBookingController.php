@@ -54,9 +54,9 @@ class ServiceBookingController extends BaseController
 
         ini_set('serialize_precision', -1);
 
-        Carbon::setWeekStartsAt(Carbon::MONDAY);
-
-        Carbon::setWeekEndsAt(Carbon::SATURDAY);
+        // Carbon week settings - updated for Laravel 12 compatibility
+        // Note: Week start/end settings are now configured in config/app.php
+        // or can be set per-instance if needed
 
     }
 

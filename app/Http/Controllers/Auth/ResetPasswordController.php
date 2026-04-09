@@ -9,9 +9,15 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+
 class ResetPasswordController extends Controller
 {
-
+    /**
+     * Where to redirect users after resetting their password.
+     *
+     * @var string
+     */
+    protected $redirectTo = '/login';
 
     /*
     |--------------------------------------------------------------------------
@@ -23,6 +29,16 @@ class ResetPasswordController extends Controller
     | explore this trait and override any methods you wish to tweak.
     |
     */
+
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('guest');
+    }
 
     /**
      * Display the password reset view for the given token.
@@ -105,11 +121,11 @@ class ResetPasswordController extends Controller
      * @return void
      */
     protected function resetPassword($user, $password)
-{
-    $user->forceFill([
-        'password' => bcrypt($password),
-        'remember_token' => Str::random(60),
-    ])->save();
+    {
+        $user->forceFill([
+            'password' => bcrypt($password),
+            'remember_token' => Str::random(60),
+        ])->save();
 
         event(new PasswordReset($user));
     }
@@ -132,23 +148,5 @@ class ResetPasswordController extends Controller
     protected function guard()
     {
         return Auth::guard();
-    }
-}
-    /**
-     * Where to redirect users after resetting their password.
-     *
-     * @var string
-     */
-   
-protected $redirectTo = '/login';
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-         $this->middleware('guest')->except('logout');
-        //$this->middleware('guest');
     }
 }

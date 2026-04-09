@@ -112,6 +112,13 @@ Route::get('smsoptout/{companyid}/{customerid}/{opt}', [MarketingController::cla
     ->name('sms.optout');
 
 // ──────────────────────────────────────
+// ROOT REDIRECT
+// ──────────────────────────────────────
+Route::get('/', function () {
+    return redirect('/home');
+})->name('root');
+
+// ──────────────────────────────────────
 // 4. COMPANY MIDDLEWARE ROUTES (No Auth Required)
 // ──────────────────────────────────────
 Route::middleware('company')->group(function () {
@@ -132,9 +139,17 @@ Route::get('login', [App\Http\Controllers\Auth\LoginController::class, 'showLogi
 Route::post('login', [App\Http\Controllers\Auth\LoginController::class, 'login']);
 Route::post('logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout');
 
-// Registration Routes
-Route::get('register', [App\Http\Controllers\Auth\RegisterController::class, 'showRegistrationForm'])->name('register');
-Route::post('register', [App\Http\Controllers\Auth\RegisterController::class, 'register']);
+
+// Route::get('register', [App\Http\Controllers\Auth\RegisterController::class, 'showRegistrationForm'])->name('register');
+// Route::post('register', [App\Http\Controllers\Auth\RegisterController::class, 'register']);
+
+// Registration Routes - Disabled and redirected to login
+Route::get('register', function () {
+    return redirect('/login');
+})->name('register');
+Route::post('register', function () {
+    return redirect('/login');
+});
 
 // Password Reset Routes
 Route::get('password/reset', [App\Http\Controllers\Auth\ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
@@ -151,9 +166,6 @@ Route::post('email/resend', [App\Http\Controllers\Auth\VerificationController::c
 // 5. AUTH + COMPANY MIDDLEWARE ROUTES
 // ──────────────────────────────────────
 Route::middleware(['auth', 'company'])->group(function () {
-
-    // Root Redirect
-    Route::get('/', fn() => redirect('/home'))->name('root');
 
     // Home
     Route::get('/home', [HomeController::class, 'index'])->name('home');
@@ -474,7 +486,7 @@ Route::middleware(['auth', 'company'])->group(function () {
     Route::post('/admin/booking/change-status', [BookingController::class, 'changeStatus'])->name('admin.booking.change-status');
 
     // ── Payments (Stripe & PayPal) ──
-    Route::get('/', [StripeController::class, 'index'])->name('service_bookings.index');
+    // StripeController index removed - root now redirects to /home
     Route::post('/checkout', [StripeController::class, 'checkout'])->name('checkout');
     Route::get('/success', [StripeController::class, 'success'])->name('success');
 
