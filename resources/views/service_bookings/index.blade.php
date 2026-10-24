@@ -10,6 +10,101 @@
 
 @section('content')
 
+<style>
+    /* Overdue row warning highlight */
+    .booking-row-overdue td {
+        background-color: #fff6f6 !important;
+        border-top: 1px solid #ffdede !important;
+        position: relative;
+    }
+    .booking-row-overdue:hover td {
+        background-color: #feebeb !important;
+    }
+    .booking-row-overdue td:first-child {
+        border-left: 4px solid #dc3545 !important;
+    }
+
+    /* Overdue modern alert badge */
+    .badge-overdue-container {
+        display: block;
+    }
+    .badge-overdue-alert {
+        display: inline-flex;
+        align-items: center;
+        background: linear-gradient(135deg, #dc3545 0%, #b02a37 100%);
+        color: #ffffff !important;
+        font-size: 11px;
+        font-weight: 600;
+        padding: 4px 10px;
+        border-radius: 20px;
+        box-shadow: 0 2px 6px rgba(220, 53, 69, 0.35);
+        letter-spacing: 0.2px;
+        animation: overdueSoftPulse 2s infinite ease-in-out;
+        white-space: nowrap;
+    }
+    .badge-overdue-alert:hover {
+        background: linear-gradient(135deg, #b02a37 0%, #8b1e28 100%);
+        box-shadow: 0 4px 10px rgba(220, 53, 69, 0.5);
+    }
+
+    /* Pulsing white dot */
+    .pulse-ring {
+        display: inline-block;
+        width: 7px;
+        height: 7px;
+        background-color: #ffffff;
+        border-radius: 50%;
+        margin-right: 6px;
+        animation: pulseDot 1.5s infinite cubic-bezier(0.4, 0, 0.6, 1);
+        flex-shrink: 0;
+    }
+
+    @keyframes pulseDot {
+        0% {
+            transform: scale(0.9);
+            box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.85);
+        }
+        70% {
+            transform: scale(1.1);
+            box-shadow: 0 0 0 6px rgba(255, 255, 255, 0);
+        }
+        100% {
+            transform: scale(0.9);
+            box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+        }
+    }
+
+    @keyframes overdueSoftPulse {
+        0%, 100% {
+            box-shadow: 0 2px 6px rgba(220, 53, 69, 0.35);
+        }
+        50% {
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.65);
+        }
+    }
+
+    /* Top banner alert */
+    .overdue-banner {
+        background: linear-gradient(135deg, #fff5f5 0%, #fef2f2 100%);
+        border: 1px solid #fecaca !important;
+        border-left: 5px solid #dc3545 !important;
+        border-radius: 8px;
+        padding: 12px 18px;
+    }
+    .overdue-banner-icon {
+        width: 42px;
+        height: 42px;
+        background: rgba(220, 53, 69, 0.12);
+        color: #dc3545;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+        flex-shrink: 0;
+    }
+</style>
+
 <div class="main-panel">
 
     <div class="content-wrapper">
@@ -32,6 +127,31 @@
         <div class="card">
 
             <div class="card-body">
+
+                @php
+                    $overdueCount = collect($data_array)->where('is_overdue', true)->count();
+                @endphp
+
+                @if($overdueCount > 0)
+                    <div class="alert alert-danger border-0 shadow-sm d-flex align-items-center justify-content-between mb-3 overdue-banner" role="alert">
+                        <div class="d-flex align-items-center">
+                            <div class="overdue-banner-icon mr-3">
+                                <i class="fas fa-bell"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-0 font-weight-bold text-danger">
+                                    <i class="fas fa-exclamation-triangle mr-1"></i> Overdue Service Attention Required
+                                </h6>
+                                <p class="mb-0 text-muted small">
+                                    There {{ $overdueCount === 1 ? 'is' : 'are' }} <strong class="text-danger">{{ $overdueCount }}</strong> in-progress {{ $overdueCount === 1 ? 'booking' : 'bookings' }} exceeding allocated service time. Please review stylist progress or mark completed.
+                                </p>
+                            </div>
+                        </div>
+                        <span class="badge badge-pill badge-danger px-3 py-2 text-uppercase font-weight-bold small shadow-sm">
+                            <i class="fas fa-clock mr-1"></i> {{ $overdueCount }} Overdue
+                        </span>
+                    </div>
+                @endif
 
                 <!-- Filter Form -->
                 <div class="card mb-3">
@@ -190,7 +310,7 @@
 
                                     @forelse($data_array as $key => $book)
 
-                                    <tr>
+                                    <tr class="{{ !empty($book['is_overdue']) ? 'booking-row-overdue' : '' }}">
 
                                         <td>{{$book['user_name']}}</td>
 
@@ -215,9 +335,16 @@
 
                                         <td style="width: 10%;">{{$book['due_date']}}</td>
 
-                                        <td style="width: 10%;">{{$book['due_time']}}</td>
+                                        <td style="width: 11%;">
+                                            <div class="d-flex flex-column">
+                                                <span class="font-weight-bold text-dark">{{ $book['due_time'] }}</span>
+                                                <small class="text-muted d-inline-flex align-items-center mt-1">
+                                                    <i class="far fa-clock mr-1 text-secondary"></i> {{ $book['service_time'] ?? 30 }}m
+                                                </small>
+                                            </div>
+                                        </td>
 
-                                        <td style="width: 10%;">
+                                        <td style="width: 13%;">
                                             @php
                                                 $statuses = [
                                                     1 => 'Booked',
@@ -231,11 +358,11 @@
                                                 $isAdmin       = auth()->user()->hasRole('admin'); // <-- change to your role name
                                             @endphp
 
-                                            <div class="form-group">
+                                            <div class="form-group mb-1">
 
                                                 {{-- 1. ADMIN → always see the dropdown  --}}
                                                 @if($isAdmin)
-                                                    <select class="form-control form-control-sm"
+                                                    <select class="form-control form-control-sm {{ !empty($book['is_overdue']) ? 'border-danger text-danger font-weight-bold' : '' }}"
                                                             id="change"
                                                             data-booking_id="{{ $book['id'] }}"
                                                             onchange="changeLevel(this);"
@@ -255,7 +382,7 @@
 
                                                 {{-- 3. NON-ADMIN → editable status → show dropdown  --}}
                                                 @else
-                                                    <select class="form-control form-control-sm"
+                                                    <select class="form-control form-control-sm {{ !empty($book['is_overdue']) ? 'border-danger text-danger font-weight-bold' : '' }}"
                                                             id="change"
                                                             data-booking_id="{{ $book['id'] }}"
                                                             onchange="changeLevel(this);"
@@ -269,6 +396,22 @@
                                                 @endif
 
                                             </div>
+
+                                            @if(!empty($book['is_overdue']))
+                                                <div class="badge-overdue-container mt-1">
+                                                    <span class="badge-overdue-alert" title="Service duration of {{ $book['service_time'] ?? 30 }}m exceeded by {{ $book['overdue_text'] }}">
+                                                        <span class="pulse-ring"></span>
+                                                        <i class="fas fa-exclamation-triangle mr-1"></i>
+                                                        <span>Overdue +{{ $book['overdue_text'] }}</span>
+                                                    </span>
+                                                </div>
+                                            @elseif((int)$book['service_status'] === 2)
+                                                <div class="mt-1 in-service-badge">
+                                                    <span class="badge text-primary border border-info" style="font-size: 11px; padding: 2px 7px; border-radius: 12px; background: rgba(0, 123, 255, 0.08);">
+                                                        <i class="fas fa-spinner fa-spin mr-1"></i> In Service
+                                                    </span>
+                                                </div>
+                                            @endif
                                         </td>
                                         
 
@@ -418,6 +561,9 @@
 
 <script>
 $(document).ready(function () {
+    if (typeof $.fn.tooltip === 'function') {
+        $('[data-toggle="tooltip"]').tooltip();
+    }
     let originalStatus = {};
 
     // 1. Capture original value on focus
@@ -469,6 +615,14 @@ $(document).ready(function () {
 
                 $select.val(status);
                 delete originalStatus[bookingId];
+
+                // If status changed away from In-Progress (2), clear overdue styles and alerts
+                if (status != 2) {
+                    const $row = $select.closest('tr');
+                    $row.removeClass('booking-row-overdue');
+                    $select.removeClass('border-danger text-danger font-weight-bold');
+                    $row.find('.badge-overdue-container, .in-service-badge').remove();
+                }
 
                 if (typeof callback === 'function') callback();
             },

@@ -136,6 +136,56 @@ class ServiceBookingController extends Controller
                     ];
                 })->toArray();
 
+                $isOverdue = false;
+                $overdueText = '';
+                $overdueMinutes = 0;
+
+                if ((int)$value->service_status === 2) {
+                    try {
+                        $serviceTime = (int)($value->service_time > 0 ? $value->service_time : 30);
+                        
+                        // Parse scheduled start date and time
+                        $startDateTime = null;
+                        if (!empty($value->due_date) && !empty($value->due_time)) {
+                            $startDateTime = \Carbon\Carbon::parse($value->due_date . ' ' . $value->due_time);
+                        } elseif (!empty($value->due_date)) {
+                            $startDateTime = \Carbon\Carbon::parse($value->due_date);
+                        }
+
+                        // Determine start baseline: scheduled start time or fallback to updated_at
+                        $baseStart = $startDateTime ?? ($value->updated_at ? \Carbon\Carbon::parse($value->updated_at) : now());
+                        $expectedEnd = (clone $baseStart)->addMinutes($serviceTime);
+
+                        // If updated_at is later than scheduled start (started late), give service_time from updated_at
+                        if ($value->updated_at) {
+                            $updatedAt = \Carbon\Carbon::parse($value->updated_at);
+                            if ($updatedAt->gt($baseStart)) {
+                                $altEnd = (clone $updatedAt)->addMinutes($serviceTime);
+                                if ($altEnd->gt($expectedEnd)) {
+                                    $expectedEnd = $altEnd;
+                                }
+                            }
+                        }
+
+                        if (now()->gt($expectedEnd)) {
+                            $isOverdue = true;
+                            $overdueMinutes = (int) now()->diffInMinutes($expectedEnd);
+                            if ($overdueMinutes >= 1440) {
+                                $days = floor($overdueMinutes / 1440);
+                                $overdueText = $days . 'd+';
+                            } elseif ($overdueMinutes >= 60) {
+                                $hours = floor($overdueMinutes / 60);
+                                $mins = $overdueMinutes % 60;
+                                $overdueText = $hours . 'h ' . ($mins > 0 ? $mins . 'm' : '');
+                            } else {
+                                $overdueText = ($overdueMinutes > 0 ? $overdueMinutes : 1) . 'm';
+                            }
+                        }
+                    } catch (\Exception $e) {
+                        // ignore parse errors
+                    }
+                }
+
                 $data_array[$key] = [
                     'id'              => $value->id,
                     'status'          => $value->status,
@@ -148,10 +198,14 @@ class ServiceBookingController extends Controller
                     'total_price'     => $value->total_price,
                     'due_date'        => $value->due_date,
                     'due_time'        => $value->due_time,
-                    'service_time'     => $value->service_time,
+                    'service_time'    => $value->service_time,
                     'service_status'  => $value->service_status,
                     'services'        => $servicesWithColor,
                     'payment_days'    => $value->payment_days,
+                    'is_overdue'      => $isOverdue,
+                    'overdue_text'    => $overdueText,
+                    'overdue_minutes' => $overdueMinutes,
+                    'updated_at'      => $value->updated_at,
                 ];
             }
         }
@@ -1862,7 +1916,7 @@ class ServiceBookingController extends Controller
 
             ->where('id', $invoice)
 
-            ->update([ 'service_status' => $status, 'payment_instrument' => $payment_method, 'payment_instrument_number' => $cheque_number]);
+            ->update([ 'service_status' => $status, 'payment_instrument' => $payment_method, 'payment_instrument_number' => $cheque_number, 'updated_at' => now()]);
 
         }
 
@@ -1872,7 +1926,7 @@ class ServiceBookingController extends Controller
 
             ->where('id', $invoice)
 
-            ->update(['service_status' => $status,  'payment_instrument' => $payment_method]);
+            ->update(['service_status' => $status,  'payment_instrument' => $payment_method, 'updated_at' => now()]);
 
         }
 
@@ -2211,7 +2265,10 @@ class ServiceBookingController extends Controller
         $affected = DB::table('service_bookings')
             ->where('id', $id)
             ->where('company_id', auth()->user()->company_id)
-            ->update(['service_status' => $status]);
+            ->update([
+                'service_status' => $status,
+                'updated_at'     => now(),
+            ]);
 
         if($affected){
 

@@ -149,4 +149,40 @@ class MultiTenantIsolationTest extends TestCase
         $response->assertViewIs('reports.plan_limits');
         $response->assertViewHas(['company', 'limits']);
     }
+
+    /**
+     * Service bookings index detects and renders overdue alert when in-progress booking exceeds service_time.
+     */
+    public function test_service_bookings_index_detects_and_renders_overdue_alert_for_inprogress_booking()
+    {
+        $userA = User::first();
+        if (!$userA) {
+            $this->markTestSkipped('No user available.');
+        }
+
+        $booking = ServiceBooking::create([
+            'company_id'     => $userA->company_id,
+            'user_id'        => $userA->id,
+            'customer_id'    => Customer::where('company_id', $userA->company_id)->value('id'),
+            'service_status' => 2, // In-Progress
+            'due_date'       => now()->subDays(2)->format('Y-m-d'),
+            'due_time'       => '10:00:00',
+            'service_time'   => 30,
+            'total_price'    => 50,
+        ]);
+
+        \Illuminate\Support\Facades\DB::table('service_bookings')
+            ->where('id', $booking->id)
+            ->update([
+                'created_at' => now()->subDays(2),
+                'updated_at' => now()->subDays(2),
+            ]);
+
+        $response = $this->actingAs($userA)->get(route('service-bookings.index'));
+        $response->assertStatus(200);
+        $response->assertSee('booking-row-overdue');
+        $response->assertSee('badge-overdue-alert');
+        $response->assertSee('Overdue Service Attention Required');
+        $response->assertSee('Overdue +');
+    }
 }
