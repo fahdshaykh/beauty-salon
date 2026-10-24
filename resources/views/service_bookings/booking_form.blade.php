@@ -593,21 +593,26 @@ $(document).ready(function() {
 
         // Calculate totals only for allowed services
         if (selectedOptions.length > 0) {
+            if (!lastSelectedServiceId || !currentSelectedIds.includes(String(lastSelectedServiceId))) {
+                lastSelectedServiceId = currentSelectedIds[currentSelectedIds.length - 1];
+            }
+
             selectedOptions.each(function() {
-                var serviceId = $(this).val();
+                var serviceId = String($(this).val());
                 var includeInCalc = $(this).data('risk-status') !== 'risky' || agreedRiskyServices.has(serviceId);
 
                 if (includeInCalc) {
-                    var price = parseFloat($(this).data('price')) || 0;
-                    var time = parseFloat($(this).data('time')) || 30;
+                    var price = parseFloat($(this).attr('data-price') || $(this).data('price')) || 0;
+                    var time = parseFloat($(this).attr('data-time') || $(this).data('time')) || 30;
 
                     totalPrice += price;
                     totalTime += time;
 
-                    if (serviceId === lastSelectedServiceId) {
+                    if (serviceId === String(lastSelectedServiceId)) {
                         lastServicePrice = price;
                         lastServiceTime = time;
-                        isServicePriceFixed = $(this).data('price-type') === 'fixed';
+                        var pType = $(this).attr('data-price-type') || $(this).data('price-type') || $(this).data('priceType');
+                        isServicePriceFixed = (pType === 'fixed');
                     }
                 }
             });
@@ -826,22 +831,55 @@ $(document).ready(function() {
     }
 
     // When user manually changes the service price, update total price accordingly
-    $('#service_price').on('input', function() {
-        var enteredPrice = parseFloat($(this).val()) || 0;
+    $('#service_price').on('input keyup change', function() {
+        var enteredVal = $(this).val();
+        var enteredPrice = parseFloat(enteredVal);
+        if (isNaN(enteredPrice) || enteredPrice < 0) {
+            enteredPrice = 0;
+        }
+
         var selectedOptions = $('#service_id').find('option:selected');
+        if (selectedOptions.length === 0) {
+            $('#total_price').val('');
+            return;
+        }
+
+        // Determine which service option is being modified
+        var targetOption = null;
+        if (selectedOptions.length === 1) {
+            targetOption = $(selectedOptions[0]);
+        } else if (lastSelectedServiceId) {
+            selectedOptions.each(function() {
+                if (String($(this).val()) === String(lastSelectedServiceId)) {
+                    targetOption = $(this);
+                }
+            });
+        }
+
+        // If targetOption still not found, find the first editable service
+        if (!targetOption) {
+            selectedOptions.each(function() {
+                var pType = $(this).attr('data-price-type') || $(this).data('price-type') || $(this).data('priceType');
+                if (pType !== 'fixed') {
+                    targetOption = $(this);
+                }
+            });
+        }
+
+        // Update the target option's stored price with the custom price entered by user
+        if (targetOption) {
+            targetOption.data('price', enteredPrice).attr('data-price', enteredPrice);
+        }
+
+        // Recalculate total price across all selected services
         var totalPrice = 0;
-
         selectedOptions.each(function() {
-            var serviceId = $(this).val();
-            var isFixed = $(this).data('price-type') === 'fixed';
-            var price = parseFloat($(this).data('price')) || 0;
-
-            // If current service is not fixed, use the manually entered price
-            if (serviceId === $('#service_id').val().slice(-1)[0] && !isFixed) {
-                price = enteredPrice;
+            var serviceId = String($(this).val());
+            var includeInCalc = $(this).data('risk-status') !== 'risky' || agreedRiskyServices.has(serviceId);
+            if (includeInCalc) {
+                var price = parseFloat($(this).attr('data-price') || $(this).data('price')) || 0;
+                totalPrice += price;
             }
-
-            totalPrice += price;
         });
 
         $('#total_price').val(totalPrice.toFixed(2));
