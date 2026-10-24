@@ -21,6 +21,28 @@ class Company extends Model
 
     public function currentLimits()
     {
-        return $this->limits()->where('current_month', now()->format('Y-m'))->first();
+        $currentMonth = now()->format('Y-m');
+        $limits = $this->limits()->first();
+
+        if (!$limits) {
+            return $this->limits()->create([
+                'subscription_plan_id' => $this->subscription_plan_id ?? 1,
+                'current_month' => $currentMonth,
+            ]);
+        }
+
+        if ($limits->current_month !== $currentMonth) {
+            $limits->update([
+                'current_month' => $currentMonth,
+                'employees_used' => 0,
+                'customers_used' => 0,
+                'bookings_used' => 0,
+                'quotations_used' => 0,
+                'emails_used' => 0,
+                'invoices_used' => 0,
+            ]);
+        }
+
+        return $limits;
     }
 }

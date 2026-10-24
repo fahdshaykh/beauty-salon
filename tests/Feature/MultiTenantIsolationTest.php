@@ -133,4 +133,20 @@ class MultiTenantIsolationTest extends TestCase
         $response = $this->actingAs($userA)->get("/inventories/9999999/edit");
         $response->assertStatus(404);
     }
+
+    /**
+     * Company limits page loads successfully without SQL duplicate key error.
+     */
+    public function test_company_limits_page_loads_without_duplicate_key_error()
+    {
+        $userA = User::first();
+        if (!$userA) {
+            $this->markTestSkipped('No user available.');
+        }
+
+        $response = $this->actingAs($userA)->get('/company/limits');
+        $response->assertStatus(200);
+        $response->assertViewIs('reports.plan_limits');
+        $response->assertViewHas(['company', 'limits']);
+    }
 }

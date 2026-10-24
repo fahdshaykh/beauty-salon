@@ -11,14 +11,14 @@ class CompanyLimitController extends Controller
 {
     public function edit(Company $company)
     {
-        $limits = $company->currentLimits() ?? $company->limits()->create(['current_month' => now()->format('Y-m')]);
+        $limits = $company->currentLimits();
         $plans = SubscriptionPlan::all();
         return view('admin.subscription_plans.limits', compact('company', 'limits', 'plans'));
     }
 
     public function update(Request $request, Company $company)
     {
-        $limits = $company->currentLimits() ?? $company->limits()->create(['current_month' => now()->format('Y-m')]);
+        $limits = $company->currentLimits();
 
         $limits->update([
             'subscription_plan_id' => $request->subscription_plan_id,

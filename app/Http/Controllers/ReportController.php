@@ -4202,7 +4202,11 @@ class ReportController extends Controller
     {
         $company = auth()->user()->company;
 
-        $limits = $company->currentLimits() ?? $company->limits()->create(['current_month' => now()->format('Y-m')]);
+        if (!$company) {
+            abort(404, 'Company not found.');
+        }
+
+        $limits = $company->currentLimits();
 
         return view('reports.plan_limits', compact('company','limits'));
     }

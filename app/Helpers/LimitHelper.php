@@ -9,8 +9,9 @@ class LimitHelper
 {
     public static function canCreate($resource)
     {
-        $company = Auth::user()->company;
-        $limits = $company->currentLimits() ?? self::initializeLimits($company);
+        $company = Auth::user()?->company;
+        if (!$company) return true;
+        $limits = $company->currentLimits();
 
         if ($limits->plan?->is_unlimited) {
             return true;
@@ -27,8 +28,9 @@ class LimitHelper
 
     public static function increment($resource)
     {
-        $company = Auth::user()->company;
-        $limits = $company->currentLimits() ?? self::initializeLimits($company);
+        $company = Auth::user()?->company;
+        if (!$company) return;
+        $limits = $company->currentLimits();
 
         $field = $resource . '_used';
         $limits->increment($field);
@@ -36,20 +38,7 @@ class LimitHelper
 
     private static function initializeLimits($company)
     {
-        $currentMonth = now()->format('Y-m');
-
-        // Reset if new month
-        $existing = $company->limits()->where('current_month', $currentMonth)->first();
-        if (!$existing) {
-            $company->limits()->delete(); // clean old months
-            return CompanyLimit::create([
-                'company_id' => $company->id,
-                'subscription_plan_id' => $company->subscription_plan_id ?? 1, // default plan id
-                'current_month' => $currentMonth,
-            ]);
-        }
-
-        return $existing;
+        return $company->currentLimits();
     }
 
     public static function getUsage($resource)
