@@ -342,8 +342,26 @@
 
           </li>
           @endcan
+          
+          @can('view services')
+          <li class="nav-item {{ request()->routeIs('services.index', 'services.create', 'services.show', 'services.edit') ? 'active' : '' }}">
+            <a class="nav-link" data-toggle="collapse" href="#ui-advanced" aria-expanded="{{ request()->routeIs('services.index', 'services.create', 'services.show', 'services.edit') ? 'true' : 'false' }}" aria-controls="ui-advanced">
+              <i class="fab fa-trello menu-icon"></i>
+              <span class="menu-title">Services</span>
+              <i class="menu-arrow"></i>
+            </a>
+            <div class="collapse {{ request()->routeIs('services.index', 'services.create', 'services.show', 'services.edit') ? 'show' : '' }}" id="ui-advanced" data-parent="#sidebar .nav">
+              <ul class="nav flex-column sub-menu">
+                <li class="nav-item"> <a class="nav-link {{ request()->routeIs('services.index') ? 'active' : '' }}" href="{{ route('services.index') }}">Service Listing</a></li>
+                @can('create services')
+                <li class="nav-item"> <a class="nav-link {{ request()->routeIs('services.create') ? 'active' : '' }}" href="{{ route('services.create') }}">Create Service</a></li>
+                @endcan
 
-        
+              </ul>
+            </div>
+          </li>
+          @endcan
+
           @can('view inventories')
           <li class="nav-item {{ request()->routeIs('inventories.index', 'inventories.create', 'inventories.show', 'inventories.edit', 'inventories.available', 'inventories_purchases.index', 'inventories_purchases.create', 'inventories_purchases.show', 'inventories_purchases.edit', 'suppliers.index', 'suppliers.create', 'suppliers.show', 'suppliers.edit') ? 'active' : '' }}">
 
@@ -379,26 +397,6 @@
 
             </div>
 
-          </li>
-          @endcan
-
-          
-          @can('view services')
-          <li class="nav-item {{ request()->routeIs('services.index', 'services.create', 'services.show', 'services.edit') ? 'active' : '' }}">
-            <a class="nav-link" data-toggle="collapse" href="#ui-advanced" aria-expanded="{{ request()->routeIs('services.index', 'services.create', 'services.show', 'services.edit') ? 'true' : 'false' }}" aria-controls="ui-advanced">
-              <i class="fab fa-trello menu-icon"></i>
-              <span class="menu-title">Services</span>
-              <i class="menu-arrow"></i>
-            </a>
-            <div class="collapse {{ request()->routeIs('services.index', 'services.create', 'services.show', 'services.edit') ? 'show' : '' }}" id="ui-advanced" data-parent="#sidebar .nav">
-              <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link {{ request()->routeIs('services.index') ? 'active' : '' }}" href="{{ route('services.index') }}">Service Listing</a></li>
-                @can('create services')
-                <li class="nav-item"> <a class="nav-link {{ request()->routeIs('services.create') ? 'active' : '' }}" href="{{ route('services.create') }}">Create Service</a></li>
-                @endcan
-
-              </ul>
-            </div>
           </li>
           @endcan
           

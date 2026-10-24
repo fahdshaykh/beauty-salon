@@ -33,111 +33,99 @@
     .hide {
         display: none;
     }
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 48px;
+        height: 24px;
+    }
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #cbd5e1;
+        transition: .3s;
+    }
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 18px;
+        width: 18px;
+        left: 3px;
+        bottom: 3px;
+        background-color: white;
+        transition: .3s;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+    input:checked + .slider {
+        background-color: #007bff;
+    }
+    input:focus + .slider {
+        box-shadow: 0 0 1px #007bff;
+    }
+    input:checked + .slider:before {
+        transform: translateX(24px);
+    }
+    .slider.round {
+        border-radius: 24px;
+    }
+    .slider.round:before {
+        border-radius: 50%;
+    }
 </style>
 
 <div class="row">
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-body">
-                <!-- Home Service Checkbox -->
-                <div class="form-group row justify-content-end mb-3">
-                    <div class="col-md-3 text-right">
-                        <div class="d-flex flex-column align-items-center">
-                            <input type="checkbox" class="form-check-input" id="is_home_service" name="is_home_service" value="1" @if(isset($is_home_service) && $is_home_service) checked @endif
-                                style="width: 25px; height: 25px; cursor: pointer; margin-left: 115px;"
-                                @if(is_array($booking_detail) && isset($booking_detail[0]) && $booking_detail[0]->is_home_service) checked @endif>
-                            <label for="is_home_service" class="mt-2 mb-0" style="cursor: pointer; font-size: 14px; font-weight: 600;">
-                                Home Service
-                            </label>
-                        </div>
-                    </div>
-                </div>
 
-                <!-- Address Field -->
-                <div class="form-group" id="address_field" style="@if(is_array($booking_detail) && isset($booking_detail[0]) && $booking_detail[0]->is_home_service) display: block; @else display: none; @endif">
-                    <label>Service Address <span class="text-danger">*</span></label>
-                    <div class="input-group">
-                        <input type="text" name="booking_address" id="booking_address"
-                            class="form-control @error('booking_address') is-invalid @enderror"
-                            placeholder="Start typing any address worldwide"
-                            list=""
-                            autocomplete="off"
-                            value="@if(isset($booking_address)){{ $booking_address }}@else{{ old('booking_address') }}@endif"
-                            @if(is_array($booking_detail) && isset($booking_detail[0]) && $booking_detail[0]->is_home_service) required @endif>
-                        <div class="input-group-append">
-                            <span class="input-group-text">
-                                <i class="fas fa-map-marker-alt"></i>
-                            </span>
-                        </div>
-                    </div>
-                    @error('booking_address')
-                        <div class="invalid-feedback d-block">
-                            {{ $message }}
-                        </div>
-                    @enderror
-                </div>
-
-                <div class="form-group">
-                    <div class="form-group row">
-                        <!-- Survey section commented out -->
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>Booking Date:</label>
-                    <?php
-                        if (isset($date)) {
-                            $now_date = substr_replace($date, ':', 13, 0);
-                            $now_date = date('Y-m-d', strtotime($date));
-                        } else {
-                            $now_date = date('Y-m-d');
-                        }
-                    ?>
-                    <div id="datepicker-popup-booking" class="input-group date datepicker">
-                        <input type="text" name="due_date" id="due_date" value="@if(isset($due_date)){{$due_date}}@else{{$now_date}}@endif" class="form-control @error('due_date') is-invalid @enderror" required>
-                        <span class="input-group-addon input-group-append border-left">
-                            <span class="far fa-calendar input-group-text"></span>
-                        </span>
-                        @error('due_date')
-                            <div class="invalid-feedback">
-                                {{ $message }}
-                            </div>
-                        @enderror
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <div class="col">
-                        <?php
-                            if (isset($date)) {
-                                $now_time = date('H:i', strtotime($date));
-                            } else {
-                                $now_time = date('H:i');
-                            }
-                        ?>
-                        <label>Booking Time:</label>
-                        <div class="input-group date" id="timepicker-example" data-target-input="nearest">
-                            <div class="input-group" data-target="#timepicker-example" data-toggle="datetimepicker">
-                                <input type="text" name="due_time" value="@if(isset($due_time)){{$due_time}}@else '' @endif" id="due_time" class="form-control form-control-sm  datetimepicker-input @error('due_time') is-invalid @enderror" data-target="#timepicker-example" required/>
-                                <div class="input-group-addon input-group-append"><i class="far fa-clock input-group-text"></i></div>
-                            </div>
-                            @error('due_time')
-                                <div class="invalid-feedback d-block">
-                                    {{ $message }}
+                <!-- Home Service Toggle & Address Box -->
+                <div class="card border mb-3" style="border-radius: 8px; background-color: #f8f9fa;">
+                    <div class="card-body p-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center">
+                                <div class="mr-3 text-primary">
+                                    <i class="fas fa-home fa-2x"></i>
                                 </div>
-                            @enderror
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <label>Service Time (minutes):</label>
-                        <div class="input-group date" data-target-input="nearest">
-                            <div class="input-group">
-                                <input type="text" name="service_time" value="@if(isset($service_time)){{$service_time}}@endif" 
-                                    class="form-control @error('service_time') is-invalid @enderror" 
-                                    id="service_time">
-                                <div class="input-group-addon input-group-append"><i class="far fa-clock input-group-text"></i></div>
+                                <div>
+                                    <h6 class="mb-0 font-weight-bold text-dark">Home Service</h6>
+                                    <small class="text-muted">Enable if this appointment is performed at the client's location</small>
+                                </div>
                             </div>
-                            @error('service_time')
+                            <div class="d-flex align-items-center">
+                                <label class="switch mb-0">
+                                    <input type="checkbox" id="is_home_service" name="is_home_service" value="1"
+                                        @if((isset($is_home_service) && $is_home_service) || (is_array($booking_detail) && isset($booking_detail[0]) && $booking_detail[0]->is_home_service)) checked @endif>
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Address Field -->
+                        <div class="mt-3 pt-3 border-top" id="address_field" style="@if((isset($is_home_service) && $is_home_service) || (is_array($booking_detail) && isset($booking_detail[0]) && $booking_detail[0]->is_home_service)) display: block; @else display: none; @endif">
+                            <label class="font-weight-bold">Service Address <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <input type="text" name="booking_address" id="booking_address"
+                                    class="form-control @error('booking_address') is-invalid @enderror"
+                                    placeholder="Start typing or enter service address"
+                                    autocomplete="off"
+                                    value="@if(isset($booking_address)){{ $booking_address }}@else{{ old('booking_address') }}@endif"
+                                    @if((isset($is_home_service) && $is_home_service) || (is_array($booking_detail) && isset($booking_detail[0]) && $booking_detail[0]->is_home_service)) required @endif>
+                                <div class="input-group-append">
+                                    <span class="input-group-text bg-white">
+                                        <i class="fas fa-map-marker-alt text-danger"></i>
+                                    </span>
+                                </div>
+                            </div>
+                            @error('booking_address')
                                 <div class="invalid-feedback d-block">
                                     {{ $message }}
                                 </div>
@@ -202,6 +190,70 @@
                             {{ $message }}
                         </div>
                     @enderror
+                </div>
+
+
+                <div class="form-group">
+                    <label>Booking Date:</label>
+                    <?php
+                        if (isset($date)) {
+                            $now_date = substr_replace($date, ':', 13, 0);
+                            $now_date = date('Y-m-d', strtotime($date));
+                        } else {
+                            $now_date = date('Y-m-d');
+                        }
+                    ?>
+                    <div id="datepicker-popup-booking" class="input-group date datepicker">
+                        <input type="text" name="due_date" id="due_date" value="@if(isset($due_date)){{$due_date}}@else{{$now_date}}@endif" class="form-control @error('due_date') is-invalid @enderror" required>
+                        <span class="input-group-addon input-group-append border-left">
+                            <span class="far fa-calendar input-group-text"></span>
+                        </span>
+                        @error('due_date')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                        @enderror
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col">
+                        <?php
+                            if (isset($date)) {
+                                $now_time = date('H:i', strtotime($date));
+                            } else {
+                                $now_time = date('H:i');
+                            }
+                        ?>
+                        <label>Booking Time:</label>
+                        <div class="input-group date" id="timepicker-example" data-target-input="nearest">
+                            <div class="input-group" data-target="#timepicker-example" data-toggle="datetimepicker">
+                                <input type="text" name="due_time" value="@if(isset($due_time)){{$due_time}}@else '' @endif" id="due_time" class="form-control form-control-sm  datetimepicker-input @error('due_time') is-invalid @enderror" data-target="#timepicker-example" required/>
+                                <div class="input-group-addon input-group-append"><i class="far fa-clock input-group-text"></i></div>
+                            </div>
+                            @error('due_time')
+                                <div class="invalid-feedback d-block">
+                                    {{ $message }}
+                                </div>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <label>Service Time (minutes):</label>
+                        <div class="input-group date" data-target-input="nearest">
+                            <div class="input-group">
+                                <input type="text" name="service_time" value="@if(isset($service_time)){{$service_time}}@endif" 
+                                    class="form-control @error('service_time') is-invalid @enderror" 
+                                    id="service_time">
+                                <div class="input-group-addon input-group-append"><i class="far fa-clock input-group-text"></i></div>
+                            </div>
+                            @error('service_time')
+                                <div class="invalid-feedback d-block">
+                                    {{ $message }}
+                                </div>
+                            @enderror
+                        </div>
+                    </div>
                 </div>
 
                 <div class="form-group">
