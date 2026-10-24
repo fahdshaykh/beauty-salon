@@ -205,134 +205,75 @@ class ExpenseController extends Controller
     {
         $user = auth()->user();
         
-        // For non-admins, only load expenses from their company
-        $query = Expense::where('id', $id);
-        if (!($user && method_exists($user, 'hasRole') && $user->hasRole('admin'))) {
-            $query->where('company_id', $user->company_id);
-        }
+        $expense = Expense::where('id', $id)
+            ->where('company_id', $user->company_id)
+            ->firstOrFail();
         
-        $expense = $query->firstOrFail();
-        
-        // Still check the policy for permission-based access
-        if (!($user && method_exists($user, 'hasRole') && $user->hasRole('admin'))) {
-            $this->authorize('update', $expense);
-        }
+        $this->authorize('update', $expense);
 
         // Load related data for the form
         $expense_types = ExpenseType::where('company_id', $user->company_id)->get();
         $payment_methods = DB::table('payment_methods')->get();
 
         return view('expenses.edit', compact('expense', 'expense_types', 'payment_methods'));
-
     }
 
-
-
     /**
-
      * Update the specified resource in storage.
-
      *
-
      * @param  \Illuminate\Http\Request  $request
-
      * @param  \App\Category  $category
-
      * @return \Illuminate\Http\Response
-
      */
-
     public function update(Request $request, $id)
-
     {
-
         $this->validate($request, 
-
             [
-
                 'expense_type' => 'required',
-
                 'payable' => 'required',
-
                 'amount' => 'required',
-
                 'payment_method' => 'required',
-
             ],
-
             [
-
                 'expense_type.required' => 'Please Select Expense Type',
-
                 'payable.required' => 'Please Enter Date',
-
                 'amount.required' => 'Please Enter Amount',
-
                 'payment_method.required' => 'Please Select Payment Method',
-
             ],
-
         );
 
-
-
         $data = $request->except('_token','_method');
-
         $data['company_id'] = auth()->user()->company_id;
-
         $user = auth()->user();
         
-        // For non-admins, only update expenses from their company
-        $query = Expense::where('id', $id);
-        if (!($user && method_exists($user, 'hasRole') && $user->hasRole('admin'))) {
-            $query->where('company_id', $user->company_id);
-        }
+        $expense = Expense::where('id', $id)
+            ->where('company_id', $user->company_id)
+            ->firstOrFail();
         
-        $expense = $query->firstOrFail();
-        
-        // Still check the policy for permission-based access
-        if (!($user && method_exists($user, 'hasRole') && $user->hasRole('admin'))) {
-            $this->authorize('update', $expense);
-        }
+        $this->authorize('update', $expense);
 
         $expense->update($data);
 
         return back()->with('success', 'Expenses updated successfully');
-
     }
 
-
-
     /**
-
      * Remove the specified resource from storage.
-
      *
-
      * @param  \App\Category  $category
-
      * @return \Illuminate\Http\Response
-
      */
-
     public function destroy(Expense $expense)
     {
         $user = auth()->user();
         
-        // For non-admins, only delete expenses from their company
-        $query = Expense::where('id', $expense->id);
-        if (!($user && method_exists($user, 'hasRole') && $user->hasRole('admin'))) {
-            $query->where('company_id', $user->company_id);
-        }
+        $expenseRecord = Expense::where('id', $expense->id)
+            ->where('company_id', $user->company_id)
+            ->firstOrFail();
         
-        $expense = $query->firstOrFail();
-        
-        // Check delete permission via policy
-        if (!($user && method_exists($user, 'hasRole') && $user->hasRole('admin'))) {
-            $this->authorize('delete', $expense);
-        }
+        $this->authorize('delete', $expenseRecord);
 
-        $expense->delete();
+        $expenseRecord->delete();
         session()->flash('destroy', 'Expense deleted Successfully');
         return back();
     }

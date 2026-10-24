@@ -15,6 +15,9 @@ use DB;
 use Illuminate\Support\Facades\Auth;
 use App\Imports\CustomersImport;
 use App\User;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
 
 class CustomerController extends Controller
@@ -707,10 +710,10 @@ class CustomerController extends Controller
 
 
     public function customerstatus(Request $request)
-
     {
-
-        $customer = Customer::find($request->id);
+        $customer = Customer::where('company_id', auth()->user()->company_id)
+            ->where('id', $request->id)
+            ->firstOrFail();
 
         $customer->is_active = $request->status;
 
@@ -749,12 +752,8 @@ class CustomerController extends Controller
 
 
     public function destroy(Customer $customer)
-
     {
-
-        // $customer = Customer::find($id);
-
-        $this->authorize('update', $customer);
+        $this->authorize('delete', $customer);
 
         $customer->is_deleted = 1;
 
@@ -925,7 +924,9 @@ class CustomerController extends Controller
         ->where('customer_id', $id)
         ->get();
 
-        $customer = Customer::find($id);
+        $customer = Customer::where('company_id', auth()->user()->company_id)
+            ->where('id', $id)
+            ->firstOrFail();
 
 
         return view('customers.booking_history', compact('service_info', 'customer'));
@@ -971,7 +972,10 @@ class CustomerController extends Controller
     //adding profile module from user conroller
     public function profile($id)
     {
-        $user = User::find($id);
+        if ((int)$id !== (int)auth()->id()) {
+            abort(403, 'Unauthorized access to profile.');
+        }
+        $user = User::where('company_id', auth()->user()->company_id)->where('id', $id)->firstOrFail();
 
         return view('users.profile',compact('user'));
 
@@ -979,6 +983,9 @@ class CustomerController extends Controller
 
     public function profile_update(Request $request, $id)
     {
+        if ((int)$id !== (int)auth()->id()) {
+            abort(403, 'Unauthorized access to profile.');
+        }
         $validate = $request->validate([
 
 

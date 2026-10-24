@@ -235,7 +235,7 @@ $(document).ready(function() {
                         <select class="form-control @error('supplier_id') is-invalid @enderror" id="name" name="supplier_id">
                             @foreach($suppliers as $supplier)
                                 <option value="{{ $supplier->id }}" {{ $supplier->id == old('supplier_id', $purchase->supplier_id) ? 'selected' : '' }}>
-                                    {{ $inventory->name }}
+                                    {{ $supplier->name }}
                                 </option>
                             @endforeach
                         </select>

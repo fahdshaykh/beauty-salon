@@ -20,7 +20,7 @@ class Kernel extends ConsoleKernel
         Commands\SendNotificationEmail::class, // Added the SendNotificationEmail command
         \App\Console\Commands\SendCustomerBirthdayNotifications::class,
         \App\Console\Commands\CalculatePayroll::class,
-        \App\Console\Commands\AutoCheckoutCommand::class,
+        \App\Console\Commands\AutoUpdateCheckout::class,
         \App\Console\Commands\ResetMonthlyLimits::class,
         \App\Console\Commands\ExpireCompanySubscriptions::class,
     ];

@@ -550,32 +550,39 @@ class MarketingController extends Controller
         return view('marketing.sms_history',compact('history','type','start_date','end_date'));
     }
 
-    public function cancel_scheduled_sms()
+    public function cancel_scheduled_sms(Request $request)
     {
-        //echo "hkasjdfksadf"; exit;
-        $settings = DB::table('company_settings')->where('company_id', auth()->user()->company_id)->first();
-        $api_key = $settings->voodoosms_api_key;           
-            $ch = curl_init('https://api.voodoosms.com/schedule/5813799');
-            curl_setopt($ch, CURLOPT_HTTPHEADER, [
-                'Authorization: ' . $api_key
-            ]);
-            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        if (! (auth()->user() && auth()->user()->can('sms history'))) {
+            abort(403);
+        }
 
-            $response = curl_exec($ch);
-            if (curl_errno($ch)) {
-                $error_msg = curl_error($ch);
-            }
-            curl_close($ch);
-            
-            if (isset($error_msg)) {
-                //echo "<pre>"; print_r($error_msg); exit;
-                return back()->with('destroy','Oops! There is an error. Please try again.');
-            }
-            //curl_close($ch);
-            $result = json_decode($response);
-            //echo "<pre>"; print_r($result); exit;
-            return back()->with('destroy','SMS Cancelled Successfully');
+        $schedule_id = $request->input('id');
+        if (!$schedule_id) {
+            return back()->with('destroy', 'No schedule ID provided.');
+        }
+
+        $settings = DB::table('company_settings')->where('company_id', auth()->user()->company_id)->first();
+        $api_key = $settings->voodoosms_api_key ?? '';           
+        $ch = curl_init('https://api.voodoosms.com/schedule/' . urlencode($schedule_id));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Authorization: ' . $api_key
+        ]);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+
+        $response = curl_exec($ch);
+        $error_msg = null;
+        if (curl_errno($ch)) {
+            $error_msg = curl_error($ch);
+        }
+        curl_close($ch);
+        
+        if ($error_msg) {
+            return back()->with('destroy', 'Oops! There was an error cancelling SMS: ' . $error_msg);
+        }
+        return back()->with('destroy', 'SMS Cancelled Successfully');
     }
     public function emailoptout($companyid,$customerid, $optout){
         $customer = DB::table('customers')->where('company_id', $companyid)->where('id', $customerid)->first();

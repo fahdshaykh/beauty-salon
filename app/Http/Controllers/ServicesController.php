@@ -212,17 +212,17 @@ class ServicesController extends Controller
 
 
     public function servicestatus(Request $request)
-
     {
+        $service = Services::where('id', $request->id)
+            ->where('company_id', auth()->user()->company_id)
+            ->firstOrFail();
 
-        $service = Services::find($request->id);
+        $this->authorize('update', $service);
 
         $service->is_active = $request->status;
-
         $service->save();
 
-        return response()->json(['success'=>'Status changed successfully.']);
-
+        return response()->json(['success' => 'Status changed successfully.']);
     }
 
 
@@ -276,25 +276,14 @@ class ServicesController extends Controller
 
 
     public function edit($id)
-
-
-
     {
-
         $user = auth()->user();
         
-        // For non-admins, only load expenses from their company
-        $query = Services::where('id', $id);
-        if (!($user && method_exists($user, 'hasRole') && $user->hasRole('admin'))) {
-            $query->where('company_id', $user->company_id);
-        }
+        $services = Services::where('id', $id)
+            ->where('company_id', $user->company_id)
+            ->firstOrFail();
         
-        $services = $query->firstOrFail();
-        
-        // Still check the policy for permission-based access
-        if (!($user && method_exists($user, 'hasRole') && $user->hasRole('admin'))) {
-            $this->authorize('update', $services);
-        }
+        $this->authorize('update', $services);
 
 
         $employees = User::select('*')->where('is_active', 1)->where('company_id', auth()->user()->company_id)->where('is_deleted', 0)->orderBy('created_at', 'desc')->get();
@@ -356,7 +345,7 @@ class ServicesController extends Controller
              'price' => 'required|numeric',
          ]);
      
-         $service = Services::findOrFail($id);
+         $service = Services::where('id', $id)->where('company_id', auth()->user()->company_id)->firstOrFail();
 
          $this->authorize('update', $service);
 

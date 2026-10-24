@@ -371,17 +371,21 @@ public function store(Request $request)
 
     public function delete_permanent($id){
 
-        $result =  DB::table('users')->select('image')->where('id', $id)->first(); 
+        $result =  DB::table('users')->select('image')->where('id', $id)->where('company_id', auth()->user()->company_id)->first(); 
 
-            $image_path = public_path()."/profiles/".$result->image;  // Value is not URL but directory file path
+        if (!$result) {
+            abort(403);
+        }
 
-            if(File::exists($image_path)) {
+        $image_path = public_path()."/profiles/".$result->image;  // Value is not URL but directory file path
 
-                File::delete($image_path);
+        if(File::exists($image_path)) {
 
-            }
+            File::delete($image_path);
 
-        $destroy = User::destroy($id);        
+        }
+
+        $destroy = User::where('id', $id)->where('company_id', auth()->user()->company_id)->delete();        
 
         return back()->with('destroy','User deleted successfully!');
 
@@ -398,7 +402,7 @@ public function store(Request $request)
         $end = now();
         $daysInMonth = $end->diffInDays($start) + 1;
 
-        $user = User::where('id', $id)->where('is_deleted', 0)->first();
+        $user = User::where('id', $id)->where('company_id', auth()->user()->company_id)->where('is_deleted', 0)->first();
 
         if (!$user || is_null($user->base_salary)) {
             return redirect()->back()->with('error', 'This user has no base salary set. Cannot generate payslip.');

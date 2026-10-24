@@ -123,7 +123,9 @@ class InventoryController extends Controller
             abort(403);
         }
 
-        $inventory = Inventory::findOrFail($id);
+        $inventory = Inventory::where('id', $id)
+            ->where('company_id', auth()->user()->company_id)
+            ->firstOrFail();
 
         $inventories_purchases = InventoryPurchases::where('company_id', auth()->user()->company_id)->get();
 
@@ -156,7 +158,9 @@ class InventoryController extends Controller
             'description'  => 'nullable|string|max:160',
         ]);
 
-        $inventory = Inventory::findOrFail($id);
+        $inventory = Inventory::where('id', $id)
+            ->where('company_id', auth()->user()->company_id)
+            ->firstOrFail();
 
         $data = $request->all();
         $data['company_id'] = auth()->user()->company_id;  
@@ -180,7 +184,9 @@ class InventoryController extends Controller
         }
 
         // Find the inventory by ID
-        $inventory = Inventory::findOrFail($id);
+        $inventory = Inventory::where('id', $id)
+            ->where('company_id', auth()->user()->company_id)
+            ->firstOrFail();
 
         // Delete the inventory
         $inventory->delete();

@@ -8,12 +8,12 @@ use App\Models\EmployeeAttendance;
 use App\Models\WorkSchedule;
 use Carbon\Carbon;
 
-class AutoCheckoutCommand extends Command
+class AutoUpdateCheckout extends Command
 {
     protected $signature = 'attendance:auto-checkout';
     protected $description = 'Auto update check-out time for employees who forgot to check out';
 
-    public function handle(Request $request)
+    public function handle()
     {
         $today = now()->toDateString();
         $dayName = now()->format('l'); // e.g., Monday
@@ -39,7 +39,7 @@ class AutoCheckoutCommand extends Command
 
             $attendance->update([
                 'check_out' => $defaultCheckout,
-                'check_out_location' => $request->ip(),
+                'check_out_location' => 'SYSTEM_CRON',
                 'hours_worked' => $hoursWorked,
                 'overtime_minutes' => $overtime,
             ]);

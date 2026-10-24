@@ -150,7 +150,7 @@ class InventoryPurchasesController extends Controller
 
         $inventories = Inventory::where('company_id', auth()->user()->company_id)->get();
         $suppliers = Supplier::where('is_active', 1)->where('company_id', auth()->user()->company_id)->get();
-        $purchase = InventoryPurchases::findOrFail($id);
+        $purchase = InventoryPurchases::where('id', $id)->where('company_id', auth()->user()->company_id)->firstOrFail();
         return view('inventories.inventories_purchase.edit', compact('purchase', 'inventories', 'suppliers'));
     }
 
@@ -172,13 +172,14 @@ class InventoryPurchasesController extends Controller
             'quantity'       => 'required|numeric|min:1',
             'price'          => 'required|numeric|min:0',
             'supplier_id'    => 'required|exists:suppliers,id',
-            'paypemnt_type'  => 'required|in:cash,check',
+            'paypemnt_type'  => 'nullable|in:cash,check',
+            'payment_type'   => 'nullable|in:cash,check',
             'amount_paid'    => 'required|numeric|min:0|lte:price',
             'amount_pending' => 'nullable|numeric|min:0',
             'description'    => 'nullable|string|max:160',
         ]);
 
-        $purchase = InventoryPurchases::findOrFail($id);
+        $purchase = InventoryPurchases::where('id', $id)->where('company_id', auth()->user()->company_id)->firstOrFail();
     
         // Calculate new pending amount
         $newAmountPending = $request->price - $request->amount_paid;
@@ -191,7 +192,7 @@ class InventoryPurchasesController extends Controller
             'price' => $request->price,
             'amount_paid' => $request->amount_paid,
             'amount_pending' => $newAmountPending,
-            'payment_type' => $request->payment_type,
+            'payment_type' => $request->payment_type ?? $request->paypemnt_type,
             'description' => $request->description,
         ]);
     
@@ -247,7 +248,9 @@ class InventoryPurchasesController extends Controller
             abort(403);
         }
 
-        $purchase = InventoryPurchases::findOrFail($id);
+        $purchase = InventoryPurchases::where('id', $id)
+            ->where('company_id', auth()->user()->company_id)
+            ->firstOrFail();
 
         // Optional: Log reverse payments or notify
         $purchase->payments()->delete(); // Delete related payment records

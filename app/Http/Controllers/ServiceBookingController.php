@@ -1241,11 +1241,20 @@ class ServiceBookingController extends Controller
 
     public function fetch_job_notes($booking_id){
 
+        // Verify booking belongs to authenticated tenant
+        $isAllowed = ServiceBooking::where('id', $booking_id)
+            ->where('company_id', auth()->user()->company_id)
+            ->exists();
+
+        if (!$isAllowed) {
+            return response()->json([], 403);
+        }
+
         $job_notes = DB::table('booking_notes')->select('id','details','booking_id','image')->where('booking_id', $booking_id)->orderBy('created_at', 'desc')->get();
 
-       
+        $jobnotes = [];
 
-       if(!$job_notes->isEmpty()){
+        if(!$job_notes->isEmpty()){
 
             foreach($job_notes as $notes){
 
@@ -1263,19 +1272,9 @@ class ServiceBookingController extends Controller
 
             }
 
-       }
+        }
 
-       else{
-
-        $jobnotes="";
-
-       }
-
-        
-
-        echo json_encode($jobnotes);
-
-
+        return response()->json($jobnotes);
 
     }
 
@@ -1283,21 +1282,18 @@ class ServiceBookingController extends Controller
 
     public function show_job_detail($booking_id){
 
-        //getting invoice
+        // Verify booking belongs to authenticated tenant
+        $booking = ServiceBooking::where('id', $booking_id)
+            ->where('company_id', auth()->user()->company_id)
+            ->firstOrFail();
 
-        $invoice=DB::table('service_bookings')->select('invoice')->where('id',$booking_id)->get();
-
-        foreach($invoice as $data){
-
-          $invoice =  $data->invoice;
-
-        }
+        $invoice = $booking->invoice;
 
         // getting job notes
 
-       
-
-        $bookings = ServiceBooking::with('customer','user')->where('id', $booking_id);
+        $bookings = ServiceBooking::with('customer','user')
+            ->where('id', $booking_id)
+            ->where('company_id', auth()->user()->company_id);
 
         $data = $bookings->orderBy('created_at', 'desc')->get();
 
@@ -1555,37 +1551,28 @@ class ServiceBookingController extends Controller
 
             $api_key = $settings->voodoosms_api_key;
 
-             $body = '{
-
- 
-
-                 "to": "'.$booking_detail[0]->customer->primary_phone.'",
-
-                 "from": "'.$company_from.'",
-
-                 "country_code": "'.$booking_detail[0]->customer->country_code.'",
-
-                 "msg": "Dear '.$customer.'\n Total Amount for '.$services.' is £'.$booking_detail[0]->total_price.' against invoice '.$booking_detail[0]->invoice.'-'.$booking_detail[0]->customer->zip.' .Click to view invoice https://app.bSaloon.co.uk/sms-invoice-mail/'.$request->invoice.'/'.$booking_detail[0]->company_id.'",
-
-                 "sandbox": false
-
-               }';
+             $body = json_encode([
+                 "to" => $booking_detail[0]->customer->primary_phone,
+                 "from" => $company_from,
+                 "country_code" => $booking_detail[0]->customer->country_code,
+                 "msg" => "Dear " . $customer . "\n Total Amount for " . $services . " is £" . $booking_detail[0]->total_price . " against invoice " . $booking_detail[0]->invoice . "-" . $booking_detail[0]->customer->zip . " .Click to view invoice " . url('sms-invoice-mail/' . $request->invoice . '/' . $booking_detail[0]->company_id),
+                 "sandbox" => false
+             ]);
 
              $curl = curl_init('https://api.voodoosms.com/sendsms');
 
              curl_setopt($curl, CURLOPT_HTTPHEADER,  [
-
-                 'Authorization: ' . $api_key
-
+                 'Authorization: ' . $api_key,
+                 'Content-Type: application/json'
              ]); 
 
             curl_setopt($curl, CURLOPT_POSTFIELDS, $body);
 
             curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
 
-            curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 2);
 
-            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, true);
 
             $response = curl_exec($curl);
 
@@ -1704,53 +1691,36 @@ class ServiceBookingController extends Controller
             
             $api_key = $settings->voodoosms_api_key;
 
-            $body = '{
-
-
-
-                "to": "'.$mobile_number.'",
-
-                "from": "'.$company_from.'",
-
-                "country_code": "'.$booking_detail[0]->customer->country_code.'",
-
-                "dynamic_data": [
-
-                  {
-
-                    "customer name": "'.$customer.'",
-
-                    "services name": "'.$services.'",
-
-                    "date": "'.date("d-m-Y",strtotime($due_date)).'",
-
-                    "time": "'.$due_time.'"
-
-                  }
-
+            $body = json_encode([
+                "to" => $mobile_number,
+                "from" => $company_from,
+                "country_code" => $booking_detail[0]->customer->country_code ?? '44',
+                "dynamic_data" => [
+                    [
+                        "customer name" => $customer,
+                        "services name" => $services,
+                        "date" => date("d-m-Y", strtotime($due_date)),
+                        "time" => $due_time
+                    ]
                 ],
-
-                "msg": "'.$booking_sms.'",
-
-                "sandbox": false
-
-              }';
+                "msg" => $booking_sms,
+                "sandbox" => false
+            ]);
 
             $curl = curl_init('https://api.voodoosms.com/sendsms');
 
             curl_setopt($curl, CURLOPT_HTTPHEADER,  [
-
-                'Authorization: ' . $api_key
-
+                'Authorization: ' . $api_key,
+                'Content-Type: application/json'
             ]); 
 
             curl_setopt($curl, CURLOPT_POSTFIELDS, $body);
 
             curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
 
-            curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 2);
 
-            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, true);
 
             $response = curl_exec($curl);
 
@@ -1976,9 +1946,9 @@ class ServiceBookingController extends Controller
 
                 curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
 
-                curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+                curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 2);
 
-                curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+                curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, true);
 
                 $response = curl_exec($curl);
 
@@ -2063,17 +2033,15 @@ class ServiceBookingController extends Controller
 
 
      public function destroy(ServiceBooking $serviceBooking, $id)
-
-
-
      {
- 
-     
- 
- 
- 
-         ServiceBooking::where('id', $id)->delete();
- 
+         $booking = ServiceBooking::where('id', $id)
+             ->where('company_id', auth()->user()->company_id)
+             ->firstOrFail();
+
+         $this->authorize('delete', $booking);
+
+         $booking->delete();
+
          BookingDetail::where('booking_id', $id)->delete();
  
  
@@ -2169,59 +2137,47 @@ class ServiceBookingController extends Controller
 
 
     public function update_notes(Request $request){
+        $existingNote = DB::table('booking_notes')
+            ->join('service_bookings', 'service_bookings.id', '=', 'booking_notes.booking_id')
+            ->where('booking_notes.id', $request->id)
+            ->where('service_bookings.company_id', auth()->user()->company_id)
+            ->select('booking_notes.image')
+            ->first();
 
-        $data = array(
+        if (!$existingNote) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
 
+        $data = [
             'details' => $request->details,
+        ];
 
-        );
-
-        $notes_image="";
+        $notes_image = "";
+        $image = !empty($existingNote->image) ? asset('notes/' . $existingNote->image) : asset('notes/noimage.jpg');
 
         if($request->hasFile('img')){
-
-
-
             $originalImage = $request->file('img');
-
-            foreach ($originalImage as $file) {//this statement will loop through all files.
-
-                $file_name = $file->getClientOriginalName(); //Get file original name
-
-                
-
-                $file->move(public_path().'/notes' , $notes_image = 'img_'.Str::random(15).'.'.$file->getClientOriginalExtension()); // move files to destination folder
-
+            $files = is_array($originalImage) ? $originalImage : [$originalImage];
+            foreach ($files as $file) {
+                $notes_image = 'img_' . Str::random(15) . '.' . $file->getClientOriginalExtension();
+                $file->move(public_path() . '/notes', $notes_image);
                 $data['image'] = $notes_image;
-
+                $image = asset('notes/' . $notes_image);
             }
-
-            
-
         }
 
-        $result = DB::table('booking_notes')->where('id', $request->id)->update($data);
+        DB::table('booking_notes')->where('id', $request->id)->update($data);
 
-        if($request->hasFile('img')){
+        $response = [
+            [
+                'id' => $request->id,
+                'details' => $request->details,
+                'img' => $image,
+                'bookingid' => $request->booking_id
+            ]
+        ];
 
-            $image = 'public/notes/'.$notes_image;
-
-        }
-
-        $response[] = array(
-
-            'id' => $request->id,
-
-            'details' => $request->details,
-
-            'img' => $image,
-
-            'bookingid' => $request->booking_id
-
-        );
-
-        echo json_encode($response);
-
+        return response()->json($response);
     }
 
 
@@ -2229,24 +2185,33 @@ class ServiceBookingController extends Controller
 
 
     public function delete_notes($id){
+        $note = DB::table('booking_notes')
+            ->join('service_bookings', 'service_bookings.id', '=', 'booking_notes.booking_id')
+            ->where('booking_notes.id', $id)
+            ->where('service_bookings.company_id', auth()->user()->company_id)
+            ->select('booking_notes.id', 'booking_notes.image')
+            ->first();
 
-        DB::table('booking_notes')->where('id', $id)->delete();
-
+        if ($note) {
+            if ($note->image) {
+                $imagePath = public_path('notes/' . $note->image);
+                if (\Illuminate\Support\Facades\File::exists($imagePath)) {
+                    \Illuminate\Support\Facades\File::delete($imagePath);
+                }
+            }
+            DB::table('booking_notes')->where('id', $id)->delete();
+        }
     }
 
 
 
     public function change_boking_status(Request $request){
-
-        
-
         $id = $request->id;
-
         $status = $request->service_status;
-
-    
-
-        $affected = DB::table('service_bookings')->where('id', $id)->update(['service_status' => $status]);
+        $affected = DB::table('service_bookings')
+            ->where('id', $id)
+            ->where('company_id', auth()->user()->company_id)
+            ->update(['service_status' => $status]);
 
         if($affected){
 
@@ -2359,7 +2324,7 @@ class ServiceBookingController extends Controller
 
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
 
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
@@ -2380,7 +2345,10 @@ class ServiceBookingController extends Controller
 
         DB::beginTransaction();
         try {
-            $booking = ServiceBooking::findOrFail($bookingId);
+            $booking = ServiceBooking::where('company_id', auth()->user()->company_id)
+                ->where('id', $bookingId)
+                ->firstOrFail();
+            $this->authorize('update', $booking);
             $booking->service_status = 4;          // Cancel
             $booking->save();
 
@@ -2411,9 +2379,9 @@ class ServiceBookingController extends Controller
     {
         $employee_id = $request->employee_id;
 
-        // Get only services assigned to the selected employee
-        $user = User::find($employee_id);
-        $services = $user ? $user->services()->where('is_active', 1)->get() : collect();
+        // Get only services assigned to the selected employee within tenant
+        $user = User::where('company_id', auth()->user()->company_id)->where('id', $employee_id)->first();
+        $services = $user ? $user->services()->where('is_active', 1)->where('services.company_id', auth()->user()->company_id)->get() : collect();
 
         return response()->json($services);
     }

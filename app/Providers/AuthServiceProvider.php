@@ -21,6 +21,8 @@ use App\Customer;
 use App\Policies\CustomerPolicy;
 use App\ReferredCustomer;
 use App\Policies\ReferredCustomerPolicy;
+use App\Models\Ticket;
+use App\Policies\TicketPolicy;
 use App\ServiceBooking;
 use App\Policies\ServiceBookingPolicy;
 
@@ -51,6 +53,7 @@ class AuthServiceProvider extends ServiceProvider
         Customer::class => CustomerPolicy::class,
         ServiceBooking::class => ServiceBookingPolicy::class,
         ReferredCustomer::class => ReferredCustomerPolicy::class,
+        Ticket::class => TicketPolicy::class,
     ];
 
 

@@ -154,25 +154,16 @@ class ExpenseTypeController extends Controller
     
 
     public function edit($id)
-
     {
         $user = auth()->user();
         
-        // For non-admins, only load expense types from their company
-        $query = ExpenseType::where('id', $id);
-        if (!($user && method_exists($user, 'hasRole') && $user->hasRole('admin'))) {
-            $query->where('company_id', $user->company_id);
-        }
+        $expense_type = ExpenseType::where('id', $id)
+            ->where('company_id', $user->company_id)
+            ->firstOrFail();
         
-        $expense_type = $query->firstOrFail();
-        
-        // Still check the policy for permission-based access
-        if (!($user && method_exists($user, 'hasRole') && $user->hasRole('admin'))) {
-            $this->authorize('update', $expense_type);
-        }
+        $this->authorize('update', $expense_type);
 
         return view('expense_types.edit', compact('expense_type'));
-
     }
 
 
@@ -287,11 +278,11 @@ class ExpenseTypeController extends Controller
 
             $user = auth()->user();
 
-            $expense_type = ExpenseType::find($id);
-            // Still check the policy for permission-based access
-            if (!($user && method_exists($user, 'hasRole') && $user->hasRole('admin'))) {
-                $this->authorize('delete', $expense_type);
-            }
+            $expense_type = ExpenseType::where('id', $id)
+                ->where('company_id', $user->company_id)
+                ->firstOrFail();
+
+            $this->authorize('delete', $expense_type);
 
             $expense_type->delete();
 

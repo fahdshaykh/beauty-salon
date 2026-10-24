@@ -89,6 +89,8 @@ class TicketController extends Controller
 
     public function reply(Request $request, Ticket $ticket)
     {
+        $this->authorize('update', $ticket);
+
         $request->validate([
             'message' => 'required',
             'attachments.*' => 'file|mimes:jpg,png,pdf,doc,docx,xls,xlsx,zip|max:10240'

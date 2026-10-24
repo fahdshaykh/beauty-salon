@@ -83,6 +83,10 @@ class SupplierController extends Controller
 
     public function show(Supplier $supplier)
     {
+        if ($supplier->company_id !== auth()->user()->company_id) {
+            abort(403);
+        }
+
         return view('suppliers.show', compact('supplier'));
     }
 
@@ -92,12 +96,20 @@ class SupplierController extends Controller
             abort(403);
         }
 
+        if ($supplier->company_id !== auth()->user()->company_id) {
+            abort(403);
+        }
+
         return view('suppliers.edit', compact('supplier'));
     }
 
     public function update(Request $request, Supplier $supplier)
     {
         if (! (auth()->user() && auth()->user()->can('edit suppliers'))) {
+            abort(403);
+        }
+
+        if ($supplier->company_id !== auth()->user()->company_id) {
             abort(403);
         }
 
@@ -121,6 +133,10 @@ class SupplierController extends Controller
             abort(403);
         }
 
+        if ($supplier->company_id !== auth()->user()->company_id) {
+            abort(403);
+        }
+
         $supplier->delete();
         return back()->with('destroy', 'Supplier deleted successfully.');
     }
@@ -131,8 +147,11 @@ class SupplierController extends Controller
             abort(403);
         }
 
-        $supplier = Supplier::with(['purchases.inventory', 'payments'])->findOrFail($supplierId);
-        // dd($supplier);
+        $supplier = Supplier::with(['purchases.inventory', 'payments'])
+            ->where('id', $supplierId)
+            ->where('company_id', auth()->user()->company_id)
+            ->firstOrFail();
+
         $totalPurchases = $supplier->purchases->sum('price');
         $totalPaid = $supplier->payments->sum('amount');
         $totalPending = $totalPurchases - $totalPaid;

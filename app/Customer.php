@@ -10,7 +10,11 @@ class Customer extends Model
 
     public function serviceBookings()
     {
-        return $this->belongsTo('App\ServiceBooking');
+        return $this->hasMany(ServiceBooking::class, 'customer_id');
     }
-    
+
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
+    }
 }

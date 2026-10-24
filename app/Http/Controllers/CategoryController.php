@@ -9,6 +9,7 @@ use App\Category;
 use App\Services;
 
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 use DB;
 use App\Models\Setting;
@@ -235,27 +236,17 @@ class CategoryController extends Controller
 
 
     public function categoryStatus(Request $request)
-
-
-
     {
+        $category = Category::where('id', $request->id)
+            ->where('company_id', auth()->user()->company_id)
+            ->firstOrFail();
 
-
-
-        $category = Category::find($request->id);
-
-
+        $this->authorize('update', $category);
 
         $category->is_active = $request->status;
-
-
-
         $category->save();
 
-
-
-        return response()->json(['success'=>'Status changed successfully.']);
-
+        return response()->json(['success' => 'Status changed successfully.']);
     }
 
 
@@ -354,7 +345,7 @@ class CategoryController extends Controller
 
 
 
-                'name' => 'required|unique:categories,name,'.$category->id,
+                'name' => ['required', Rule::unique('categories', 'name')->where('company_id', auth()->user()->company_id)->ignore($category->id)],
 
               
 

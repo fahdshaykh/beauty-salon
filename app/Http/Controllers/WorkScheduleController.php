@@ -25,7 +25,9 @@ class WorkScheduleController extends Controller
 
     public function edit($id)
     {
-        $schedule = WorkSchedule::findOrFail($id);
+        $schedule = WorkSchedule::where('id', $id)
+            ->where('company_id', auth()->user()->company_id)
+            ->firstOrFail();
         return response()->json([
             'id'         => $schedule->id,
             'day'        => $schedule->day,
@@ -45,7 +47,9 @@ class WorkScheduleController extends Controller
             'end_time'   => 'required|after:start_time',
         ]);
 
-        $schedule = WorkSchedule::findOrFail($id);
+        $schedule = WorkSchedule::where('id', $id)
+            ->where('company_id', auth()->user()->company_id)
+            ->firstOrFail();
 
         $schedule->update([
             'start_time' => $request->start_time . ':00',
@@ -61,19 +65,13 @@ class WorkScheduleController extends Controller
 
     public function categoryStatus(Request $request)
     {
-        $workSchedule = WorkSchedule::find($request->id);
-
-
+        $workSchedule = WorkSchedule::where('id', $request->id)
+            ->where('company_id', auth()->user()->company_id)
+            ->firstOrFail();
 
         $workSchedule->is_active = $request->status;
-
-
-
         $workSchedule->save();
 
-
-
         return response()->json(['success'=>'Status changed successfully.']);
-
     }
 }

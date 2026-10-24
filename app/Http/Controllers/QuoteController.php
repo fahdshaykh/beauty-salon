@@ -272,7 +272,11 @@ class QuoteController extends Controller
             abort(403);
         }
 
-        DB::table('calendar_holidays')->where('id',$id)->delete();
+        DB::table('calendar_holidays')
+            ->where('company_id', auth()->user()->company_id)
+            ->where('id', $id)
+            ->delete();
+
         return redirect('add-holidays')->with('destroy', 'Holidays Deleted Successfully.');
     }
 

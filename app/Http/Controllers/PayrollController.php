@@ -56,7 +56,10 @@ class PayrollController extends Controller
         $end = Carbon::createFromDate($year, $month, 1)->endOfMonth();
         $daysInMonth = $end->diffInDays($start) + 1;
 
-        $user = User::where('id', $id)->where('is_deleted', 0)->first();
+        $user = User::where('id', $id)
+            ->where('company_id', auth()->user()->company_id)
+            ->where('is_deleted', 0)
+            ->first();
 
         if (!$user || is_null($user->base_salary)) {
             return redirect()->back()->with('error', 'This user has no base salary set. Cannot generate payslip.');

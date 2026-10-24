@@ -205339,3 +205339,277 @@ Did you mean this?
 #50 D:/Working/Code Disk/works fahd/beauty-salon/server.php(41): require_once('D://Working//Code...')
 #51 {main}
 "} 
+[2026-10-24 16:44:35] testing.ERROR: Cannot redeclare class App\Console\Commands\AutoCheckoutCommand (previously declared in D:\Working\Code Disk\works fahd\beauty-salon\app\Console\Commands\AutoUpdateCheckout.php:11) {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): Cannot redeclare class App\\Console\\Commands\\AutoCheckoutCommand (previously declared in D:\\Working\\Code Disk\\works fahd\\beauty-salon\\app\\Console\\Commands\\AutoUpdateCheckout.php:11) at D:/Working/Code Disk/works fahd/beauty-salon/app/Console/Commands/AutoUpdateCheckout.php:11)
+[stacktrace]
+#0 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(247): Symfony/Component/ErrorHandler/Error/FatalError->__construct(message: ''Cannot redecla...', code: '0', error: '['type' => 64, ...', traceOffset: '0', traceArgs: '???', trace: '???')
+#1 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(234): Illuminate/Foundation/Bootstrap/HandleExceptions->fatalErrorFromPhpError(error: '['type' => 64, ...', traceOffset: '0')
+#2 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(258): Illuminate/Foundation/Bootstrap/HandleExceptions->handleShutdown()
+#3 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(0): Illuminate/Foundation/Bootstrap/HandleExceptions->{closure:D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php:257-259}()
+#4 {main}
+"} 
+[2026-10-24 16:44:35] testing.ERROR: Cannot redeclare class App\Console\Commands\AutoCheckoutCommand (previously declared in D:\Working\Code Disk\works fahd\beauty-salon\app\Console\Commands\AutoUpdateCheckout.php:11) {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): Cannot redeclare class App\\Console\\Commands\\AutoCheckoutCommand (previously declared in D:\\Working\\Code Disk\\works fahd\\beauty-salon\\app\\Console\\Commands\\AutoUpdateCheckout.php:11) at D:/Working/Code Disk/works fahd/beauty-salon/app/Console/Commands/AutoUpdateCheckout.php:11)
+[stacktrace]
+#0 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(247): Symfony/Component/ErrorHandler/Error/FatalError->__construct(message: ''Cannot redecla...', code: '0', error: '['type' => 64, ...', traceOffset: '0', traceArgs: '???', trace: '???')
+#1 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(234): Illuminate/Foundation/Bootstrap/HandleExceptions->fatalErrorFromPhpError(error: '['type' => 64, ...', traceOffset: '0')
+#2 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(258): Illuminate/Foundation/Bootstrap/HandleExceptions->handleShutdown()
+#3 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(0): Illuminate/Foundation/Bootstrap/HandleExceptions->{closure:D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php:257-259}()
+#4 {main}
+"} 
+[2026-10-24 16:45:30] local.ERROR: Target class [App\Console\Commands\AutoCheckoutCommand] does not exist. {"exception":"[object] (Illuminate\\Contracts\\Container\\BindingResolutionException(code: 0): Target class [App\\Console\\Commands\\AutoCheckoutCommand] does not exist. at D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php:1124)
+[stacktrace]
+#0 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php(933): Illuminate/Container/Container->build('App//Console//Com...')
+#1 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1078): Illuminate/Container/Container->resolve('App//Console//Com...', Array, true)
+#2 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php(864): Illuminate/Foundation/Application->resolve('App//Console//Com...', Array)
+#3 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1058): Illuminate/Container/Container->make('App//Console//Com...', Array)
+#4 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Console/Application.php(294): Illuminate/Foundation/Application->make('App//Console//Com...')
+#5 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Console/Application.php(308): Illuminate/Console/Application->resolve('App//Console//Com...')
+#6 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(561): Illuminate/Console/Application->resolveCommands(Array)
+#7 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Illuminate/Foundation/Console/Kernel->getArtisan()
+#8 Command line code(1): Illuminate/Foundation/Console/Kernel->handle(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#9 {main}
+
+[previous exception] [object] (ReflectionException(code: -1): Class \"App\\Console\\Commands\\AutoCheckoutCommand\" does not exist at D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php:1122)
+[stacktrace]
+#0 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php(1122): ReflectionClass->__construct('App//Console//Com...')
+#1 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php(933): Illuminate/Container/Container->build('App//Console//Com...')
+#2 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1078): Illuminate/Container/Container->resolve('App//Console//Com...', Array, true)
+#3 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php(864): Illuminate/Foundation/Application->resolve('App//Console//Com...', Array)
+#4 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1058): Illuminate/Container/Container->make('App//Console//Com...', Array)
+#5 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Console/Application.php(294): Illuminate/Foundation/Application->make('App//Console//Com...')
+#6 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Console/Application.php(308): Illuminate/Console/Application->resolve('App//Console//Com...')
+#7 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(561): Illuminate/Console/Application->resolveCommands(Array)
+#8 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Illuminate/Foundation/Console/Kernel->getArtisan()
+#9 Command line code(1): Illuminate/Foundation/Console/Kernel->handle(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#10 {main}
+"} 
+[2026-10-24 16:45:31] local.ERROR: Target class [App\Console\Commands\AutoCheckoutCommand] does not exist. {"exception":"[object] (Illuminate\\Contracts\\Container\\BindingResolutionException(code: 0): Target class [App\\Console\\Commands\\AutoCheckoutCommand] does not exist. at D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php:1124)
+[stacktrace]
+#0 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php(933): Illuminate/Container/Container->build('App//Console//Com...')
+#1 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1078): Illuminate/Container/Container->resolve('App//Console//Com...', Array, true)
+#2 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php(864): Illuminate/Foundation/Application->resolve('App//Console//Com...', Array)
+#3 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1058): Illuminate/Container/Container->make('App//Console//Com...', Array)
+#4 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Console/Application.php(294): Illuminate/Foundation/Application->make('App//Console//Com...')
+#5 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Console/Application.php(308): Illuminate/Console/Application->resolve('App//Console//Com...')
+#6 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(561): Illuminate/Console/Application->resolveCommands(Array)
+#7 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Illuminate/Foundation/Console/Kernel->getArtisan()
+#8 Command line code(1): Illuminate/Foundation/Console/Kernel->handle(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#9 {main}
+
+[previous exception] [object] (ReflectionException(code: -1): Class \"App\\Console\\Commands\\AutoCheckoutCommand\" does not exist at D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php:1122)
+[stacktrace]
+#0 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php(1122): ReflectionClass->__construct('App//Console//Com...')
+#1 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php(933): Illuminate/Container/Container->build('App//Console//Com...')
+#2 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1078): Illuminate/Container/Container->resolve('App//Console//Com...', Array, true)
+#3 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php(864): Illuminate/Foundation/Application->resolve('App//Console//Com...', Array)
+#4 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1058): Illuminate/Container/Container->make('App//Console//Com...', Array)
+#5 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Console/Application.php(294): Illuminate/Foundation/Application->make('App//Console//Com...')
+#6 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Console/Application.php(308): Illuminate/Console/Application->resolve('App//Console//Com...')
+#7 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(561): Illuminate/Console/Application->resolveCommands(Array)
+#8 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Illuminate/Foundation/Console/Kernel->getArtisan()
+#9 Command line code(1): Illuminate/Foundation/Console/Kernel->handle(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#10 {main}
+"} 
+[2026-10-24 16:45:31] local.ERROR: Target class [App\Console\Commands\AutoCheckoutCommand] does not exist. {"exception":"[object] (Illuminate\\Contracts\\Container\\BindingResolutionException(code: 0): Target class [App\\Console\\Commands\\AutoCheckoutCommand] does not exist. at D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php:1124)
+[stacktrace]
+#0 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php(933): Illuminate/Container/Container->build('App//Console//Com...')
+#1 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1078): Illuminate/Container/Container->resolve('App//Console//Com...', Array, true)
+#2 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php(864): Illuminate/Foundation/Application->resolve('App//Console//Com...', Array)
+#3 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1058): Illuminate/Container/Container->make('App//Console//Com...', Array)
+#4 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Console/Application.php(294): Illuminate/Foundation/Application->make('App//Console//Com...')
+#5 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Console/Application.php(308): Illuminate/Console/Application->resolve('App//Console//Com...')
+#6 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(561): Illuminate/Console/Application->resolveCommands(Array)
+#7 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Illuminate/Foundation/Console/Kernel->getArtisan()
+#8 Command line code(1): Illuminate/Foundation/Console/Kernel->handle(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#9 {main}
+
+[previous exception] [object] (ReflectionException(code: -1): Class \"App\\Console\\Commands\\AutoCheckoutCommand\" does not exist at D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php:1122)
+[stacktrace]
+#0 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php(1122): ReflectionClass->__construct('App//Console//Com...')
+#1 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php(933): Illuminate/Container/Container->build('App//Console//Com...')
+#2 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1078): Illuminate/Container/Container->resolve('App//Console//Com...', Array, true)
+#3 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php(864): Illuminate/Foundation/Application->resolve('App//Console//Com...', Array)
+#4 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1058): Illuminate/Container/Container->make('App//Console//Com...', Array)
+#5 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Console/Application.php(294): Illuminate/Foundation/Application->make('App//Console//Com...')
+#6 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Console/Application.php(308): Illuminate/Console/Application->resolve('App//Console//Com...')
+#7 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(561): Illuminate/Console/Application->resolveCommands(Array)
+#8 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Illuminate/Foundation/Console/Kernel->getArtisan()
+#9 Command line code(1): Illuminate/Foundation/Console/Kernel->handle(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#10 {main}
+"} 
+[2026-10-24 16:45:32] local.ERROR: Target class [App\Console\Commands\AutoCheckoutCommand] does not exist. {"exception":"[object] (Illuminate\\Contracts\\Container\\BindingResolutionException(code: 0): Target class [App\\Console\\Commands\\AutoCheckoutCommand] does not exist. at D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php:1124)
+[stacktrace]
+#0 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php(933): Illuminate/Container/Container->build('App//Console//Com...')
+#1 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1078): Illuminate/Container/Container->resolve('App//Console//Com...', Array, true)
+#2 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php(864): Illuminate/Foundation/Application->resolve('App//Console//Com...', Array)
+#3 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1058): Illuminate/Container/Container->make('App//Console//Com...', Array)
+#4 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Console/Application.php(294): Illuminate/Foundation/Application->make('App//Console//Com...')
+#5 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Console/Application.php(308): Illuminate/Console/Application->resolve('App//Console//Com...')
+#6 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(561): Illuminate/Console/Application->resolveCommands(Array)
+#7 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Illuminate/Foundation/Console/Kernel->getArtisan()
+#8 Command line code(1): Illuminate/Foundation/Console/Kernel->handle(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#9 {main}
+
+[previous exception] [object] (ReflectionException(code: -1): Class \"App\\Console\\Commands\\AutoCheckoutCommand\" does not exist at D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php:1122)
+[stacktrace]
+#0 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php(1122): ReflectionClass->__construct('App//Console//Com...')
+#1 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php(933): Illuminate/Container/Container->build('App//Console//Com...')
+#2 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1078): Illuminate/Container/Container->resolve('App//Console//Com...', Array, true)
+#3 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php(864): Illuminate/Foundation/Application->resolve('App//Console//Com...', Array)
+#4 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1058): Illuminate/Container/Container->make('App//Console//Com...', Array)
+#5 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Console/Application.php(294): Illuminate/Foundation/Application->make('App//Console//Com...')
+#6 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Console/Application.php(308): Illuminate/Console/Application->resolve('App//Console//Com...')
+#7 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(561): Illuminate/Console/Application->resolveCommands(Array)
+#8 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Illuminate/Foundation/Console/Kernel->getArtisan()
+#9 Command line code(1): Illuminate/Foundation/Console/Kernel->handle(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#10 {main}
+"} 
+[2026-10-24 16:45:32] local.ERROR: Target class [App\Console\Commands\AutoCheckoutCommand] does not exist. {"exception":"[object] (Illuminate\\Contracts\\Container\\BindingResolutionException(code: 0): Target class [App\\Console\\Commands\\AutoCheckoutCommand] does not exist. at D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php:1124)
+[stacktrace]
+#0 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php(933): Illuminate/Container/Container->build('App//Console//Com...')
+#1 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1078): Illuminate/Container/Container->resolve('App//Console//Com...', Array, true)
+#2 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php(864): Illuminate/Foundation/Application->resolve('App//Console//Com...', Array)
+#3 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1058): Illuminate/Container/Container->make('App//Console//Com...', Array)
+#4 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Console/Application.php(294): Illuminate/Foundation/Application->make('App//Console//Com...')
+#5 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Console/Application.php(308): Illuminate/Console/Application->resolve('App//Console//Com...')
+#6 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(561): Illuminate/Console/Application->resolveCommands(Array)
+#7 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Illuminate/Foundation/Console/Kernel->getArtisan()
+#8 Command line code(1): Illuminate/Foundation/Console/Kernel->handle(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#9 {main}
+
+[previous exception] [object] (ReflectionException(code: -1): Class \"App\\Console\\Commands\\AutoCheckoutCommand\" does not exist at D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php:1122)
+[stacktrace]
+#0 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php(1122): ReflectionClass->__construct('App//Console//Com...')
+#1 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php(933): Illuminate/Container/Container->build('App//Console//Com...')
+#2 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1078): Illuminate/Container/Container->resolve('App//Console//Com...', Array, true)
+#3 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php(864): Illuminate/Foundation/Application->resolve('App//Console//Com...', Array)
+#4 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1058): Illuminate/Container/Container->make('App//Console//Com...', Array)
+#5 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Console/Application.php(294): Illuminate/Foundation/Application->make('App//Console//Com...')
+#6 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Console/Application.php(308): Illuminate/Console/Application->resolve('App//Console//Com...')
+#7 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(561): Illuminate/Console/Application->resolveCommands(Array)
+#8 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Illuminate/Foundation/Console/Kernel->getArtisan()
+#9 Command line code(1): Illuminate/Foundation/Console/Kernel->handle(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#10 {main}
+"} 
+[2026-10-24 16:45:32] local.ERROR: Target class [App\Console\Commands\AutoCheckoutCommand] does not exist. {"exception":"[object] (Illuminate\\Contracts\\Container\\BindingResolutionException(code: 0): Target class [App\\Console\\Commands\\AutoCheckoutCommand] does not exist. at D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php:1124)
+[stacktrace]
+#0 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php(933): Illuminate/Container/Container->build('App//Console//Com...')
+#1 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1078): Illuminate/Container/Container->resolve('App//Console//Com...', Array, true)
+#2 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php(864): Illuminate/Foundation/Application->resolve('App//Console//Com...', Array)
+#3 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1058): Illuminate/Container/Container->make('App//Console//Com...', Array)
+#4 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Console/Application.php(294): Illuminate/Foundation/Application->make('App//Console//Com...')
+#5 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Console/Application.php(308): Illuminate/Console/Application->resolve('App//Console//Com...')
+#6 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(561): Illuminate/Console/Application->resolveCommands(Array)
+#7 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Illuminate/Foundation/Console/Kernel->getArtisan()
+#8 Command line code(1): Illuminate/Foundation/Console/Kernel->handle(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#9 {main}
+
+[previous exception] [object] (ReflectionException(code: -1): Class \"App\\Console\\Commands\\AutoCheckoutCommand\" does not exist at D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php:1122)
+[stacktrace]
+#0 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php(1122): ReflectionClass->__construct('App//Console//Com...')
+#1 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php(933): Illuminate/Container/Container->build('App//Console//Com...')
+#2 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1078): Illuminate/Container/Container->resolve('App//Console//Com...', Array, true)
+#3 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php(864): Illuminate/Foundation/Application->resolve('App//Console//Com...', Array)
+#4 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1058): Illuminate/Container/Container->make('App//Console//Com...', Array)
+#5 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Console/Application.php(294): Illuminate/Foundation/Application->make('App//Console//Com...')
+#6 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Console/Application.php(308): Illuminate/Console/Application->resolve('App//Console//Com...')
+#7 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(561): Illuminate/Console/Application->resolveCommands(Array)
+#8 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Illuminate/Foundation/Console/Kernel->getArtisan()
+#9 Command line code(1): Illuminate/Foundation/Console/Kernel->handle(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#10 {main}
+"} 
+[2026-10-24 16:45:32] local.ERROR: Target class [App\Console\Commands\AutoCheckoutCommand] does not exist. {"exception":"[object] (Illuminate\\Contracts\\Container\\BindingResolutionException(code: 0): Target class [App\\Console\\Commands\\AutoCheckoutCommand] does not exist. at D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php:1124)
+[stacktrace]
+#0 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php(933): Illuminate/Container/Container->build('App//Console//Com...')
+#1 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1078): Illuminate/Container/Container->resolve('App//Console//Com...', Array, true)
+#2 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php(864): Illuminate/Foundation/Application->resolve('App//Console//Com...', Array)
+#3 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1058): Illuminate/Container/Container->make('App//Console//Com...', Array)
+#4 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Console/Application.php(294): Illuminate/Foundation/Application->make('App//Console//Com...')
+#5 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Console/Application.php(308): Illuminate/Console/Application->resolve('App//Console//Com...')
+#6 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(561): Illuminate/Console/Application->resolveCommands(Array)
+#7 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Illuminate/Foundation/Console/Kernel->getArtisan()
+#8 Command line code(1): Illuminate/Foundation/Console/Kernel->handle(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#9 {main}
+
+[previous exception] [object] (ReflectionException(code: -1): Class \"App\\Console\\Commands\\AutoCheckoutCommand\" does not exist at D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php:1122)
+[stacktrace]
+#0 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php(1122): ReflectionClass->__construct('App//Console//Com...')
+#1 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php(933): Illuminate/Container/Container->build('App//Console//Com...')
+#2 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1078): Illuminate/Container/Container->resolve('App//Console//Com...', Array, true)
+#3 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php(864): Illuminate/Foundation/Application->resolve('App//Console//Com...', Array)
+#4 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1058): Illuminate/Container/Container->make('App//Console//Com...', Array)
+#5 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Console/Application.php(294): Illuminate/Foundation/Application->make('App//Console//Com...')
+#6 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Console/Application.php(308): Illuminate/Console/Application->resolve('App//Console//Com...')
+#7 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(561): Illuminate/Console/Application->resolveCommands(Array)
+#8 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Illuminate/Foundation/Console/Kernel->getArtisan()
+#9 Command line code(1): Illuminate/Foundation/Console/Kernel->handle(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#10 {main}
+"} 
+[2026-10-24 16:45:33] local.ERROR: Target class [App\Console\Commands\AutoCheckoutCommand] does not exist. {"exception":"[object] (Illuminate\\Contracts\\Container\\BindingResolutionException(code: 0): Target class [App\\Console\\Commands\\AutoCheckoutCommand] does not exist. at D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php:1124)
+[stacktrace]
+#0 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php(933): Illuminate/Container/Container->build('App//Console//Com...')
+#1 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1078): Illuminate/Container/Container->resolve('App//Console//Com...', Array, true)
+#2 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php(864): Illuminate/Foundation/Application->resolve('App//Console//Com...', Array)
+#3 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1058): Illuminate/Container/Container->make('App//Console//Com...', Array)
+#4 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Console/Application.php(294): Illuminate/Foundation/Application->make('App//Console//Com...')
+#5 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Console/Application.php(308): Illuminate/Console/Application->resolve('App//Console//Com...')
+#6 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(561): Illuminate/Console/Application->resolveCommands(Array)
+#7 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Illuminate/Foundation/Console/Kernel->getArtisan()
+#8 Command line code(1): Illuminate/Foundation/Console/Kernel->handle(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#9 {main}
+
+[previous exception] [object] (ReflectionException(code: -1): Class \"App\\Console\\Commands\\AutoCheckoutCommand\" does not exist at D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php:1122)
+[stacktrace]
+#0 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php(1122): ReflectionClass->__construct('App//Console//Com...')
+#1 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php(933): Illuminate/Container/Container->build('App//Console//Com...')
+#2 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1078): Illuminate/Container/Container->resolve('App//Console//Com...', Array, true)
+#3 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php(864): Illuminate/Foundation/Application->resolve('App//Console//Com...', Array)
+#4 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1058): Illuminate/Container/Container->make('App//Console//Com...', Array)
+#5 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Console/Application.php(294): Illuminate/Foundation/Application->make('App//Console//Com...')
+#6 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Console/Application.php(308): Illuminate/Console/Application->resolve('App//Console//Com...')
+#7 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(561): Illuminate/Console/Application->resolveCommands(Array)
+#8 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Illuminate/Foundation/Console/Kernel->getArtisan()
+#9 Command line code(1): Illuminate/Foundation/Console/Kernel->handle(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#10 {main}
+"} 
+[2026-10-24 16:45:33] local.ERROR: Target class [App\Console\Commands\AutoCheckoutCommand] does not exist. {"exception":"[object] (Illuminate\\Contracts\\Container\\BindingResolutionException(code: 0): Target class [App\\Console\\Commands\\AutoCheckoutCommand] does not exist. at D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php:1124)
+[stacktrace]
+#0 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php(933): Illuminate/Container/Container->build('App//Console//Com...')
+#1 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1078): Illuminate/Container/Container->resolve('App//Console//Com...', Array, true)
+#2 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php(864): Illuminate/Foundation/Application->resolve('App//Console//Com...', Array)
+#3 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1058): Illuminate/Container/Container->make('App//Console//Com...', Array)
+#4 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Console/Application.php(294): Illuminate/Foundation/Application->make('App//Console//Com...')
+#5 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Console/Application.php(308): Illuminate/Console/Application->resolve('App//Console//Com...')
+#6 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(561): Illuminate/Console/Application->resolveCommands(Array)
+#7 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Illuminate/Foundation/Console/Kernel->getArtisan()
+#8 Command line code(1): Illuminate/Foundation/Console/Kernel->handle(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#9 {main}
+
+[previous exception] [object] (ReflectionException(code: -1): Class \"App\\Console\\Commands\\AutoCheckoutCommand\" does not exist at D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php:1122)
+[stacktrace]
+#0 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php(1122): ReflectionClass->__construct('App//Console//Com...')
+#1 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php(933): Illuminate/Container/Container->build('App//Console//Com...')
+#2 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1078): Illuminate/Container/Container->resolve('App//Console//Com...', Array, true)
+#3 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php(864): Illuminate/Foundation/Application->resolve('App//Console//Com...', Array)
+#4 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1058): Illuminate/Container/Container->make('App//Console//Com...', Array)
+#5 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Console/Application.php(294): Illuminate/Foundation/Application->make('App//Console//Com...')
+#6 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Console/Application.php(308): Illuminate/Console/Application->resolve('App//Console//Com...')
+#7 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(561): Illuminate/Console/Application->resolveCommands(Array)
+#8 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Illuminate/Foundation/Console/Kernel->getArtisan()
+#9 Command line code(1): Illuminate/Foundation/Console/Kernel->handle(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#10 {main}
+"} 
+[2026-10-24 17:12:31] local.ERROR: The "-e" option does not exist. {"exception":"[object] (Symfony\\Component\\Console\\Exception\\RuntimeException(code: 0): The \"-e\" option does not exist. at D:/Working/Code Disk/works fahd/beauty-salon/vendor/symfony/console/Input/ArgvInput.php:128)
+[stacktrace]
+#0 D:/Working/Code Disk/works fahd/beauty-salon/vendor/symfony/console/Input/ArgvInput.php(110): Symfony/Component/Console/Input/ArgvInput->parseShortOptionSet('encodedCommand')
+#1 D:/Working/Code Disk/works fahd/beauty-salon/vendor/symfony/console/Input/ArgvInput.php(90): Symfony/Component/Console/Input/ArgvInput->parseShortOption('-encodedCommand')
+#2 D:/Working/Code Disk/works fahd/beauty-salon/vendor/symfony/console/Input/ArgvInput.php(77): Symfony/Component/Console/Input/ArgvInput->parseToken('-encodedCommand', true)
+#3 D:/Working/Code Disk/works fahd/beauty-salon/vendor/symfony/console/Input/Input.php(53): Symfony/Component/Console/Input/ArgvInput->parse()
+#4 D:/Working/Code Disk/works fahd/beauty-salon/vendor/symfony/console/Command/Command.php(295): Symfony/Component/Console/Input/Input->bind(Object(Symfony/Component/Console/Input/InputDefinition))
+#5 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Console/Command.php(180): Symfony/Component/Console/Command/Command->run(Object(Symfony/Component/Console/Input/ArgvInput), Object(Illuminate/Console/OutputStyle))
+#6 D:/Working/Code Disk/works fahd/beauty-salon/vendor/symfony/console/Application.php(1117): Illuminate/Console/Command->run(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#7 D:/Working/Code Disk/works fahd/beauty-salon/vendor/symfony/console/Application.php(356): Symfony/Component/Console/Application->doRunCommand(Object(Laravel/Tinker/Console/TinkerCommand), Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#8 D:/Working/Code Disk/works fahd/beauty-salon/vendor/symfony/console/Application.php(195): Symfony/Component/Console/Application->doRun(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#9 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Symfony/Component/Console/Application->run(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#10 D:/Working/Code Disk/works fahd/beauty-salon/artisan(68): Illuminate/Foundation/Console/Kernel->handle(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#11 {main}
+"} 

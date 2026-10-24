@@ -10,7 +10,9 @@ class SupplierPaymentController extends Controller
 {
     public function edit($id)
     {
-        $supplier = Supplier::find($id);
+        $supplier = Supplier::where('id', $id)
+            ->where('company_id', auth()->user()->company_id)
+            ->firstOrFail();
         return view('suppliers.add_payment', compact('supplier'));
     }
 
@@ -22,8 +24,12 @@ class SupplierPaymentController extends Controller
             'note' => 'nullable|string',
         ]);
 
+        $supplier = Supplier::where('id', $request->supplier_id)
+            ->where('company_id', auth()->user()->company_id)
+            ->firstOrFail();
+
         SupplierPayment::create([
-            'supplier_id' => $request->supplier_id,
+            'supplier_id' => $supplier->id,
             'company_id' => auth()->user()->company_id,
             'amount' => $request->amount,
             'note' => $request->note,
