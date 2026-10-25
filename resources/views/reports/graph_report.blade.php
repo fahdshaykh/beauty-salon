@@ -41,7 +41,7 @@
                     <div class="row">   
                         <div class="col-4">
                             <div id="datepicker-popup-new" class="input-group date datepicker">
-                                <input type="text" name="start_date" id="start-date" class="form-control" required>
+                                <input type="text" name="start_date" id="start-date" class="form-control" value="{{ $start_date ?? date('Y-m-01') }}" required autocomplete="off">
                                 <span class="input-group-addon input-group-append border-left">
                                 <span class="far fa-calendar input-group-text"></span>
                                 </span>
@@ -50,7 +50,7 @@
                         <div class="col-4">
 
                             <div id="datepicker-popup-new2" class="input-group date datepicker">
-                                <input type="text" name="end_date" id="end-date" class="form-control" required>
+                                <input type="text" name="end_date" id="end-date" class="form-control" value="{{ $end_date ?? date('Y-m-d') }}" required autocomplete="off">
                                 <span class="input-group-addon input-group-append border-left">
                                 <span class="far fa-calendar input-group-text"></span>
                                 </span>

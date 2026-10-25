@@ -45,15 +45,15 @@ class ReportController extends Controller
 
 
     public function graph_report()
-
     {
-
         if (! (auth()->user() && auth()->user()->can('view services report'))) {
             abort(403);
         }
 
-        return view('reports.graph_report');
+        $start_date = date('Y-m-01');
+        $end_date = date('Y-m-d');
 
+        return view('reports.graph_report', compact('start_date', 'end_date'));
     }
 
     public function heat_graph_report()
@@ -335,46 +335,33 @@ class ReportController extends Controller
 
 
     public function get_booking_chart(Request $request)
-
     {
+        $start_date = date('Y-m-01');
+        $end_date = date('Y-m-d');
 
-        $start_date = date("Y").'-'.date("m").'-'.'01';
-
-        $end_date = date("Y").'-'.date("m").'-'.'31';
-
-
-
-        if($request->start_date && $request->end_date){
-
+        if ($request->filled('start_date') && $request->filled('end_date')) {
             $start_date = date('Y-m-d', strtotime($request->start_date));
-
             $end_date = date('Y-m-d', strtotime($request->end_date));
-
         }
 
-        
+        $companyId = auth()->user()->company_id;
 
         $service_info = DB::table('service_bookings')
-        ->join('booking_details', 'service_bookings.id', '=', 'booking_details.booking_id')
-        ->join('services', 'booking_details.service_id', '=', 'services.id')
-        ->join('customers', 'service_bookings.customer_id', '=', 'customers.id')
-        ->whereDate('service_bookings.due_date', '>=' , $start_date)
-        ->whereDate('service_bookings.due_date', '<=' , $end_date)
-        ->where('service_bookings.service_status', '!=' , 4)
-        ->where('service_bookings.service_status', '!=' , 5)
-        ->select(DB::raw('count(*) as total'), DB::raw('SUM(service_bookings.total_price) as total_amount'), 'services.name','services.service_color','customers.address')
-        ->where('service_bookings.company_id', auth()->user()->company_id)
-        ->groupBy('booking_details.service_id')
-        ->get();
-
-               // dd($service_info);
-
-
+            ->join('booking_details', 'service_bookings.id', '=', 'booking_details.booking_id')
+            ->join('services', 'booking_details.service_id', '=', 'services.id')
+            ->where('service_bookings.company_id', $companyId)
+            ->whereBetween('service_bookings.due_date', [$start_date, $end_date])
+            ->whereNotIn('service_bookings.service_status', [4, 5])
+            ->select(
+                DB::raw('count(*) as total'),
+                DB::raw('ROUND(COALESCE(SUM(service_bookings.total_price), 0), 2) as total_amount'),
+                'services.name',
+                'services.service_color'
+            )
+            ->groupBy('booking_details.service_id', 'services.name', 'services.service_color')
+            ->get();
 
         return response()->json($service_info);
-
-        
-
     }
 
     public function show_heat_report(Request $request)

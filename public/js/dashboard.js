@@ -6,411 +6,136 @@
 
         if ($("#orders-chart").length) {
 
-
-
             var base_path = "get-booking-chart";
+            var ordersChartInstance = null;
 
+            function renderOrdersChart(startDate, endDate) {
+                var requestData = {};
+                if (startDate && endDate) {
+                    requestData.start_date = startDate;
+                    requestData.end_date = endDate;
+                }
 
+                $.ajax({
+                    type: "GET",
+                    url: base_path,
+                    data: requestData,
+                    success: function(response) {
+                        var booking_titles = [];
+                        var booking_totals = [];
+                        var booking_colors = [];
+
+                        if (response !== null && Array.isArray(response)) {
+                            $.each(response, function(index, value) {
+                                var currency = (typeof window.currencySymbol !== 'undefined' && window.currencySymbol) ? window.currencySymbol : '';
+                                booking_titles.push(value.name + ' - ' + currency + value.total_amount);
+                                booking_totals.push(value.total);
+                                booking_colors.push(value.service_color || '#392c70');
+                            });
+                        }
+
+                        if (ordersChartInstance) {
+                            ordersChartInstance.destroy();
+                            ordersChartInstance = null;
+                        }
+
+                        $('#orders-chart').remove();
+                        if ($('#orders-chart-legend').length) {
+                            $('#orders-chart-legend').before('<canvas id="orders-chart"></canvas>');
+                        } else {
+                            $('#chartBar').append('<canvas id="orders-chart"></canvas>');
+                        }
+
+                        var currentChartCanvas = $("#orders-chart").get(0).getContext("2d");
+                        ordersChartInstance = new Chart(currentChartCanvas, {
+                            type: 'bar',
+                            data: {
+                                labels: booking_titles,
+                                datasets: [{
+                                    label: 'Bookings',
+                                    data: booking_totals,
+                                    backgroundColor: booking_colors
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: true,
+                                layout: {
+                                    padding: {
+                                        left: 0,
+                                        right: 0,
+                                        top: 20,
+                                        bottom: 0
+                                    }
+                                },
+                                scales: {
+                                    yAxes: [{
+                                        gridLines: {
+                                            drawBorder: true,
+                                        },
+                                        ticks: {
+                                            stepSize: 5,
+                                            fontColor: "#686868"
+                                        }
+                                    }],
+                                    xAxes: [{
+                                        stacked: true,
+                                        ticks: {
+                                            beginAtZero: true,
+                                            fontColor: "#686868"
+                                        },
+                                        gridLines: {
+                                            display: false,
+                                        },
+                                        barPercentage: 0.4
+                                    }]
+                                },
+                                legend: {
+                                    display: false
+                                },
+                                elements: {
+                                    point: {
+                                        radius: 0
+                                    }
+                                },
+                                legendCallback: function(chart) {
+                                    var text = [];
+                                    text.push('<ul class="legend' + chart.id + '">');
+                                    for (var i = 0; i < chart.data.datasets.length; i++) {
+                                        var color = chart.data.datasets[i].backgroundColor;
+                                        if (Array.isArray(color)) {
+                                            color = color[0] || '#392c70';
+                                        }
+                                        text.push('<li><span class="legend-label" style="background-color:' + color + '"></span>');
+                                        if (chart.data.datasets[i].label) {
+                                            text.push(chart.data.datasets[i].label);
+                                        }
+                                        text.push('</li>');
+                                    }
+                                    text.push('</ul>');
+                                    return text.join("");
+                                }
+                            }
+                        });
+
+                        var legendContainer = document.getElementById('orders-chart-legend');
+                        if (legendContainer && ordersChartInstance) {
+                            legendContainer.innerHTML = ordersChartInstance.generateLegend();
+                        }
+                    }
+                });
+            }
 
             $('#graph-button').on('click', function() {
-
                 var start_date = $("#start-date").val();
                 var end_date = $("#end-date").val();
                 if (start_date && end_date) {
-
-                    $.ajax({
-
-                        type: "GET",
-
-                        url: base_path,
-
-                        data: { start_date: start_date, end_date: end_date, _token: "{{ csrf_token() }}" },
-
-                        success: function(response) {
-
-
-
-                            var booking_titles = [];
-
-
-
-                            var booking_totals = [];
-
-
-
-                            var booking_colors = [];
-
-
-
-                            console.log(response);
-
-
-
-                            if (response !== null) {
-
-
-
-                                $.each(response, function(index, value) {
-
-                                    booking_titles.push(value.name + '- '+ window.currencySymbol + value.total_amount);
-
-                                    booking_totals.push(value.total);
-
-                                    booking_colors.push(value.service_color);
-
-                                });
-
-                            }
-
-
-
-                            $('#orders-chart').remove();
-
-
-
-                            $('#chartBar').append('<canvas id="orders-chart"></canvas>');
-
-
-
-                            var currentChartCanvas = $("#orders-chart").get(0).getContext("2d");
-
-                            var currentChart = new Chart(currentChartCanvas, {
-
-                                type: 'bar',
-
-                                data: {
-
-                                    labels: booking_titles,
-
-                                    datasets: [{
-
-                                        label: 'Bookings',
-
-                                        data: booking_totals,
-
-                                        backgroundColor: booking_colors
-
-                                    }]
-
-                                },
-
-                                options: {
-
-                                    responsive: true,
-
-                                    maintainAspectRatio: true,
-
-                                    layout: {
-
-                                        padding: {
-
-                                            left: 0,
-
-                                            right: 0,
-
-                                            top: 20,
-
-                                            bottom: 0
-
-                                        }
-
-                                    },
-
-                                    scales: {
-
-                                        yAxes: [{
-
-                                            gridLines: {
-
-                                                drawBorder: true,
-
-                                            },
-
-                                            ticks: {
-
-                                                stepSize: 5,
-
-                                                fontColor: "#686868"
-
-                                            }
-
-                                        }],
-
-                                        xAxes: [{
-
-
-
-                                            stacked: true,
-
-                                            ticks: {
-
-                                                beginAtZero: true,
-
-                                                fontColor: "#686868"
-
-                                            },
-
-                                            gridLines: {
-
-                                                display: false,
-
-                                            },
-
-                                            barPercentage: 0.4
-
-                                        }]
-
-                                    },
-
-                                    legend: {
-
-                                        display: false
-
-                                    },
-
-                                    elements: {
-
-                                        point: {
-
-                                            radius: 0
-
-                                        }
-
-                                    },
-
-                                    legendCallback: function(chart) {
-
-                                        console.log(chart.data.datasets);
-
-                                        var text = [];
-
-                                        text.push('<ul class="legend' + chart.id + '">');
-
-                                        for (var i = 0; i < chart.data.datasets.length; i++) {
-
-                                            text.push('<li><span class="legend-label" style="background-color:' + chart.data.datasets[i].backgroundColor + '"></span>');
-
-                                            if (chart.data.datasets[i].label) {
-
-                                                text.push(chart.data.datasets[i].label);
-
-                                            }
-
-                                            text.push('</li>');
-
-                                        }
-
-                                        text.push('</ul>');
-
-                                        return text.join("");
-
-                                    },
-
-                                }
-
-                            });
-
-                            document.getElementById('orders-chart-legend').innerHTML = currentChart.generateLegend();
-
-                        }
-
-                    });
-
+                    renderOrdersChart(start_date, end_date);
                 }
-
             });
 
-
-
-            // when page reload below code run
-
-
-
-            $.ajax({
-
-                type: "get",
-
-                url: base_path,
-
-                success: function(response) {
-
-
-
-                    var booking_titles = [];
-
-
-
-                    var booking_totals = [];
-
-
-
-                    var booking_colors = [];
-
-
-
-                    if (response !== null) {
-
-
-
-                        $.each(response, function(index, value) {
-
-                            booking_titles.push(value.name + '- '+ window.currencySymbol + value.total_amount);
-
-                            booking_totals.push(value.total);
-
-                            booking_colors.push(value.service_color);
-
-                        });
-
-                    }
-
-
-
-
-
-                    var currentChartCanvas = $("#orders-chart").get(0).getContext("2d");
-
-                    var currentChart = new Chart(currentChartCanvas, {
-
-                        type: 'bar',
-
-                        data: {
-
-                            labels: booking_titles,
-
-                            datasets: [{
-
-                                label: 'Bookings',
-
-                                data: booking_totals,
-
-                                backgroundColor: booking_colors
-
-                            }]
-
-                        },
-
-                        options: {
-
-                            responsive: true,
-
-                            maintainAspectRatio: true,
-
-                            layout: {
-
-                                padding: {
-
-                                    left: 0,
-
-                                    right: 0,
-
-                                    top: 20,
-
-                                    bottom: 0
-
-                                }
-
-                            },
-
-                            scales: {
-
-                                yAxes: [{
-
-                                    gridLines: {
-
-                                        drawBorder: true,
-
-                                    },
-
-                                    ticks: {
-
-                                        stepSize: 5,
-
-                                        fontColor: "#686868"
-
-                                    }
-
-                                }],
-
-                                xAxes: [{
-
-
-
-                                    stacked: true,
-
-                                    ticks: {
-
-                                        beginAtZero: true,
-
-                                        fontColor: "#686868"
-
-                                    },
-
-                                    gridLines: {
-
-                                        display: false,
-
-                                    },
-
-                                    barPercentage: 0.4
-
-                                }]
-
-                            },
-
-                            legend: {
-
-                                display: false
-
-                            },
-
-                            elements: {
-
-                                point: {
-
-                                    radius: 0
-
-                                }
-
-                            },
-
-                            legendCallback: function(chart) {
-
-                                console.log(chart.data.datasets);
-
-                                var text = [];
-
-                                text.push('<ul class="legend' + chart.id + '">');
-
-                                for (var i = 0; i < chart.data.datasets.length; i++) {
-
-                                    text.push('<li><span class="legend-label" style="background-color:' + chart.data.datasets[i].backgroundColor + '"></span>');
-
-                                    if (chart.data.datasets[i].label) {
-
-                                        text.push(chart.data.datasets[i].label);
-
-                                    }
-
-                                    text.push('</li>');
-
-                                }
-
-                                text.push('</ul>');
-
-                                return text.join("");
-
-                            },
-
-                        }
-
-                    });
-
-                    document.getElementById('orders-chart-legend').innerHTML = currentChart.generateLegend();
-
-                }
-
-            });
+            // On initial load, fetch using view pre-selected dates
+            renderOrdersChart($("#start-date").val(), $("#end-date").val());
 
         }
 
