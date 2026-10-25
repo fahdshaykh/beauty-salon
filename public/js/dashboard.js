@@ -52,7 +52,7 @@
                             data: {
                                 labels: booking_titles,
                                 datasets: [{
-                                    label: 'Bookings',
+                                    label: 'Completed Bookings',
                                     data: booking_totals,
                                     backgroundColor: booking_colors
                                 }]
@@ -682,411 +682,136 @@
         // employee revenue chart
         if ($("#employee-orders-chart").length) {
 
-
-
             var base_path = "employee-booking-chart";
+            var employeeChartInstance = null;
 
+            function renderEmployeeChart(startDate, endDate) {
+                var requestData = {};
+                if (startDate && endDate) {
+                    requestData.start_date = startDate;
+                    requestData.end_date = endDate;
+                }
 
+                $.ajax({
+                    type: "GET",
+                    url: base_path,
+                    data: requestData,
+                    success: function(response) {
+                        var revenue_titles = [];
+                        var services_totals = [];
+                        var booking_colors = [];
+
+                        if (response !== null && Array.isArray(response)) {
+                            $.each(response, function(index, value) {
+                                var currency = (typeof window.currencySymbol !== 'undefined' && window.currencySymbol) ? window.currencySymbol : '';
+                                revenue_titles.push(value.employee_name + ' - ' + currency + value.total_revenue);
+                                services_totals.push(value.total_services);
+                                booking_colors.push('#3e4187');
+                            });
+                        }
+
+                        if (employeeChartInstance) {
+                            employeeChartInstance.destroy();
+                            employeeChartInstance = null;
+                        }
+
+                        $('#employee-orders-chart').remove();
+                        if ($('#employee-orders-chart-legend').length) {
+                            $('#employee-orders-chart-legend').before('<canvas id="employee-orders-chart"></canvas>');
+                        } else {
+                            $('#chartBar').append('<canvas id="employee-orders-chart"></canvas>');
+                        }
+
+                        var currentChartCanvas = $("#employee-orders-chart").get(0).getContext("2d");
+                        employeeChartInstance = new Chart(currentChartCanvas, {
+                            type: 'bar',
+                            data: {
+                                labels: revenue_titles,
+                                datasets: [{
+                                    label: 'Completed Bookings',
+                                    data: services_totals,
+                                    backgroundColor: booking_colors
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: true,
+                                layout: {
+                                    padding: {
+                                        left: 0,
+                                        right: 0,
+                                        top: 20,
+                                        bottom: 0
+                                    }
+                                },
+                                scales: {
+                                    yAxes: [{
+                                        gridLines: {
+                                            drawBorder: true,
+                                        },
+                                        ticks: {
+                                            stepSize: 5,
+                                            fontColor: "#686868"
+                                        }
+                                    }],
+                                    xAxes: [{
+                                        stacked: true,
+                                        ticks: {
+                                            beginAtZero: true,
+                                            fontColor: "#686868"
+                                        },
+                                        gridLines: {
+                                            display: false,
+                                        },
+                                        barPercentage: 0.4
+                                    }]
+                                },
+                                legend: {
+                                    display: false
+                                },
+                                elements: {
+                                    point: {
+                                        radius: 0
+                                    }
+                                },
+                                legendCallback: function(chart) {
+                                    var text = [];
+                                    text.push('<ul class="legend' + chart.id + '">');
+                                    for (var i = 0; i < chart.data.datasets.length; i++) {
+                                        var color = chart.data.datasets[i].backgroundColor;
+                                        if (Array.isArray(color)) {
+                                            color = color[0] || '#3e4187';
+                                        }
+                                        text.push('<li><span class="legend-label" style="background-color:' + color + '"></span>');
+                                        if (chart.data.datasets[i].label) {
+                                            text.push(chart.data.datasets[i].label);
+                                        }
+                                        text.push('</li>');
+                                    }
+                                    text.push('</ul>');
+                                    return text.join("");
+                                }
+                            }
+                        });
+
+                        var legendContainer = document.getElementById('employee-orders-chart-legend');
+                        if (legendContainer && employeeChartInstance) {
+                            legendContainer.innerHTML = employeeChartInstance.generateLegend();
+                        }
+                    }
+                });
+            }
 
             $('#employee-graph-button').on('click', function() {
-
                 var start_date = $("#start-date").val();
                 var end_date = $("#end-date").val();
                 if (start_date && end_date) {
-
-                    $.ajax({
-
-                        type: "GET",
-
-                        url: base_path,
-
-                        data: { start_date: start_date, end_date: end_date, _token: "{{ csrf_token() }}" },
-
-                        success: function(response) {
-
-
-
-                            var revenue_titles = [];
-
-
-
-                            var services_totals = [];
-
-
-
-                            var booking_colors = [];
-
-
-
-                            console.log(response);
-
-
-
-                            if (response !== null) {
-
-
-
-                                $.each(response, function(index, value) {
-
-                                    revenue_titles.push(value.employee_name + '- '+ window.currencySymbol + value.total_revenue);
-
-                                    services_totals.push(value.total_services);
-
-                                    booking_colors.push('#3e4187');
-
-                                });
-
-                            }
-
-
-
-                            $('#employee-orders-chart').remove();
-
-
-
-                            $('#chartBar').append('<canvas id="employee-orders-chart"></canvas>');
-
-
-
-                            var currentChartCanvas = $("#employee-orders-chart").get(0).getContext("2d");
-
-                            var currentChart = new Chart(currentChartCanvas, {
-
-                                type: 'bar',
-
-                                data: {
-
-                                    labels: revenue_titles,
-
-                                    datasets: [{
-
-                                        label: 'Total Bookings',
-
-                                        data: services_totals,
-
-                                        backgroundColor: booking_colors
-
-                                    }]
-
-                                },
-
-                                options: {
-
-                                    responsive: true,
-
-                                    maintainAspectRatio: true,
-
-                                    layout: {
-
-                                        padding: {
-
-                                            left: 0,
-
-                                            right: 0,
-
-                                            top: 20,
-
-                                            bottom: 0
-
-                                        }
-
-                                    },
-
-                                    scales: {
-
-                                        yAxes: [{
-
-                                            gridLines: {
-
-                                                drawBorder: true,
-
-                                            },
-
-                                            ticks: {
-
-                                                stepSize: 5,
-
-                                                fontColor: "#686868"
-
-                                            }
-
-                                        }],
-
-                                        xAxes: [{
-
-
-
-                                            stacked: true,
-
-                                            ticks: {
-
-                                                beginAtZero: true,
-
-                                                fontColor: "#686868"
-
-                                            },
-
-                                            gridLines: {
-
-                                                display: false,
-
-                                            },
-
-                                            barPercentage: 0.4
-
-                                        }]
-
-                                    },
-
-                                    legend: {
-
-                                        display: false
-
-                                    },
-
-                                    elements: {
-
-                                        point: {
-
-                                            radius: 0
-
-                                        }
-
-                                    },
-
-                                    legendCallback: function(chart) {
-
-                                        console.log(chart.data.datasets);
-
-                                        var text = [];
-
-                                        text.push('<ul class="legend' + chart.id + '">');
-
-                                        for (var i = 0; i < chart.data.datasets.length; i++) {
-
-                                            text.push('<li><span class="legend-label" style="background-color:' + chart.data.datasets[i].backgroundColor + '"></span>');
-
-                                            if (chart.data.datasets[i].label) {
-
-                                                text.push(chart.data.datasets[i].label);
-
-                                            }
-
-                                            text.push('</li>');
-
-                                        }
-
-                                        text.push('</ul>');
-
-                                        return text.join("");
-
-                                    },
-
-                                }
-
-                            });
-
-                            document.getElementById('employee-orders-chart-legend').innerHTML = currentChart.generateLegend();
-
-                        }
-
-                    });
-
+                    renderEmployeeChart(start_date, end_date);
                 }
-
             });
 
-
-
-            // when page reload below code run
-
-
-
-            // $.ajax({
-
-            //     type: "get",
-
-            //     url: base_path,
-
-            //     success: function(response) {
-
-
-
-            //         var revenue_titles = [];
-
-
-
-            //         var services_totals = [];
-
-
-
-            //         var booking_colors = [];
-
-
-
-            //         if (response !== null) {
-
-
-
-            //             $.each(response, function(index, value) {
-
-            //                 revenue_titles.push(value.employee_name + '- '+ window.currencySymbol + value.total_revenue);
-
-            //                 services_totals.push(value.total_services);
-
-            //                 booking_colors.push('#3e4187');
-
-            //             });
-
-            //         }
-
-
-
-
-
-            //         var currentChartCanvas = $("#employee-orders-chart").get(0).getContext("2d");
-
-            //         var currentChart = new Chart(currentChartCanvas, {
-
-            //             type: 'bar',
-
-            //             data: {
-
-            //                 labels: revenue_titles,
-
-            //                 datasets: [{
-
-            //                     label: 'Bookings',
-
-            //                     data: services_totals,
-
-            //                     backgroundColor: booking_colors
-
-            //                 }]
-
-            //             },
-
-            //             options: {
-
-            //                 responsive: true,
-
-            //                 maintainAspectRatio: true,
-
-            //                 layout: {
-
-            //                     padding: {
-
-            //                         left: 0,
-
-            //                         right: 0,
-
-            //                         top: 20,
-
-            //                         bottom: 0
-
-            //                     }
-
-            //                 },
-
-            //                 scales: {
-
-            //                     yAxes: [{
-
-            //                         gridLines: {
-
-            //                             drawBorder: true,
-
-            //                         },
-
-            //                         ticks: {
-
-            //                             stepSize: 5,
-
-            //                             fontColor: "#686868"
-
-            //                         }
-
-            //                     }],
-
-            //                     xAxes: [{
-
-
-
-            //                         stacked: true,
-
-            //                         ticks: {
-
-            //                             beginAtZero: true,
-
-            //                             fontColor: "#686868"
-
-            //                         },
-
-            //                         gridLines: {
-
-            //                             display: false,
-
-            //                         },
-
-            //                         barPercentage: 0.4
-
-            //                     }]
-
-            //                 },
-
-            //                 legend: {
-
-            //                     display: false
-
-            //                 },
-
-            //                 elements: {
-
-            //                     point: {
-
-            //                         radius: 0
-
-            //                     }
-
-            //                 },
-
-            //                 legendCallback: function(chart) {
-
-            //                     console.log(chart.data.datasets);
-
-            //                     var text = [];
-
-            //                     text.push('<ul class="legend' + chart.id + '">');
-
-            //                     for (var i = 0; i < chart.data.datasets.length; i++) {
-
-            //                         text.push('<li><span class="legend-label" style="background-color:' + chart.data.datasets[i].backgroundColor + '"></span>');
-
-            //                         if (chart.data.datasets[i].label) {
-
-            //                             text.push(chart.data.datasets[i].label);
-
-            //                         }
-
-            //                         text.push('</li>');
-
-            //                     }
-
-            //                     text.push('</ul>');
-
-            //                     return text.join("");
-
-            //                 },
-
-            //             }
-
-            //         });
-
-            //         document.getElementById('employee-orders-chart-legend').innerHTML = currentChart.generateLegend();
-
-            //     }
-
-            // });
+            // On initial load, fetch using view pre-selected dates
+            renderEmployeeChart($("#start-date").val(), $("#end-date").val());
 
         }
 

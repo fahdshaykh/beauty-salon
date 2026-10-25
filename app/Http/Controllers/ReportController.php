@@ -351,10 +351,10 @@ class ReportController extends Controller
             ->join('services', 'booking_details.service_id', '=', 'services.id')
             ->where('service_bookings.company_id', $companyId)
             ->whereBetween('service_bookings.due_date', [$start_date, $end_date])
-            ->whereNotIn('service_bookings.service_status', [4, 5])
+            ->where('service_bookings.service_status', 3)
             ->select(
                 DB::raw('count(*) as total'),
-                DB::raw('ROUND(COALESCE(SUM(service_bookings.total_price), 0), 2) as total_amount'),
+                DB::raw('ROUND(COALESCE(SUM(services.price), 0), 2) as total_amount'),
                 'services.name',
                 'services.service_color'
             )
