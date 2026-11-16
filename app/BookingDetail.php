@@ -6,8 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class BookingDetail extends Model
 {
-    protected $fillable = ['service_id'];
-     public function serviceBookings()
+    protected $guarded = [];
+
+    public function serviceBookings()
     {
         return $this->belongsTo('App\ServiceBooking');
     }

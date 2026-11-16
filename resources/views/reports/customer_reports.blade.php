@@ -38,10 +38,6 @@
 
         </div>
 
-        <?php $customer_report_array = array(5,4); ?>
-
-        <?php $customer_report = implode(',', $customer_report_array); ?>
-
         <div class="alert alert-success" style="display:none;" id="status-success"></div>
 
 
@@ -176,7 +172,42 @@
 
                                         <td>{{$book['customer_name']}}</td> <!--  showing customers names -->
 
-                                        <td style="max-width:160px;">{{$book['services']}}</td> <!--  showing service names -->
+                                        <td style="max-width: 200px;">
+                                            @php
+                                                $servicesToRender = $book['services_with_color'] ?? (is_array($book['services']) ? $book['services'] : []);
+                                            @endphp
+                                            @if(!empty($servicesToRender))
+                                                @forelse($servicesToRender as $service)
+                                                    @php
+                                                        $sName = is_array($service) ? ($service['name'] ?? '') : (is_object($service) ? ($service->name ?? '') : (string)$service);
+                                                        $sColor = is_array($service) ? ($service['color'] ?? '#6c757d') : (is_object($service) ? ($service->color ?? $service->service_color ?? '#6c757d') : '#6c757d');
+                                                        $isLight = \Illuminate\Support\Str::startsWith($sColor, ['#fff', '#FFF', 'rgb(255']);
+                                                    @endphp
+                                                    @if(!empty($sName))
+                                                        <span class="badge me-1 mb-1 badge-pill"
+                                                            style="background-color: {{ $sColor }}; 
+                                                                    color: {{ $isLight ? '#000' : '#fff' }};">
+                                                            {{ $sName }}
+                                                        </span>
+                                                    @endif
+                                                @empty
+                                                    <span class="text-muted fst-italic">No services</span>
+                                                @endforelse
+                                            @elseif(!empty($book['services']) && is_string($book['services']))
+                                                @php
+                                                    $rawServices = array_filter(array_map('trim', explode(',', $book['services'])));
+                                                @endphp
+                                                @forelse($rawServices as $sName)
+                                                    <span class="badge me-1 mb-1 badge-pill" style="background-color: #6c757d; color: #fff;">
+                                                        {{ $sName }}
+                                                    </span>
+                                                @empty
+                                                    <span class="text-muted fst-italic">No services</span>
+                                                @endforelse
+                                            @else
+                                                <span class="text-muted fst-italic">No services</span>
+                                            @endif
+                                        </td>
 
                                         <td>{{ currency_symbol() }}{{$book['total_price']}}</td>
 
@@ -221,8 +252,11 @@
         </div>
 
     </div>
+    <!-- content-wrapper ends -->
+</div>
+<!-- main-panel ends -->
 
-    @endsection
+@endsection
 
 
 

@@ -171,18 +171,22 @@ class MultiTenantIsolationTest extends TestCase
             'total_price'    => 50,
         ]);
 
-        \Illuminate\Support\Facades\DB::table('service_bookings')
-            ->where('id', $booking->id)
-            ->update([
-                'created_at' => now()->subDays(2),
-                'updated_at' => now()->subDays(2),
-            ]);
+        try {
+            \Illuminate\Support\Facades\DB::table('service_bookings')
+                ->where('id', $booking->id)
+                ->update([
+                    'created_at' => now()->subDays(2),
+                    'updated_at' => now()->subDays(2),
+                ]);
 
-        $response = $this->actingAs($userA)->get(route('service-bookings.index'));
-        $response->assertStatus(200);
-        $response->assertSee('booking-row-overdue');
-        $response->assertSee('badge-overdue-alert');
-        $response->assertSee('Overdue Service Attention Required');
-        $response->assertSee('Overdue +');
+            $response = $this->actingAs($userA)->get(route('service-bookings.index'));
+            $response->assertStatus(200);
+            $response->assertSee('booking-row-overdue');
+            $response->assertSee('badge-overdue-alert');
+            $response->assertSee('Overdue Service Attention Required');
+            $response->assertSee('Overdue +');
+        } finally {
+            $booking->delete();
+        }
     }
 }

@@ -206,12 +206,6 @@ input:checked+.slider:before {
 
         @endif
 
-
-
-        <?php $all_report_array = array(5,2); ?>
-
-        <?php $all_report = implode(',', $all_report_array); ?>
-
         <?php $total_amount = 0; ?>
 
         @foreach($report_data as $key => $book)
@@ -238,6 +232,15 @@ $payment_type = $book['payment_type'];
 
 @endforeach
 
+<?php
+$export_start_date   = request('start_date') ?: ($start_date ?? 'no');
+$export_end_date     = request('end_date') ?: ($end_date ?? 'no');
+$export_category_id  = request('category_id') ?: 'no';
+$export_service_id   = request('service_id') ?: 'no';
+$export_status_id    = request('status_id') ?: 'no';
+$export_payment_type = request('payment_instrument') ?: (request('payment_type') ?: ($payment_type ?? 'no'));
+?>
+
         <div class="card">
 
             <div class="card-body">
@@ -256,7 +259,9 @@ $payment_type = $book['payment_type'];
 
                         <div class="text-center" style="float: center;">
 
-                       
+                            <span data-href="/report-export/{{$export_start_date}}/{{$export_end_date}}/{{$export_category_id}}/{{$export_service_id}}/{{$export_status_id}}/{{$export_payment_type}}" id="export" class="btn btn-primary" onclick="exportReports(event.target);">Export Booking Report</span>
+
+                        </div>
 
                     </div>
 
@@ -328,7 +333,39 @@ $payment_type = $book['payment_type'];
 
                                         <td>{{$book['customer_names']}}</td> <!--  showing customers names -->
 
-                                        <td style="max-width:160px;">{{$book['0']}}</td> <!--  showing service names -->
+                                        <td style="max-width: 200px;">
+                                            @if(!empty($book['services']) && is_array($book['services']))
+                                                @forelse($book['services'] as $service)
+                                                    @php
+                                                        $sName = is_array($service) ? ($service['name'] ?? '') : (is_object($service) ? ($service->name ?? '') : (string)$service);
+                                                        $sColor = is_array($service) ? ($service['color'] ?? '#6c757d') : (is_object($service) ? ($service->color ?? $service->service_color ?? '#6c757d') : '#6c757d');
+                                                        $isLight = \Illuminate\Support\Str::startsWith($sColor, ['#fff', '#FFF', 'rgb(255']);
+                                                    @endphp
+                                                    @if(!empty($sName))
+                                                        <span class="badge me-1 mb-1 badge-pill"
+                                                            style="background-color: {{ $sColor }}; 
+                                                                    color: {{ $isLight ? '#000' : '#fff' }};">
+                                                            {{ $sName }}
+                                                        </span>
+                                                    @endif
+                                                @empty
+                                                    <span class="text-muted fst-italic">No services</span>
+                                                @endforelse
+                                            @elseif(!empty($book['0']))
+                                                @php
+                                                    $rawServices = array_filter(array_map('trim', explode(',', $book['0'])));
+                                                @endphp
+                                                @forelse($rawServices as $sName)
+                                                    <span class="badge me-1 mb-1 badge-pill" style="background-color: #6c757d; color: #fff;">
+                                                        {{ $sName }}
+                                                    </span>
+                                                @empty
+                                                    <span class="text-muted fst-italic">No services</span>
+                                                @endforelse
+                                            @else
+                                                <span class="text-muted fst-italic">No services</span>
+                                            @endif
+                                        </td>
 
                                         <td>{{ currency_symbol() }}{{$book['total_price']}}</td>
 
@@ -374,7 +411,12 @@ $payment_type = $book['payment_type'];
 
         </div>
 
-    @endsection
+    </div>
+    <!-- content-wrapper ends -->
+</div>
+<!-- main-panel ends -->
+
+@endsection
 
 
 

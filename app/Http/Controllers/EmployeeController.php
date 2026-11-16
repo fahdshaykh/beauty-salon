@@ -15,7 +15,7 @@ class EmployeeController extends Controller
         }
 
         $start_date = date('Y-m-01');
-        $end_date = date('Y-m-d');
+        $end_date = date('Y-m-t');
 
         return view('employee_reports.graph_report', compact('start_date', 'end_date'));
     }
@@ -23,11 +23,20 @@ class EmployeeController extends Controller
     public function employee_booking_chart(Request $request)
     {
         $start_date = date('Y-m-01');
-        $end_date = date('Y-m-d');
+        $end_date = date('Y-m-t');
 
-        if ($request->filled('start_date') && $request->filled('end_date')) {
-            $start_date = date('Y-m-d', strtotime($request->start_date));
-            $end_date = date('Y-m-d', strtotime($request->end_date));
+        if ($request->filled('start_date')) {
+            $parsedStart = strtotime($request->start_date);
+            if ($parsedStart !== false) {
+                $start_date = date('Y-m-d', $parsedStart);
+            }
+        }
+
+        if ($request->filled('end_date')) {
+            $parsedEnd = strtotime($request->end_date);
+            if ($parsedEnd !== false) {
+                $end_date = date('Y-m-d', $parsedEnd);
+            }
         }
 
         $companyId = auth()->user()->company_id;
@@ -35,6 +44,7 @@ class EmployeeController extends Controller
         $employee_summary = DB::table('service_bookings')
             ->join('users', 'service_bookings.user_id', '=', 'users.id')
             ->where('service_bookings.company_id', $companyId)
+            ->where('service_bookings.is_deleted', 0)
             ->whereBetween('service_bookings.due_date', [$start_date, $end_date])
             ->where('service_bookings.service_status', 3)
             ->select(

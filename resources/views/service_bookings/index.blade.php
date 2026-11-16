@@ -157,7 +157,30 @@
                 <div class="card mb-3">
                     <div class="card-body">
                         <form method="GET" action="{{ route('service-bookings.index') }}">
-                            <div class="row g-3">
+                            
+                            <div class="row">
+                                <!-- Date Range Filter -->
+                                <div class="col-md-6">
+                                    <label for="start_date" class="form-label">Start Date</label>
+                                    <div id="datepicker-popup-new" class="input-group date datepicker">
+                                        <input type="text" name="start_date" id="start-date" class="form-control" value="{{ request('start_date') }}">
+                                        <span class="input-group-addon input-group-append border-left">
+                                        <span class="far fa-calendar input-group-text"></span>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="end_date" class="form-label">End Date</label>
+                                    <div id="datepicker-popup-new2" class="input-group date datepicker">
+                                        <input type="text" name="end_date" id="end-date" class="form-control" value="{{ request('end_date') }}">
+                                        <span class="input-group-addon input-group-append border-left">
+                                        <span class="far fa-calendar input-group-text"></span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row g-3 mt-2">
                                 <!-- Employee Filter -->
                                 <div class="col-md-4">
                                     <label for="user_id" class="form-label">Employee</label>
@@ -198,27 +221,7 @@
                                 </div>
                             </div>
 
-                            <div class="row g-3 mt-2">
-                                <!-- Date Range Filter -->
-                                <div class="col-md-6">
-                                    <label for="start_date" class="form-label">Start Date</label>
-                                    <div id="datepicker-popup-new" class="input-group date datepicker">
-                                        <input type="text" name="start_date" id="start-date" class="form-control" value="{{ request('start_date') }}">
-                                        <span class="input-group-addon input-group-append border-left">
-                                        <span class="far fa-calendar input-group-text"></span>
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="end_date" class="form-label">End Date</label>
-                                    <div id="datepicker-popup-new2" class="input-group date datepicker">
-                                        <input type="text" name="end_date" id="end-date" class="form-control" value="{{ request('end_date') }}">
-                                        <span class="input-group-addon input-group-append border-left">
-                                        <span class="far fa-calendar input-group-text"></span>
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
+                            
 
                             <div class="row g-3 mt-2 align-items-end">
                                 <!-- Customer Name Filter -->

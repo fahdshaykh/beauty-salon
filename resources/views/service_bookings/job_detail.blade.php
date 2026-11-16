@@ -205,7 +205,10 @@ color:#FFF !important;
 
                 <?php echo date('d-m-Y', strtotime($booking_detail['due_date'])); $booking_detail['due_date']; ?>
 
-                <span style="margin-left: 2em;"><?php echo $booking_detail['due_time']; ?></span><span style="margin-left: 2em;">Finish Time: <?php echo $booking_detail['service_time']; ?> Minutes</span>
+                <span style="margin-left: 2em;"><?php echo $booking_detail['due_time']; ?></span>
+                <span style="margin-left: 2em;">Finish Time: <?php echo $booking_detail['service_time']; ?> Minutes</span>
+
+                <span style="margin-left: 2em;">Employee Name: <?php echo $booking_detail['user_name']; ?></span>
 
             </p>
 
@@ -267,7 +270,7 @@ color:#FFF !important;
 
                                     <div class="col-6">
 
-                                        <b>Services:</b> <span class="customer-data"><?php echo $booking_detail['services']; ?></span>
+                                        {{-- <b>Date of birth:</b> <span class="customer-data"><?php echo ($booking_detail['date_of_birth']!="")?$booking_detail['date_of_birth']:'Not Available'; ?></span> --}}
 
                                     </div>
 
@@ -389,10 +392,26 @@ color:#FFF !important;
 
                                     </td>
 
-                                    <td>
-
-                                    <?php foreach($customerjobs_services[$alljobs->id] as $jobs) { echo ' '.$jobs.' , '; } ?>
-
+                                    <td style="max-width: 200px;">
+                                        @php
+                                            $jobServices = $customerjobs_services[$alljobs->id] ?? [];
+                                        @endphp
+                                        @forelse($jobServices as $service)
+                                            @php
+                                                $sName = is_array($service) ? ($service['name'] ?? '') : (is_object($service) ? ($service->name ?? '') : (string)$service);
+                                                $sColor = is_array($service) ? ($service['color'] ?? '#6c757d') : (is_object($service) ? ($service->color ?? $service->service_color ?? '#6c757d') : '#6c757d');
+                                                $isLight = \Illuminate\Support\Str::startsWith($sColor, ['#fff', '#FFF', 'rgb(255']);
+                                            @endphp
+                                            @if(!empty($sName))
+                                                <span class="badge me-1 mb-1 badge-pill"
+                                                    style="background-color: {{ $sColor }}; 
+                                                            color: {{ $isLight ? '#000' : '#fff' }};">
+                                                    {{ $sName }}
+                                                </span>
+                                            @endif
+                                        @empty
+                                            <span class="text-muted fst-italic">No services</span>
+                                        @endforelse
                                     </td>
 
                                     <td>
@@ -799,7 +818,7 @@ $( document ).ajaxStop(function() {
 
                 type:"GET",
 
-                url: 'fetch-job-notes/'+<?php echo $booking_detail['id'];?>,
+                url: "{{ url('fetch-job-notes') }}/" + "<?php echo $booking_detail['id'];?>",
 
                 dataType: "JSON"
 
@@ -913,7 +932,7 @@ $( document ).ajaxStop(function() {
 
                 type: "GET",
 
-                url: 'delete-notes/'+item.id
+                url: "{{ url('delete-notes') }}/" + item.id
 
             });
 
