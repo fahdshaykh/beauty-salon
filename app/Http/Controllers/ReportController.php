@@ -133,7 +133,10 @@ class ReportController extends Controller
             abort(403);
         }
 
-        return view('reports.profit_loss_report');
+        $start_date = date('Y-m-01');
+        $end_date   = date('Y-m-d');
+
+        return view('reports.profit_loss_report', compact('start_date', 'end_date'));
     }
 
     public function zipcode_report()

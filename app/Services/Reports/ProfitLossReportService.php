@@ -16,7 +16,7 @@ class ProfitLossReportService
     public function getProfitLossData(int $companyId, ?string $rawStartDate, ?string $rawEndDate): array
     {
         $startDate = now()->startOfMonth()->format('Y-m-d');
-        $endDate   = now()->endOfMonth()->format('Y-m-d');
+        $endDate   = now()->format('Y-m-d');
 
         if (!empty($rawStartDate) && !empty($rawEndDate)) {
             $startDate = date('Y-m-d', strtotime($rawStartDate));

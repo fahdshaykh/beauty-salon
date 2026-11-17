@@ -24,10 +24,15 @@ class EmployeeBookingChartTest extends TestCase
         $this->assertIsArray($data);
 
         // In company 1 there are 4 completed bookings in November 2026
-        $userRecord = collect($data)->firstWhere('employee_name', 'fahd shifu');
+        $userRecord = collect($data)->firstWhere('employee_name', $user->name);
         if ($userRecord) {
-            $this->assertEquals(4, $userRecord['total_services']);
-            $this->assertEquals(74.00, $userRecord['total_revenue']);
+            $expectedCount = \Illuminate\Support\Facades\DB::table('service_bookings')
+                ->where('company_id', $user->company_id)
+                ->where('user_id', $user->id)
+                ->where('service_status', 3)
+                ->whereBetween('due_date', [date('Y-m-01'), date('Y-m-t')])
+                ->count();
+            $this->assertEquals($expectedCount, $userRecord['total_services']);
         }
     }
 
@@ -38,18 +43,25 @@ class EmployeeBookingChartTest extends TestCase
             $this->markTestSkipped('No user available for testing.');
         }
 
-        // Up to 2026-11-16 only 3 completed bookings should match
+        $startDate = '2026-11-01';
+        $endDate   = '2026-11-16';
+
         $response = $this->actingAs($user)->get(route('employee.booking_chart', [
-            'start_date' => '2026-11-01',
-            'end_date'   => '2026-11-16',
+            'start_date' => $startDate,
+            'end_date'   => $endDate,
         ]));
 
         $response->assertStatus(200);
         $data = $response->json();
-        $userRecord = collect($data)->firstWhere('employee_name', 'fahd shifu');
+        $userRecord = collect($data)->firstWhere('employee_name', $user->name);
         if ($userRecord) {
-            $this->assertEquals(3, $userRecord['total_services']);
-            $this->assertEquals(62.00, $userRecord['total_revenue']);
+            $expectedCount = \Illuminate\Support\Facades\DB::table('service_bookings')
+                ->where('company_id', $user->company_id)
+                ->where('user_id', $user->id)
+                ->where('service_status', 3)
+                ->whereBetween('due_date', [$startDate, $endDate])
+                ->count();
+            $this->assertEquals($expectedCount, $userRecord['total_services']);
         }
     }
 

@@ -100,5 +100,39 @@ class BookingReportServiceTest extends TestCase
             $response->assertSee('badge-pill');
         }
     }
+
+    public function test_profit_loss_report_view_defaults_to_start_of_month_and_current_date()
+    {
+        $user = User::first();
+        if (!$user) {
+            $this->markTestSkipped('No user available for testing.');
+        }
+
+        $response = $this->actingAs($user)->get(route('profit_loss.report'));
+        $response->assertStatus(200);
+        $response->assertSee('value="' . date('Y-m-01') . '"', false);
+        $response->assertSee('value="' . date('Y-m-d') . '"', false);
+    }
+
+    public function test_profit_loss_data_defaults_to_start_of_month_and_current_date()
+    {
+        $user = User::first();
+        if (!$user) {
+            $this->markTestSkipped('No user available for testing.');
+        }
+
+        $response = $this->actingAs($user)->get(route('profit_loss.data'));
+        $response->assertStatus(200);
+        $response->assertJsonStructure([
+            'expense',
+            'sales',
+            'revenue',
+            'breakdown' => [
+                'general_expenses',
+                'supplier_payments',
+                'salaries_paid'
+            ]
+        ]);
+    }
 }
 

@@ -670,151 +670,98 @@
         //Profit & Loss Report
         if ($("#profit-loss-chart").length) {
             var base_path = "profit-loss-data";
-            $('#graph-button').on('click', function() {
 
-                var start_date = $("#start-date").val();
-                var end_date = $("#end-date").val();
-                if (start_date && end_date) {
-
-                    $.ajax({
-
-                        type: "GET",
-
-                        url: base_path,
-
-                        data: { start_date: start_date, end_date: end_date, _token: "{{ csrf_token() }}" },
-
-                        success: function(response) {
-                            var titles = ['Expenses', 'Sales', 'Profit'];
-                            var totals = [];
-                            if (response !== null) {
-                                totals.push(response.expense);
-                                totals.push(response.sales);
-                                totals.push(response.revenue);
-                            }
-
-                            $('#profit-loss-chart').remove();
-
-                            $('#chartBar').append('<canvas id="profit-loss-chart"></canvas>');
-                            var pieChartCanvas = $("#profit-loss-chart").get(0).getContext("2d");
-                            var pieChart = new Chart(pieChartCanvas, {
-                                type: 'pie',
-                                data: {
-                                    datasets: [{
-                                        data: totals,
-                                        backgroundColor: [
-                                            '#392c70',
-                                            '#04b76b',
-                                            '#ff5e6d',
-                                        ],
-                                        borderColor: [
-                                            '#392c70',
-                                            '#04b76b',
-                                            '#ff5e6d',
-                                        ],
-                                    }],
-
-                                    // These labels appear in the legend and in the tooltips when hovering different arcs
-                                    labels: titles
-                                },
-                                options: {
-                                    responsive: true,
-                                    animation: {
-                                        animateScale: true,
-                                        animateRotate: true
-                                    },
-                                    legend: {
-                                        display: false
-                                    },
-                                    legendCallback: function(chart) {
-                                        var text = [];
-                                        text.push('<ul class="legend' + chart.id + '">');
-                                        for (var i = 0; i < chart.data.datasets[0].data.length; i++) {
-                                            text.push('<li><span class="legend-label" style="background-color:' + chart.data.datasets[0].backgroundColor[i] + '"></span>');
-                                            if (chart.data.labels[i]) {
-                                                text.push(chart.data.labels[i]);
-                                            }
-                                            text.push('<label class="badge badge-light badge-pill legend-percentage ml-auto">'+ window.currencySymbol + chart.data.datasets[0].data[i] + '</label>');
-                                            text.push('</li>');
-                                        }
-                                        text.push('</ul>');
-                                        return text.join("");
-                                    }
-                                }
-                            });
-                            document.getElementById('profit-loss-chart-legend').innerHTML = pieChart.generateLegend();
-
-
-
-                        }
-
-                    });
-
+            function renderProfitLossChart(response) {
+                var titles = ['All cost Expenses', 'Sales', 'Profit'];
+                var totals = [];
+                if (response !== null) {
+                    totals.push(response.expense);
+                    totals.push(response.sales);
+                    totals.push(response.revenue);
                 }
 
+                $('#profit-loss-chart').remove();
+
+                $('#chartBar').append('<canvas id="profit-loss-chart" class="mt-3"></canvas>');
+                var pieChartCanvas = $("#profit-loss-chart").get(0).getContext("2d");
+                var pieChart = new Chart(pieChartCanvas, {
+                    type: 'pie',
+                    data: {
+                        datasets: [{
+                            data: totals,
+                            backgroundColor: [
+                                '#392c70',
+                                '#04b76b',
+                                '#ff5e6d',
+                            ],
+                            borderColor: [
+                                '#392c70',
+                                '#04b76b',
+                                '#ff5e6d',
+                            ],
+                        }],
+                        labels: titles
+                    },
+                    options: {
+                        responsive: true,
+                        animation: {
+                            animateScale: true,
+                            animateRotate: true
+                        },
+                        legend: {
+                            display: false
+                        },
+                        legendCallback: function(chart) {
+                            var text = [];
+                            var symbol = window.currencySymbol || '$';
+                            text.push('<ul class="legend' + chart.id + '">');
+                            for (var i = 0; i < chart.data.datasets[0].data.length; i++) {
+                                text.push('<li><span class="legend-label" style="background-color:' + chart.data.datasets[0].backgroundColor[i] + '"></span>');
+                                if (chart.data.labels[i]) {
+                                    text.push(chart.data.labels[i]);
+                                }
+                                text.push('<label class="badge badge-light badge-pill legend-percentage ml-auto">' + symbol + chart.data.datasets[0].data[i] + '</label>');
+                                text.push('</li>');
+                            }
+                            text.push('</ul>');
+                            return text.join("");
+                        }
+                    }
+                });
+
+                var legendEl = document.getElementById('profit-loss-chart-legend');
+                if (legendEl) {
+                    legendEl.innerHTML = pieChart.generateLegend();
+                }
+            }
+
+            function fetchProfitLossData(startDate, endDate) {
+                var requestData = { _token: "{{ csrf_token() }}" };
+                if (startDate && endDate) {
+                    requestData.start_date = startDate;
+                    requestData.end_date = endDate;
+                }
+
+                $.ajax({
+                    type: "GET",
+                    url: base_path,
+                    data: requestData,
+                    success: function(response) {
+                        renderProfitLossChart(response);
+                    }
+                });
+            }
+
+            $('#graph-button').on('click', function() {
+                var start_date = $("#start-date").val();
+                var end_date = $("#end-date").val();
+                fetchProfitLossData(start_date, end_date);
             });
-            // $.ajax({
-            //     type: "get",
-            //     url: base_path,
-            //     success: function(response) {
-            //         var titles = ['Expenses', 'Sales', 'Profit'];
-            //         var totals = [];
-            //         if (response !== null) {
-            //             totals.push(response.expense);
-            //             totals.push(response.sales);
-            //             totals.push(response.revenue);
-            //         }
-            //         var pieChartCanvas = $("#profit-loss-chart").get(0).getContext("2d");
-            //         var pieChart = new Chart(pieChartCanvas, {
-            //             type: 'pie',
-            //             data: {
-            //                 datasets: [{
-            //                     data: totals,
-            //                     backgroundColor: [
-            //                         '#392c70',
-            //                         '#04b76b',
-            //                         '#ff5e6d',
-            //                     ],
-            //                     borderColor: [
-            //                         '#392c70',
-            //                         '#04b76b',
-            //                         '#ff5e6d',
-            //                     ],
-            //                 }],
 
-            //                 // These labels appear in the legend and in the tooltips when hovering different arcs
-            //                 labels: titles
-            //             },
-            //             options: {
-            //                 responsive: true,
-            //                 animation: {
-            //                     animateScale: true,
-            //                     animateRotate: true
-            //                 },
-            //                 legend: {
-            //                     display: false
-            //                 },
-            //                 legendCallback: function(chart) {
-            //                     var text = [];
-            //                     text.push('<ul class="legend' + chart.id + '">');
-            //                     for (var i = 0; i < chart.data.datasets[0].data.length; i++) {
-            //                         text.push('<li><span class="legend-label" style="background-color:' + chart.data.datasets[0].backgroundColor[i] + '"></span>');
-            //                         if (chart.data.labels[i]) {
-            //                             text.push(chart.data.labels[i]);
-            //                         }
-            //                         text.push('<label class="badge badge-light badge-pill legend-percentage ml-auto">$' + chart.data.datasets[0].data[i] + '</label>');
-            //                         text.push('</li>');
-            //                     }
-            //                     text.push('</ul>');
-            //                     return text.join("");
-            //                 }
-            //             }
-            //         });
-            //         document.getElementById('profit-loss-chart-legend').innerHTML = pieChart.generateLegend();
-
-            //     }
-            // });
-
+            // Initial load by default from start date to current end date
+            var initialStart = $("#start-date").val();
+            var initialEnd = $("#end-date").val();
+            fetchProfitLossData(initialStart, initialEnd);
         }
 
 

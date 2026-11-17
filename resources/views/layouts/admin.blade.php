@@ -632,7 +632,7 @@
 
                 <li class="nav-item"> <a class="nav-link {{ $isRolesList ? 'active' : '' }}" href="{{url('roles')}}"> Roles </a></li>
 
-                <li class="nav-item"> <a class="nav-link {{ $isScheduleList ? 'active' : '' }}" href="{{route('work_schedule.index')}}"> working schedule </a></li>
+                {{-- <li class="nav-item"> <a class="nav-link {{ $isScheduleList ? 'active' : '' }}" href="{{route('work_schedule.index')}}"> working schedule </a></li> --}}
 
               </ul>
 
@@ -641,7 +641,7 @@
           </li>
           @endrole
           
-          @can('view attendance')
+          {{-- @can('view attendance')
           @php
             $isWorkHours = request()->routeIs('work_hours') || request()->is('work-hours*');
             $isPayrolls = request()->routeIs('payrolls.index', 'user.monthly.payslip') || request()->is('user/payrolls*');
@@ -679,7 +679,7 @@
             </div>
 
           </li>
-          @endcan
+          @endcan --}}
 
           @can('view settings')
           @php
@@ -724,7 +724,7 @@
 
               <i class="fas fa-money-bill menu-icon"></i>
 
-              <span class="menu-title">Expenses</span>
+              <span class="menu-title">Other Expenses</span>
 
               <i class="menu-arrow"></i>
 
