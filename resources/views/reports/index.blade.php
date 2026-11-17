@@ -16,7 +16,31 @@
 
 @section('content')
 
+<style>
+.report-filter-row .input-group.date {
+    padding: 0 !important;
+}
 
+.report-filter-row .form-control,
+.report-filter-row .input-group-text,
+.report-filter-row .select2-container--default .select2-selection--single {
+    height: 46px !important;
+    padding-top: 0.875rem !important;
+    padding-bottom: 0.875rem !important;
+}
+
+.report-filter-row .select2-container--default .select2-selection--single .select2-selection__rendered {
+    line-height: 18px !important;
+}
+
+.report-filter-row .select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 44px !important;
+}
+
+.report-filter-row .btn {
+    height: 46px !important;
+}
+</style>
 
 <!-- partial -->
 
@@ -73,7 +97,7 @@
                 </p>
 
                 <form action="{{url('record/find')}}" method="get">
-                  <div class="form-row align-items-start">
+                  <div class="form-row align-items-start report-filter-row">
                     <div class="col-12 col-sm-6 col-md-3 mb-3">
                       <div id="datepicker-popup-new" class="input-group date datepicker">
                         <input type="text" name="start_date" id="start_date" class="form-control" value="{{ old('start_date', request('start_date')) }}" placeholder="From Date" autocomplete="off" required>

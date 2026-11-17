@@ -85,6 +85,34 @@
             background: lightgray;
             pointer-events: none;
         }
+
+        .calendar-filter-row .input-group.date {
+            padding: 0 !important;
+        }
+
+        .calendar-filter-row .form-group {
+            margin-bottom: 15px;
+        }
+
+        .calendar-filter-row .form-control,
+        .calendar-filter-row .input-group-text,
+        .calendar-filter-row .select2-container--default .select2-selection--single {
+            height: 45px !important;
+            padding-top: 0.8rem !important;
+            padding-bottom: 0.8rem !important;
+        }
+
+        .calendar-filter-row .select2-container--default .select2-selection--single .select2-selection__rendered {
+            line-height: 18px !important;
+        }
+
+        .calendar-filter-row .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 43px !important;
+        }
+
+        .calendar-filter-row #clear_calendar_dates {
+            height: 45px;
+        }
     </style>
 
     <div class="main-panel">
@@ -112,7 +140,7 @@
 
                     @role('admin')
 
-                        <div class="row">
+                        <div class="row calendar-filter-row">
                             <div class="form-group col-12 col-sm-6 col-md-3">
                                 <select id="user_id" name="user_id" class="form-control js-example-basic-single w-100"
                                     style="width:100%">
@@ -157,7 +185,7 @@
                             </div>
                         </div>
                     @else
-                        <div class="row">
+                        <div class="row calendar-filter-row">
                             <div class="form-group col-12 col-sm-6 col-md-4">
                                 <select id="service_status" name="service_status" class="form-control js-example-basic-single w-100"
                                     style="width:100%">
