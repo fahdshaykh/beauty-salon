@@ -410,15 +410,17 @@ class ReportController extends Controller
             'payment_method' => $request->payment_method,
         ]);
 
-        $view = view('reports.expense_reports', [
+        if ($expense_report->isEmpty()) {
+            return back()->with('error', 'Sorry, no expense records found for the selected criteria.');
+        }
+
+        return view('reports.expense_reports', [
             'expense_report' => $expense_report,
             'start_date'     => $startDate,
             'end_date'       => $endDate,
             'type'           => $type,
-            'method'         => $request->payment_method
-        ])->render();
-
-        return response()->json(['view' => $view]);
+            'method'         => $request->payment_method ?? 'no',
+        ]);
     }
 
     public function reportCsv(Request $request, $start_date, $end_date, $category_id, $service_id, $status_id, $payment_type)

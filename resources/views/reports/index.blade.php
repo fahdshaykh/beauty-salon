@@ -214,67 +214,7 @@
 
           </div>
 
-          <div class="card">
-
-            <div class="card-body">
-
-                <h4 class="card-title"></h4>
-
-                <div class="row">
-
-                    <div class="col-12">
-
-                        <div class="table-responsive">
-
-                            <table id="order-listing" class="table table-striped">
-
-                                <thead>
-
-                                    <tr>
-
-                                    
-
-                                        <th>User</th>
-
-                                        <th>Customer</th>
-
-                                        <th style="width: 10%;">Services</th>
-
-                                        <th>Price</th>
-
-                                        <th>Pay Method</th>
-
-                                        <th>Book Date</th>
-
-                                        <th>Address</th>
-
-                                        <th>Staus</th>
-
-                                     
-
-                                    </tr>
-
-                                </thead>
-
-                                <tbody>
-
-                             
-
-                                    
-
-                                </tbody>
-
-                            </table>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
+          
 
     </div>
 
