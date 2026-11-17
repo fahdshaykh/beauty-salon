@@ -25,21 +25,21 @@
 
         <!-- Page Header & Action Bar -->
         <div class="page-header flex-wrap non-printable">
-            <div class="d-flex align-items-center">
-                <h3 class="page-title mb-0 mr-3">Supplier Balance Summary</h3>
-                <span class="badge badge-outline-primary font-weight-bold">{{ $supplier->name }}</span>
+            <div class="d-flex align-items-center flex-wrap mb-2 mb-md-0">
+                <h3 class="page-title mb-1 mr-3">Supplier Balance Summary</h3>
+                <span class="badge badge-outline-primary font-weight-bold mb-1 text-break">{{ $supplier->name }}</span>
             </div>
-            <div class="d-flex align-items-center mt-2 mt-md-0">
-                <a href="{{ route('supplier_payments.edit', $supplier->id) }}" class="btn btn-primary btn-sm mr-2">
+            <div class="d-flex flex-wrap align-items-center mt-2 mt-md-0">
+                <a href="{{ route('supplier_payments.edit', $supplier->id) }}" class="btn btn-primary btn-sm mr-2 mb-2">
                     <i class="fa fa-plus-circle mr-1"></i> Add Payment
                 </a>
-                <a href="{{ route('suppliers.balance_summary.export', request()->all() + ['id' => $supplier->id]) }}" class="btn btn-outline-success btn-sm mr-2">
+                <a href="{{ route('suppliers.balance_summary.export', request()->all() + ['id' => $supplier->id]) }}" class="btn btn-outline-success btn-sm mr-2 mb-2">
                     <i class="fa fa-file-csv mr-1"></i> Export CSV
                 </a>
-                <button type="button" onclick="window.print()" class="btn btn-outline-dark btn-sm mr-2">
+                <button type="button" onclick="window.print()" class="btn btn-outline-dark btn-sm mr-2 mb-2">
                     <i class="fa fa-print mr-1"></i> Print Statement
                 </button>
-                <a href="{{ route('suppliers.index') }}" class="btn btn-outline-secondary btn-sm">
+                <a href="{{ route('suppliers.index') }}" class="btn btn-outline-secondary btn-sm mb-2">
                     <i class="fa fa-arrow-left mr-1"></i> Back to Suppliers
                 </a>
             </div>
@@ -48,37 +48,37 @@
         <!-- Supplier Details & Contacts Banner -->
         <div class="card mb-4 non-printable shadow-sm border-0">
             <div class="card-body py-3">
-                <div class="row text-center text-md-left">
-                    <div class="col-md-3 col-sm-6 mb-2 mb-md-0">
+                <div class="row text-center text-sm-left">
+                    <div class="col-12 col-sm-6 col-lg-3 mb-2 mb-lg-0">
                         <small class="text-muted d-block font-weight-bold text-uppercase">Supplier Name</small>
-                        <span class="font-weight-bold text-dark">{{ $supplier->name }}</span>
+                        <span class="font-weight-bold text-dark text-break">{{ $supplier->name }}</span>
                     </div>
-                    <div class="col-md-3 col-sm-6 mb-2 mb-md-0">
+                    <div class="col-12 col-sm-6 col-lg-3 mb-2 mb-lg-0">
                         <small class="text-muted d-block font-weight-bold text-uppercase">Phone</small>
-                        <span>{{ $supplier->phone ?? 'N/A' }}</span>
+                        <span class="text-break">{{ $supplier->phone ?? 'N/A' }}</span>
                     </div>
-                    <div class="col-md-3 col-sm-6 mb-2 mb-md-0">
+                    <div class="col-12 col-sm-6 col-lg-3 mb-2 mb-lg-0">
                         <small class="text-muted d-block font-weight-bold text-uppercase">Email</small>
-                        <span>{{ $supplier->email ?? 'N/A' }}</span>
+                        <span class="text-break">{{ $supplier->email ?? 'N/A' }}</span>
                     </div>
-                    <div class="col-md-3 col-sm-6">
+                    <div class="col-12 col-sm-6 col-lg-3">
                         <small class="text-muted d-block font-weight-bold text-uppercase">Payment Terms</small>
-                        <span>{{ $supplier->payment_terms ?? 'Standard (Net 30)' }}</span>
+                        <span class="text-break">{{ $supplier->payment_terms ?? 'Standard (Net 30)' }}</span>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Financial KPI Cards -->
-        <div class="row mb-4">
+        <div class="row mb-3">
             <!-- Opening Balance -->
-            <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
-                <div class="card card-statistics shadow-sm border-0">
-                    <div class="card-body">
+            <div class="col-12 col-sm-6 col-xl-3 grid-margin stretch-card mb-3 mb-xl-0">
+                <div class="card card-statistics shadow-sm border-0 w-100">
+                    <div class="card-body p-3 p-md-4">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
                                 <p class="text-muted mb-1 font-weight-medium">Opening Balance</p>
-                                <h3 class="font-weight-bold mb-0 text-dark">${{ number_format($openingBalance, 2) }}</h3>
+                                <h3 class="font-weight-bold mb-0 text-success">${{ number_format($openingBalance, 2) }}</h3>
                             </div>
                             <div class="icon-box bg-light text-secondary p-3 rounded-circle">
                                 <i class="fa fa-history fa-lg"></i>
@@ -93,15 +93,15 @@
             </div>
 
             <!-- Period Purchases -->
-            <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
-                <div class="card card-statistics shadow-sm border-0">
-                    <div class="card-body">
+            <div class="col-12 col-sm-6 col-xl-3 grid-margin stretch-card mb-3 mb-xl-0">
+                <div class="card card-statistics shadow-sm border-0 w-100">
+                    <div class="card-body p-3 p-md-4">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
                                 <p class="text-muted mb-1 font-weight-medium">Total Purchases</p>
-                                <h3 class="font-weight-bold mb-0 text-primary">${{ number_format($periodPurchases, 2) }}</h3>
+                                <h3 class="font-weight-bold mb-0 text-success">${{ number_format($periodPurchases, 2) }}</h3>
                             </div>
-                            <div class="icon-box bg-primary-light text-primary p-3 rounded-circle" style="background-color: rgba(57, 44, 112, 0.1);">
+                            <div class="icon-box bg-primary-light text-success p-3 rounded-circle" style="background-color: rgba(57, 44, 112, 0.1);">
                                 <i class="fa fa-shopping-cart fa-lg"></i>
                             </div>
                         </div>
@@ -113,9 +113,9 @@
             </div>
 
             <!-- Period Paid -->
-            <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
-                <div class="card card-statistics shadow-sm border-0">
-                    <div class="card-body">
+            <div class="col-12 col-sm-6 col-xl-3 grid-margin stretch-card mb-3 mb-xl-0">
+                <div class="card card-statistics shadow-sm border-0 w-100">
+                    <div class="card-body p-3 p-md-4">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
                                 <p class="text-muted mb-1 font-weight-medium">Total Paid</p>
@@ -133,9 +133,9 @@
             </div>
 
             <!-- Net Payable / Balance Due -->
-            <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
-                <div class="card card-statistics shadow-sm border-0 {{ $closingBalance > 0 ? 'border-left-danger' : 'border-left-success' }}">
-                    <div class="card-body">
+            <div class="col-12 col-sm-6 col-xl-3 grid-margin stretch-card mb-3 mb-xl-0">
+                <div class="card card-statistics shadow-sm border-0 w-100 {{ $closingBalance > 0 ? 'border-left-danger' : 'border-left-success' }}">
+                    <div class="card-body p-3 p-md-4">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
                                 <p class="text-muted mb-1 font-weight-medium">Net Payable</p>
@@ -168,26 +168,28 @@
                 <form method="GET" action="{{ route('suppliers.balance_summary', $supplier->id) }}" id="statementFilterForm" class="row align-items-end">
                     <input type="hidden" name="tab" value="{{ $activeTab }}" id="filterActiveTab">
 
-                    <div class="col-md-3 col-sm-6 mb-2 mb-md-0">
+                    <div class="col-12 col-sm-6 col-lg-3 mb-2 mb-lg-0">
                         <label class="font-weight-bold small text-muted mb-1">Start Date</label>
                         <input type="date" name="start_date" id="filterStartDate" value="{{ $startDate ?? '' }}" class="form-control form-control-sm">
                     </div>
 
-                    <div class="col-md-3 col-sm-6 mb-2 mb-md-0">
+                    <div class="col-12 col-sm-6 col-lg-3 mb-2 mb-lg-0">
                         <label class="font-weight-bold small text-muted mb-1">End Date</label>
                         <input type="date" name="end_date" id="filterEndDate" value="{{ $endDate ?? '' }}" class="form-control form-control-sm">
                     </div>
 
-                    <div class="col-md-6 col-sm-12 d-flex flex-wrap align-items-center mt-2 mt-md-0">
-                        <button type="submit" class="btn btn-primary btn-sm mr-2 mb-1">
-                            <i class="fa fa-filter mr-1"></i> Filter
-                        </button>
-                        <a href="{{ route('suppliers.balance_summary', $supplier->id) }}" class="btn btn-light btn-sm mr-2 mb-1">
-                            <i class="fa fa-undo mr-1"></i> Reset
-                        </a>
+                    <div class="col-12 col-lg-6 d-flex flex-wrap align-items-center justify-content-between justify-content-lg-start mt-2 mt-lg-0">
+                        <div class="d-flex align-items-center mb-2 mr-2">
+                            <button type="submit" class="btn btn-primary btn-sm mr-2">
+                                <i class="fa fa-filter mr-1"></i> Filter
+                            </button>
+                            <a href="{{ route('suppliers.balance_summary', $supplier->id) }}" class="btn btn-light btn-sm">
+                                <i class="fa fa-undo mr-1"></i> Reset
+                            </a>
+                        </div>
 
                         <!-- Quick Presets -->
-                        <div class="btn-group btn-group-sm mb-1 ml-auto" role="group">
+                        <div class="btn-group btn-group-sm mb-2 ml-lg-auto flex-wrap" role="group">
                             <button type="button" class="btn btn-outline-secondary" onclick="setDateRange('all')">All Time</button>
                             <button type="button" class="btn btn-outline-secondary" onclick="setDateRange('this_month')">This Month</button>
                             <button type="button" class="btn btn-outline-secondary" onclick="setDateRange('last_month')">Last Month</button>
@@ -201,23 +203,25 @@
         <!-- Main Tabbed Interface -->
         <div class="card shadow-sm border-0">
             <div class="card-header bg-white border-0 pt-3 px-3 non-printable">
-                <ul class="nav nav-tabs card-header-tabs" id="supplierSummaryTabs" role="tablist">
-                    <li class="nav-item">
-                        <a class="nav-link font-weight-bold {{ $activeTab === 'ledger' ? 'active' : '' }}" id="ledger-tab" data-toggle="tab" href="#ledger-pane" role="tab" aria-controls="ledger-pane" aria-selected="{{ $activeTab === 'ledger' ? 'true' : 'false' }}">
-                            <i class="fa fa-book mr-1"></i> Statement of Account (Ledger)
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link font-weight-bold {{ $activeTab === 'purchases' ? 'active' : '' }}" id="purchases-tab" data-toggle="tab" href="#purchases-pane" role="tab" aria-controls="purchases-pane" aria-selected="{{ $activeTab === 'purchases' ? 'true' : 'false' }}">
-                            <i class="fa fa-shopping-cart mr-1"></i> Purchases ({{ $purchases->total() }})
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link font-weight-bold {{ $activeTab === 'payments' ? 'active' : '' }}" id="payments-tab" data-toggle="tab" href="#payments-pane" role="tab" aria-controls="payments-pane" aria-selected="{{ $activeTab === 'payments' ? 'true' : 'false' }}">
-                            <i class="fa fa-money-bill-wave mr-1"></i> Payments ({{ $payments->total() }})
-                        </a>
-                    </li>
-                </ul>
+                <div class="nav-tabs-responsive">
+                    <ul class="nav nav-tabs card-header-tabs flex-nowrap" id="supplierSummaryTabs" role="tablist">
+                        <li class="nav-item text-nowrap">
+                            <a class="nav-link font-weight-bold {{ $activeTab === 'ledger' ? 'active' : '' }}" id="ledger-tab" data-toggle="tab" href="#ledger-pane" role="tab" aria-controls="ledger-pane" aria-selected="{{ $activeTab === 'ledger' ? 'true' : 'false' }}">
+                                <i class="fa fa-book mr-1"></i> Statement of Account (Ledger)
+                            </a>
+                        </li>
+                        <li class="nav-item text-nowrap">
+                            <a class="nav-link font-weight-bold {{ $activeTab === 'purchases' ? 'active' : '' }}" id="purchases-tab" data-toggle="tab" href="#purchases-pane" role="tab" aria-controls="purchases-pane" aria-selected="{{ $activeTab === 'purchases' ? 'true' : 'false' }}">
+                                <i class="fa fa-shopping-cart mr-1"></i> Purchases ({{ $purchases->total() }})
+                            </a>
+                        </li>
+                        <li class="nav-item text-nowrap">
+                            <a class="nav-link font-weight-bold {{ $activeTab === 'payments' ? 'active' : '' }}" id="payments-tab" data-toggle="tab" href="#payments-pane" role="tab" aria-controls="payments-pane" aria-selected="{{ $activeTab === 'payments' ? 'true' : 'false' }}">
+                                <i class="fa fa-money-bill-wave mr-1"></i> Payments ({{ $payments->total() }})
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </div>
 
             <div class="card-body p-0">
@@ -225,8 +229,8 @@
 
                     <!-- TAB 1: Unified Statement of Account (Ledger) -->
                     <div class="tab-pane fade {{ $activeTab === 'ledger' ? 'show active' : '' }}" id="ledger-pane" role="tabpanel" aria-labelledby="ledger-tab">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <div>
+                        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
+                            <div class="mb-2 mb-sm-0">
                                 <h5 class="font-weight-bold text-dark mb-0">Unified Supplier Ledger</h5>
                                 <small class="text-muted">Chronological transactions with live mathematical running balance</small>
                             </div>
@@ -234,33 +238,33 @@
                         </div>
 
                         <div class="table-responsive">
-                            <table class="table table-hover table-bordered mb-0">
+                            <table class="table table-hover table-bordered mb-0 table-ledger">
                                 <thead style="background-color: #392C70; color: #fff;">
                                     <tr>
-                                        <th style="width: 120px;">Date</th>
-                                        <th style="width: 100px;">Type</th>
-                                        <th>Reference</th>
+                                        <th style="width: 120px;" class="text-nowrap">Date</th>
+                                        <th style="width: 100px;" class="text-nowrap">Type</th>
+                                        <th class="text-nowrap">Reference</th>
                                         <th>Description / Note</th>
-                                        <th class="text-right" style="width: 140px;">Billed (Debit)</th>
-                                        <th class="text-right" style="width: 140px;">Paid (Credit)</th>
-                                        <th class="text-right" style="width: 150px;">Running Balance</th>
+                                        <th class="text-right text-nowrap" style="width: 140px;">Billed (Debit)</th>
+                                        <th class="text-right text-nowrap" style="width: 140px;">Paid (Credit)</th>
+                                        <th class="text-right text-nowrap" style="width: 150px;">Running Balance</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <!-- Opening Balance Row -->
                                     <tr class="table-secondary font-weight-bold">
-                                        <td>{{ $hasDateFilter ? \Carbon\Carbon::parse($startDate)->format('Y-m-d') : 'Beginning' }}</td>
+                                        <td class="text-nowrap">{{ $hasDateFilter ? \Carbon\Carbon::parse($startDate)->format('Y-m-d') : 'Beginning' }}</td>
                                         <td><span class="badge badge-info text-white">Opening</span></td>
-                                        <td>Balance Brought Forward</td>
+                                        <td class="text-nowrap">Balance Brought Forward</td>
                                         <td class="text-muted">Cumulative balance prior to selected period</td>
-                                        <td class="text-right">-</td>
-                                        <td class="text-right">-</td>
-                                        <td class="text-right text-dark">${{ number_format($openingBalance, 2) }}</td>
+                                        <td class="text-right text-nowrap">-</td>
+                                        <td class="text-right text-nowrap">-</td>
+                                        <td class="text-right text-dark text-nowrap">${{ number_format($openingBalance, 2) }}</td>
                                     </tr>
 
                                     @forelse ($ledger as $row)
                                         <tr>
-                                            <td>{{ $row->txn_date }}</td>
+                                            <td class="text-nowrap">{{ $row->txn_date }}</td>
                                             <td>
                                                 @if($row->txn_type === 'purchase')
                                                     <span class="badge badge-primary">Bill</span>
@@ -268,15 +272,15 @@
                                                     <span class="badge badge-success">Payment</span>
                                                 @endif
                                             </td>
-                                            <td class="font-weight-medium">{{ $row->reference }}</td>
+                                            <td class="font-weight-medium text-nowrap">{{ $row->reference }}</td>
                                             <td>{{ $row->note ?? '-' }}</td>
-                                            <td class="text-right font-weight-bold text-dark">
+                                            <td class="text-right font-weight-bold text-dark text-nowrap">
                                                 {{ $row->debit > 0 ? '$' . number_format($row->debit, 2) : '-' }}
                                             </td>
-                                            <td class="text-right font-weight-bold text-success">
+                                            <td class="text-right font-weight-bold text-success text-nowrap">
                                                 {{ $row->credit > 0 ? '$' . number_format($row->credit, 2) : '-' }}
                                             </td>
-                                            <td class="text-right font-weight-bold {{ $row->running_balance > 0 ? 'text-danger' : 'text-success' }}">
+                                            <td class="text-right font-weight-bold text-nowrap {{ $row->running_balance > 0 ? 'text-danger' : 'text-success' }}">
                                                 ${{ number_format($row->running_balance, 2) }}
                                             </td>
                                         </tr>
@@ -291,10 +295,10 @@
                                 </tbody>
                                 <tfoot class="font-weight-bold bg-light">
                                     <tr>
-                                        <td colspan="4" class="text-right text-uppercase">Period Activity & Closing Balance:</td>
-                                        <td class="text-right text-dark">${{ number_format($periodPurchases, 2) }}</td>
-                                        <td class="text-right text-success">${{ number_format($periodPaid, 2) }}</td>
-                                        <td class="text-right {{ $closingBalance > 0 ? 'text-danger' : 'text-success' }} font-weight-bold">
+                                        <td colspan="4" class="text-right text-uppercase text-nowrap">Period Activity & Closing Balance:</td>
+                                        <td class="text-right text-dark text-nowrap">${{ number_format($periodPurchases, 2) }}</td>
+                                        <td class="text-right text-success text-nowrap">${{ number_format($periodPaid, 2) }}</td>
+                                        <td class="text-right text-nowrap {{ $closingBalance > 0 ? 'text-danger' : 'text-success' }} font-weight-bold">
                                             ${{ number_format($closingBalance, 2) }}
                                         </td>
                                     </tr>
@@ -303,11 +307,11 @@
                         </div>
 
                         <!-- Pagination -->
-                        <div class="d-flex justify-content-between align-items-center mt-3 flex-wrap non-printable">
-                            <span class="text-muted small">
+                        <div class="d-flex justify-content-between align-items-center mt-3 flex-wrap non-printable flex-column flex-sm-row">
+                            <span class="text-muted small mb-2 mb-sm-0">
                                 Showing {{ $ledger->firstItem() ?? 0 }} to {{ $ledger->lastItem() ?? 0 }} of {{ $ledger->total() }} entries
                             </span>
-                            <div>
+                            <div class="pagination-wrapper overflow-auto mw-100">
                                 {{ $ledger->links() }}
                             </div>
                         </div>
@@ -315,8 +319,8 @@
 
                     <!-- TAB 2: Purchases List -->
                     <div class="tab-pane fade {{ $activeTab === 'purchases' ? 'show active' : '' }}" id="purchases-pane" role="tabpanel" aria-labelledby="purchases-tab">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <div>
+                        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
+                            <div class="mb-2 mb-sm-0">
                                 <h5 class="font-weight-bold text-dark mb-0">Purchase Invoices & Orders</h5>
                                 <small class="text-muted">Itemized inventory purchases from this supplier</small>
                             </div>
@@ -324,16 +328,16 @@
                         </div>
 
                         <div class="table-responsive">
-                            <table class="table table-hover table-bordered mb-0">
+                            <table class="table table-hover table-bordered mb-0 table-purchases">
                                 <thead style="background-color: #392C70; color: #fff;">
                                     <tr>
-                                        <th>Date</th>
+                                        <th class="text-nowrap">Date</th>
                                         <th>Item / Inventory</th>
-                                        <th class="text-center">Quantity</th>
-                                        <th class="text-right">Price</th>
-                                        <th class="text-right">Paid</th>
-                                        <th class="text-right">Pending</th>
-                                        <th class="text-center">Status</th>
+                                        <th class="text-center text-nowrap">Quantity</th>
+                                        <th class="text-right text-nowrap">Price</th>
+                                        <th class="text-right text-nowrap">Paid</th>
+                                        <th class="text-right text-nowrap">Pending</th>
+                                        <th class="text-center text-nowrap">Status</th>
                                         <th>Description</th>
                                     </tr>
                                 </thead>
@@ -344,13 +348,13 @@
                                             $isPartial = $purchase->amount_paid > 0 && $purchase->amount_pending > 0;
                                         @endphp
                                         <tr>
-                                            <td>{{ $purchase->purchase_date ?? $purchase->created_at->format('Y-m-d') }}</td>
+                                            <td class="text-nowrap">{{ $purchase->purchase_date ?? $purchase->created_at->format('Y-m-d') }}</td>
                                             <td class="font-weight-medium">{{ $purchase->inventory->name ?? 'N/A' }}</td>
-                                            <td class="text-center">{{ $purchase->quantity }}</td>
-                                            <td class="text-right font-weight-bold">${{ number_format($purchase->price, 2) }}</td>
-                                            <td class="text-right text-success">${{ number_format($purchase->amount_paid, 2) }}</td>
-                                            <td class="text-right text-danger">${{ number_format($purchase->amount_pending, 2) }}</td>
-                                            <td class="text-center">
+                                            <td class="text-center text-nowrap">{{ $purchase->quantity }}</td>
+                                            <td class="text-right font-weight-bold text-nowrap">${{ number_format($purchase->price, 2) }}</td>
+                                            <td class="text-right text-success text-nowrap">${{ number_format($purchase->amount_paid, 2) }}</td>
+                                            <td class="text-right text-danger text-nowrap">${{ number_format($purchase->amount_pending, 2) }}</td>
+                                            <td class="text-center text-nowrap">
                                                 @if($isPaid)
                                                     <span class="badge badge-success">Paid</span>
                                                 @elseif($isPartial)
@@ -373,11 +377,11 @@
                         </div>
 
                         <!-- Pagination -->
-                        <div class="d-flex justify-content-between align-items-center mt-3 flex-wrap non-printable">
-                            <span class="text-muted small">
+                        <div class="d-flex justify-content-between align-items-center mt-3 flex-wrap non-printable flex-column flex-sm-row">
+                            <span class="text-muted small mb-2 mb-sm-0">
                                 Showing {{ $purchases->firstItem() ?? 0 }} to {{ $purchases->lastItem() ?? 0 }} of {{ $purchases->total() }} entries
                             </span>
-                            <div>
+                            <div class="pagination-wrapper overflow-auto mw-100">
                                 {{ $purchases->links() }}
                             </div>
                         </div>
@@ -385,8 +389,8 @@
 
                     <!-- TAB 3: Payments List -->
                     <div class="tab-pane fade {{ $activeTab === 'payments' ? 'show active' : '' }}" id="payments-pane" role="tabpanel" aria-labelledby="payments-tab">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <div>
+                        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
+                            <div class="mb-2 mb-sm-0">
                                 <h5 class="font-weight-bold text-dark mb-0">Payment Receipts & History</h5>
                                 <small class="text-muted">All payments disbursed to this supplier</small>
                             </div>
@@ -394,21 +398,21 @@
                         </div>
 
                         <div class="table-responsive">
-                            <table class="table table-hover table-bordered mb-0">
+                            <table class="table table-hover table-bordered mb-0 table-payments">
                                 <thead style="background-color: #392C70; color: #fff;">
                                     <tr>
-                                        <th>Date</th>
-                                        <th>Payment Voucher #</th>
+                                        <th class="text-nowrap">Date</th>
+                                        <th class="text-nowrap">Payment Voucher #</th>
                                         <th>Linked Purchase Bill</th>
-                                        <th class="text-right">Amount Paid</th>
+                                        <th class="text-right text-nowrap">Amount Paid</th>
                                         <th>Note</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @forelse ($payments as $payment)
                                         <tr>
-                                            <td>{{ $payment->created_at->format('Y-m-d') }}</td>
-                                            <td class="font-weight-bold text-primary">PAY-{{ str_pad($payment->id, 5, '0', STR_PAD_LEFT) }}</td>
+                                            <td class="text-nowrap">{{ $payment->created_at->format('Y-m-d') }}</td>
+                                            <td class="font-weight-bold text-primary text-nowrap">PAY-{{ str_pad($payment->id, 5, '0', STR_PAD_LEFT) }}</td>
                                             <td>
                                                 @if($payment->inventory_purchase_id)
                                                     <span class="badge badge-outline-secondary">Bill #{{ $payment->inventory_purchase_id }} ({{ $payment->purchase->inventory->name ?? 'Inventory' }})</span>
@@ -416,7 +420,7 @@
                                                     <span class="badge badge-outline-info">General Account Payment</span>
                                                 @endif
                                             </td>
-                                            <td class="text-right font-weight-bold text-success">${{ number_format($payment->amount, 2) }}</td>
+                                            <td class="text-right font-weight-bold text-success text-nowrap">${{ number_format($payment->amount, 2) }}</td>
                                             <td>{{ $payment->note ?? '-' }}</td>
                                         </tr>
                                     @empty
@@ -431,11 +435,11 @@
                         </div>
 
                         <!-- Pagination -->
-                        <div class="d-flex justify-content-between align-items-center mt-3 flex-wrap non-printable">
-                            <span class="text-muted small">
+                        <div class="d-flex justify-content-between align-items-center mt-3 flex-wrap non-printable flex-column flex-sm-row">
+                            <span class="text-muted small mb-2 mb-sm-0">
                                 Showing {{ $payments->firstItem() ?? 0 }} to {{ $payments->lastItem() ?? 0 }} of {{ $payments->total() }} entries
                             </span>
-                            <div>
+                            <div class="pagination-wrapper overflow-auto mw-100">
                                 {{ $payments->links() }}
                             </div>
                         </div>
@@ -449,8 +453,68 @@
 </div>
 
 <style>
+/* Responsive Tab Container */
+.nav-tabs-responsive {
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
+}
+.nav-tabs-responsive::-webkit-scrollbar {
+    height: 3px;
+}
+.nav-tabs-responsive::-webkit-scrollbar-thumb {
+    background: #ced4da;
+    border-radius: 3px;
+}
+
+/* Table smooth mobile scrolling */
+.table-responsive {
+    -webkit-overflow-scrolling: touch;
+}
+.table-ledger {
+    min-width: 720px;
+}
+.table-purchases {
+    min-width: 700px;
+}
+.table-payments {
+    min-width: 580px;
+}
+
+@media (max-width: 767.98px) {
+    .page-header .page-title {
+        font-size: 1.25rem;
+    }
+    .card-statistics .card-body {
+        padding: 1rem;
+    }
+    .card-statistics h3 {
+        font-size: 1.35rem;
+    }
+    .icon-box {
+        padding: 0.65rem !important;
+    }
+    .icon-box i {
+        font-size: 1.1rem;
+    }
+    .btn-group .btn {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .card-statistics {
+        margin-bottom: 0.75rem;
+    }
+    .pagination-wrapper .pagination {
+        font-size: 0.8rem;
+    }
+}
+
 @media print {
-    .non-printable, .navbar, .sidebar, #app-main-footer, .page-header, .btn, .nav-tabs {
+    .non-printable, .navbar, .sidebar, #app-main-footer, .page-header, .btn, .nav-tabs, .nav-tabs-responsive {
         display: none !important;
     }
     .main-panel {
