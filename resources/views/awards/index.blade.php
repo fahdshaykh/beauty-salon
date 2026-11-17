@@ -477,13 +477,11 @@ input:checked+.slider:before {
 
         </div>
 
-
-
     </div>
 
+</div>
 
-
-    @endsection
+@endsection
 
 
 

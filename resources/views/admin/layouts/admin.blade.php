@@ -323,39 +323,51 @@ Admin
 
       @yield('content')
 
+      <footer class="footer non-printable" id="app-main-footer">
+
+        <div class="d-sm-flex justify-content-center justify-content-sm-between">
+
+          <span class="text-muted text-center text-sm-left d-block d-sm-inline-block">Copyright © 2024 <a href="https://www.bSaloon.co.uk/" target="_blank">bSaloon</a>. All rights reserved.</span>
+
+        </div>
+
+      </footer>
+
+      <script>
+        (function() {
+          function placeAppFooter() {
+            var footer = document.getElementById('app-main-footer');
+            var mainPanel = document.querySelector('.main-panel');
+            if (!mainPanel || !footer) return;
+
+            // Remove any legacy duplicate footers inside the main panel
+            var existingFooters = mainPanel.querySelectorAll('footer.footer');
+            for (var i = 0; i < existingFooters.length; i++) {
+              if (existingFooters[i] !== footer) {
+                existingFooters[i].parentNode.removeChild(existingFooters[i]);
+              }
+            }
+
+            // Ensure footer is placed inside .main-panel as its last child
+            if (footer.parentElement !== mainPanel) {
+              mainPanel.appendChild(footer);
+            }
+          }
+
+          placeAppFooter();
+          if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', placeAppFooter);
+          }
+        })();
+      </script>
+
     </div>
 
     <!-- page-body-wrapper ends -->
 
   </div>
 
-      <!-- content-wrapper ends -->
-
-        <!-- partial:../../partials/_footer.html -->
-
-        <footer class="footer non-printable">
-
-          <div class="d-sm-flex justify-content-center justify-content-sm-between">
-
-            <span class="text-muted text-center text-sm-left d-block d-sm-inline-block">Copyright © 2024 <a href="https://www.bSaloon.co.uk/" target="_blank">bSaloon</a>. All rights reserved.</span>
-
-          </div>
-
-        </footer>
-
-        <!-- partial -->
-
-      </div>
-
-      <!-- main-panel ends -->    
-
-        
-
-        <!-- /page content -->
-
-
-
-        <!-- container-scroller -->
+  <!-- container-scroller -->
 
 <div id="calendarModal" class="modal fade">
 

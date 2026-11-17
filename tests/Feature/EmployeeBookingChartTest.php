@@ -63,6 +63,22 @@ class EmployeeBookingChartTest extends TestCase
         $response = $this->actingAs($user)->get(route('employee.graph_report'));
         if ($response->getStatusCode() === 200) {
             $response->assertSee(date('Y-m-t'));
+            $response->assertSee('id="app-main-footer"', false);
+        }
+    }
+
+    public function test_awards_page_renders_master_footer()
+    {
+        $user = User::first();
+        if (!$user) {
+            $this->markTestSkipped('No user available for testing.');
+        }
+
+        $response = $this->actingAs($user)->get(route('awards.index'));
+        if ($response->getStatusCode() === 200) {
+            $response->assertSee('id="app-main-footer"', false);
+            $response->assertSee('bSaloon');
+            $response->assertSee('All rights reserved');
         }
     }
 }
