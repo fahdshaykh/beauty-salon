@@ -293,6 +293,8 @@ class ReportController extends Controller
     {
         $this->validate($request, [
             'customer_id' => 'required',
+            // 'start_date'   => 'required|date',
+            // 'end_date'     => 'required|date|after_or_equal:start_date',
         ], [
             'customer_id.required' => 'Please select customer',
         ]);
@@ -341,12 +343,12 @@ class ReportController extends Controller
     public function inventory_record(Request $request)
     {
         $request->validate([
-            'start_date'   => 'required|date',
-            'end_date'     => 'required|date|after_or_equal:start_date',
+            // 'start_date'   => 'required|date',
+            // 'end_date'     => 'required|date|after_or_equal:start_date',
             'inventory_id' => 'nullable|integer|exists:inventories,id',
         ], [
-            'start_date.required'     => 'Please select a start date',
-            'end_date.required'       => 'Please select an end date',
+            // 'start_date.required'     => 'Please select a start date',
+            // 'end_date.required'       => 'Please select an end date',
             'end_date.after_or_equal' => 'End date must be after or equal to start date',
         ]);
 
