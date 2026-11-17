@@ -354,6 +354,15 @@ class ServiceBookingController extends Controller
             $query->where('service_status', $status);
         }
 
+        if ($request->filled('start_date') && $request->filled('end_date')) {
+            $query->whereDate('due_date', '>=', $request->query('start_date'))
+                  ->whereDate('due_date', '<=', $request->query('end_date'));
+        } elseif ($request->filled('start_date')) {
+            $query->whereDate('due_date', '>=', $request->query('start_date'));
+        } elseif ($request->filled('end_date')) {
+            $query->whereDate('due_date', '<=', $request->query('end_date'));
+        }
+
         $bookings = $query->orderBy('created_at', 'desc')->get();
 
         $calender_array = [];

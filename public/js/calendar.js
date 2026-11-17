@@ -29,12 +29,29 @@
                 }
             }
 
+            // Add start_date and end_date if present
+            var startDate = $('#calendar_start_date').val();
+            var endDate = $('#calendar_end_date').val();
+            if (startDate) {
+                params.push('start_date=' + encodeURIComponent(startDate));
+            }
+            if (endDate) {
+                params.push('end_date=' + encodeURIComponent(endDate));
+            }
+
             var baseUrl = '/get-booking-orders';
             return params.length > 0 ? baseUrl + '?' + params.join('&') : baseUrl;
         }
 
-        function loadCalendar() {
+        function loadCalendar(targetDate) {
             if (!$calendar.length) return;
+
+            var rememberedDate = targetDate;
+            if (!rememberedDate && $calendar.hasClass('fc')) {
+                try {
+                    rememberedDate = $calendar.fullCalendar('getDate');
+                } catch(e) {}
+            }
 
             var url = buildUrl();
             console.log("Loading calendar from:", url); // Debug
@@ -66,10 +83,31 @@
                     $.each(events, function(index, value) {
                         var colorCode = value.service_color || '#392c70';
 
-                        var book_time = moment(value.due_time, ["h:mm A"]).format("HH:mm");
-                        var end_time = moment(value.due_time, ["h:mm A"])
-                            .add(value.service_time, 'minutes')
-                            .format("HH:mm");
+                        var startMoment = moment(value.due_date + ' ' + value.due_time, [
+                            "YYYY-MM-DD h:mm A",
+                            "YYYY-MM-DD hh:mm A",
+                            "YYYY-MM-DD HH:mm:ss",
+                            "YYYY-MM-DD HH:mm",
+                            "YYYY-MM-DD H:mm:ss",
+                            "YYYY-MM-DD H:mm"
+                        ]);
+
+                        var startTimeStr = startMoment.isValid()
+                            ? startMoment.format("HH:mm")
+                            : moment(value.due_time, ["h:mm A", "hh:mm A", "HH:mm:ss", "HH:mm"]).format("HH:mm");
+
+                        var serviceDuration = parseInt(value.service_time, 10) || 30;
+                        var endMoment = startMoment.isValid()
+                            ? moment(startMoment).add(serviceDuration, 'minutes')
+                            : moment(startTimeStr, "HH:mm").add(serviceDuration, 'minutes');
+
+                        var startIso = startMoment.isValid()
+                            ? startMoment.format("YYYY-MM-DDTHH:mm:00")
+                            : (value.due_date + 'T' + startTimeStr + ':00');
+
+                        var endIso = endMoment.isValid()
+                            ? endMoment.format("YYYY-MM-DDTHH:mm:00")
+                            : (value.due_date + 'T' + endMoment.format("HH:mm") + ':00');
 
                         var jobcomment = value.comment || 'no comments';
                         var survey = value.service_status == 5 ? '<b>Survey</b>: <b>Yes</b><br>' : '';
@@ -87,8 +125,8 @@
                                          ', Services: ' + value.services +
                                          ', Comments: ' + jobcomment +
                                          ', Address: ' + value.customer_address,
-                            start: value.due_date + 'T' + book_time + ':00',
-                            end: value.due_date + 'T' + end_time + ':00',
+                            start: startIso,
+                            end: endIso,
                             color: colorCode,
                             extendedProps: {
                                 servicestatus: value.service_status
@@ -101,8 +139,8 @@
                         $calendar.fullCalendar('destroy');
                     }
 
-                    // Initialize FullCalendar
-                    $calendar.fullCalendar({
+                    // Calendar configuration
+                    var calConfig = {
                         header: {
                             left: 'prev,next today',
                             center: 'title',
@@ -111,8 +149,9 @@
                         navLinks: true,
                         selectable: true,
                         selectHelper: true,
-                        minTime: "06:00:00",
-                        maxTime: "21:00:00",
+                        minTime: "00:00:00",
+                        maxTime: "24:00:00",
+                        scrollTime: "08:00:00",
                         select: function(start, end, jsEvent, view) {
                             if ($("#creat-booking-perm").val() !== 'yes') return;
 
@@ -180,7 +219,14 @@
                                 }
                             }
                         }
-                    });
+                    };
+
+                    if (rememberedDate) {
+                        calConfig.defaultDate = moment(rememberedDate);
+                    }
+
+                    // Initialize FullCalendar
+                    $calendar.fullCalendar(calConfig);
                 },
                 error: function(xhr) {
                     console.error(xhr);
@@ -189,12 +235,73 @@
             });
         }
 
-        // Reload calendar when ANY filter changes
+        function toggleClearBtn() {
+            var s = $('#calendar_start_date').val();
+            var e = $('#calendar_end_date').val();
+            if (s || e) {
+                $('#clear_calendar_dates').show();
+            } else {
+                $('#clear_calendar_dates').hide();
+            }
+        }
+
+        var reloadTimer = null;
+        function debouncedLoadCalendar(targetDate) {
+            clearTimeout(reloadTimer);
+            reloadTimer = setTimeout(function() {
+                loadCalendar(targetDate);
+            }, 100);
+        }
+
+        // Reload calendar when staff or status filter changes
         $(document).on('change', '#user_id, #service_status_admin, #service_status', function() {
             loadCalendar();
         });
 
+        // Datepicker change handlers
+        $('#datepicker-popup-new').on('changeDate', function(e) {
+            var startVal = $('#calendar_start_date').val();
+            if (startVal && $('#datepicker-popup-new2').length) {
+                $('#datepicker-popup-new2').datepicker('setStartDate', startVal);
+            }
+            toggleClearBtn();
+            debouncedLoadCalendar(startVal);
+        });
+
+        $('#datepicker-popup-new2').on('changeDate', function(e) {
+            var endVal = $('#calendar_end_date').val();
+            if (endVal && $('#datepicker-popup-new').length) {
+                $('#datepicker-popup-new').datepicker('setEndDate', endVal);
+            }
+            toggleClearBtn();
+            debouncedLoadCalendar();
+        });
+
+        // Manual text change / clear on date inputs
+        $(document).on('change', '#calendar_start_date, #calendar_end_date', function() {
+            var startVal = $('#calendar_start_date').val();
+            toggleClearBtn();
+            debouncedLoadCalendar(startVal);
+        });
+
+        // Clear dates button
+        $(document).on('click', '#clear_calendar_dates', function() {
+            $('#calendar_start_date').val('');
+            $('#calendar_end_date').val('');
+            if ($('#datepicker-popup-new').length) {
+                $('#datepicker-popup-new').datepicker('clearDates');
+                $('#datepicker-popup-new').datepicker('setEndDate', null);
+            }
+            if ($('#datepicker-popup-new2').length) {
+                $('#datepicker-popup-new2').datepicker('clearDates');
+                $('#datepicker-popup-new2').datepicker('setStartDate', null);
+            }
+            toggleClearBtn();
+            loadCalendar(moment().format('YYYY-MM-DD'));
+        });
+
         // Initial load
+        toggleClearBtn();
         loadCalendar();
     });
 })(jQuery);
