@@ -415,7 +415,7 @@ Admin
 
   <script src="{{asset('js/hoverable-collapse.js')}}"></script>
 
-  <script src="{{asset('js/misc.js')}}"></script>
+  <script src="{{asset('js/misc.js')}}?v=2.5"></script>
 
   <script src="{{asset('js/settings.js')}}"></script>
 

@@ -283,9 +283,12 @@
 
           </li>
 
-          <li class="nav-item">
+          @php
+            $isDashboard = request()->is('home*') || request()->routeIs('home', 'dashboard');
+          @endphp
+          <li class="nav-item {{ $isDashboard ? 'active' : '' }}">
 
-            <a class="nav-link" href="{{url('/home')}}">
+            <a class="nav-link {{ $isDashboard ? 'active' : '' }}" href="{{url('/home')}}">
 
               <i class="fa fa-home menu-icon"></i>
 
@@ -296,9 +299,12 @@
           </li>
 
           @can('view calendar')
-          <li class="nav-item">
+          @php
+            $isCalendar = request()->is('calendar*') || request()->routeIs('calendar');
+          @endphp
+          <li class="nav-item {{ $isCalendar ? 'active' : '' }}">
 
-            <a class="nav-link" href="{{url('/calendar')}}">
+            <a class="nav-link {{ $isCalendar ? 'active' : '' }}" href="{{url('/calendar')}}">
 
               <i class="fa fa-calendar menu-icon"></i>
 
@@ -311,9 +317,14 @@
          
 
          @can('view categories')
-          <li class="nav-item {{ request()->routeIs('categories.index', 'categories.create', 'categories.show', 'categories.edit') ? 'active' : '' }}">
+          @php
+            $isCategory = request()->is('categories*') || request()->is('category*') || request()->routeIs('categories.*');
+            $isCategoryCreate = request()->routeIs('categories.create') || request()->is('categories/*create*') || request()->is('categories/category-create*');
+            $isCategoryList = $isCategory && !$isCategoryCreate;
+          @endphp
+          <li class="nav-item {{ $isCategory ? 'active' : '' }}">
 
-            <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="{{ request()->routeIs('categories.index', 'categories.create', 'categories.show', 'categories.edit') ? 'true' : 'false' }}" aria-controls="ui-basic">
+            <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="{{ $isCategory ? 'true' : 'false' }}" aria-controls="ui-basic">
 
               <i class="fas fa-briefcase menu-icon"></i>
 
@@ -323,17 +334,14 @@
 
             </a>
 
-            <div class="collapse {{ request()->routeIs('categories.index', 'categories.create', 'categories.show', 'categories.edit') ? 'show' : '' }}" id="ui-basic" data-parent="#sidebar .nav">
+            <div class="collapse {{ $isCategory ? 'show' : '' }}" id="ui-basic" data-parent="#sidebar .nav">
 
               <ul class="nav flex-column sub-menu">
 
-
-
-                <li class="nav-item"> <a class="nav-link {{ request()->routeIs('categories.index') ? 'active' : '' }}" href="{{ route('categories.index') }}"> Category Listing </a></li>
-
+                <li class="nav-item"> <a class="nav-link {{ $isCategoryList ? 'active' : '' }}" href="{{ route('categories.index') }}"> Category Listing </a></li>
 
                 @can('create categories')
-                <li class="nav-item"> <a class="nav-link {{ request()->routeIs('categories.create') ? 'active' : '' }}" href="{{ route('categories.create') }}"> Create Category </a></li>
+                <li class="nav-item"> <a class="nav-link {{ $isCategoryCreate ? 'active' : '' }}" href="{{ route('categories.create') }}"> Create Category </a></li>
                 @endcan
 
               </ul>
@@ -344,17 +352,22 @@
           @endcan
           
           @can('view services')
-          <li class="nav-item {{ request()->routeIs('services.index', 'services.create', 'services.show', 'services.edit') ? 'active' : '' }}">
-            <a class="nav-link" data-toggle="collapse" href="#ui-advanced" aria-expanded="{{ request()->routeIs('services.index', 'services.create', 'services.show', 'services.edit') ? 'true' : 'false' }}" aria-controls="ui-advanced">
+          @php
+            $isServices = (request()->is('services*') || request()->is('servicestatus*') || request()->routeIs('services.*')) && !request()->is('service-bookings*');
+            $isServicesCreate = $isServices && (request()->routeIs('services.create') || request()->is('services/*create*') || request()->is('services/services-create*'));
+            $isServicesList = $isServices && !$isServicesCreate;
+          @endphp
+          <li class="nav-item {{ $isServices ? 'active' : '' }}">
+            <a class="nav-link" data-toggle="collapse" href="#ui-advanced" aria-expanded="{{ $isServices ? 'true' : 'false' }}" aria-controls="ui-advanced">
               <i class="fab fa-trello menu-icon"></i>
               <span class="menu-title">Services</span>
               <i class="menu-arrow"></i>
             </a>
-            <div class="collapse {{ request()->routeIs('services.index', 'services.create', 'services.show', 'services.edit') ? 'show' : '' }}" id="ui-advanced" data-parent="#sidebar .nav">
+            <div class="collapse {{ $isServices ? 'show' : '' }}" id="ui-advanced" data-parent="#sidebar .nav">
               <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link {{ request()->routeIs('services.index') ? 'active' : '' }}" href="{{ route('services.index') }}">Service Listing</a></li>
+                <li class="nav-item"> <a class="nav-link {{ $isServicesList ? 'active' : '' }}" href="{{ route('services.index') }}">Service Listing</a></li>
                 @can('create services')
-                <li class="nav-item"> <a class="nav-link {{ request()->routeIs('services.create') ? 'active' : '' }}" href="{{ route('services.create') }}">Create Service</a></li>
+                <li class="nav-item"> <a class="nav-link {{ $isServicesCreate ? 'active' : '' }}" href="{{ route('services.create') }}">Create Service</a></li>
                 @endcan
 
               </ul>
@@ -363,9 +376,16 @@
           @endcan
 
           @can('view inventories')
-          <li class="nav-item {{ request()->routeIs('inventories.index', 'inventories.create', 'inventories.show', 'inventories.edit', 'inventories.available', 'inventories_purchases.index', 'inventories_purchases.create', 'inventories_purchases.show', 'inventories_purchases.edit', 'suppliers.index', 'suppliers.create', 'suppliers.show', 'suppliers.edit') ? 'active' : '' }}">
+          @php
+            $isInventories = request()->is('inventories*') || request()->is('suppliers*') || request()->is('supplier-payments*') || request()->routeIs('inventories.*', 'inventories_purchases.*', 'suppliers.*', 'supplier_payments.*');
+            $isInvPurchases = request()->routeIs('inventories_purchases.*') || request()->is('inventories_purchases*');
+            $isInvAvailable = request()->routeIs('inventories.available') || request()->is('inventories-available*');
+            $isSuppliers = request()->routeIs('suppliers.*', 'supplier_payments.*') || request()->is('suppliers*') || request()->is('supplier-payments*');
+            $isInvItems = $isInventories && !$isInvPurchases && !$isInvAvailable && !$isSuppliers;
+          @endphp
+          <li class="nav-item {{ $isInventories ? 'active' : '' }}">
 
-            <a class="nav-link" data-toggle="collapse" href="#ui-basico" aria-expanded="{{ request()->routeIs('inventories.index', 'inventories.create', 'inventories.show', 'inventories.edit', 'inventories.available', 'inventories_purchases.index', 'inventories_purchases.create', 'inventories_purchases.show', 'inventories_purchases.edit', 'suppliers.index', 'suppliers.create', 'suppliers.show', 'suppliers.edit') ? 'true' : 'false' }}" aria-controls="ui-basico">
+            <a class="nav-link" data-toggle="collapse" href="#ui-basico" aria-expanded="{{ $isInventories ? 'true' : 'false' }}" aria-controls="ui-basico">
 
               <i class="fas fa-boxes menu-icon"></i>
 
@@ -375,22 +395,22 @@
 
             </a>
 
-            <div class="collapse {{ request()->routeIs('inventories.index', 'inventories.create', 'inventories.show', 'inventories.edit', 'inventories.available', 'inventories_purchases.index', 'inventories_purchases.create', 'inventories_purchases.show', 'inventories_purchases.edit', 'suppliers.index', 'suppliers.create', 'suppliers.show', 'suppliers.edit') ? 'show' : '' }}" id="ui-basico" data-parent="#sidebar .nav">
+            <div class="collapse {{ $isInventories ? 'show' : '' }}" id="ui-basico" data-parent="#sidebar .nav">
 
               <ul class="nav flex-column sub-menu">
 
-              <li class="nav-item"> <a class="nav-link {{ request()->routeIs('inventories.index') ? 'active' : '' }}" href="{{route('inventories.index')}}"> Inventory Items </a></li>
+              <li class="nav-item"> <a class="nav-link {{ $isInvItems ? 'active' : '' }}" href="{{route('inventories.index')}}"> Inventory Items </a></li>
               
               @can('view inventory purchases')
-              <li class="nav-item"> <a class="nav-link {{ request()->routeIs('inventories_purchases.index') ? 'active' : '' }}" href="{{route('inventories_purchases.index')}}"> Inventory  Purchases</a></li>
+              <li class="nav-item"> <a class="nav-link {{ $isInvPurchases ? 'active' : '' }}" href="{{route('inventories_purchases.index')}}"> Inventory  Purchases</a></li>
               @endcan
 
               @can('view available inventories')
-              <li class="nav-item"> <a class="nav-link" href="{{ route('inventories.available') }}"> Inventory Available </a></li>
+              <li class="nav-item"> <a class="nav-link {{ $isInvAvailable ? 'active' : '' }}" href="{{ route('inventories.available') }}"> Inventory Available </a></li>
               @endcan
 
               @can('view suppliers')
-              <li class="nav-item"> <a class="nav-link" href="{{ route('suppliers.index') }}"> Suppliers </a></li>
+              <li class="nav-item"> <a class="nav-link {{ $isSuppliers ? 'active' : '' }}" href="{{ route('suppliers.index') }}"> Suppliers </a></li>
               @endcan
 
               </ul>
@@ -401,9 +421,16 @@
           @endcan
           
           @can('view customers')
-          <li class="nav-item {{ request()->routeIs('customers.index', 'customers.create', 'customers.show', 'customers.edit', 'customers.profile', 'customers.bookings_history', 'customers.import.view', 'referred_customers.index', 'referred_customers.create', 'referred_customers.show', 'referred_customers.edit') ? 'active' : '' }}">
+          @php
+            $isCustomers = request()->is('customers*') || request()->is('referred*') || request()->is('bookings-history*') || request()->routeIs('customers.*', 'referred_customers.*');
+            $isCustCreate = request()->routeIs('customers.create') || request()->is('customers/*create*');
+            $isCustImport = request()->routeIs('customers.import.*', 'customers.import.view') || request()->is('customers-import*') || request()->is('customers/import*');
+            $isCustReferred = request()->routeIs('referred_customers.*') || request()->is('referred*');
+            $isCustList = $isCustomers && !$isCustCreate && !$isCustImport && !$isCustReferred;
+          @endphp
+          <li class="nav-item {{ $isCustomers ? 'active' : '' }}">
 
-            <a class="nav-link" data-toggle="collapse" href="#form-elements" aria-expanded="{{ request()->routeIs('customers.index', 'customers.create', 'customers.show', 'customers.edit', 'customers.profile', 'customers.bookings_history', 'customers.import.view', 'referred_customers.index', 'referred_customers.create', 'referred_customers.show', 'referred_customers.edit') ? 'true' : 'false' }}" aria-controls="form-elements">
+            <a class="nav-link" data-toggle="collapse" href="#form-elements" aria-expanded="{{ $isCustomers ? 'true' : 'false' }}" aria-controls="form-elements">
 
               <i class="fa fa-users menu-icon"></i>
 
@@ -413,24 +440,22 @@
 
             </a>
 
-            <div class="collapse {{ request()->routeIs('customers.index', 'customers.create', 'customers.show', 'customers.edit', 'customers.profile', 'customers.bookings_history', 'customers.import.view', 'referred_customers.index', 'referred_customers.create', 'referred_customers.show', 'referred_customers.edit') ? 'show' : '' }}" id="form-elements" data-parent="#sidebar .nav">
+            <div class="collapse {{ $isCustomers ? 'show' : '' }}" id="form-elements" data-parent="#sidebar .nav">
 
               <ul class="nav flex-column sub-menu">
 
-
-                <li class="nav-item"><a class="nav-link {{ request()->routeIs('customers.index') ? 'active' : '' }}" href="{{route('customers.index')}}">Customer Listing</a></li>
+                <li class="nav-item"><a class="nav-link {{ $isCustList ? 'active' : '' }}" href="{{route('customers.index')}}">Customer Listing</a></li>
          
-                
                 @can('create customers')
-                <li class="nav-item"><a class="nav-link {{ request()->routeIs('customers.create') ? 'active' : '' }}" href="{{url('customers/customers-create')}}">Add Customer</a></li>
+                <li class="nav-item"><a class="nav-link {{ $isCustCreate ? 'active' : '' }}" href="{{url('customers/customers-create')}}">Add Customer</a></li>
                 @endcan
                 
                 @can('import customers')
-                <li class="nav-item"><a class="nav-link {{ request()->routeIs('customers.import.view') ? 'active' : '' }}" href="{{url('customers-import-view')}}">Import Customers</a></li>
+                <li class="nav-item"><a class="nav-link {{ $isCustImport ? 'active' : '' }}" href="{{url('customers-import-view')}}">Import Customers</a></li>
                 @endcan
                 
                 @can('view referred customers')
-                <li class="nav-item"><a class="nav-link {{ request()->routeIs('referred_customers.index') ? 'active' : '' }}" href="{{route('referred_customers.index')}}">Reffered By</a></li>
+                <li class="nav-item"><a class="nav-link {{ $isCustReferred ? 'active' : '' }}" href="{{route('referred_customers.index')}}">Reffered By</a></li>
                 @endcan
 
               </ul>
@@ -440,13 +465,15 @@
           </li>
           @endcan
          
-
-          
-
           @can('view bookings')
-          <li class="nav-item {{ request()->routeIs('service-bookings.index', 'service-bookings.create', 'service-bookings.show', 'service-bookings.edit', 'service-bookings.job_detail') ? 'active' : '' }}">
+          @php
+            $isBookings = request()->is('service-bookings*') || request()->is('service_bookings*') || request()->is('view-booking*') || request()->is('show-job-detail*') || request()->routeIs('service-bookings.*');
+            $isBookingsCreate = request()->routeIs('service-bookings.create', 'service-bookings.date', 'service-bookings.date_success') || request()->is('service-bookings/*create*') || request()->is('get-booking-date*');
+            $isBookingsList = $isBookings && !$isBookingsCreate;
+          @endphp
+          <li class="nav-item {{ $isBookings ? 'active' : '' }}">
 
-            <a class="nav-link" data-toggle="collapse" href="#editors" aria-expanded="{{ request()->routeIs('service-bookings.index', 'service-bookings.create', 'service-bookings.show', 'service-bookings.edit', 'service-bookings.job_detail') ? 'true' : 'false' }}" aria-controls="editors">
+            <a class="nav-link" data-toggle="collapse" href="#editors" aria-expanded="{{ $isBookings ? 'true' : 'false' }}" aria-controls="editors">
 
               <i class="fa fa-clipboard-list menu-icon"></i>
 
@@ -456,20 +483,15 @@
 
             </a>
 
-            <div class="collapse {{ request()->routeIs('service-bookings.index', 'service-bookings.create', 'service-bookings.show', 'service-bookings.edit', 'service-bookings.job_detail') ? 'show' : '' }}" id="editors" data-parent="#sidebar .nav">
+            <div class="collapse {{ $isBookings ? 'show' : '' }}" id="editors" data-parent="#sidebar .nav">
 
               <ul class="nav flex-column sub-menu">
 
-
-
-                <li class="nav-item"><a class="nav-link {{ request()->routeIs('service-bookings.index') ? 'active' : '' }}" href="{{route('service-bookings.index')}}">Service Bookings</a></li>
-
-
+                <li class="nav-item"><a class="nav-link {{ $isBookingsList ? 'active' : '' }}" href="{{route('service-bookings.index')}}">Service Bookings</a></li>
 
                 @can('create bookings')
-                <li class="nav-item"><a class="nav-link {{ request()->routeIs('service-bookings.create') ? 'active' : '' }}" href="{{ url('service-bookings/service-bookings-create') }}">Create Booking</a></li>
+                <li class="nav-item"><a class="nav-link {{ $isBookingsCreate ? 'active' : '' }}" href="{{ url('service-bookings/service-bookings-create') }}">Create Booking</a></li>
                 @endcan
-
 
               </ul>
 
@@ -478,11 +500,22 @@
           </li>
           @endcan
          
-
           @can('view reports')
-          <li class="nav-item {{ request()->routeIs('reports.index', 'customer.reports', 'customer.graph_report', 'customer.graph', 'customer.country_graph_report', 'customer.country_graph', 'expense.reports', 'profit_loss.report', 'zipcode.report', 'graph.report', 'chart.booking', 'chart.heat') ? 'active' : '' }}">
+          @php
+            $isRepServicesGraph = request()->routeIs('graph.report', 'chart.booking', 'chart.heat') || request()->is('graph-report*');
+            $isRepBookings = request()->routeIs('reports.index', 'reports.record_find', 'reports.export') || request()->is('reports*') || request()->is('record/find*');
+            $isRepEmpGraph = request()->routeIs('employee.graph_report', 'employee.booking_chart') || request()->is('employee-graph-report*') || request()->is('employee-booking-chart*');
+            $isRepCustomer = request()->routeIs('customer.reports', 'customer.record', 'customer.report_by_date') || request()->is('customer-reports*');
+            $isRepCustGraph = request()->routeIs('customer.graph', 'customer.graph_report', 'customer.country_graph', 'customer.country_graph_report') || request()->is('customer-graph*') || request()->is('customer-country*');
+            $isRepInventory = request()->routeIs('inventory-reports', 'inventory.record', 'inventory.report_by_date') || request()->is('inventory-reports*');
+            $isRepExpense = request()->routeIs('expense.reports', 'expense.record', 'expense.export') || request()->is('expense-reports*');
+            $isRepProfitLoss = request()->routeIs('profit_loss.*') || request()->is('profit-loss-report*') || request()->is('zipcode*');
+            $isRepLimits = request()->routeIs('company.limits') || request()->is('company/limits*');
+            $isReports = $isRepServicesGraph || $isRepBookings || $isRepEmpGraph || $isRepCustomer || $isRepCustGraph || $isRepInventory || $isRepExpense || $isRepProfitLoss || $isRepLimits;
+          @endphp
+          <li class="nav-item {{ $isReports ? 'active' : '' }}">
 
-            <a class="nav-link" data-toggle="collapse" href="#charts" aria-expanded="{{ request()->routeIs('reports.index', 'customer.reports', 'customer.graph_report', 'customer.graph', 'customer.country_graph_report', 'customer.country_graph', 'expense.reports', 'profit_loss.report', 'zipcode.report', 'graph.report', 'chart.booking', 'chart.heat') ? 'true' : 'false' }}" aria-controls="charts">
+            <a class="nav-link" data-toggle="collapse" href="#charts" aria-expanded="{{ $isReports ? 'true' : 'false' }}" aria-controls="charts">
 
               <i class="fas fa-file menu-icon"></i>
 
@@ -492,55 +525,43 @@
 
             </a>
 
-            <div class="collapse {{ request()->routeIs('reports.index', 'customer.reports', 'customer.graph_report', 'customer.graph', 'customer.country_graph_report', 'customer.country_graph', 'expense.reports', 'profit_loss.report', 'zipcode.report', 'graph.report', 'chart.booking', 'chart.heat') ? 'show' : '' }}" id="charts" data-parent="#sidebar .nav">
+            <div class="collapse {{ $isReports ? 'show' : '' }}" id="charts" data-parent="#sidebar .nav">
 
               <ul class="nav flex-column sub-menu">
 
-
                 @can('view services report')
-                <li class="nav-item"> <a class="nav-link" href="{{url('graph-report')}}">Services Graph</a></li>
+                <li class="nav-item"> <a class="nav-link {{ $isRepServicesGraph ? 'active' : '' }}" href="{{url('graph-report')}}">Services Graph</a></li>
                 @endcan
-
-
 
                 @can('view bookings report')
-                <li class="nav-item"> <a class="nav-link" href="{{url('reports')}}">Bookings Report</a></li>
+                <li class="nav-item"> <a class="nav-link {{ $isRepBookings ? 'active' : '' }}" href="{{url('reports')}}">Bookings Report</a></li>
                 @endcan
 
-
-                <!-- reports permissions -->
-
                 @can('view employee report')
-                <li class="nav-item"> <a class="nav-link" href="{{url('employee-graph-report')}}">Employee Graph</a></li>
+                <li class="nav-item"> <a class="nav-link {{ $isRepEmpGraph ? 'active' : '' }}" href="{{url('employee-graph-report')}}">Employee Graph</a></li>
                 @endcan
 
                 @can('view customer report')
-                <li class="nav-item"> <a class="nav-link" href="{{url('customer-reports')}}">Customer Report</a></li>
+                <li class="nav-item"> <a class="nav-link {{ $isRepCustomer ? 'active' : '' }}" href="{{url('customer-reports')}}">Customer Report</a></li>
                 @endcan
 
                 @can('view customer graph')
-                <li class="nav-item"> <a class="nav-link" href="{{url('customer-graph')}}">Customer Leads Graph</a></li>
+                <li class="nav-item"> <a class="nav-link {{ $isRepCustGraph ? 'active' : '' }}" href="{{url('customer-graph')}}">Customer Leads Graph</a></li>
+                @endcan
+                
+                @can('view inventory reports')
+                <li class="nav-item"> <a class="nav-link {{ $isRepInventory ? 'active' : '' }}" href="{{ url('inventory-reports') }}"> Inventory Report </a></li>
                 @endcan
 
-                
-              @can('view inventory reports')
-              <li class="nav-item"> <a class="nav-link {{ request()->routeIs('inventory-reports', 'inventory.record') ? 'active' : '' }}" href="{{ url('inventory-reports') }}"> Inventory Report </a></li>
-              @endcan
-
-                <!-- reports permissions -->
-
-
                 @can('view expense report')
-                <li class="nav-item"> <a class="nav-link" href="{{url('expense-reports')}}">Expense Report</a></li>
+                <li class="nav-item"> <a class="nav-link {{ $isRepExpense ? 'active' : '' }}" href="{{url('expense-reports')}}">Expense Report</a></li>
                 @endcan
 
                 @can('view profit & loss graph')
-                <li class="nav-item"> <a class="nav-link" href="{{url('profit-loss-report')}}">Profit & Loss Graph</a></li>
+                <li class="nav-item"> <a class="nav-link {{ $isRepProfitLoss ? 'active' : '' }}" href="{{url('profit-loss-report')}}">Profit & Loss Graph</a></li>
                 @endcan
 
-
-                <li class="nav-item"> <a class="nav-link" href="{{ route('company.limits') }}">Plan Limits</a></li>
-
+                <li class="nav-item"> <a class="nav-link {{ $isRepLimits ? 'active' : '' }}" href="{{ route('company.limits') }}">Plan Limits</a></li>
 
               </ul>
 
@@ -549,13 +570,15 @@
           </li>
           @endcan
 
-
-
-        
           @can('view quotations')
-          <li class="nav-item {{ request()->routeIs('quotations.index', 'quotations.create', 'quotations.show') ? 'active' : '' }}">
+          @php
+            $isQuotationsCreate = request()->routeIs('quotations.create') || request()->is('send-quotation*');
+            $isQuotationsList = (request()->routeIs('quotations.index', 'quotations.show') || request()->is('quotations*') || request()->is('quote*')) && !$isQuotationsCreate;
+            $isQuotations = $isQuotationsList || $isQuotationsCreate;
+          @endphp
+          <li class="nav-item {{ $isQuotations ? 'active' : '' }}">
 
-              <a class="nav-link" data-toggle="collapse" href="#quote" aria-expanded="{{ request()->routeIs('quotations.index', 'quotations.create', 'quotations.show') ? 'true' : 'false' }}" aria-controls="quote">
+              <a class="nav-link" data-toggle="collapse" href="#quote" aria-expanded="{{ $isQuotations ? 'true' : 'false' }}" aria-controls="quote">
 
               <i class="fa fa-question-circle menu-icon" aria-hidden="true"></i>
 
@@ -565,33 +588,33 @@
 
               </a>
 
-              <div class="collapse {{ request()->routeIs('quotations.index', 'quotations.create', 'quotations.show') ? 'show' : '' }}" id="quote" data-parent="#sidebar .nav">
+              <div class="collapse {{ $isQuotations ? 'show' : '' }}" id="quote" data-parent="#sidebar .nav">
 
                 <ul class="nav flex-column sub-menu">
 
-
-
-                    <li class="nav-item"> <a class="nav-link {{ request()->routeIs('quotations.index') ? 'active' : '' }}" href="{{url('quotations')}}">Quotations</a></li>
-
-
+                  <li class="nav-item"> <a class="nav-link {{ $isQuotationsList ? 'active' : '' }}" href="{{url('quotations')}}">Quotations</a></li>
 
                   @can('send quotations')
-                  <li class="nav-item"> <a class="nav-link {{ request()->routeIs('quotations.create') ? 'active' : '' }}" href="{{url('send-quotation')}}">Send Quote </a></li>
+                  <li class="nav-item"> <a class="nav-link {{ $isQuotationsCreate ? 'active' : '' }}" href="{{url('send-quotation')}}">Send Quote </a></li>
                   @endcan
 
-
-                </ul>`
+                </ul>
 
               </div>
 
             </li>
             @endcan
 
-
           @role('admin')
-          <li class="nav-item {{ request()->routeIs('users.index', 'users.create', 'users.edit', 'roles.index', 'roles.create', 'roles.edit', 'work_schedule.index') ? 'active' : '' }}">
+          @php
+            $isUsersList = request()->routeIs('users.*') || request()->is('users*') || request()->is('user/*');
+            $isRolesList = request()->routeIs('roles.*') || request()->is('roles*') || request()->is('role/*');
+            $isScheduleList = request()->routeIs('work_schedule.*', 'schedule.status') || request()->is('work-schedule*');
+            $isUserSettings = $isUsersList || $isRolesList || $isScheduleList;
+          @endphp
+          <li class="nav-item {{ $isUserSettings ? 'active' : '' }}">
 
-            <a class="nav-link" data-toggle="collapse" href="#general-pages" aria-expanded="{{ request()->routeIs('users.index', 'users.create', 'users.edit', 'roles.index', 'roles.create', 'roles.edit', 'work_schedule.index') ? 'true' : 'false' }}" aria-controls="general-pages">
+            <a class="nav-link" data-toggle="collapse" href="#general-pages" aria-expanded="{{ $isUserSettings ? 'true' : 'false' }}" aria-controls="general-pages">
 
               <i class="fa fa-user-plus menu-icon"></i>
 
@@ -601,22 +624,16 @@
 
             </a>
 
-            <div class="collapse {{ request()->routeIs('users.index', 'users.create', 'users.edit', 'roles.index', 'roles.create', 'roles.edit', 'work_schedule.index') ? 'show' : '' }}" id="general-pages" data-parent="#sidebar .nav">
+            <div class="collapse {{ $isUserSettings ? 'show' : '' }}" id="general-pages" data-parent="#sidebar .nav">
 
               <ul class="nav flex-column sub-menu">
 
+                <li class="nav-item"> <a class="nav-link {{ $isUsersList ? 'active' : '' }}" href="{{route('users.index')}}"> Users </a></li>
 
+                <li class="nav-item"> <a class="nav-link {{ $isRolesList ? 'active' : '' }}" href="{{url('roles')}}"> Roles </a></li>
 
-                <li class="nav-item"> <a class="nav-link {{ request()->routeIs('users.index') ? 'active' : '' }}" href="{{route('users.index')}}"> Users </a></li>
+                <li class="nav-item"> <a class="nav-link {{ $isScheduleList ? 'active' : '' }}" href="{{route('work_schedule.index')}}"> working schedule </a></li>
 
-
-
-                <li class="nav-item"> <a class="nav-link {{ request()->routeIs('roles.index') ? 'active' : '' }}" href="{{url('roles')}}"> Roles </a></li>
-
-
-                <li class="nav-item"> <a class="nav-link {{ request()->routeIs('work_schedule.index') ? 'active' : '' }}" href="{{route('work_schedule.index')}}"> working schedule </a></li>
-
-                
               </ul>
 
             </div>
@@ -624,11 +641,16 @@
           </li>
           @endrole
           
-
           @can('view attendance')
-          <li class="nav-item {{ request()->routeIs('attendance', 'work_hours', 'payrolls.index') ? 'active' : '' }}">
+          @php
+            $isWorkHours = request()->routeIs('work_hours') || request()->is('work-hours*');
+            $isPayrolls = request()->routeIs('payrolls.index', 'user.monthly.payslip') || request()->is('user/payrolls*');
+            $isAttList = request()->routeIs('attendance', 'employee_attendance') || request()->is('attendance*') || request()->is('employee_attendance*');
+            $isAttendance = $isAttList || $isWorkHours || $isPayrolls;
+          @endphp
+          <li class="nav-item {{ $isAttendance ? 'active' : '' }}">
 
-            <a class="nav-link" data-toggle="collapse" href="#attendance-pages" aria-expanded="{{ request()->routeIs('attendance', 'work_hours', 'payrolls.index') ? 'true' : 'false' }}" aria-controls="attendance-pages">
+            <a class="nav-link" data-toggle="collapse" href="#attendance-pages" aria-expanded="{{ $isAttendance ? 'true' : 'false' }}" aria-controls="attendance-pages">
 
               <i class="fas fa-clipboard-list menu-icon"></i>
 
@@ -638,18 +660,18 @@
 
             </a>
 
-            <div class="collapse {{ request()->routeIs('attendance', 'work_hours', 'payrolls.index') ? 'show' : '' }}" id="attendance-pages" data-parent="#sidebar .nav">
+            <div class="collapse {{ $isAttendance ? 'show' : '' }}" id="attendance-pages" data-parent="#sidebar .nav">
 
               <ul class="nav flex-column sub-menu">
 
-                <li class="nav-item"> <a class="nav-link" href="{{ route('attendance') }}">Attendance</a></li>
+                <li class="nav-item"> <a class="nav-link {{ $isAttList ? 'active' : '' }}" href="{{ route('attendance') }}">Attendance</a></li>
 
                 @can('view work hours')
-                <li class="nav-item"> <a class="nav-link" href="{{ route('work_hours') }}"> Work Hours </a></li>
+                <li class="nav-item"> <a class="nav-link {{ $isWorkHours ? 'active' : '' }}" href="{{ route('work_hours') }}"> Work Hours </a></li>
                 @endcan
 
                 @can('view payrolls')
-                <li class="nav-item"> <a class="nav-link" href="{{ route('payrolls.index') }}"> Monthly Payrolls </a></li>
+                <li class="nav-item"> <a class="nav-link {{ $isPayrolls ? 'active' : '' }}" href="{{ route('payrolls.index') }}"> Monthly Payrolls </a></li>
                 @endcan
                 
               </ul>
@@ -659,12 +681,14 @@
           </li>
           @endcan
 
-
-
           @can('view settings')
-         <li class="nav-item {{ request()->routeIs('theme.settings', 'theme.edit') ? 'active' : '' }}">
+          @php
+            $isThemeSetting = request()->routeIs('theme.settings', 'theme.edit') || request()->is('theme-settings*');
+            $isSettings = $isThemeSetting || request()->is('settings*') || request()->is('message-setting*') || request()->is('email-settings*') || request()->is('review-settings*');
+          @endphp
+          <li class="nav-item {{ $isSettings ? 'active' : '' }}">
 
-            <a class="nav-link" data-toggle="collapse" href="#icons" aria-expanded="{{ request()->routeIs('theme.settings', 'theme.edit') ? 'true' : 'false' }}" aria-controls="icons">
+            <a class="nav-link" data-toggle="collapse" href="#icons" aria-expanded="{{ $isSettings ? 'true' : 'false' }}" aria-controls="icons">
 
               <i class="fa fa-cogs menu-icon"></i>
 
@@ -674,11 +698,11 @@
 
             </a>
 
-            <div class="collapse {{ request()->routeIs('theme.settings', 'theme.edit') ? 'show' : '' }}" id="icons" data-parent="#sidebar .nav">
+            <div class="collapse {{ $isSettings ? 'show' : '' }}" id="icons" data-parent="#sidebar .nav">
 
               <ul class="nav flex-column sub-menu"> 
                 @can('general settings')
-                <li class="nav-item"> <a class="nav-link {{ request()->routeIs('theme.settings') ? 'active' : '' }}" href="{{url('theme-settings')}}"> General Setting</a></li>
+                <li class="nav-item"> <a class="nav-link {{ $isThemeSetting ? 'active' : '' }}" href="{{url('theme-settings')}}"> General Setting</a></li>
                 @endcan
               </ul>
 
@@ -687,12 +711,16 @@
           </li>
           @endcan
 
-
-        
           @can('view expenses')
-          <li class="nav-item {{ request()->routeIs('expenses.index', 'expenses.create', 'expenses.edit', 'expense_types.index', 'expense_types.create', 'expense_types.edit') ? 'active' : '' }}">
+          @php
+            $isExpCreate = request()->routeIs('expenses.create') || request()->is('expenses/expenses-create*');
+            $isExpTypes = request()->routeIs('expense_types.*') || request()->is('expense-types*');
+            $isExpList = (request()->routeIs('expenses.index', 'expenses.show', 'expenses.edit') || request()->is('expenses*')) && !$isExpCreate && !$isExpTypes;
+            $isExpenses = $isExpList || $isExpCreate || $isExpTypes;
+          @endphp
+          <li class="nav-item {{ $isExpenses ? 'active' : '' }}">
 
-            <a class="nav-link" data-toggle="collapse" href="#expenses" aria-expanded="{{ request()->routeIs('expenses.index', 'expenses.create', 'expenses.edit', 'expense_types.index', 'expense_types.create', 'expense_types.edit') ? 'true' : 'false' }}" aria-controls="expenses">
+            <a class="nav-link" data-toggle="collapse" href="#expenses" aria-expanded="{{ $isExpenses ? 'true' : 'false' }}" aria-controls="expenses">
 
               <i class="fas fa-money-bill menu-icon"></i>
 
@@ -702,30 +730,23 @@
 
             </a>
 
-            <div class="collapse {{ request()->routeIs('expenses.index', 'expenses.create', 'expenses.edit', 'expense_types.index', 'expense_types.create', 'expense_types.edit') ? 'show' : '' }}" id="expenses" data-parent="#sidebar .nav">
+            <div class="collapse {{ $isExpenses ? 'show' : '' }}" id="expenses" data-parent="#sidebar .nav">
 
               <ul class="nav flex-column sub-menu">
 
-              
-
-                <li class="nav-item"> <a class="nav-link {{ request()->routeIs('expenses.index') ? 'active' : '' }}" href="{{url('expenses')}}"> Expenses </a></li>
+                <li class="nav-item"> <a class="nav-link {{ $isExpList ? 'active' : '' }}" href="{{url('expenses')}}"> Expenses </a></li>
 
               </ul>
 
-            
-
-
                 <ul class="nav flex-column sub-menu">
                 @can('create expenses')
-                <li class="nav-item"> <a class="nav-link {{ request()->routeIs('expenses.create') ? 'active' : '' }}" href="{{url('expenses/expenses-create')}}">Add Expense </a></li>
+                <li class="nav-item"> <a class="nav-link {{ $isExpCreate ? 'active' : '' }}" href="{{url('expenses/expenses-create')}}">Add Expense </a></li>
                 @endcan
                 </ul>
 
-
-
                 <ul class="nav flex-column sub-menu">
                 @can('view expense types')
-                <li class="nav-item"> <a class="nav-link {{ request()->routeIs('expense_types.index') ? 'active' : '' }}" href="{{url('expense-types')}}">List Expense Types </a></li>
+                <li class="nav-item"> <a class="nav-link {{ $isExpTypes ? 'active' : '' }}" href="{{url('expense-types')}}">List Expense Types </a></li>
                 @endcan
                 </ul>
 
@@ -734,11 +755,15 @@
           </li>
           @endcan
 
-
           @can('view templates')
-         <li class="nav-item {{ request()->routeIs('email_template.index', 'email_template.create', 'email_template.edit') ? 'active' : '' }}">
+          @php
+            $isEmailTemplates = request()->routeIs('email_template.*') || request()->is('email-template*');
+            $isSmsTemplates = request()->routeIs('template.*') || (request()->is('template*') && !request()->is('email-template*'));
+            $isTemplates = $isEmailTemplates || $isSmsTemplates;
+          @endphp
+          <li class="nav-item {{ $isTemplates ? 'active' : '' }}">
 
-            <a class="nav-link" data-toggle="collapse" href="#page-layouts" aria-expanded="{{ request()->routeIs('email_template.index', 'email_template.create', 'email_template.edit') ? 'true' : 'false' }}" aria-controls="page-layouts">
+            <a class="nav-link" data-toggle="collapse" href="#page-layouts" aria-expanded="{{ $isTemplates ? 'true' : 'false' }}" aria-controls="page-layouts">
 
               <i class="fab fa-wpforms menu-icon"></i>
 
@@ -748,16 +773,16 @@
 
             </a>
 
-            <div class="collapse {{ request()->routeIs('email_template.index', 'email_template.create', 'email_template.edit') ? 'show' : '' }}" id="page-layouts" data-parent="#sidebar .nav">
+            <div class="collapse {{ $isTemplates ? 'show' : '' }}" id="page-layouts" data-parent="#sidebar .nav">
 
               <ul class="nav flex-column sub-menu">
 
                   @can('view email templates')
-                  <li class="nav-item"> <a class="nav-link {{ request()->routeIs('email_template.index') ? 'active' : '' }}" href="{{url('/email-template')}}">Email Templates</a></li>
+                  <li class="nav-item"> <a class="nav-link {{ $isEmailTemplates ? 'active' : '' }}" href="{{url('/email-template')}}">Email Templates</a></li>
                   @endcan
 
                   @can('view sms templates')
-                  <li class="nav-item d-none d-lg-block"> <a class="nav-link {{ Request::is('template*') ? 'active' : '' }}" href="{{url('/template')}}">SMS Templates</a></li>
+                  <li class="nav-item d-none d-lg-block"> <a class="nav-link {{ $isSmsTemplates ? 'active' : '' }}" href="{{url('/template')}}">SMS Templates</a></li>
                   @endcan
 
                 </ul>
@@ -768,9 +793,16 @@
           @endcan
 
           @can('view marketing')
-          <li class="nav-item {{ request()->routeIs('marketing.index', 'power_mailing.create', 'mailing.history', 'postcard.index') ? 'active' : '' }}">
+          @php
+            $isSendMails = request()->routeIs('power_mailing.create') || request()->is('mailing');
+            $isEmailHistory = request()->routeIs('mailing.history') || request()->is('mailing-history*');
+            $isSmsMarketing = request()->routeIs('marketing.index') || request()->is('marketing');
+            $isSmsHistory = request()->routeIs('sms.history') || request()->is('sms-history*');
+            $isMarketing = $isSendMails || $isEmailHistory || $isSmsMarketing || $isSmsHistory || request()->is('postcard*');
+          @endphp
+          <li class="nav-item {{ $isMarketing ? 'active' : '' }}">
 
-            <a class="nav-link" data-toggle="collapse" href="#marketing" aria-expanded="{{ request()->routeIs('marketing.index', 'power_mailing.create', 'mailing.history', 'postcard.index') ? 'true' : 'false' }}" aria-controls="marketing">
+            <a class="nav-link" data-toggle="collapse" href="#marketing" aria-expanded="{{ $isMarketing ? 'true' : 'false' }}" aria-controls="marketing">
 
               <i class="fas fa-bullhorn menu-icon"></i>
 
@@ -780,25 +812,24 @@
 
             </a>
 
-            <div class="collapse {{ request()->routeIs('marketing.index', 'power_mailing.create', 'mailing.history', 'postcard.index') ? 'show' : '' }}" id="marketing" data-parent="#sidebar .nav">
-
+            <div class="collapse {{ $isMarketing ? 'show' : '' }}" id="marketing" data-parent="#sidebar .nav">
 
                 <ul class="nav flex-column sub-menu">
                   @can('email marketing')
-                  <li class="nav-item"> <a class="nav-link {{ request()->routeIs('power_mailing.create') ? 'active' : '' }}" href="{{ url('mailing') }}"> Send Mails </a></li>
+                  <li class="nav-item"> <a class="nav-link {{ $isSendMails ? 'active' : '' }}" href="{{ url('mailing') }}"> Send Mails </a></li>
                   @endcan
                 </ul>
 
                 <ul class="nav flex-column sub-menu">
                   @can('email history')
-                  <li class="nav-item"> <a class="nav-link {{ request()->routeIs('mailing.history') ? 'active' : '' }}" href="{{ url('mailing-history') }}">Email history </a></li>
+                  <li class="nav-item"> <a class="nav-link {{ $isEmailHistory ? 'active' : '' }}" href="{{ url('mailing-history') }}">Email history </a></li>
                   @endcan
                 </ul>
 
                 @can('sms marketing')
                 <ul class="nav flex-column sub-menu">
 
-                  <li class="nav-item"> <a class="nav-link {{ Request::is('marketing*') ? 'active' : '' }}" href="{{url('/marketing')}}"> SMS Marketing </a></li>
+                  <li class="nav-item"> <a class="nav-link {{ $isSmsMarketing ? 'active' : '' }}" href="{{url('/marketing')}}"> SMS Marketing </a></li>
 
                 </ul>
                 @endcan
@@ -806,26 +837,22 @@
                 @can('sms history')
                 <ul class="nav flex-column sub-menu">
 
-                  <li class="nav-item"> <a class="nav-link {{ Request::is('marketing*') ? 'active' : '' }}" href="{{url('sms-history')}}"> SMS History </a></li>
+                  <li class="nav-item"> <a class="nav-link {{ $isSmsHistory ? 'active' : '' }}" href="{{url('sms-history')}}"> SMS History </a></li>
 
                 </ul>
                 @endcan
-
-                <!-- <ul class="nav flex-column sub-menu">
-
-                  <li class="nav-item"> <a class="nav-link {{ Request::is('marketing*') ? 'active' : '' }}" href="{{url('/postcard')}}"> Send PostCard </a></li>
-
-                </ul> -->
 
             </div>
 
           </li>
           @endcan
           
-
           @can('view awards')
-          <li class="nav-item">
-            <a class="nav-link" href="{{ route('awards.index') }}">
+          @php
+            $isAwards = request()->is('awards*') || request()->routeIs('awards.*');
+          @endphp
+          <li class="nav-item {{ $isAwards ? 'active' : '' }}">
+            <a class="nav-link {{ $isAwards ? 'active' : '' }}" href="{{ route('awards.index') }}">
               <i class="fas fa-trophy menu-icon"></i>
               <span class="menu-title">Awards</span>
               <i class="menu-arrow"></i>
@@ -834,8 +861,11 @@
           @endcan
 
           @can('view holidays')
-          <li class="nav-item">
-            <a class="nav-link" href="{{url('/add-holidays')}}" >
+          @php
+            $isHolidays = request()->is('add-holidays*') || request()->is('holidays*') || request()->routeIs('holidays.*');
+          @endphp
+          <li class="nav-item {{ $isHolidays ? 'active' : '' }}">
+            <a class="nav-link {{ $isHolidays ? 'active' : '' }}" href="{{url('/add-holidays')}}" >
               <i class="fas fa-umbrella-beach menu-icon"></i>
               <span class="menu-title">Add Holidays</span>
               <i class="menu-arrow"></i>
@@ -844,8 +874,11 @@
           @endcan
 
           @role('admin')
-          <li class="nav-item">
-            <a class="nav-link" href="{{ route('tickets.index') }}" >
+          @php
+            $isTickets = request()->is('tickets*') || request()->routeIs('tickets.*');
+          @endphp
+          <li class="nav-item {{ $isTickets ? 'active' : '' }}">
+            <a class="nav-link {{ $isTickets ? 'active' : '' }}" href="{{ route('tickets.index') }}" >
               <i class="fas fa-ticket-alt menu-icon"></i>
               <span class="menu-title">Support Tickets</span>
               <i class="menu-arrow"></i>
@@ -959,7 +992,7 @@
 
   <script src="{{asset('js/hoverable-collapse.js')}}"></script>
 
-  <script src="{{asset('js/misc.js')}}"></script>
+  <script src="{{asset('js/misc.js')}}?v=2.5"></script>
 
   <script src="{{asset('js/settings.js')}}"></script>
 
@@ -1087,46 +1120,92 @@
       @endif
   });
   
-  // Sidebar accordion behavior - only one menu open at a time
+  // Sidebar active state & accordion management
   $(function() {
-      // Close all collapses by default on page load
-      $('.sidebar .collapse').collapse('hide');
+      var currentPath = window.location.pathname.replace(/\/+$/, '');
+      var currentUrl  = window.location.href.split(/[?#]/)[0].replace(/\/+$/, '');
 
-      // 1) If a top-level nav-item is marked active, open its collapse
-      $('.sidebar .nav-item.active').each(function() {
-        var $activeItem = $(this);
-        var collapseId = $activeItem.find('[data-toggle="collapse"]').attr('href');
-        if (collapseId) {
-          $(collapseId).collapse('show');
-        }
+      // 1) Find the single best matching link in the sidebar for the current URL path
+      var $bestSubLink = null;
+      var bestSubScore = -1;
+      var $bestTopLink = null;
+      var bestTopScore = -1;
+
+      $('.sidebar .nav a.nav-link').each(function() {
+          var href = $(this).attr('href');
+          if (!href || href === '#' || href.indexOf('javascript') === 0) return;
+
+          var linkUrl = href.split(/[?#]/)[0].replace(/\/+$/, '');
+          var linkPath = '';
+          try {
+              linkPath = new URL(linkUrl, window.location.origin).pathname.replace(/\/+$/, '');
+          } catch(e) {
+              linkPath = linkUrl;
+          }
+
+          if (!linkPath) return;
+
+          var isExactMatch = (currentUrl === linkUrl) || (currentPath === linkPath);
+          var isPrefixMatch = (linkPath !== '/' && currentPath.indexOf(linkPath + '/') === 0);
+
+          if (isExactMatch || isPrefixMatch) {
+              var score = linkPath.length + (isExactMatch ? 1000 : 0);
+              if ($(this).closest('.sub-menu').length) {
+                  if (score > bestSubScore) {
+                      bestSubScore = score;
+                      $bestSubLink = $(this);
+                  }
+              } else if (!$(this).attr('data-toggle')) {
+                  if (score > bestTopScore) {
+                      bestTopScore = score;
+                      $bestTopLink = $(this);
+                  }
+              }
+          }
       });
 
-      // 2) If a sub-menu link is active (child anchor), open the closest collapse
-      //    and mark its top-level toggler as active so the parent stays highlighted.
-      $('.sidebar a.nav-link.active').each(function() {
-        var $link = $(this);
-        var $collapse = $link.closest('.collapse');
-        if ($collapse.length) {
-          $collapse.collapse('show');
-          var id = '#' + $collapse.attr('id');
-          var $toggler = $('.sidebar [data-toggle="collapse"][href="' + id + '"]');
-          $toggler.closest('.nav-item').addClass('active');
-        }
-      });
+      // 2) Cleanse any stray active/show classes (e.g., from browser-cached legacy scripts)
+      //    and activate ONLY the single true matching module.
+      if ($bestSubLink || $bestTopLink) {
+          $('.sidebar .nav-item').removeClass('active');
+          $('.sidebar .nav-link').removeClass('active');
+          $('.sidebar .collapse').removeClass('show');
+          $('.sidebar [data-toggle="collapse"]').attr('aria-expanded', 'false');
 
-      // 3) Accordion behavior: when one collapse opens, close all others
+          if ($bestSubLink) {
+              $bestSubLink.addClass('active');
+              $bestSubLink.closest('.nav-item').addClass('active');
+              var $parentCollapse = $bestSubLink.closest('.collapse');
+              if ($parentCollapse.length) {
+                  $parentCollapse.addClass('show');
+                  var targetId = '#' + $parentCollapse.attr('id');
+                  var $parentToggler = $('.sidebar [data-toggle="collapse"][href="' + targetId + '"]');
+                  $parentToggler.attr('aria-expanded', 'true');
+                  $parentToggler.closest('.nav-item').addClass('active');
+              }
+          } else if ($bestTopLink) {
+              $bestTopLink.addClass('active');
+              $bestTopLink.closest('.nav-item').addClass('active');
+          }
+      } else {
+          // If no client match, ensure only one module is open and highlighted from Blade
+          var $bladeActiveSub = $('.sidebar .sub-menu a.nav-link.active').first();
+          if ($bladeActiveSub.length) {
+              var $parentCollapse = $bladeActiveSub.closest('.collapse');
+              $('.sidebar .collapse').not($parentCollapse).removeClass('show');
+              $('.sidebar [data-toggle="collapse"]').not('[href="#' + $parentCollapse.attr('id') + '"]').attr('aria-expanded', 'false');
+          }
+      }
+
+      // 3) Accordion toggle behavior on user click: when opening a collapse, close other collapses
       $('.sidebar [data-toggle="collapse"]').on('click', function() {
-        var $this = $(this);
-        var targetId = $this.attr('href');
+          var $this = $(this);
+          var targetId = $this.attr('href');
+          var $targetCollapse = $(targetId);
 
-        // Close all other collapses except the one being clicked
-        $('.sidebar .collapse').not(targetId).collapse('hide');
-
-        // Remove active class from all nav-items
-        $('.sidebar .nav-item').removeClass('active');
-
-        // Add active class to the clicked item's parent
-        $this.closest('.nav-item').addClass('active');
+          if ($targetCollapse.length) {
+              $('.sidebar .collapse').not($targetCollapse).collapse('hide');
+          }
       });
   });
   </script>
