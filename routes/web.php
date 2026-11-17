@@ -457,6 +457,7 @@ Route::middleware(['auth', 'company'])->group(function () {
         'destroy' => 'supplier_payments.destroy',
     ]);
     Route::get('/suppliers/{id}/balance-summary', [SupplierController::class, 'balanceSummary'])->name('suppliers.balance_summary');
+    Route::get('/suppliers/{id}/balance-summary/export', [SupplierController::class, 'exportBalanceSummary'])->name('suppliers.balance_summary.export');
 
     // ── Employee Management ──
     Route::get('/employee-graph-report', [EmployeeController::class, 'employee_graph_report'])->name('employee.graph_report');
