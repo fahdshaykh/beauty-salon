@@ -46,17 +46,6 @@
 
         </div>
 
-        @if(Session::has('error'))
-
-        <div class="alert alert-danger alert-dismissible">
-
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-
-            {{Session::get('error')}}
-
-        </div>
-
-        @endif
 
         <div class="row">
 
@@ -74,61 +63,48 @@
 
                 </p>
 
-                <form class="form-inline" action="{{url('record/inventory-usage')}}" method="get">
-
-                  <div class="input-group">
-
-                    <div id="datepicker-popup-new" class="input-group date datepicker">
-
-                      <input type="text" name="start_date" class="form-control" placeholder="From Date">
-
-                      <span class="input-group-addon input-group-append border-left">
-
-                        <span class="far fa-calendar input-group-text"></span>
-
-                      </span>
-
+                <form action="{{url('record/inventory-usage')}}" method="get">
+                  <div class="form-row align-items-start">
+                    <div class="col-12 col-sm-6 col-md-3 mb-2">
+                      <div id="datepicker-popup-new" class="input-group date datepicker">
+                        <input type="text" name="start_date" id="start_date" class="form-control @error('start_date') is-invalid @enderror" value="{{ old('start_date', request('start_date')) }}" placeholder="From Date" autocomplete="off">
+                        <span class="input-group-addon input-group-append border-left">
+                          <span class="far fa-calendar input-group-text"></span>
+                        </span>
+                      </div>
+                      @error('start_date')
+                        <div class="text-danger small mt-1 font-weight-normal">{{ $message }}</div>
+                      @enderror
                     </div>
 
+                    <div class="col-12 col-sm-6 col-md-3 mb-2">
+                      <div id="datepicker-popup-new2" class="input-group date datepicker">
+                        <input type="text" name="end_date" id="end_date" class="form-control @error('end_date') is-invalid @enderror" value="{{ old('end_date', request('end_date')) }}" placeholder="To Date" autocomplete="off">
+                        <span class="input-group-addon input-group-append border-left">
+                          <span class="far fa-calendar input-group-text"></span>
+                        </span>
+                      </div>
+                      @error('end_date')
+                        <div class="text-danger small mt-1 font-weight-normal">{{ $message }}</div>
+                      @enderror
+                    </div>
+
+                    <div class="col-12 col-sm-6 col-md-3 mb-2">
+                      <select id="inventory_id" name="inventory_id" class="form-control js-example-basic-single w-100" style="width: 100%;">
+                        <option value="">All Inventories</option>
+                        @foreach($inventories as $inventory)
+                            <option value="{{$inventory->id}}" {{ (old('inventory_id', request('inventory_id')) == $inventory->id) ? 'selected' : '' }}>{{$inventory->name}}</option>
+                        @endforeach
+                      </select>
+                      @error('inventory_id')
+                        <div class="text-danger small mt-1 font-weight-normal">{{ $message }}</div>
+                      @enderror
+                    </div>
+
+                    <div class="col-12 col-sm-6 col-md-auto mb-2">
+                      <button type="submit" class="btn btn-primary" style="height: 46px; min-width: 100px;">Submit</button>
+                    </div>
                   </div>
-
-                  <div class="input-group">
-
-                    <div id="datepicker-popup-new2" class="input-group date datepicker">
-
-                      <input type="text" name="end_date" class="form-control" placeholder="To Date">
-
-                      <span class="input-group-addon input-group-append border-left">
-
-                        <span class="far fa-calendar input-group-text"></span>
-
-                      </span>
-
-                    </div>
-
-                  </div>
-
-
-
-                    <div class="form-group col-md-3">
-
-                    <select id="inventory_id" name="inventory_id" class="form-control js-example-basic-single w-100">
-
-                      @foreach($inventories as $inventory)
-
-                          <option value="{{$inventory->id}}">{{$inventory->name}}</option>
-
-                      @endforeach
-
-                    </select>
-
-                    </div>
-
-
-
-                  <input type="submit" value="Submit" class="btn btn-primary ">
-
-
                 </form>
 
               </div>

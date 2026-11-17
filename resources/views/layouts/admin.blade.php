@@ -1118,6 +1118,18 @@
               timeout: 6000
           });
       @endif
+
+      @if ($errors->any())
+          @foreach ($errors->all() as $error)
+              iziToast.error({
+                  title: 'Validation Error',
+                  message: '{!! addslashes($error) !!}',
+                  position: 'bottomCenter',
+                  icon: 'fas fa-exclamation-triangle',
+                  timeout: 6000
+              });
+          @endforeach
+      @endif
   });
   
   // Sidebar active state & accordion management

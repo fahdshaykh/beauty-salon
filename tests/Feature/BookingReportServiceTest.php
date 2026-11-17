@@ -134,5 +134,54 @@ class BookingReportServiceTest extends TestCase
             ]
         ]);
     }
+
+    public function test_inventory_record_validation_error_messages_render_on_blade_view()
+    {
+        $user = User::first();
+        if (!$user) {
+            $this->markTestSkipped('No user available.');
+        }
+
+        // Submit empty start_date and end_date from inventory-reports
+        $response = $this->actingAs($user)
+            ->from(route('inventory-reports'))
+            ->get(route('inventory.record', [
+                'start_date' => '',
+                'end_date'   => '',
+            ]));
+
+        $response->assertStatus(302);
+        $response->assertRedirect(route('inventory-reports'));
+        $response->assertSessionHasErrors(['start_date', 'end_date']);
+
+        // Follow redirect to ensure Blade renders the validation messages
+        $followRedirect = $this->actingAs($user)->get(route('inventory-reports'));
+        $followRedirect->assertStatus(200);
+        $followRedirect->assertSee('Please select a start date');
+        $followRedirect->assertSee('Please select an end date');
+    }
+
+    public function test_inventory_record_end_date_after_or_equal_validation_message()
+    {
+        $user = User::first();
+        if (!$user) {
+            $this->markTestSkipped('No user available.');
+        }
+
+        $response = $this->actingAs($user)
+            ->from(route('inventory-reports'))
+            ->get(route('inventory.record', [
+                'start_date' => '2026-11-20',
+                'end_date'   => '2026-11-10',
+            ]));
+
+        $response->assertStatus(302);
+        $response->assertRedirect(route('inventory-reports'));
+        $response->assertSessionHasErrors(['end_date']);
+
+        $followRedirect = $this->actingAs($user)->get(route('inventory-reports'));
+        $followRedirect->assertStatus(200);
+        $followRedirect->assertSee('End date must be after or equal to start date');
+    }
 }
 
