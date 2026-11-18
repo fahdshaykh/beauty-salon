@@ -160,6 +160,7 @@ class BookingQueryService
             $dataArray[$key] = [
                 'id'               => $value->id,
                 'status'           => $value->status,
+                'invoice'          => $value->invoice,
                 'customer_name'    => optional($value->customer)->first_name . ' ' . optional($value->customer)->last_name,
                 'primary_phone'    => optional($value->customer)->primary_phone,
                 'customer_address' => optional($value->customer)->address,

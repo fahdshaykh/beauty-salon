@@ -158,6 +158,7 @@ class BookingReportService
 
             $row = [
                 'user_name'       => $userName,
+                'invoice'         => $firstBooking->invoice,
                 'customer_names'  => $customerName,
                 'total_price'     => $firstBooking->total_price,
                 'payment_type'    => $firstBooking->payment_instrument,
@@ -330,6 +331,7 @@ class BookingReportService
             $dataArray[$key] = [
                 'id'                  => $value->id,
                 'status'              => $value->status,
+                'invoice'              => $value->invoice,
                 'customer_name'       => $value->customer ? trim($value->customer->first_name . ' ' . $value->customer->last_name) : '',
                 'customer_address'    => $value->customer->address ?? '',
                 'customer_zip'        => $value->customer->zip ?? '',

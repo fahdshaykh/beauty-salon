@@ -208,7 +208,7 @@ color:#FFF !important;
                 <span style="margin-left: 2em;"><?php echo $booking_detail['due_time']; ?></span>
                 <span style="margin-left: 2em;">Finish Time: <?php echo $booking_detail['service_time']; ?> Minutes</span>
 
-                <span style="margin-left: 2em;">Employee Name: <?php echo $booking_detail['user_name']; ?></span>
+                <span style="margin-left: 2em;">Assign To: <?php echo $booking_detail['user_name']; ?></span>
 
             </p>
 

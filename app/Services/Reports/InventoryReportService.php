@@ -44,6 +44,7 @@ class InventoryReportService
             'u.name as employee_name',
             'sb.due_date as booking_date',
             'sb.due_time as booking_time',
+            'sb.invoice',
             'sb.total_price',
             'sb.service_status',
             'sb.created_at'
@@ -74,6 +75,7 @@ class InventoryReportService
                 'inventory_book_id' => $record->inventory_book_id,
                 'inventory_name'    => $record->inventory_name,
                 'booking_id'        => $record->booking_id,
+                'invoice'           => $record->invoice,
                 'customer_name'     => trim($record->first_name . ' ' . $record->last_name),
                 'employee_name'     => $record->employee_name,
                 'quantity_used'     => number_format($record->quantity, 2),

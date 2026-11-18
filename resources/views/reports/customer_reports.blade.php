@@ -134,7 +134,7 @@
 
                                     <tr class="bg-primary text-white">
 
-                                        <th>Sr.No #</th>
+                                        <th>Invoice #</th>
 
                                         <th>Booking User</th>
 
@@ -166,7 +166,7 @@
 
                                     <tr>
 
-                                        <td>{{$num}}</td>
+                                        <td>{{$book['invoice']}}</td>
 
                                         <td>{{$book['user_name']}}</td> <!--  showing user names -->
 

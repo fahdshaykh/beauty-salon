@@ -129,11 +129,9 @@
 
                                     <tr class="bg-primary text-white">
 
-                                        <th>Sr.No #</th>
+                                        <th>Invoice #</th>
 
                                         <th>Inventory Name</th>
-
-                                        <th>Booking ID</th>
 
                                         <th>Customer Name</th>
 
@@ -163,11 +161,9 @@
 
                                     <tr>
 
-                                        <td>{{$num}}</td>
+                                        <td>{{$record['invoice']}}</td>
 
                                         <td>{{$record['inventory_name']}}</td>
-
-                                        <td>#{{$record['booking_id']}}</td>
 
                                         <td>{{$record['customer_name']}}</td>
 

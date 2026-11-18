@@ -285,7 +285,9 @@
 
                                     <tr class="bg-primary text-white">
 
-                                        <th>User</th>
+                                        <th>Inv</th>
+
+                                        <th>Assign To</th>
 
                                         <th>Customer</th>
 
@@ -314,6 +316,8 @@
                                     @forelse($data_array as $key => $book)
 
                                     <tr class="{{ !empty($book['is_overdue']) ? 'booking-row-overdue' : '' }}">
+
+                                        <td>{{$book['invoice']}}</td>
 
                                         <td>{{$book['user_name']}}</td>
 
@@ -347,7 +351,7 @@
                                             </div>
                                         </td>
 
-                                        <td style="width: 13%;">
+                                        <td style="width: 10%;">
                                             @php
                                                 $statuses = [
                                                     1 => 'Booked',

@@ -295,9 +295,9 @@ $export_payment_type = request('payment_instrument') ?: (request('payment_type')
 
                                     <tr class="bg-primary text-white">
 
-                                        <th>Sr.No #</th>
+                                        <th>Invoice #</th>
 
-                                        <th>Booking User</th>
+                                        <th>Assign To</th>
 
                                         <th>Customer Name</th>
 
@@ -327,7 +327,7 @@ $export_payment_type = request('payment_instrument') ?: (request('payment_type')
 
                                     <tr>
 
-                                        <td>{{$num}}</td>
+                                        <td>{{$book['invoice']}}</td>
 
                                         <td>{{$book['user_name']}}</td> <!--  showing user names -->
 
