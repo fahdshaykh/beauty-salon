@@ -170,63 +170,33 @@
 
 
 <script>
-
-
-
   $(document).ready(function(){
-
-  
-
-    $('#category_id').on('change',function() {
-
+    $('#category_id').on('change', function() {
       var category_id = $(this).val();
 
-      if(category_id){
+      $.ajax({
+        type: "GET",
+        url: "{{ url('get-services-by-category') }}",
+        data: { category_id: category_id },
+        success: function(response) {
+          var $serviceSelect = $("#service_id");
+          $serviceSelect.empty();
+          $serviceSelect.append('<option value="no">All Services</option>');
 
-        $.ajax({
+          if (response && response.length > 0) {
+            $.each(response, function(index, value) {
+              $serviceSelect.append('<option value="' + value.id + '">' + value.name + '</option>');
+            });
+          }
 
-            type:"GET",
-
-            url:"{{url('get-services-by-category')}}",
-
-            data:{category_id},
-
-            success:function(response){
-
-              $("#service_id").empty();
-
-              console.log(response);          
-
-              if(response){
-
-                $("#service_id").append('<option value="no">All Services</option>');
-
-                $.each(response, function( index, value ) {
-
-                  $("#service_id").append('<option value="'+value['id']+'">'+value['name']+'</option>');
-
-                });
-
-                $("#service_id").trigger('change');
-
-                }else{
-
-                $("#customer-detail").hide();
-
-              }
-
-            }
-
-        });
-
-      }
-
+          $serviceSelect.val('no').trigger('change');
+        },
+        error: function(xhr) {
+          console.error("Error loading services:", xhr);
+        }
+      });
     });
-
-});
-
-  
-
+  });
 </script>
 
 @endsection

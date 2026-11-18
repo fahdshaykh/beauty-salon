@@ -31,10 +31,15 @@ class ReportController extends Controller
             ->where('company_id', $companyId)
             ->get();
 
-        $services = DB::table('services')
+        $servicesQuery = DB::table('services')
             ->where('is_active', 1)
-            ->where('company_id', $companyId)
-            ->get();
+            ->where('company_id', $companyId);
+
+        if (request()->filled('category_id') && !in_array(request('category_id'), ['no', '0', 'all'], true)) {
+            $servicesQuery->where('category_id', request('category_id'));
+        }
+
+        $services = $servicesQuery->get();
 
         $users = DB::table('users')
             ->where('is_active', 1)

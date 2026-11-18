@@ -231,23 +231,22 @@ class ServicesController extends Controller
 
 
 
-    // public function get_services(Request $request)
+    public function get_services(Request $request)
+    {
+        $companyId = auth()->user()->company_id;
+        $query = DB::table('services')
+            ->where('is_active', 1)
+            ->where('is_deleted', 0)
+            ->where('company_id', $companyId);
 
+        if ($request->filled('category_id') && !in_array($request->category_id, ['no', '0', 'all'], true)) {
+            $query->where('category_id', $request->category_id);
+        }
 
+        $services = $query->orderBy('name', 'asc')->get(['id', 'name', 'category_id']);
 
-    // {
-
-
-
-    //     $services = DB::table('services')->where('is_deleted',0)->where('company_id', auth()->user()->company_id)->where('category_id', $request->category_id)->get();
-
-
-
-    //     return response()->json($services);
-
-
-
-    // }
+        return response()->json($services);
+    }
 
 
 
