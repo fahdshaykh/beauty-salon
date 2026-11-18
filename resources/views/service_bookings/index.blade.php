@@ -224,16 +224,16 @@
                             
 
                             <div class="row g-3 mt-2 align-items-end">
-                                <!-- Customer Name Filter -->
+                                <!-- Customer Name or Phone Filter -->
                                 <div class="col-md-3">
-                                    <label for="customer_name" class="form-label">Customer Name</label>
-                                    <input type="text" name="customer_name" id="customer_name" class="form-control" value="{{ request('customer_name') }}" placeholder="Enter customer name">
+                                    <label for="customer_search" class="form-label">Customer Name or Phone</label>
+                                    <input type="text" name="customer_search" id="customer_search" class="form-control" value="{{ request('customer_search') ?? request('customer_name') }}" placeholder="Enter customer name or phone">
                                 </div>
 
-                                <!-- Primary Phone Filter -->
+                                <!-- Invoice Filter -->
                                 <div class="col-md-3">
-                                    <label for="primary_phone" class="form-label">Phone</label>
-                                    <input type="text" name="primary_phone" id="primary_phone" class="form-control" value="{{ request('primary_phone') }}" placeholder="Enter phone number">
+                                    <label for="filter_invoice" class="form-label">Invoice</label>
+                                    <input type="text" name="invoice" id="filter_invoice" class="form-control" value="{{ request('invoice') }}" placeholder="Enter invoice number">
                                 </div>
 
                                 <!-- Buttons -->
@@ -466,7 +466,7 @@
                                     @empty
 
                                     <tr style="text-align: center">
-                                        <td colspan='9'> No Data Available</td>
+                                        <td colspan='10'> No Data Available</td>
                                     </tr>
 
                                     @endforelse

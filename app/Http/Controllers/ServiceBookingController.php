@@ -45,7 +45,7 @@ class ServiceBookingController extends Controller
         $companyId = auth()->user()->company_id;
         $scopedUserId = auth()->user()->hasRole('admin') ? null : auth()->user()->id;
 
-        $bookings = $this->queryService->buildQuery($companyId, $request, $scopedUserId)->paginate($rows);
+        $bookings = $this->queryService->buildQuery($companyId, $request, $scopedUserId)->paginate($rows)->withQueryString();
         $data_array = $this->queryService->formatBookingsForIndex($bookings);
 
         $services = Services::where('company_id', $companyId)->where('is_active', 1)->get();

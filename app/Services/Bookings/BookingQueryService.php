@@ -40,17 +40,24 @@ class BookingQueryService
             $query->whereDate('due_date', '<=', $request->input('end_date'));
         }
 
-        // Apply customer name filter
-        if ($request->filled('customer_name')) {
-            $query->whereHas('customer', function ($q) use ($request) {
-                $q->whereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", ['%' . $request->input('customer_name') . '%']);
+        // Apply customer name or phone search filter
+        $customerSearch = $request->input('customer_search') ?? $request->input('customer_name');
+        if (!empty($customerSearch)) {
+            $term = trim($customerSearch);
+            $query->whereHas('customer', function ($q) use ($term) {
+                $q->where(function ($sub) use ($term) {
+                    $sub->where('first_name', 'LIKE', '%' . $term . '%')
+                        ->orWhere('last_name', 'LIKE', '%' . $term . '%')
+                        ->orWhereRaw("CONCAT(COALESCE(first_name, ''), ' ', COALESCE(last_name, '')) LIKE ?", ['%' . $term . '%'])
+                        ->orWhere('primary_phone', 'LIKE', '%' . $term . '%')
+                        ->orWhere('secondary_phone', 'LIKE', '%' . $term . '%');
+                });
             });
-        }
-
-        // Apply primary phone filter
-        if ($request->filled('primary_phone')) {
-            $query->whereHas('customer', function ($q) use ($request) {
-                $q->where('primary_phone', 'LIKE', '%' . $request->input('primary_phone') . '%');
+        } elseif ($request->filled('primary_phone')) {
+            $phone = trim($request->input('primary_phone'));
+            $query->whereHas('customer', function ($q) use ($phone) {
+                $q->where('primary_phone', 'LIKE', '%' . $phone . '%')
+                  ->orWhere('secondary_phone', 'LIKE', '%' . $phone . '%');
             });
         }
 
@@ -61,7 +68,13 @@ class BookingQueryService
 
         // Apply invoice filter
         if ($request->filled('invoice')) {
-            $query->where('invoice', $request->input('invoice'));
+            $invoice = trim($request->input('invoice'));
+            $query->where(function ($q) use ($invoice) {
+                $q->where('invoice', 'LIKE', '%' . $invoice . '%');
+                if (is_numeric($invoice)) {
+                    $q->orWhere('id', (int)$invoice);
+                }
+            });
         }
 
         // Apply customer_id filter
