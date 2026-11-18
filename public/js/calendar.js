@@ -172,12 +172,22 @@
                             var dateFormatted = eventDate.format('YYYY-MM-DDTHHmm');
                             window.location = "get-booking-date/" + dateFormatted;
                         },
+                        windowResize: function(view) {
+                            $calendar.fullCalendar('render');
+                        },
                         eventMouseover: function(calEvent, jsEvent) {
+                            if ($(window).width() < 768) return;
+                            $('.tooltipevent').remove();
                             var tooltip = '<div class="tooltipevent" style="position:absolute;z-index:10000;">' + calEvent.description + '</div>';
                             $("body").append(tooltip);
+                            var posX = jsEvent.pageX + 15;
+                            var maxLeft = $(window).width() - 290;
+                            if (posX > maxLeft) {
+                                posX = Math.max(10, maxLeft);
+                            }
                             $('.tooltipevent')
                                 .css('top', jsEvent.pageY + 10)
-                                .css('left', jsEvent.pageX + 20)
+                                .css('left', posX)
                                 .fadeIn('fast');
                         },
                         eventMouseout: function() {

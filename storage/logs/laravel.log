@@ -209257,3 +209257,11 @@ Did you mean this?
 #50 D:/Working/Code Disk/works fahd/beauty-salon/server.php(41): require_once('D://Working//Code...')
 #51 {main}
 "} 
+[2026-11-18 00:18:41] testing.ERROR: Out of memory (allocated 33554432 bytes) (tried to allocate 20480 bytes) {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): Out of memory (allocated 33554432 bytes) (tried to allocate 20480 bytes) at D:/Working/Code Disk/works fahd/beauty-salon/vendor/composer/installed.php:438)
+[stacktrace]
+#0 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(247): Symfony/Component/ErrorHandler/Error/FatalError->__construct(message: ''Out of memory ...', code: '0', error: '['type' => 1, '...', traceOffset: '0', traceArgs: '???', trace: '???')
+#1 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(234): Illuminate/Foundation/Bootstrap/HandleExceptions->fatalErrorFromPhpError(error: '['type' => 1, '...', traceOffset: '0')
+#2 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(258): Illuminate/Foundation/Bootstrap/HandleExceptions->handleShutdown()
+#3 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(0): Illuminate/Foundation/Bootstrap/HandleExceptions->{closure:D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php:257-259}()
+#4 {main}
+"} 

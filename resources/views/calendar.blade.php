@@ -43,19 +43,27 @@
 
             z-index: 9999;
 
-            background: black;
+            background: #1E252B;
 
-            color: white;
+            color: #FFFFFF;
 
-            width: 250px;
+            max-width: min(280px, calc(100vw - 30px)) !important;
 
-            border-radius: 3px;
+            width: auto;
 
-            box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+            border-radius: 4px;
 
-            padding: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+
+            padding: 8px 12px;
 
             text-align: center;
+
+            font-size: 0.825rem;
+
+            word-break: break-word;
+
+            pointer-events: none;
 
         }
 
@@ -78,6 +86,8 @@
         .fc-event {
 
             cursor: pointer;
+
+            font-size: 0.825rem;
 
         }
 
@@ -112,6 +122,124 @@
 
         .calendar-filter-row #clear_calendar_dates {
             height: 45px;
+        }
+
+        .calendar-filter-row .select2-container {
+            width: 100% !important;
+        }
+
+        /* Calendar Viewport & Scroll Container */
+        .fc-view-container {
+            overflow-x: auto !important;
+            -webkit-overflow-scrolling: touch !important;
+        }
+
+        /* Responsive Layout for FullCalendar */
+        @media (max-width: 767.98px) {
+            .calendar-card-body {
+                padding: 1rem 0.5rem !important;
+            }
+
+            .fc-toolbar {
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: center !important;
+                gap: 10px !important;
+                margin-bottom: 1rem !important;
+            }
+
+            .fc-toolbar .fc-center {
+                order: 1;
+                float: none !important;
+                display: flex !important;
+                justify-content: center !important;
+                width: 100% !important;
+                text-align: center !important;
+                margin: 0 !important;
+            }
+
+            .fc-toolbar .fc-left {
+                order: 2;
+                float: none !important;
+                display: flex !important;
+                justify-content: center !important;
+                width: 100% !important;
+                text-align: center !important;
+                margin: 0 !important;
+            }
+
+            .fc-toolbar .fc-right {
+                order: 3;
+                float: none !important;
+                display: flex !important;
+                justify-content: center !important;
+                width: 100% !important;
+                text-align: center !important;
+                margin: 0 !important;
+            }
+
+            .fc-toolbar .fc-center h2 {
+                font-size: 1.2rem !important;
+                margin: 0 !important;
+            }
+
+            .fc button {
+                padding: 0.35rem 0.65rem !important;
+                font-size: 0.825rem !important;
+                height: 36px !important;
+                line-height: 1 !important;
+            }
+
+            .fc-month-view > table,
+            .fc-basicWeek-view > table,
+            .fc-agendaWeek-view > table {
+                min-width: 650px !important;
+            }
+
+            .fc-agendaDay-view > table,
+            .fc-basicDay-view > table {
+                min-width: 100% !important;
+            }
+
+            .fc-event {
+                font-size: 0.75rem !important;
+                line-height: 1.2 !important;
+            }
+
+            .turnover-day {
+                font-size: 0.725rem !important;
+            }
+
+            #myModal .modal-dialog {
+                max-width: 96% !important;
+                margin: 0.5rem auto !important;
+            }
+
+            #myModal .modal-body {
+                padding: 0.75rem 0.5rem !important;
+            }
+
+            #payment-modal,
+            #cancel-modal {
+                width: 92% !important;
+                left: 4% !important;
+                right: 4% !important;
+            }
+        }
+
+        @media (max-width: 575.98px) {
+            .calendar-filter-row .form-group {
+                margin-bottom: 10px;
+            }
+
+            .fc-toolbar .fc-center h2 {
+                font-size: 1.05rem !important;
+            }
+
+            .fc button {
+                padding: 0.3rem 0.5rem !important;
+                font-size: 0.775rem !important;
+            }
         }
     </style>
 
@@ -237,7 +365,7 @@
                         @endcan
 
                         @can('view calendar')
-                            <div class="card-body">
+                            <div class="card-body calendar-card-body">
 
                                 <input type="hidden" id="creat-booking-perm" value="{{ $permvalue }}">
 
