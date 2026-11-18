@@ -70,18 +70,6 @@
 
         </div>
 
-        @if(Session::has('error'))
-
-        <div class="alert alert-danger alert-dismissible">
-
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-
-            {{Session::get('error')}}
-
-        </div>
-
-        @endif
-
           <div class="col-12 grid-margin stretch-card">
 
             <div class="card">
@@ -149,6 +137,15 @@
                         <option value="no" {{ old('payment_instrument', request('payment_instrument')) == 'no' ? 'selected' : '' }}>All Payment Methods</option>
                         <option value="cash" {{ old('payment_instrument', request('payment_instrument')) == 'cash' ? 'selected' : '' }}>Cash</option>
                         <option value="paypal" {{ old('payment_instrument', request('payment_instrument')) == 'paypal' ? 'selected' : '' }}>PayPal</option>
+                      </select>
+                    </div>
+
+                    <div class="col-12 col-sm-6 col-md-3 mb-3">
+                      <select class="form-control js-example-basic-single w-100" name="user_id" id="user_id" style="width: 100%;">
+                        <option value="no" {{ old('user_id', request('user_id')) == 'no' ? 'selected' : '' }}>All Users</option>
+                        @foreach($users ?? [] as $user)
+                          <option value="{{$user->id}}" {{ old('user_id', request('user_id')) == $user->id ? 'selected' : '' }}>{{$user->name}}</option>
+                        @endforeach
                       </select>
                     </div>
 

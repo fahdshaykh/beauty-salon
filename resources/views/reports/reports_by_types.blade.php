@@ -239,6 +239,7 @@ $export_category_id  = request('category_id') ?: 'no';
 $export_service_id   = request('service_id') ?: 'no';
 $export_status_id    = request('status_id') ?: 'no';
 $export_payment_type = request('payment_instrument') ?: (request('payment_type') ?: ($payment_type ?? 'no'));
+$export_user_id      = request('user_id') ?: 'no';
 ?>
 
         <div class="card">
@@ -259,7 +260,7 @@ $export_payment_type = request('payment_instrument') ?: (request('payment_type')
 
                         <div class="text-center" style="float: center;">
 
-                            <span data-href="/report-export/{{$export_start_date}}/{{$export_end_date}}/{{$export_category_id}}/{{$export_service_id}}/{{$export_status_id}}/{{$export_payment_type}}" id="export" class="btn btn-primary" onclick="exportReports(event.target);">Export Booking Report</span>
+                            <span data-href="/report-export/{{$export_start_date}}/{{$export_end_date}}/{{$export_category_id}}/{{$export_service_id}}/{{$export_status_id}}/{{$export_payment_type}}{{ $export_user_id !== 'no' ? '?user_id=' . $export_user_id : '' }}" id="export" class="btn btn-primary" onclick="exportReports(event.target);">Export Booking Report</span>
 
                         </div>
 

@@ -36,7 +36,12 @@ class ReportController extends Controller
             ->where('company_id', $companyId)
             ->get();
 
-        return view('reports.index', compact('categories', 'services'));
+        $users = DB::table('users')
+            ->where('is_active', 1)
+            ->where('company_id', $companyId)
+            ->get();
+
+        return view('reports.index', compact('categories', 'services', 'users'));
     }
 
     public function graph_report()
@@ -432,6 +437,7 @@ class ReportController extends Controller
             'service_id'         => $service_id,
             'status_id'          => $status_id,
             'payment_instrument' => $payment_type,
+            'user_id'            => $request->query('user_id'),
         ]);
     }
 

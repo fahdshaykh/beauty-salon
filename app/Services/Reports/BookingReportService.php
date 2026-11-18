@@ -88,6 +88,12 @@ class BookingReportService
             });
         }
 
+        // Company User filter (ignores 'no', '0', 'all', empty)
+        $userId = $filters['user_id'] ?? null;
+        if (!empty($userId) && !in_array($userId, ['no', '0', 'all'], true)) {
+            $query->where('user_id', $userId);
+        }
+
         return $query->orderBy($dateColumn, 'desc');
     }
 
