@@ -888,7 +888,57 @@ $(document).ready(function() {
 });
 </script>
 
-<!-- FREE ADDRESS AUTOCOMPLETE USING PHOTON API (OpenStreetMap) -->
+<!-- GOOGLE PLACES ADDRESS AUTOCOMPLETE -->
+@if(config('services.google.maps_api_key'))
+<style>
+    .pac-container {
+        z-index: 99999 !important;
+    }
+</style>
+<script src="https://maps.googleapis.com/maps/api/js?key={{ config('services.google.maps_api_key') }}&libraries=places&callback=initGooglePlacesAutocomplete" async defer></script>
+<script>
+function initGooglePlacesAutocomplete() {
+    var input = document.getElementById('booking_address');
+    if (!input || typeof google === 'undefined' || !google.maps || !google.maps.places) {
+        return;
+    }
+
+    var autocomplete = new google.maps.places.Autocomplete(input, {
+        types: ['geocode', 'establishment']
+    });
+
+    autocomplete.addListener('place_changed', function() {
+        var place = autocomplete.getPlace();
+        if (place && place.formatted_address) {
+            input.value = place.formatted_address;
+        }
+    });
+
+    // Prevent submitting the form when user selects an address with Enter key
+    input.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            var pacContainer = document.querySelector('.pac-container');
+            if (pacContainer && pacContainer.style.display !== 'none') {
+                e.preventDefault();
+            }
+        }
+    });
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+        if (typeof google !== 'undefined' && google.maps && google.maps.places) {
+            initGooglePlacesAutocomplete();
+        }
+    });
+} else {
+    if (typeof google !== 'undefined' && google.maps && google.maps.places) {
+        initGooglePlacesAutocomplete();
+    }
+}
+</script>
+@else
+<!-- Fallback to Photon API if no Google Maps API Key is configured -->
 <script>
 (function() {
     let photonDebounce = null;
@@ -909,7 +959,6 @@ $(document).ready(function() {
         clearTimeout(photonDebounce);
 
         photonDebounce = setTimeout(function() {
-            // Use encodeURIComponent to properly encode the query
             const apiUrl = 'https://photon.komoot.io/api/?q=' + encodeURIComponent(query) + '&limit=8&lang=en';
 
             $.getJSON(apiUrl)
@@ -950,4 +999,5 @@ $(document).ready(function() {
     });
 })();
 </script>
+@endif
 

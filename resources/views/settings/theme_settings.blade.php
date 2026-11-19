@@ -113,73 +113,6 @@
 
 
 
-        @if ($errors->any())
-
-
-
-        <div class="alert alert-danger alert-dismissible">
-
-
-
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-
-
-
-            <ul>
-
-
-
-                @foreach ($errors->all() as $error)
-
-
-
-                <li>{{ $error }}</li>
-
-
-
-                @endforeach
-
-
-
-            </ul>
-
-
-
-        </div>
-
-
-
-        @endif
-
-
-
-
-
-
-
-        @if(Session::has('success'))
-
-
-
-        <div class="alert alert-success alert-dismissible">
-
-
-
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-
-
-
-            {{Session::get('success')}}
-
-
-
-        </div>
-
-
-
-        @endif
-
-
 
         <div class="card">
 
@@ -295,6 +228,16 @@
                             <a class="nav-link" id="postcard" data-toggle="tab" href="#socialmedia-tab" role="tab" aria-controls="booking_sms" aria-selected="false">
 
                              Social Media<i  class="fas fa-chevron-right"></i>
+
+                            </a>
+
+                          </li>
+
+                          <li class="nav-item">
+
+                            <a class="nav-link" id="google-calendar-nav-tab" data-toggle="tab" href="#googlecalendar-tab" role="tab" aria-controls="googlecalendar-tab" aria-selected="false">
+
+                             Google Calendar<i  class="fas fa-chevron-right"></i>
 
                             </a>
 
@@ -1322,6 +1265,133 @@
 
                             </div>
 
+                            <div class="tab-pane fade" id="googlecalendar-tab" role="tabpanel" aria-labelledby="google-calendar-nav-tab">
+
+                                <div class="row">
+
+                                    <div class="col-lg-8">
+
+                                        <div class="card">
+
+                                            <div class="card-body">
+
+                                                <h4 class="card-title">Google Calendar Integration</h4>
+
+                                                <p class="card-description">Connect the salon owner's Google account to automatically sync bookings to your primary Google Calendar and invite customers as guests with Google Calendar RSVP.</p>
+
+                                                @php
+                                                    $hasCalendarScope = false;
+                                                    if (!empty($settings->google_access_token)) {
+                                                        $tokenArr = json_decode($settings->google_access_token, true);
+                                                        $hasCalendarScope = str_contains($tokenArr['scope'] ?? '', 'calendar');
+                                                    }
+                                                    $hasClientCredentials = (!empty($settings->google_client_id) && !empty($settings->google_client_secret))
+                                                        || file_exists(storage_path('app/google-calendar/oauth-credentials.json'))
+                                                        || (!empty(config('services.google.client_id')) && !empty(config('services.google.client_secret')));
+                                                @endphp
+                                                @if(!empty($settings->google_access_token) && $hasCalendarScope)
+                                                    <div class="alert alert-success d-flex align-items-center justify-content-between p-3 mb-4" role="alert">
+                                                        <div>
+                                                            <i class="fab fa-google mr-2 text-danger"></i>
+                                                            <strong>Connected:</strong> {{ $settings->google_account_email ?? 'Google Account' }}
+                                                            <span class="badge badge-success ml-2">Active</span>
+                                                        </div>
+                                                        <button type="button" class="btn btn-sm btn-outline-danger" id="disconnect-google-calendar-btn">Disconnect</button>
+                                                    </div>
+                                                @elseif(!empty($settings->google_access_token) && !$hasCalendarScope)
+                                                    <div class="alert alert-warning p-3 mb-4" role="alert">
+                                                        <div class="d-flex align-items-center justify-content-between mb-2">
+                                                            <div>
+                                                                <i class="fab fa-google mr-2 text-danger"></i>
+                                                                <strong>Connected:</strong> {{ $settings->google_account_email ?? 'Google Account' }}
+                                                                <span class="badge badge-warning ml-2 font-weight-bold">Missing Calendar Permission</span>
+                                                            </div>
+                                                            <div>
+                                                                <a href="{{ route('google.calendar.connect') }}" class="btn btn-sm btn-primary mr-2 font-weight-bold">Reconnect</a>
+                                                                <button type="button" class="btn btn-sm btn-outline-danger" id="disconnect-google-calendar-btn">Disconnect</button>
+                                                            </div>
+                                                        </div>
+                                                        <div class="small text-danger">
+                                                            <i class="fas fa-exclamation-triangle mr-1"></i>
+                                                            <strong>Action Required:</strong> Google Calendar permission was not granted. Please click <strong>Reconnect</strong>, and on Google's permission screen, be sure to tick the checkbox <em>"See, edit, share, and permanently delete all the calendars you can access using Google Calendar"</em>.
+                                                        </div>
+                                                    </div>
+                                                @else
+                                                    <div class="p-4 mb-4 bg-light border rounded text-center">
+                                                        <p class="text-muted mb-3">
+                                                            @if(!$hasClientCredentials)
+                                                                Please enter and save your <strong>Google Client ID</strong> and <strong>Client Secret</strong> below before connecting.
+                                                            @else
+                                                                No Google account connected. Click below to sign in with your salon's Google account.
+                                                            @endif
+                                                        </p>
+                                                        <a href="{{ route('google.calendar.connect') }}" class="btn btn-danger font-weight-bold {{ !$hasClientCredentials ? 'disabled' : '' }}" {{ !$hasClientCredentials ? 'onclick="alert(\'Please enter and save your Google Client ID and Client Secret below first.\'); return false;"' : '' }}>
+                                                            <i class="fab fa-google mr-2"></i> Connect Google Calendar
+                                                        </a>
+                                                    </div>
+                                                @endif
+
+                                                <form action="{{url('google-calendar-settings-update')}}" class="forms-sample" method="post">
+
+                                                    @csrf
+
+                                                    <div class="form-group">
+                                                        <label for="google_client_id"><i class="fas fa-key mr-1"></i> Google Client ID</label>
+                                                        <input type="text" value="{{ $settings->google_client_id ?? '' }}" name="google_client_id" id="google_client_id" class="form-control" placeholder="e.g. 1234567890-xxx.apps.googleusercontent.com" />
+                                                        <small class="form-text text-muted">Created in Google Cloud Console &gt; APIs &amp; Services &gt; Credentials &gt; OAuth 2.0 Client IDs.</small>
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <label for="google_client_secret"><i class="fas fa-user-secret mr-1"></i> Google Client Secret</label>
+                                                        <input type="password" value="{{ $settings->google_client_secret ?? '' }}" name="google_client_secret" id="google_client_secret" class="form-control" placeholder="e.g. GOCSPX-xxxxxxxxxxxxxxxx" autocomplete="new-password" />
+                                                        <small class="form-text text-muted">Your Google OAuth 2.0 Client Secret.</small>
+                                                    </div>
+
+                                                    {{-- <div class="form-group">
+                                                        <label><i class="fas fa-link mr-1"></i> Authorized Redirect URI <span class="badge badge-info ml-1">Copy into Google Console</span></label>
+                                                        <div class="input-group">
+                                                            <input type="text" class="form-control bg-light font-weight-bold" id="google_redirect_uri" value="{{ route('google.calendar.callback') }}" readonly />
+                                                            <div class="input-group-append">
+                                                                <button class="btn btn-outline-secondary" type="button" id="copy-redirect-uri-btn" onclick="navigator.clipboard.writeText(document.getElementById('google_redirect_uri').value); showSuccessToast('Redirect URI copied to clipboard!');">
+                                                                    <i class="far fa-copy mr-1"></i> Copy
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                        <small class="form-text text-muted">Add this exact URL in Google Cloud Console under <strong>Authorized redirect URIs</strong> for your OAuth client.</small>
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <label for="google_calendar_id"><i class="far fa-calendar-alt mr-1"></i> Google Calendar ID</label>
+                                                        <input type="text" value="{{ $settings->google_calendar_id ?? 'primary' }}" name="google_calendar_id" id="google_calendar_id" class="form-control" placeholder="primary" />
+                                                        <small class="form-text text-muted">Use <code>primary</code> for the connected salon account's main calendar, or enter a specific calendar ID.</small>
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <div class="form-check form-check-flat form-check-primary">
+                                                            <label class="form-check-label">
+                                                                <input type="checkbox" name="google_calendar_sync" value="1" class="form-check-input" {{ (!empty($settings->google_calendar_sync)) ? 'checked' : '' }}>
+                                                                Enable Google Calendar Sync
+                                                                <i class="input-helper"></i>
+                                                            </label>
+                                                        </div>
+                                                    </div> --}}
+
+                                                    <button type="submit" class="btn btn-dark mr-2">Update Setting</button>
+
+                                                    <a class="btn btn-light" href="">Cancel</a>
+
+                                                </form>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
                         </div>
 
                                 
@@ -1758,6 +1828,64 @@ $.ajax({
 
 });
 
+});
+
+$("#googlecalendar-form").submit(function (event) {
+
+    event.preventDefault();
+
+    var formData = new FormData($(this)[0]);
+
+    $.ajax({
+
+        url: "{{url('google-calendar-settings-update')}}",
+
+        type: "POST",
+
+        data: formData,
+
+        processData: false,
+
+        contentType: false,
+
+        success: function (response) {
+
+            if(response.success){
+
+                showSuccessToast(response.success);
+
+            } else {
+
+                showDangerToast(response.error || 'Failed to update Google Calendar settings.');
+
+            }
+
+        },
+
+        error: function(xhr) {
+
+            showDangerToast('An error occurred while updating settings.');
+
+        }
+
+    });
+
+});
+
+$("#disconnect-google-calendar-btn").click(function () {
+    if (!confirm('Are you sure you want to disconnect Google Calendar?')) return;
+    $.ajax({
+        url: "{{ route('google.calendar.disconnect') }}",
+        type: "POST",
+        data: { _token: "{{ csrf_token() }}" },
+        success: function (response) {
+            showSuccessToast(response.success || 'Google Calendar disconnected.');
+            setTimeout(function() { location.reload(); }, 800);
+        },
+        error: function() {
+            showDangerToast('Failed to disconnect Google Calendar.');
+        }
+    });
 });
 
 

@@ -349,6 +349,10 @@ Route::middleware(['auth', 'company'])->group(function () {
     Route::get('email-settings/edit/{id}', [SettingController::class, 'email_settings_edit'])->name('settings.email_edit');
     Route::post('email-settings-update', [SettingController::class, 'email_settings_update'])->name('settings.email_update');
     Route::post('clicksend-update', [SettingController::class, 'clicksend_update'])->name('settings.clicksend_update');
+    Route::post('google-calendar-settings-update', [SettingController::class, 'google_calendar_settings_update'])->name('settings.google_calendar_update');
+    Route::get('google-calendar/connect', [\App\Http\Controllers\GoogleCalendarOAuthController::class, 'connect'])->name('google.calendar.connect');
+    Route::get('google-calendar/callback', [\App\Http\Controllers\GoogleCalendarOAuthController::class, 'callback'])->name('google.calendar.callback');
+    Route::post('google-calendar/disconnect', [\App\Http\Controllers\GoogleCalendarOAuthController::class, 'disconnect'])->name('google.calendar.disconnect');
     Route::get('theme-settings', [SettingController::class, 'theme_settings'])->name('theme.settings');
     Route::get('theme-settings/edit/{id}', [SettingController::class, 'theme_settings_edit'])->name('theme.edit');
     Route::post('theme-settings-update', [SettingController::class, 'theme_settings_update'])->name('theme.update');

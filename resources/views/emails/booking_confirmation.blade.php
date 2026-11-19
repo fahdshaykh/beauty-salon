@@ -99,6 +99,14 @@
                 @endif
             </table>
 
+            @if(!empty($google_calendar_url))
+            <div style="text-align: center; margin: 25px 0;">
+                <a href="{{ $google_calendar_url }}" target="_blank" style="background-color: #4285F4; color: #ffffff; padding: 12px 25px; text-decoration: none; border-radius: 4px; font-weight: bold; font-size: 14px; display: inline-block;">
+                    📅 Add to Google Calendar
+                </a>
+            </div>
+            @endif
+
             <p>We look forward to seeing you on the scheduled date and time!</p>
             <p>If you have any questions or need to reschedule, please contact us.</p>
         </div>

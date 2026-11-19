@@ -49,9 +49,9 @@ class Kernel extends ConsoleKernel
         // Schedule the command to run every day at midnight
         $schedule->command('notify:customer-birthdays')->daily();
 
-        $schedule->command('calculate:payroll')->monthlyOn(1, '01:00');
+        // $schedule->command('calculate:payroll')->monthlyOn(1, '01:00');
 
-        $schedule->command('attendance:auto-checkout')->dailyAt('00:00');
+        // $schedule->command('attendance:auto-checkout')->dailyAt('00:00');
 
         // Run at midnight on the 1st of every month
         $schedule->command('limits:reset-monthly')

@@ -621,6 +621,25 @@ class SettingController extends Controller
 
     }
 
+    public function google_calendar_settings_update(Request $request)
+    {
+        $google_calendar_sync = $request->has('google_calendar_sync') ? 1 : 0;
+        $google_calendar_id = $request->filled('google_calendar_id') ? trim($request->google_calendar_id) : null;
+        $google_client_id = $request->filled('google_client_id') ? trim($request->google_client_id) : null;
+        $google_client_secret = $request->filled('google_client_secret') ? trim($request->google_client_secret) : null;
+
+        DB::table('company_settings')->where('company_id', auth()->user()->company_id)->update([
+            'google_calendar_sync' => $google_calendar_sync,
+            'google_calendar_id'   => $google_calendar_id,
+            'google_client_id'     => $google_client_id,
+            'google_client_secret' => $google_client_secret,
+            'updated_at'           => now(),
+        ]);
+
+        return back()->with('success', 'Google credentials updated successfully! Connect your google calendar now.');
+        // return response()->json(['success' => 'Google Calendar settings updated successfully.']);
+    }
+
     public function review_status(Request $request)
 
 

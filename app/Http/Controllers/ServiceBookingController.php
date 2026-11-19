@@ -327,6 +327,8 @@ class ServiceBookingController extends Controller
             }
         });
 
+        $this->notificationService->syncGoogleCalendarEvent($booking->id, $companyId);
+
         return redirect()->route('service-bookings.index')->with('success', 'Booking updated successfully.');
     }
 
@@ -627,10 +629,14 @@ class ServiceBookingController extends Controller
     {
         $invoice = $request->input('invoice');
 
-        DB::table('service_bookings')
-            ->where('invoice', $invoice)
+        $booking = ServiceBooking::where('invoice', $invoice)
             ->where('company_id', auth()->user()->company_id)
-            ->update(['service_status' => '4']);
+            ->first();
+
+        if ($booking) {
+            $booking->update(['service_status' => '4']);
+            $this->notificationService->deleteGoogleCalendarEvent($booking->id, auth()->user()->company_id);
+        }
 
         return response()->json(['success' => 'Status changed successfully.']);
     }
@@ -901,6 +907,11 @@ class ServiceBookingController extends Controller
             ]);
 
         if ($affected !== false) {
+            if ((string)$status === '4') {
+                $this->notificationService->deleteGoogleCalendarEvent($id, auth()->user()->company_id);
+            } else {
+                $this->notificationService->syncGoogleCalendarEvent($id, auth()->user()->company_id);
+            }
             return response()->json(['success' => 'Status changed successfully.']);
         }
 

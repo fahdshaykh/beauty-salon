@@ -156,6 +156,7 @@ class BookingActionService
 
         // Notifications
         $this->notificationService->sendConfirmationEmail($booking->id, $companyId);
+        $this->notificationService->syncGoogleCalendarEvent($booking->id, $companyId);
 
         $smsStatus = DB::table('company_settings')->where('company_id', $companyId)->first();
         if ($smsStatus && $smsStatus->message_permissions == 1) {
@@ -196,7 +197,7 @@ class BookingActionService
      */
     public function cancelBooking(int $bookingId, int $companyId, ?string $reason = null): bool
     {
-        return DB::transaction(function () use ($bookingId, $companyId, $reason) {
+        $cancelled = DB::transaction(function () use ($bookingId, $companyId, $reason) {
             $booking = ServiceBooking::where('company_id', $companyId)
                 ->where('id', $bookingId)
                 ->firstOrFail();
@@ -211,6 +212,11 @@ class BookingActionService
 
             return true;
         });
+
+        // Delete from Google Calendar & notify attendees
+        $this->notificationService->deleteGoogleCalendarEvent($bookingId, $companyId);
+
+        return $cancelled;
     }
 }
 
