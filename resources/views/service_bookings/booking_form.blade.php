@@ -894,45 +894,194 @@ $(document).ready(function() {
     .pac-container {
         z-index: 99999 !important;
     }
+    .places-new-suggestions-dropdown {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: #ffffff;
+        border: 1px solid #ced4da;
+        border-top: none;
+        border-radius: 0 0 4px 4px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        max-height: 250px;
+        overflow-y: auto;
+        z-index: 99999;
+        display: none;
+    }
+    .places-new-suggestion-item {
+        padding: 10px 14px;
+        cursor: pointer;
+        font-size: 13px;
+        color: #333;
+        border-bottom: 1px solid #f1f1f1;
+        display: flex;
+        align-items: center;
+    }
+    .places-new-suggestion-item:last-child {
+        border-bottom: none;
+    }
+    .places-new-suggestion-item:hover {
+        background-color: #f8f9fa;
+        color: #007bff;
+    }
+    .places-new-suggestion-item i {
+        color: #dc3545;
+        margin-right: 8px;
+        font-size: 12px;
+    }
 </style>
-<script src="https://maps.googleapis.com/maps/api/js?key={{ config('services.google.maps_api_key') }}&libraries=places&callback=initGooglePlacesAutocomplete" async defer></script>
+<script src="https://maps.googleapis.com/maps/api/js?key={{ config('services.google.maps_api_key') }}&libraries=places&v=weekly&callback=initGooglePlacesAutocomplete" async defer></script>
 <script>
-function initGooglePlacesAutocomplete() {
+var modernPlacesInitialized = false;
+var placesSessionToken = null;
+var placesDebounceTimer = null;
+
+async function initModernPlacesAutocomplete(input) {
+    if (modernPlacesInitialized) return true;
+    try {
+        if (!google.maps.importLibrary) return false;
+        var placesLib = await google.maps.importLibrary("places");
+        if (!placesLib || !placesLib.AutocompleteSuggestion) return false;
+
+        modernPlacesInitialized = true;
+        placesSessionToken = new placesLib.AutocompleteSessionToken();
+
+        var container = input.closest('.input-group') || input.parentElement;
+        if (container) {
+            container.style.position = 'relative';
+        }
+
+        var dropdown = document.getElementById('places_new_suggestions_list');
+        if (!dropdown) {
+            dropdown = document.createElement('ul');
+            dropdown.id = 'places_new_suggestions_list';
+            dropdown.className = 'places-new-suggestions-dropdown';
+            (container || input.parentElement).appendChild(dropdown);
+        }
+
+        function closeDropdown() {
+            dropdown.style.display = 'none';
+            dropdown.innerHTML = '';
+        }
+
+        input.addEventListener('input', function(e) {
+            var query = e.target.value.trim();
+            if (query.length < 2) {
+                closeDropdown();
+                return;
+            }
+
+            clearTimeout(placesDebounceTimer);
+            placesDebounceTimer = setTimeout(async function() {
+                try {
+                    var request = {
+                        input: query,
+                        sessionToken: placesSessionToken
+                    };
+                    var response = await placesLib.AutocompleteSuggestion.fetchAutocompleteSuggestions(request);
+                    var suggestions = (response && response.suggestions) ? response.suggestions : [];
+
+                    if (!suggestions || suggestions.length === 0) {
+                        closeDropdown();
+                        return;
+                    }
+
+                    dropdown.innerHTML = '';
+                    suggestions.forEach(function(sug) {
+                        var text = (sug.placePrediction && sug.placePrediction.text && sug.placePrediction.text.text)
+                            ? sug.placePrediction.text.text
+                            : '';
+                        if (!text) return;
+
+                        var li = document.createElement('li');
+                        li.className = 'places-new-suggestion-item';
+                        li.innerHTML = '<i class="fas fa-map-marker-alt"></i><span>' + text + '</span>';
+                        li.addEventListener('mousedown', function(evt) {
+                            evt.preventDefault();
+                            input.value = text;
+                            closeDropdown();
+                            placesSessionToken = new placesLib.AutocompleteSessionToken();
+                        });
+                        dropdown.appendChild(li);
+                    });
+
+                    dropdown.style.display = 'block';
+                } catch (err) {
+                    console.warn('Places API (New) fetch error:', err);
+                    closeDropdown();
+                }
+            }, 250);
+        });
+
+        input.addEventListener('blur', function() {
+            setTimeout(closeDropdown, 250);
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!dropdown.contains(e.target) && e.target !== input) {
+                closeDropdown();
+            }
+        });
+
+        return true;
+    } catch (e) {
+        console.warn('Could not initialize Places API (New):', e);
+        return false;
+    }
+}
+
+async function initGooglePlacesAutocomplete() {
     var input = document.getElementById('booking_address');
-    if (!input || typeof google === 'undefined' || !google.maps || !google.maps.places) {
+    if (!input || typeof google === 'undefined' || !google.maps) {
         return;
     }
 
-    var autocomplete = new google.maps.places.Autocomplete(input, {
-        types: ['geocode', 'establishment']
-    });
+    // 1. Try modern Places API (New) AutocompleteSuggestion first
+    var modernSuccess = await initModernPlacesAutocomplete(input);
+    if (modernSuccess) {
+        return;
+    }
 
-    autocomplete.addListener('place_changed', function() {
-        var place = autocomplete.getPlace();
-        if (place && place.formatted_address) {
-            input.value = place.formatted_address;
-        }
-    });
+    // 2. Fallback to legacy google.maps.places.Autocomplete if available
+    if (google.maps.places && google.maps.places.Autocomplete) {
+        try {
+            var autocomplete = new google.maps.places.Autocomplete(input, {
+                types: ['geocode', 'establishment']
+            });
 
-    // Prevent submitting the form when user selects an address with Enter key
-    input.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter') {
-            var pacContainer = document.querySelector('.pac-container');
-            if (pacContainer && pacContainer.style.display !== 'none') {
-                e.preventDefault();
-            }
+            autocomplete.addListener('place_changed', function() {
+                var place = autocomplete.getPlace();
+                if (place && place.formatted_address) {
+                    input.value = place.formatted_address;
+                }
+            });
+
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    var pacContainer = document.querySelector('.pac-container');
+                    if (pacContainer && pacContainer.style.display !== 'none') {
+                        e.preventDefault();
+                    }
+                }
+            });
+        } catch (e) {
+            console.warn('Legacy Autocomplete error:', e);
         }
-    });
+    }
 }
 
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', function() {
-        if (typeof google !== 'undefined' && google.maps && google.maps.places) {
+        if (typeof google !== 'undefined' && google.maps) {
             initGooglePlacesAutocomplete();
         }
     });
 } else {
-    if (typeof google !== 'undefined' && google.maps && google.maps.places) {
+    if (typeof google !== 'undefined' && google.maps) {
         initGooglePlacesAutocomplete();
     }
 }
