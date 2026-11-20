@@ -138,9 +138,16 @@
                                         </td>
                                         <td>
                                             <div class="d-flex gap-1">
+                                                @can('view customers')
+                                                <a href="{{ url('bookings-history', $customer->id) }}"
+                                                class="btn btn-sm btn-outline-info" title="view history">
+                                                    <i class="fa fa-eye text-primary"></i>
+                                                </a>
+                                                @endcan
+
                                                 @can('edit customers')
                                                 <a href="{{ route('customers.edit', $customer->id) }}"
-                                                class="btn btn-sm btn-outline-primary" title="Edit">
+                                                class="btn btn-sm btn-outline-primary ml-1" title="Edit">
                                                     <i class="fas fa-pencil-alt"></i>
                                                 </a>
                                                 @endcan

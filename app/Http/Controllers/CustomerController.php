@@ -237,20 +237,74 @@ class CustomerController extends Controller
     }
 
     /**
-     * Customer booking history view.
+     * Customer booking history view with pagination, metrics, and filtering.
      */
-    public function bookingsHistory($id)
+    public function bookingsHistory(Request $request, $id)
     {
-        $service_info = ServiceBooking::with(['bookingdetail.service'])
-            ->where('company_id', auth()->user()->company_id)
-            ->where('customer_id', $id)
-            ->get();
+        $companyId = auth()->user()->company_id;
 
-        $customer = Customer::where('company_id', auth()->user()->company_id)
+        $customer = Customer::where('company_id', $companyId)
             ->where('id', $id)
             ->firstOrFail();
 
-        return view('customers.booking_history', compact('service_info', 'customer'));
+        $rows = (int) $request->get('rows', 10);
+        if ($rows < 5 || $rows > 500) {
+            $rows = 10;
+        }
+
+        $query = ServiceBooking::with(['bookingdetail.service', 'user'])
+            ->where('company_id', $companyId)
+            ->where('customer_id', $id)
+            ->where('is_deleted', 0);
+
+        // Status Filter
+        if ($request->filled('status')) {
+            $query->where('service_status', $request->status);
+        }
+
+        // Date Filters
+        if ($request->filled('start_date')) {
+            $query->whereDate('due_date', '>=', $request->start_date);
+        }
+        if ($request->filled('end_date')) {
+            $query->whereDate('due_date', '<=', $request->end_date);
+        }
+
+        // Search Term (Invoice / ID / Service Name / Comment)
+        if ($request->filled('search')) {
+            $term = '%' . trim($request->search) . '%';
+            $query->where(function ($q) use ($term) {
+                $q->where('invoice', 'LIKE', $term)
+                  ->orWhere('id', 'LIKE', $term)
+                  ->orWhere('comment', 'LIKE', $term)
+                  ->orWhere('booking_address', 'LIKE', $term)
+                  ->orWhereHas('bookingdetail.service', function ($sq) use ($term) {
+                      $sq->where('name', 'LIKE', $term);
+                  });
+            });
+        }
+
+        $service_info = $query->orderBy('due_date', 'desc')
+            ->orderBy('id', 'desc')
+            ->paginate($rows)
+            ->withQueryString();
+
+        // Customer Lifetime Booking Statistics
+        $stats = DB::table('service_bookings')
+            ->where('company_id', $companyId)
+            ->where('customer_id', $id)
+            ->where('is_deleted', 0)
+            ->selectRaw('
+                COUNT(*) as total_bookings,
+                COALESCE(SUM(CASE WHEN service_status = 3 THEN total_price ELSE 0 END), 0) as total_spent,
+                COALESCE(SUM(CASE WHEN service_status = 3 THEN 1 ELSE 0 END), 0) as completed_bookings,
+                COALESCE(SUM(CASE WHEN service_status = 4 THEN 1 ELSE 0 END), 0) as cancelled_bookings
+            ')
+            ->first();
+
+        $currency = auth()->user()->companySetting->currency_symbol ?? '$';
+
+        return view('customers.booking_history', compact('service_info', 'customer', 'rows', 'stats', 'currency'));
     }
 
     /**
