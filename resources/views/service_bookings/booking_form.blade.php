@@ -80,10 +80,131 @@
     .slider.round:before {
         border-radius: 50%;
     }
+
+    /* Responsive Select2 Styles */
+    span.select2.select2-container,
+    .form-group span.select2.select2-container {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
+    .select2-container .select2-selection--single {
+        height: 36px !important;
+        padding: 0.35rem 0.85rem !important;
+        font-size: 0.9rem !important;
+        border: 1px solid #ced4da !important;
+        border-radius: 4px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        display: flex !important;
+        align-items: center !important;
+    }
+    .select2-container .select2-selection--multiple {
+        min-height: 36px !important;
+        padding: 0.25rem 0.65rem !important;
+        font-size: 0.9rem !important;
+        border: 1px solid #ced4da !important;
+        border-radius: 4px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        display: flex !important;
+        align-items: center !important;
+    }
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding-left: 0 !important;
+        padding-right: 25px !important;
+        line-height: normal !important;
+        color: #495057 !important;
+        font-size: 0.95rem !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        white-space: nowrap !important;
+        box-sizing: border-box !important;
+    }
+    .select2-container--default .select2-selection--multiple .select2-selection__rendered {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        display: flex !important;
+        flex-wrap: wrap !important;
+        gap: 6px !important;
+        padding: 0 !important;
+    }
+    .select2-container--default .select2-selection--multiple .select2-selection__choice {
+        max-width: 100% !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        white-space: nowrap !important;
+        padding: 4px 10px !important;
+        font-size: 0.85rem !important;
+        border-radius: 4px !important;
+        margin: 2px !important;
+    }
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+        height: 100% !important;
+        right: 12px !important;
+        top: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+    }
+    .select2-container--default.select2-container--open .select2-selection--single,
+    .select2-container--default.select2-container--focus .select2-selection--single {
+        border-color: #392C70 !important;
+        outline: 0 !important;
+    }
+    /* Dropdown popup styling */
+    .select2-dropdown {
+        z-index: 1055 !important;
+        box-sizing: border-box !important;
+        overflow-x: hidden !important;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+        border: 1px solid #ced4da !important;
+        border-radius: 4px !important;
+    }
+    .select2-dropdown .select2-search--dropdown {
+        padding: 6px 8px !important;
+        box-sizing: border-box !important;
+        width: 100% !important;
+    }
+    .select2-dropdown .select2-search--dropdown .select2-search__field {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        padding: 6px 10px !important;
+        border: 1px solid #ced4da !important;
+        border-radius: 4px !important;
+    }
+    .select2-dropdown .select2-results {
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
+    .select2-dropdown .select2-results__options {
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        overflow-x: hidden !important;
+        max-height: 220px !important;
+    }
+    .select2-dropdown .select2-results__option {
+        white-space: normal !important;
+        word-break: break-word !important;
+        box-sizing: border-box !important;
+        padding: 8px 12px !important;
+    }
+    .select2-search--inline,
+    .select2-search--inline .select2-search__field {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
 </style>
 
 <div class="row">
-    <div class="col-md-12 grid-margin stretch-card">
+    <div class="col-12 col-md-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-body">
 
@@ -135,17 +256,22 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Select Customer</label>
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <label class="mb-0">Select Customer</label>
+                        <a href="javascript:void(0)" id="btnViewCustomerHistory" class="text-primary small font-weight-bold" style="display:none;" title="View Booking History">
+                            <i class="fas fa-history mr-1"></i>View History
+                        </a>
+                    </div>
                     <select id="customer_id" name="customer_id" class="form-control @error('customer_id') is-invalid @enderror js-example-basic-single w-100" required>
                         @if($booking_detail == '')
                             <option value="">Select Customer</option>
                             @foreach($customers as $customer)
-                                <option value="{{$customer->id}}">{{$customer->first_name}} {{$customer->last_name}} ({{$customer->primary_phone}})</option>
+                                <option value="{{$customer->id}}" data-show-history="{{ $customer->show_booking_history ?? 1 }}">{{$customer->first_name}} {{$customer->last_name}} ({{$customer->primary_phone}})</option>
                             @endforeach
                         @else
                             <option value="">Select Customer</option>
                             @foreach($customers as $customer)
-                                <option value="{{$customer->id}}" @if($customer_id==$customer->id) selected @endif >{{$customer->first_name}} {{$customer->last_name}}</option>
+                                <option value="{{$customer->id}}" data-show-history="{{ $customer->show_booking_history ?? 1 }}" @if($customer_id==$customer->id) selected @endif >{{$customer->first_name}} {{$customer->last_name}}</option>
                             @endforeach
                         @endif
                     </select>
@@ -296,7 +422,7 @@
                 <!-- Inventory Section -->
                 <p>Inventories is optional</p>
                 <div class="row">
-                    <div class="col-md-8">
+                    <div class="col-12 col-md-8 mb-2 mb-md-0">
                         <label>Select Inventory</label>
                         <select id="inventory_id" class="form-control js-example-basic-single w-100">
                             <option value="">Select Inventory</option>
@@ -305,8 +431,8 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-md-4">
-                        <label> </label>
+                    <div class="col-12 col-md-4">
+                        <label class="d-none d-md-block">&nbsp;</label>
                         <button type="button" class="btn btn-primary btn-block" id="add_or_submit_basket">Go</button>
                     </div>
                 </div>
@@ -404,33 +530,58 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="customerModalLabel">Customer History</h5>
+                <h5 class="modal-title font-weight-bold text-dark" id="customerModalLabel">
+                    <i class="fas fa-history text-primary mr-2"></i>Customer History
+                </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="close">
-                    <span aria-hidden="true">×</span>
+                    <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body">
-                <h4>Customer Information</h4>
-                <div class="row">
-                    <div class="col-md-6"><strong>Name:</strong> <span class="customer-name"></span></div>
-                    <div class="col-md-6"><strong>Email:</strong> <span class="customer-email"></span></div>
+            <div class="modal-body p-4">
+                <!-- Customer Details Card -->
+                <div class="card mb-4 border shadow-none bg-light">
+                    <div class="card-body p-3">
+                        <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+                            <h6 class="card-title mb-0 font-weight-bold text-primary">
+                                <i class="fas fa-user mr-1"></i> Customer Information
+                            </h6>
+                            <div class="customer-birthday"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6 col-md-3 mb-2">
+                                <small class="text-muted d-block">Name</small>
+                                <span class="font-weight-bold text-dark customer-name">-</span>
+                            </div>
+                            <div class="col-sm-6 col-md-3 mb-2">
+                                <small class="text-muted d-block">Phone</small>
+                                <span class="font-weight-bold text-dark customer-primary-phone">-</span>
+                            </div>
+                            <div class="col-sm-6 col-md-3 mb-2">
+                                <small class="text-muted d-block">Email</small>
+                                <span class="font-weight-bold text-dark customer-email">-</span>
+                            </div>
+                            <div class="col-sm-6 col-md-3 mb-2">
+                                <small class="text-muted d-block">Private Notes</small>
+                                <span class="font-weight-bold text-dark customer-notes">-</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-6"><strong>Phone:</strong> <span class="customer-primary-phone"></span></div>
-                    <div class="col-md-6"><strong>Private Notes:</strong> <span class="customer-notes"></span></div>
+
+                <!-- Booking History Section -->
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h6 class="card-title mb-0 font-weight-bold text-primary">
+                        <i class="fas fa-calendar-check mr-1"></i> Past Bookings
+                    </h6>
                 </div>
-                <div class="row">
-                    <div class="col-md-6"><strong></strong> <span class="customer-birthday"></span></div>
-                </div>
-                <h4 class="mt-3">Booking History</h4>
                 <div class="table-responsive">
-                    <table class="table table-bordered" id="booking-table">
+                    <table class="table table-striped" id="booking-table">
                         <thead>
-                            <tr>
-                                <th>Total Price</th>
-                                <th>Date</th>
-                                <th>Time</th>
+                            <tr class="bg-primary text-white">
+                                <th>Date &amp; Time</th>
                                 <th>Services</th>
+                                <th>Price</th>
+                                <th>Status</th>
                                 <th>Comments</th>
                             </tr>
                         </thead>
@@ -439,6 +590,17 @@
                         </tbody>
                     </table>
                 </div>
+                <!-- Load More Button -->
+                <div class="text-center mt-3" id="loadMoreHistoryContainer" style="display:none;">
+                    <button type="button" class="btn btn-sm btn-outline-primary" id="btnLoadMoreHistory">
+                        <i class="fas fa-spinner fa-spin mr-1 d-none" id="loadMoreSpinner"></i>
+                        <i class="fas fa-chevron-down mr-1" id="loadMoreIcon"></i> Load More Bookings
+                    </button>
+                </div>
+            </div>
+            <div class="modal-footer d-flex justify-content-between align-items-center">
+                <small class="text-muted" id="bookingCountInfo"></small>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -470,6 +632,22 @@
 
 <script>
 $(document).ready(function() {
+    // Ensure all select2 elements have 100% responsive width
+    if ($('.js-example-basic-single').length) {
+        $('.js-example-basic-single').select2({
+            width: '100%',
+            dropdownAutoWidth: false
+        });
+    }
+    if ($('.js-example-basic-multiple').length) {
+        $('.js-example-basic-multiple').select2({
+            width: '100%',
+            dropdownAutoWidth: false
+        });
+    }
+    $(window).on('resize orientationchange', function() {
+        $('span.select2.select2-container').css('width', '100%');
+    });
     var selectedServices = JSON.parse($('#selected_services').val() || '[]').map(String); // Ensure IDs are strings
     var lastSelectedServiceId = selectedServices.length > 0 ? selectedServices[selectedServices.length - 1] : null;
     var agreedRiskyServices = new Set(selectedServices); // Track services user has agreed to
@@ -522,7 +700,9 @@ $(document).ready(function() {
                         }
                         $('#service_id').select2({
                             placeholder: "Select services",
-                            allowClear: true
+                            allowClear: true,
+                            width: '100%',
+                            dropdownAutoWidth: false
                         });
 
                         // Trigger service price calculation
@@ -656,16 +836,84 @@ $(document).ready(function() {
         }
     });
 
-    // Handle customer selection for modal
-    $('#customer_id').on('change', function() {
-        var customer_id = $(this).val();
-        if (customer_id) {
-            $.ajax({
-                type: "GET",
-                url: "{{ url('customer-detail') }}",
-                data: { customer_id },
-                success: function(response) {
-                    if (response) {
+    // Customer booking history pagination variables
+    let currentHistoryCustomer = null;
+    let currentHistoryPage = 1;
+    let totalHistoryBookings = 0;
+    let loadedHistoryBookingsCount = 0;
+
+    function buildBookingRows(serviceInfo) {
+        let currency = "{{ currency_symbol() }}";
+        let html = '';
+        $.each(serviceInfo, function(index, booking) {
+            let total = booking.total_price || (booking.bookingdetail ? booking.bookingdetail.reduce((sum, detail) => sum + (detail.service ? parseFloat(detail.service.price) : 0), 0) : 0);
+            let servicesList = (booking.bookingdetail || []).map(detail => {
+                if (!detail.service) return '';
+                let sColor = detail.service.service_color || '#4b49ac';
+                let textColor = (sColor.startsWith('#fff') || sColor.startsWith('#FFF')) ? '#000' : '#fff';
+                return `<span class="badge me-1 mb-1 badge-pill" style="background-color: ${sColor}; color: ${textColor};">${detail.service.name}</span>`;
+            }).join(' ');
+
+            let statusBadge = '';
+            if (booking.service_status == 1) {
+                statusBadge = '<span class="badge badge-info">Booked</span>';
+            } else if (booking.service_status == 2) {
+                statusBadge = '<span class="badge badge-warning">In-Progress</span>';
+            } else if (booking.service_status == 3) {
+                statusBadge = '<span class="badge badge-success">Completed</span>';
+            } else if (booking.service_status == 4) {
+                statusBadge = '<span class="badge badge-danger">Cancelled</span>';
+            } else {
+                statusBadge = '<span class="badge badge-secondary">-</span>';
+            }
+
+            html += `
+                <tr>
+                    <td>
+                        <div class="font-weight-bold text-dark">${booking.due_date || '-'}</div>
+                        <small class="text-muted">${booking.due_time || ''}</small>
+                    </td>
+                    <td style="max-width: 220px;">
+                        ${servicesList || '<span class="text-muted fst-italic">No services</span>'}
+                    </td>
+                    <td>
+                        <span class="font-weight-bold text-dark">${currency}${parseFloat(total).toFixed(2)}</span>
+                    </td>
+                    <td>${statusBadge}</td>
+                    <td>
+                        <small class="text-muted">${booking.comment ? booking.comment : '-'}</small>
+                    </td>
+                </tr>
+            `;
+        });
+        return html;
+    }
+
+    function updateBookingCountInfo(loaded, total, hasMore) {
+        if (total === 0) {
+            $('#bookingCountInfo').text('No bookings found');
+            $('#loadMoreHistoryContainer').hide();
+        } else if (hasMore) {
+            $('#bookingCountInfo').text(`Showing ${loaded} of ${total} bookings`);
+            $('#loadMoreHistoryContainer').show();
+        } else {
+            $('#bookingCountInfo').text(`Showing all ${total} bookings`);
+            $('#loadMoreHistoryContainer').hide();
+        }
+    }
+
+    function fetchCustomerDetailsAndHistory(customer_id, page, append, autoOpen = true) {
+        return $.ajax({
+            type: "GET",
+            url: "{{ url('customer-detail') }}",
+            data: { customer_id: customer_id, page: page, limit: 5 },
+            success: function(response) {
+                if (response && response.customer) {
+                    currentHistoryCustomer = customer_id;
+                    currentHistoryPage = response.page;
+                    totalHistoryBookings = response.total;
+
+                    if (!append) {
                         $("#customer-detail").show();
                         let today = new Date().toISOString().slice(5, 10);
                         let customerBirthday = response.customer.date_of_birth ? response.customer.date_of_birth.slice(5, 10) : '';
@@ -678,38 +926,81 @@ $(document).ready(function() {
                         } else {
                             $(".customer-birthday").html("");
                         }
-                        $(".customer-email").html(response.customer.email);
-                        $(".customer-notes").html(response.customer.private_notes);
+                        $(".customer-email").html(response.customer.email || '-');
+                        $(".customer-notes").html(response.customer.private_notes || '-');
 
-                        var bookingsHtml = '';
+                        loadedHistoryBookingsCount = response.service_info.length;
                         if (response.service_info.length > 0) {
-                            $.each(response.service_info, function(index, booking) {
-                                bookingsHtml += `
-                                    <tr>
-                                        <td>(Total Price: $${booking.bookingdetail.reduce((sum, detail) => sum + detail.service.price, 0)})</td>
-                                        <td>${booking.due_date}</td>
-                                        <td>${booking.due_time}</td>
-                                        <td>
-                                            <ul>
-                                                ${booking.bookingdetail.map(detail => `<li>${detail.service.name} - $${detail.service.price}</li>`).join('')}
-                                            </ul>
-                                        </td>
-                                        <td>${booking.comment}</td>
-                                    </tr>
-                                `;
-                            });
+                            $("#booking-table tbody").html(buildBookingRows(response.service_info));
                         } else {
-                            bookingsHtml = `<tr><td colspan="6">No Bookings Found</td></tr>`;
+                            $("#booking-table tbody").html(`<tr><td colspan="5" class="text-center py-4 text-muted">No Past Bookings Found</td></tr>`);
                         }
-                        $("#booking-table tbody").html(bookingsHtml);
-                        $("#customerHistoryModal").modal('show');
                     } else {
-                        $("#customer-detail").hide();
+                        loadedHistoryBookingsCount += response.service_info.length;
+                        if (response.service_info.length > 0) {
+                            $("#booking-table tbody").append(buildBookingRows(response.service_info));
+                        }
                     }
+
+                    updateBookingCountInfo(loadedHistoryBookingsCount, totalHistoryBookings, response.has_more);
+
+                    // Auto-show modal only if autoOpen requested, first page and show_booking_history is enabled (1)
+                    if (autoOpen && !append) {
+                        if (parseInt(response.customer.show_booking_history) === 1 || response.customer.show_booking_history === undefined || response.customer.show_booking_history === null) {
+                            $("#customerHistoryModal").modal('show');
+                        }
+                    }
+                } else {
+                    $("#customer-detail").hide();
+                    $('#btnViewCustomerHistory').hide();
                 }
-            });
+            }
+        });
+    }
+
+    // Handle customer selection for modal
+    $('#customer_id').on('change', function() {
+        var customer_id = $(this).val();
+        if (customer_id) {
+            $('#btnViewCustomerHistory').show();
+            fetchCustomerDetailsAndHistory(customer_id, 1, false, true);
+        } else {
+            $('#btnViewCustomerHistory').hide();
+            $('#loadMoreHistoryContainer').hide();
+            $('#bookingCountInfo').text('');
         }
     });
+
+    // Manual view history button
+    $('#btnViewCustomerHistory').on('click', function() {
+        var customer_id = $('#customer_id').val();
+        if (!customer_id) return;
+        if (currentHistoryCustomer !== customer_id) {
+            fetchCustomerDetailsAndHistory(customer_id, 1, false, true);
+        } else {
+            $("#customerHistoryModal").modal('show');
+        }
+    });
+
+    // Handle Load More button
+    $('#btnLoadMoreHistory').on('click', function() {
+        if (!currentHistoryCustomer) return;
+        var $btn = $(this);
+        $btn.prop('disabled', true);
+        $('#loadMoreSpinner').removeClass('d-none');
+        $('#loadMoreIcon').addClass('d-none');
+
+        fetchCustomerDetailsAndHistory(currentHistoryCustomer, currentHistoryPage + 1, true, false).always(function() {
+            $btn.prop('disabled', false);
+            $('#loadMoreSpinner').addClass('d-none');
+            $('#loadMoreIcon').removeClass('d-none');
+        });
+    });
+
+    if ($('#customer_id').val()) {
+        $('#btnViewCustomerHistory').show();
+        fetchCustomerDetailsAndHistory($('#customer_id').val(), 1, false, false);
+    }
 
     // Handle inventory basket
     $('#add_or_submit_basket').on('click', function() {

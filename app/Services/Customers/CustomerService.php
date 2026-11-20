@@ -100,11 +100,12 @@ class CustomerService
         ];
 
         $payload = array_intersect_key($data, array_flip($allowed));
-        $payload['company_id'] = $companyId;
-        $payload['is_active']  = $data['is_active'] ?? 1;
-        $payload['is_deleted'] = 0;
-        $payload['latitude']   = $coordinates['lat'] ?? 0;
-        $payload['longitude']  = $coordinates['long'] ?? 0;
+        $payload['company_id']           = $companyId;
+        $payload['is_active']            = $data['is_active'] ?? 1;
+        $payload['is_deleted']           = 0;
+        $payload['show_booking_history'] = !empty($data['show_booking_history']) ? 1 : 0; //isset($data['show_booking_history']) ? (!empty($data['show_booking_history']) ? 1 : 0) : 1;
+        $payload['latitude']             = $coordinates['lat'] ?? 0;
+        $payload['longitude']            = $coordinates['long'] ?? 0;
 
         $customer = Customer::create($payload);
 
@@ -133,6 +134,7 @@ class CustomerService
         ];
 
         $payload = array_intersect_key($data, array_flip($allowed));
+        $payload['show_booking_history'] = !empty($data['show_booking_history']) ? 1 : 0;
 
         // Recompute coordinates if address changed
         if (!empty($data['address']) && $data['address'] !== $customer->address) {

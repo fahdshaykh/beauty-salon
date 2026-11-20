@@ -314,11 +314,7 @@
 
 <div class="form-group">
 
-
-
                       <label>Referred By</label>
-
-
 
                       <select id="tags" name="referred_by" class="js-example-basic-single w-100">
 
@@ -331,9 +327,21 @@
 
                       </select>
 
-
-
                     </div>
+
+<div class="form-group mb-4">
+    <div class="form-check form-check-flat form-check-primary">
+        <label class="form-check-label font-weight-bold">
+            <input type="checkbox" name="show_booking_history" value="1" class="form-check-input"
+                {{ (!isset($customer) || !empty($customer->show_booking_history)) ? 'checked' : '' }}>
+            Show Booking History in Booking Form
+            <i class="input-helper"></i>
+        </label>
+    </div>
+    <small class="text-muted d-block mt-1">
+        Enable or disable showing this customer's booking history modal when selected in the booking form.
+    </small>
+</div>
 
 @if(isset($customer->first_name))
 <button type="submit" class="btn btn-dark mr-2">Update Customer</button>

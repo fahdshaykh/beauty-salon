@@ -133,7 +133,7 @@ class CustomerController extends Controller
     }
 
     /**
-     * Return customer details and their booking history via AJAX.
+     * Return customer details and their booking history via AJAX with pagination.
      */
     public function customer_detail(Request $request)
     {
@@ -145,14 +145,34 @@ class CustomerController extends Controller
             return response()->json(['error' => 'Customer not found'], 404);
         }
 
-        $service_info = ServiceBooking::with(['bookingdetail.service'])
+        $limit = (int) $request->get('limit', 5);
+        if ($limit < 1 || $limit > 100) {
+            $limit = 5;
+        }
+
+        $page = (int) $request->get('page', 1);
+        if ($page < 1) {
+            $page = 1;
+        }
+
+        $query = ServiceBooking::with(['bookingdetail.service'])
             ->where('company_id', auth()->user()->company_id)
             ->where('customer_id', $customer->id)
-            ->get();
+            ->where('is_deleted', 0)
+            ->orderBy('due_date', 'desc')
+            ->orderBy('id', 'desc');
+
+        $total = $query->count();
+        $service_info = $query->skip(($page - 1) * $limit)->take($limit)->get();
+        $hasMore = ($page * $limit) < $total;
 
         return response()->json([
             'customer'     => $customer,
             'service_info' => $service_info,
+            'total'        => $total,
+            'page'         => $page,
+            'limit'        => $limit,
+            'has_more'     => $hasMore,
         ]);
     }
 
