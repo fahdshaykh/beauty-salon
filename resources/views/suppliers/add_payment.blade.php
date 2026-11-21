@@ -41,7 +41,7 @@
                             </span>
                         </div>
 
-                        <form class="forms-sample" action="{{ route('supplier_payments.store') }}" method="post">
+                        <form class="forms-sample" action="{{ route('supplier_payments.store') }}" method="post" enctype="multipart/form-data">
                             @csrf
                             <input type="hidden" name="supplier_id" value="{{ $supplier->id }}" required>
 
@@ -91,6 +91,21 @@
                                     <span class="font-weight-bold small text-uppercase">Payment Details</span>
                                 </div>
                                 <div id="dynamic-payment-fields-container"></div>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label class="font-weight-bold text-dark mb-1">Payment Proof / Document</label>
+                                <input type="file" name="payment_file" class="file-upload-default" accept=".jpg,.jpeg,.png,.gif,.svg,.pdf,.doc,.docx">
+                                <div class="input-group">
+                                    <input type="text" class="form-control file-upload-info @error('payment_file') is-invalid @enderror" disabled placeholder="Upload Payment Proof (Max 2MB)">
+                                    <span class="input-group-append">
+                                        <button class="file-upload-browse btn btn-primary" type="button">Upload</button>
+                                    </span>
+                                </div>
+                                <small class="text-muted d-block mt-1">Accepted formats: JPG, PNG, PDF, DOC (Max: 2MB)</small>
+                                @error('payment_file')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
                             </div>
 
                             <!-- Note Field -->

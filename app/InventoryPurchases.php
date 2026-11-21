@@ -23,6 +23,7 @@ class InventoryPurchases extends Model
         'amount_pending',
         'payment_type',
         'payment_details',
+        'payment_file',
         'image',
         'supplier_id',
         'purchase_date',

@@ -8,7 +8,7 @@ class Expense extends Model
 {
     // protected $guarded = [];
     protected $fillable = [
-        'expense_type', 'payable', 'amount', 'description', 'company_id', 'payment_method', 'payment_details'
+        'expense_type', 'payable', 'amount', 'description', 'company_id', 'payment_method', 'payment_details', 'payment_file'
     ];
 
     protected $casts = [

@@ -12,6 +12,7 @@ use App\Models\PaymentMethod;
 use App\Models\Setting;
 use App\Models\UserSetting;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class ExpenseController extends Controller
 
@@ -137,51 +138,41 @@ class ExpenseController extends Controller
      */
 
     public function store(Request $request)
-
     {
-
         $this->validate($request, 
-
             [
-
-                'expense_type' => 'required',
-
-                'payable' => 'required',
-
-                'amount' => 'required',
-
+                'expense_type'   => 'required',
+                'payable'        => 'nullable|date',
+                'amount'         => 'required',
                 'payment_method' => 'required',
-
+                'payment_file'   => 'nullable|file|mimes:jpeg,png,jpg,gif,svg,pdf,doc,docx|max:2048',
             ],
-
             [
-
-                'expense_type.required' => 'Please Select Expense Type',
-
-                'payable.required' => 'Please Enter Date',
-
-                'amount.required' => 'Please Enter Amount',
-
+                'expense_type.required'   => 'Please Select Expense Type',
+                'amount.required'         => 'Please Enter Amount',
                 'payment_method.required' => 'Please Select Payment Method',
-
+                'payment_file.max'        => 'Document file must not exceed 2MB in size',
+                'payment_file.mimes'      => 'Document must be a valid file (jpg, png, pdf, doc, docx)',
             ],
-
         );
-
-        
 
         $data = $request->all();
         $data['company_id'] = auth()->user()->company_id;
+        $data['payable'] = $request->input('payable', date('Y-m-d'));
         if (!empty($request->payment_details)) {
             $data['payment_details'] = $request->payment_details;
         }
 
+        if ($request->hasFile('payment_file')) {
+            $file = $request->file('payment_file');
+            $filename = 'proof_' . time() . '_' . Str::random(8) . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('payment_proofs'), $filename);
+            $data['payment_file'] = $filename;
+        }
+
         Expense::create($data);
 
-
-
         return back()->with('success', 'Expense created successfully');
-
     }
 
 
@@ -228,16 +219,18 @@ class ExpenseController extends Controller
     {
         $this->validate($request, 
             [
-                'expense_type' => 'required',
-                'payable' => 'required',
-                'amount' => 'required',
+                'expense_type'   => 'required',
+                'payable'        => 'nullable|date',
+                'amount'         => 'required',
                 'payment_method' => 'required',
+                'payment_file'   => 'nullable|file|mimes:jpeg,png,jpg,gif,svg,pdf,doc,docx|max:2048',
             ],
             [
-                'expense_type.required' => 'Please Select Expense Type',
-                'payable.required' => 'Please Enter Date',
-                'amount.required' => 'Please Enter Amount',
+                'expense_type.required'   => 'Please Select Expense Type',
+                'amount.required'         => 'Please Enter Amount',
                 'payment_method.required' => 'Please Select Payment Method',
+                'payment_file.max'        => 'Document file must not exceed 2MB in size',
+                'payment_file.mimes'      => 'Document must be a valid file (jpg, png, pdf, doc, docx)',
             ],
         );
 
@@ -251,6 +244,16 @@ class ExpenseController extends Controller
             ->firstOrFail();
         
         $this->authorize('update', $expense);
+
+        if ($request->hasFile('payment_file')) {
+            if ($expense->payment_file && file_exists(public_path('payment_proofs/' . $expense->payment_file))) {
+                @unlink(public_path('payment_proofs/' . $expense->payment_file));
+            }
+            $file = $request->file('payment_file');
+            $filename = 'proof_' . time() . '_' . Str::random(8) . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('payment_proofs'), $filename);
+            $data['payment_file'] = $filename;
+        }
 
         $expense->update($data);
 

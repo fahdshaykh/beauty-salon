@@ -415,6 +415,8 @@ input:checked+.slider:before {
 
                                         <th>Quantity</th>
 
+                                        <th>Payment Method</th>
+
                                         <th>Actions</th>
 
 
@@ -464,7 +466,17 @@ input:checked+.slider:before {
                                         <td>{{$inventory->quantity}}</td>
 
                                         <td>
+                                            {{$inventory->payment_type}}
+                                            @if(!empty($inventory->payment_file))
+                                                <a href="{{ asset('payment_proofs/' . $inventory->payment_file) }}" target="_blank" class="badge badge-light border text-primary ml-1" title="View Document Proof">
+                                                    <i class="fas fa-paperclip"></i>
+                                                </a>
+                                            @endif
+                                        </td>
+
+                                        <td>
                                             <div class="d-flex gap-1">
+
                                                 @can('edit inventory purchases')
                                                 <a href="{{ route('inventories_purchases.edit', $inventory->id) }}"
                                                 class="btn btn-sm btn-outline-primary" title="Edit inventory">

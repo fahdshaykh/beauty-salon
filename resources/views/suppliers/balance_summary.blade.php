@@ -429,6 +429,13 @@
                                                         @endforeach
                                                     </div>
                                                 @endif
+                                                @if(!empty($payment->payment_file))
+                                                    <div class="mt-1">
+                                                        <a href="{{ asset('payment_proofs/' . $payment->payment_file) }}" target="_blank" class="badge badge-light border text-primary" title="View Document Proof">
+                                                            <i class="fas fa-paperclip mr-1"></i> Document Proof
+                                                        </a>
+                                                    </div>
+                                                @endif
                                             </td>
                                             <td>
                                                 @if($payment->inventory_purchase_id)

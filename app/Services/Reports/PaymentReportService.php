@@ -171,6 +171,7 @@ class PaymentReportService
                     'expenses.payment_method as raw_payment_method',
                     'payment_methods.method as payment_method',
                     'expenses.payment_details',
+                    'expenses.payment_file',
                     'expense_types.type as expense_type'
                 );
 
@@ -226,6 +227,7 @@ class PaymentReportService
                     'description'      => $e->description ?: ($e->expense_type ?? ''),
                     'payment_method'   => ucfirst($e->payment_method ?: ($e->raw_payment_method ?? 'Cash')),
                     'payment_details'  => $this->formatPaymentDetails($e->payment_details),
+                    'payment_file'     => $e->payment_file ?? null,
                     'inflow_amount'    => 0.00,
                     'outflow_amount'   => (float)$e->amount,
                 ]);
@@ -246,6 +248,7 @@ class PaymentReportService
                     'inventories_purchases.description',
                     'inventories_purchases.payment_type as payment_method',
                     'inventories_purchases.payment_details',
+                    DB::raw('COALESCE(inventories_purchases.payment_file, inventories_purchases.image) as payment_file'),
                     'suppliers.name as supplier_name',
                     'suppliers.phone as supplier_phone',
                     'inventories.name as inventory_name'
@@ -304,6 +307,7 @@ class PaymentReportService
                     'description'      => $p->description ?: ('Purchased ' . ($p->inventory_name ?? 'inventory items')),
                     'payment_method'   => ucfirst($p->payment_method ?: 'Cash'),
                     'payment_details'  => $this->formatPaymentDetails($p->payment_details),
+                    'payment_file'     => $p->payment_file ?? null,
                     'inflow_amount'    => 0.00,
                     'outflow_amount'   => (float)$p->amount,
                 ]);
@@ -324,6 +328,7 @@ class PaymentReportService
                     'supplier_payments.note as description',
                     'supplier_payments.payment_method',
                     'supplier_payments.payment_details',
+                    'supplier_payments.payment_file',
                     'suppliers.name as supplier_name',
                     'suppliers.phone as supplier_phone'
                 );
@@ -363,6 +368,7 @@ class PaymentReportService
                     'description'      => $sp->description ?: ('Direct Balance Payment to ' . $supplierName),
                     'payment_method'   => ucfirst($sp->payment_method ?: 'Cash'),
                     'payment_details'  => $this->formatPaymentDetails($sp->payment_details),
+                    'payment_file'     => $sp->payment_file ?? null,
                     'inflow_amount'    => 0.00,
                     'outflow_amount'   => (float)$sp->amount,
                 ]);

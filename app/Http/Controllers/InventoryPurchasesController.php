@@ -14,6 +14,7 @@ use App\Models\PaymentMethod;
 use App\Models\Setting;
 use App\Models\UserSetting;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class InventoryPurchasesController extends Controller
 {
@@ -103,10 +104,14 @@ class InventoryPurchasesController extends Controller
             'payment_type'   => 'nullable|string',
             'paypemnt_type'  => 'nullable|string',
             'amount_paid'    => 'required|numeric|min:0|lte:price',
-            'purchase_date'  => 'required|date',
+            'purchase_date'  => 'nullable|date',
             'amount_pending' => 'nullable|numeric|min:0',
             'description'    => 'nullable|string|max:160',
             'payment_details'=> 'nullable|array',
+            'payment_file'   => 'nullable|file|mimes:jpeg,png,jpg,gif,svg,pdf,doc,docx|max:2048',
+        ], [
+            'payment_file.max'   => 'Document file must not exceed 2MB in size',
+            'payment_file.mimes' => 'Document must be a valid file (jpg, png, pdf, doc, docx)',
         ]);
 
         $paymentType = $request->payment_type ?? $request->paypemnt_type ?? 'Cash';
@@ -118,8 +123,16 @@ class InventoryPurchasesController extends Controller
         $data = $request->all();
         $data['company_id'] = auth()->user()->company_id;  
         $data['payment_type'] = $paymentType;
+        $data['purchase_date'] = $request->input('purchase_date', date('Y-m-d'));
         $data['amount_pending'] = $request->price - $request->amount_paid;
         $data['payment_details'] = $request->payment_details ?? null;
+
+        if ($request->hasFile('payment_file')) {
+            $file = $request->file('payment_file');
+            $filename = 'proof_' . time() . '_' . Str::random(8) . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('payment_proofs'), $filename);
+            $data['payment_file'] = $filename;
+        }
 
         $purchase = InventoryPurchases::create($data);
 
@@ -129,6 +142,8 @@ class InventoryPurchasesController extends Controller
                 'company_id' => auth()->user()->company_id,
                 'inventory_purchase_id' => $purchase->id,
                 'amount' => $request->amount_paid,
+                'payment_method' => $paymentType,
+                'payment_file' => $data['payment_file'] ?? null,
                 'note' => 'Initial payment (' . $paymentType . ') during purchase',
             ]);
         }
@@ -190,8 +205,13 @@ class InventoryPurchasesController extends Controller
             'paypemnt_type'  => 'nullable|string',
             'amount_paid'    => 'required|numeric|min:0|lte:price',
             'amount_pending' => 'nullable|numeric|min:0',
+            'purchase_date'  => 'nullable|date',
             'description'    => 'nullable|string|max:160',
             'payment_details'=> 'nullable|array',
+            'payment_file'   => 'nullable|file|mimes:jpeg,png,jpg,gif,svg,pdf,doc,docx|max:2048',
+        ], [
+            'payment_file.max'   => 'Document file must not exceed 2MB in size',
+            'payment_file.mimes' => 'Document must be a valid file (jpg, png, pdf, doc, docx)',
         ]);
 
         $purchase = InventoryPurchases::where('id', $id)->where('company_id', auth()->user()->company_id)->firstOrFail();
@@ -204,19 +224,32 @@ class InventoryPurchasesController extends Controller
         if ($methodObj) {
             $paymentType = $methodObj->method;
         }
+
+        $updateData = [
+            'supplier_id'     => $request->supplier_id,
+            'inventory_id'    => $request->inventory_id,
+            'quantity'        => $request->quantity,
+            'price'           => $request->price,
+            'amount_paid'     => $request->amount_paid,
+            'amount_pending'  => $newAmountPending,
+            'payment_type'    => $paymentType,
+            'payment_details' => $request->payment_details ?? $purchase->payment_details,
+            'description'     => $request->description,
+        ];
+
+        if ($request->hasFile('payment_file')) {
+            $oldFile = $purchase->payment_file ?: $purchase->image;
+            if ($oldFile && file_exists(public_path('payment_proofs/' . $oldFile))) {
+                @unlink(public_path('payment_proofs/' . $oldFile));
+            }
+            $file = $request->file('payment_file');
+            $filename = 'proof_' . time() . '_' . Str::random(8) . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('payment_proofs'), $filename);
+            $updateData['payment_file'] = $filename;
+        }
     
         // Update the inventory purchase
-        $purchase->update([
-            'supplier_id' => $request->supplier_id,
-            'inventory_id' => $request->inventory_id,
-            'quantity' => $request->quantity,
-            'price' => $request->price,
-            'amount_paid' => $request->amount_paid,
-            'amount_pending' => $newAmountPending,
-            'payment_type' => $paymentType,
-            'payment_details' => $request->payment_details ?? $purchase->payment_details,
-            'description' => $request->description,
-        ]);
+        $purchase->update($updateData);
     
         // If amount paid has changed, update or add new SupplierPayment
         // $totalPaid = $purchase->payments()->sum('amount'); // Total paid amount for this purchase

@@ -17,6 +17,7 @@ class SupplierPayment extends Model
         'amount',
         'payment_method',
         'payment_details',
+        'payment_file',
         'note',
     ];
 

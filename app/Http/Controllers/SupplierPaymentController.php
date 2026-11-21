@@ -6,6 +6,7 @@ use App\Models\Supplier;
 use App\Models\SupplierPayment;
 use App\Models\PaymentMethod;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class SupplierPaymentController extends Controller
 {
@@ -27,7 +28,11 @@ class SupplierPaymentController extends Controller
             'amount'          => 'required|numeric|min:0.01',
             'payment_method'  => 'nullable|string',
             'payment_details' => 'nullable|array',
+            'payment_file'    => 'nullable|file|mimes:jpeg,png,jpg,gif,svg,pdf,doc,docx|max:2048',
             'note'            => 'nullable|string',
+        ], [
+            'payment_file.max'   => 'Document file must not exceed 2MB in size',
+            'payment_file.mimes' => 'Document must be a valid file (jpg, png, pdf, doc, docx)',
         ]);
 
         $supplier = Supplier::where('id', $request->supplier_id)
@@ -42,12 +47,21 @@ class SupplierPaymentController extends Controller
             }
         }
 
+        $paymentFile = null;
+        if ($request->hasFile('payment_file')) {
+            $file = $request->file('payment_file');
+            $filename = 'proof_' . time() . '_' . Str::random(8) . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('payment_proofs'), $filename);
+            $paymentFile = $filename;
+        }
+
         SupplierPayment::create([
             'supplier_id'     => $supplier->id,
             'company_id'      => auth()->user()->company_id,
             'amount'          => $request->amount,
             'payment_method'  => $paymentMethod,
             'payment_details' => $request->payment_details ?? null,
+            'payment_file'    => $paymentFile,
             'note'            => $request->note,
         ]);
 

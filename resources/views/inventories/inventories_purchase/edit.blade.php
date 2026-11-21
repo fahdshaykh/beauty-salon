@@ -171,22 +171,29 @@
                                 </div>
                             </div>
 
-                            <!-- Purchase Date -->
+                            <!-- Payment Proof Document -->
                             <div class="form-group mb-3">
-                                <label for="purchase_date" class="font-weight-bold text-dark mb-1">
-                                    Purchase Date <span class="text-danger">*</span>
-                                </label>
-                                <div id="datepicker-popup-new" class="input-group date datepicker">
-                                    <input type="text" name="purchase_date" id="purchase_date" 
-                                           value="{{ old('purchase_date', $purchase->purchase_date) }}" 
-                                           class="form-control @error('purchase_date') is-invalid @enderror" required autocomplete="off">
-                                    <div class="input-group-append">
-                                        <span class="input-group-text bg-white border-left-0">
-                                            <i class="far fa-calendar text-primary"></i>
-                                        </span>
-                                    </div>
+                                <label class="font-weight-bold text-dark mb-1">Payment Proof / Document</label>
+                                <input type="file" name="payment_file" class="file-upload-default" accept=".jpg,.jpeg,.png,.gif,.svg,.pdf,.doc,.docx">
+                                <div class="input-group">
+                                    <input type="text" class="form-control file-upload-info @error('payment_file') is-invalid @enderror" disabled placeholder="Upload Payment Proof (Max 2MB)">
+                                    <span class="input-group-append">
+                                        <button class="file-upload-browse btn btn-primary" type="button">Upload</button>
+                                    </span>
                                 </div>
-                                @error('purchase_date')
+                                <small class="text-muted d-block mt-1">Accepted formats: JPG, PNG, PDF, DOC (Max: 2MB)</small>
+                                @php
+                                    $existingFile = $purchase->payment_file ?: $purchase->image;
+                                @endphp
+                                @if(!empty($existingFile))
+                                    <div class="mt-2 small">
+                                        <span class="text-muted">Attached Document:</span>
+                                        <a href="{{ asset('payment_proofs/' . $existingFile) }}" target="_blank" class="font-weight-bold text-primary ml-1">
+                                            <i class="fas fa-file-alt mr-1"></i> View Current File ({{ $existingFile }})
+                                        </a>
+                                    </div>
+                                @endif
+                                @error('payment_file')
                                     <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @enderror
                             </div>

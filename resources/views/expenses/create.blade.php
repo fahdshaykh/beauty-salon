@@ -23,7 +23,7 @@
                 <div class="card shadow-sm border">
                     
                     <div class="card-body p-4">
-                        <form class="forms-sample" action="{{ url('expenses/store') }}" method="POST">
+                        <form class="forms-sample" action="{{ url('expenses/store') }}" method="POST" enctype="multipart/form-data">
                             @csrf
 
                             <!-- Expense Type -->
@@ -91,20 +91,20 @@
                                 <div id="dynamic-payment-fields-container"></div>
                             </div>
 
-                            <!-- Expense Date -->
-                            <div class="form-group">
-                                <label for="date">payable Date</label>
-                              <div id="datepicker-popup-new" class="input-group date datepicker ">
-                                <input type="text" name="payable" value="{{ old('payable') }}" class="form-control @error('date') is-invalid @enderror" >
-                                <span class="input-group-addon input-group-append border-left">
-                                  <span class="far fa-calendar input-group-text"></span>
-                                </span>
-                                @error('payable')
-                                    <div class="invalid-feedback">
-                                        {{ $message }}
-                                    </div>
+                            <!-- Payment Proof Document -->
+                            <div class="form-group mb-3">
+                                <label class="font-weight-bold text-dark mb-1">Payment Proof / Document</label>
+                                <input type="file" name="payment_file" class="file-upload-default" accept=".jpg,.jpeg,.png,.gif,.svg,.pdf,.doc,.docx">
+                                <div class="input-group">
+                                    <input type="text" class="form-control file-upload-info @error('payment_file') is-invalid @enderror" disabled placeholder="Upload Payment Proof (Max 2MB)">
+                                    <span class="input-group-append">
+                                        <button class="file-upload-browse btn btn-primary" type="button">Upload</button>
+                                    </span>
+                                </div>
+                                <small class="text-muted d-block mt-1">Accepted formats: JPG, PNG, PDF, DOC (Max: 2MB)</small>
+                                @error('payment_file')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @enderror
-                              </div>
                             </div>
 
                             <!-- Description -->

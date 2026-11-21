@@ -363,6 +363,11 @@
                                     </td>
                                     <td>
                                         <span class="font-weight-bold text-primary">{{ $row['reference'] }}</span>
+                                        @if(!empty($row['payment_file']))
+                                            <a href="{{ asset('payment_proofs/' . $row['payment_file']) }}" target="_blank" class="badge badge-light border text-primary ml-1" title="View Document Proof">
+                                                <i class="fas fa-paperclip"></i>
+                                            </a>
+                                        @endif
                                     </td>
                                     <td>
                                         <div class="font-weight-bold text-dark">{{ $row['party'] }}</div>

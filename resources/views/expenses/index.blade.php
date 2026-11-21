@@ -153,7 +153,14 @@
 
                                         <td>{{ currency_symbol() }}{{$expense->amount}}</td>
 
-                                        <td>{{$expense->method}}</td>
+                                        <td>
+                                            {{$expense->method}}
+                                            @if(!empty($expense->payment_file))
+                                                <a href="{{ asset('payment_proofs/' . $expense->payment_file) }}" target="_blank" class="badge badge-light border text-primary ml-1" title="View Document Proof">
+                                                    <i class="fas fa-paperclip"></i>
+                                                </a>
+                                            @endif
+                                        </td>
 
 
                                         <td>
