@@ -17,20 +17,22 @@
 .report-filter-row .form-control,
 .report-filter-row .input-group-text,
 .report-filter-row .select2-container--default .select2-selection--single {
-    height: 42px !important;
-    font-size: 0.9rem !important;
+    height: 46px !important;
+    padding-top: 0.875rem !important;
+    padding-bottom: 0.875rem !important;
 }
 
 .report-filter-row .select2-container--default .select2-selection--single .select2-selection__rendered {
-    line-height: 40px !important;
+    line-height: 18px !important;
+    padding-left: 0 !important;
 }
 
 .report-filter-row .select2-container--default .select2-selection--single .select2-selection__arrow {
-    height: 40px !important;
+    height: 44px !important;
 }
 
 .report-filter-row .btn {
-    height: 42px !important;
+    height: 46px !important;
 }
 
 .stat-widget {
@@ -260,7 +262,7 @@
                         <!-- Flow Type -->
                         <div class="col-12 col-sm-6 col-md-3 col-lg mb-2">
                             <label class="small text-muted mb-1">Flow Type</label>
-                            <select id="flow_type" name="flow_type" class="js-example-basic-single w-100">
+                            <select id="flow_type" name="flow_type" class="form-control js-example-basic-single w-100" style="width:100%">
                                 <option value="all" {{ $selectedFlow == 'all' ? 'selected' : '' }}>All Inflows & Outflows</option>
                                 <option value="inflow" {{ $selectedFlow == 'inflow' ? 'selected' : '' }}>Inflow Only (+)</option>
                                 <option value="outflow" {{ $selectedFlow == 'outflow' ? 'selected' : '' }}>Outflow Only (-)</option>
