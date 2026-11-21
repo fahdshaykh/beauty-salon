@@ -315,9 +315,32 @@ input:checked+.slider:before {
 
         <div class="card">
 
-
-
             <div class="card-body">
+
+                <!-- Filter & Search Card -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body pt-4">
+                        <form method="GET" action="{{ route('inventories.available') }}" class="row g-3">
+                            <!-- Search Field -->
+                            <div class="col-md-4 mt-1">
+                                <label for="search" class="form-label">Search Inventory</label>
+                                <input type="text" name="search" id="search" class="form-control"
+                                    value="{{ request('search') }}"
+                                    placeholder="Enter inventory name">
+                            </div>
+                            <!-- Buttons -->
+                            <div class="col-md-4 mt-md-4 mt-3 pt-md-1">
+                                <div class="d-flex gap-2">
+                                    <button type="submit" class="btn btn-primary w-100">Apply</button>
+                                    <a href="{{ route('inventories.available') }}" class="btn btn-outline-warning btn-icon-text w-100 ml-1">
+                                        <i class="fas fa-redo btn-icon-prepend"></i>
+                                        Reset
+                                    </a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
 
                     <!-- Pagination Dropdown -->
                         <div class="row">
@@ -523,7 +546,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (rowsSelect) {
         rowsSelect.addEventListener('change', function () {
-            window.location = "{{ url('/inventories-available') }}?rows=" + this.value;
+            let url = new URL("{{ route('inventories.available') }}", window.location.origin);
+            url.searchParams.set('rows', this.value);
+            const searchVal = document.getElementById('search') ? document.getElementById('search').value : '';
+            if (searchVal) {
+                url.searchParams.set('search', searchVal);
+            }
+            window.location = url.toString();
         });
     }
 });

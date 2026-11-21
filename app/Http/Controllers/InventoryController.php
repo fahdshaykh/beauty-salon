@@ -106,9 +106,9 @@ class InventoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show()
+    public function show(Request $request)
     {
-        //
+        return $this->available($request);
     }
 
     /**
@@ -213,8 +213,17 @@ class InventoryController extends Controller
         // otherwise retrieve from user's settings
         $rows = Auth::user()->getSetting('inventories_rows_per_page', auth()->user()->default_rows);
 
-        $inventories = InventoryRemain::where('company_id', auth()->user()->company_id)
-        ->paginate($rows);
+        $query = InventoryRemain::with('inventory')
+            ->where('company_id', auth()->user()->company_id);
+
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->whereHas('inventory', function ($q) use ($search) {
+                $q->where('name', 'LIKE', '%' . $search . '%');
+            });
+        }
+
+        $inventories = $query->paginate($rows)->withQueryString();
         
         return view('inventories.show', compact('inventories', 'rows'));
     }
