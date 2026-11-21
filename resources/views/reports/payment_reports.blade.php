@@ -33,6 +33,24 @@
     height: 42px !important;
 }
 
+.stat-widget {
+    border-radius: 8px;
+    transition: all 0.2s ease-in-out;
+    border-left: 4px solid transparent;
+    background: #fff;
+}
+
+.stat-widget:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+}
+
+.stat-widget.widget-primary { border-left-color: #4b49ac; }
+.stat-widget.widget-success { border-left-color: #28a745; }
+.stat-widget.widget-info { border-left-color: #17a2b8; }
+.stat-widget.widget-danger { border-left-color: #dc3545; }
+.stat-widget.widget-warning { border-left-color: #ffc107; }
+
 .kpi-card {
     border-radius: 8px;
     border: none;
@@ -113,63 +131,60 @@
             ];
         @endphp
 
-        <!-- KPI Metrics Summary Cards -->
+        <!-- Metric Stat Cards -->
         <div class="row mb-4">
-            <!-- Total Inflow -->
-            <div class="col-12 col-sm-6 col-xl-4 mb-3 mb-xl-0">
-                <div class="card kpi-card bg-white border-left border-success" style="border-left-width: 5px !important;">
-                    <div class="card-body p-3">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h6 class="text-muted text-uppercase mb-1 small font-weight-bold">Total Inflow (Received)</h6>
-                                <h3 class="mb-0 text-success font-weight-bold">
-                                    {{ currency_symbol() }}{{ number_format($totalInflow, 2) }}
-                                </h3>
-                                <small class="text-muted">{{ $counts['inflow'] }} completed booking payments</small>
-                            </div>
-                            <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
-                                <i class="fas fa-arrow-down fa-lg"></i>
-                            </div>
+            <div class="col-xl-3 col-sm-6 mb-3 mb-xl-0">
+                <div class="card stat-widget widget-success shadow-sm border-0 h-100">
+                    <div class="card-body p-3 d-flex align-items-center justify-content-between">
+                        <div>
+                            <span class="text-muted text-uppercase font-weight-bold small">Total Inflow</span>
+                            <h3 class="font-weight-bold text-success mt-1 mb-0">{{ currency_symbol() }}{{ number_format($totalInflow, 2) }}</h3>
+                            <small class="text-muted">{{ number_format($counts['inflow']) }} received payments</small>
+                        </div>
+                        <div class="p-3 bg-light rounded-circle text-success">
+                            <i class="fas fa-arrow-down fa-2x"></i>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <!-- Total Outflow -->
-            <div class="col-12 col-sm-6 col-xl-4 mb-3 mb-xl-0">
-                <div class="card kpi-card bg-white border-left border-danger" style="border-left-width: 5px !important;">
-                    <div class="card-body p-3">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h6 class="text-muted text-uppercase mb-1 small font-weight-bold">Total Outflow (Paid)</h6>
-                                <h3 class="mb-0 text-danger font-weight-bold">
-                                    {{ currency_symbol() }}{{ number_format($totalOutflow, 2) }}
-                                </h3>
-                                <small class="text-muted">{{ $counts['outflow'] }} expenses & supplier payments</small>
-                            </div>
-                            <div class="bg-danger text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
-                                <i class="fas fa-arrow-up fa-lg"></i>
-                            </div>
+            <div class="col-xl-3 col-sm-6 mb-3 mb-xl-0">
+                <div class="card stat-widget widget-danger shadow-sm border-0 h-100">
+                    <div class="card-body p-3 d-flex align-items-center justify-content-between">
+                        <div>
+                            <span class="text-muted text-uppercase font-weight-bold small">Total Outflow</span>
+                            <h3 class="font-weight-bold text-danger mt-1 mb-0">{{ currency_symbol() }}{{ number_format($totalOutflow, 2) }}</h3>
+                            <small class="text-muted">{{ number_format($counts['outflow']) }} paid expenses & bills</small>
+                        </div>
+                        <div class="p-3 bg-light rounded-circle text-danger">
+                            <i class="fas fa-arrow-up fa-2x"></i>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <!-- Net Cash Flow -->
-            <div class="col-12 col-sm-12 col-xl-4">
-                <div class="card kpi-card bg-white border-left {{ $netBalance >= 0 ? 'border-primary' : 'border-warning' }}" style="border-left-width: 5px !important;">
-                    <div class="card-body p-3">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h6 class="text-muted text-uppercase mb-1 small font-weight-bold">Net Cash Balance</h6>
-                                <h3 class="mb-0 font-weight-bold {{ $netBalance >= 0 ? 'text-primary' : 'text-warning' }}">
-                                    {{ currency_symbol() }}{{ number_format($netBalance, 2) }}
-                                </h3>
-                                <small class="text-muted">{{ $counts['total'] }} total transactions</small>
-                            </div>
-                            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
-                                <i class="fas fa-wallet fa-lg"></i>
-                            </div>
+            <div class="col-xl-3 col-sm-6 mb-3 mb-xl-0">
+                <div class="card stat-widget {{ $netBalance >= 0 ? 'widget-primary' : 'widget-danger' }} shadow-sm border-0 h-100">
+                    <div class="card-body p-3 d-flex align-items-center justify-content-between">
+                        <div>
+                            <span class="text-muted text-uppercase font-weight-bold small">Net Balance</span>
+                            <h3 class="font-weight-bold {{ $netBalance >= 0 ? 'text-primary' : 'text-danger' }} mt-1 mb-0">{{ currency_symbol() }}{{ number_format($netBalance, 2) }}</h3>
+                            <small class="text-muted">{{ $netBalance >= 0 ? 'Positive cash surplus' : 'Negative cash deficit' }}</small>
+                        </div>
+                        <div class="p-3 bg-light rounded-circle {{ $netBalance >= 0 ? 'text-primary' : 'text-danger' }}">
+                            <i class="fas fa-wallet fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-sm-6 mb-3 mb-xl-0">
+                <div class="card stat-widget widget-info shadow-sm border-0 h-100">
+                    <div class="card-body p-3 d-flex align-items-center justify-content-between">
+                        <div>
+                            <span class="text-muted text-uppercase font-weight-bold small">Transactions</span>
+                            <h3 class="font-weight-bold text-dark mt-1 mb-0">{{ number_format($counts['total']) }}</h3>
+                            <small class="text-muted">Total recorded entries</small>
+                        </div>
+                        <div class="p-3 bg-light rounded-circle text-info">
+                            <i class="fas fa-receipt fa-2x"></i>
                         </div>
                     </div>
                 </div>
@@ -245,7 +260,7 @@
                         <!-- Flow Type -->
                         <div class="col-12 col-sm-6 col-md-3 col-lg mb-2">
                             <label class="small text-muted mb-1">Flow Type</label>
-                            <select id="flow_type" name="flow_type" class="form-control js-example-basic-single w-100" style="width:100%">
+                            <select id="flow_type" name="flow_type" class="js-example-basic-single w-100">
                                 <option value="all" {{ $selectedFlow == 'all' ? 'selected' : '' }}>All Inflows & Outflows</option>
                                 <option value="inflow" {{ $selectedFlow == 'inflow' ? 'selected' : '' }}>Inflow Only (+)</option>
                                 <option value="outflow" {{ $selectedFlow == 'outflow' ? 'selected' : '' }}>Outflow Only (-)</option>

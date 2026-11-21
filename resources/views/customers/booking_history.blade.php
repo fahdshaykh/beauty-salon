@@ -3,35 +3,7 @@
 @section('title', 'Booking History - ' . $customer->first_name . ' ' . $customer->last_name . ' | ' . (auth()->user()->companySetting->site_name ?? 'Beauty Salon'))
 
 @section('content')
-<style>
-    .customer-avatar {
-        width: 58px;
-        height: 58px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, #4b49ac 0%, #7978e9 100%);
-        color: #fff;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 22px;
-        font-weight: 700;
-        box-shadow: 0 4px 10px rgba(75, 73, 172, 0.25);
-    }
-    .stat-widget {
-        border-radius: 8px;
-        transition: all 0.2s ease-in-out;
-        border-left: 4px solid transparent;
-        background: #fff;
-    }
-    .stat-widget:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
-    }
-    .stat-widget.widget-primary { border-left-color: #4b49ac; }
-    .stat-widget.widget-success { border-left-color: #28a745; }
-    .stat-widget.widget-info { border-left-color: #17a2b8; }
-    .stat-widget.widget-danger { border-left-color: #dc3545; }
-</style>
+
 
 <div class="main-panel">
     <div class="content-wrapper">
@@ -198,7 +170,7 @@
                             <!-- Status Filter -->
                             <div class="col-md-3">
                                 <label for="status" class="form-label">Status</label>
-                                <select name="status" id="status" class="form-control">
+                                <select name="status" id="status" class="js-example-basic-single w-100">
                                     <option value="">All Statuses</option>
                                     <option value="1" {{ request('status') == '1' ? 'selected' : '' }}>Booked</option>
                                     <option value="2" {{ request('status') == '2' ? 'selected' : '' }}>In-Progress</option>
