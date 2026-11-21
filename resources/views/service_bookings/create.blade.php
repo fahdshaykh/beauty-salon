@@ -141,7 +141,7 @@
 
 
 
-                        <form class="forms-sample" action="{{route('service-bookings.store')}}" method="post">
+                        <form class="forms-sample" action="{{route('service-bookings.store')}}" method="post" enctype="multipart/form-data">
 
 
 

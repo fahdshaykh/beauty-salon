@@ -86,22 +86,73 @@ class BookingActionService
                     : (float)$taxInfo->amount;
             }
 
+            $totalAmount = (float)($data['total_price'] ?? 0) + (float)$vat;
+            $advanceAmount = 0.0;
+            $hasAdvance = !empty($data['collect_advance']) && isset($data['advance_amount']) && (float)$data['advance_amount'] > 0;
+            if ($hasAdvance) {
+                $advanceAmount = min($totalAmount, (float)$data['advance_amount']);
+            }
+
+            $amountPaid = $advanceAmount;
+            $amountPending = max(0.0, $totalAmount - $amountPaid);
+            $paymentStatus = ($amountPending <= 0.0 && $totalAmount > 0) ? 'paid' : ($amountPaid > 0.0 ? 'partial' : 'unpaid');
+
+            $paymentMethod = $hasAdvance ? ($data['payment_method'] ?? 'cash') : null;
+            $paymentDetails = $hasAdvance && !empty($data['payment_details']) 
+                ? (is_array($data['payment_details']) ? json_encode($data['payment_details']) : $data['payment_details']) 
+                : null;
+
+            $paymentInstrumentNumber = null;
+            if ($hasAdvance) {
+                if ($paymentMethod === 'cheque' && !empty($data['cheque_number'])) {
+                    $paymentInstrumentNumber = $data['cheque_number'];
+                } elseif (!empty($data['payment_details']) && is_array($data['payment_details'])) {
+                    $firstVal = reset($data['payment_details']);
+                    if (!empty($firstVal) && is_string($firstVal)) {
+                        $paymentInstrumentNumber = $firstVal;
+                    }
+                }
+            }
+
             $booking = ServiceBooking::create([
-                'invoice'         => $nextInvoice,
-                'user_id'         => $userId,
-                'company_id'      => $companyId,
-                'customer_id'     => $data['customer_id'],
-                'total_price'     => $data['total_price'],
-                'due_date'        => $dueDate,
-                'due_time'        => $dueTime,
-                'service_time'    => $serviceTime,
-                'comment'         => $data['comment'] ?? null,
-                'vat'             => $vat,
-                'service_status'  => '1', // Booked
-                'payment_days'    => 0,
-                'is_home_service' => !empty($data['is_home_service']) ? 1 : 0,
-                'booking_address' => !empty($data['is_home_service']) ? ($data['booking_address'] ?? null) : null,
+                'invoice'                   => $nextInvoice,
+                'user_id'                   => $userId,
+                'company_id'                => $companyId,
+                'customer_id'               => $data['customer_id'],
+                'total_price'               => $data['total_price'],
+                'due_date'                  => $dueDate,
+                'due_time'                  => $dueTime,
+                'service_time'              => $serviceTime,
+                'comment'                   => $data['comment'] ?? null,
+                'vat'                       => $vat,
+                'amount_paid'               => $amountPaid,
+                'amount_pending'            => $amountPending,
+                'payment_status'            => $paymentStatus,
+                'payment_instrument'        => $paymentMethod,
+                'payment_instrument_number' => $paymentInstrumentNumber,
+                'payment_details'           => $paymentDetails,
+                'service_status'            => '1', // Booked
+                'payment_days'              => 0,
+                'is_home_service'           => !empty($data['is_home_service']) ? 1 : 0,
+                'booking_address'           => !empty($data['is_home_service']) ? ($data['booking_address'] ?? null) : null,
             ]);
+
+            if ($hasAdvance && $advanceAmount > 0) {
+                DB::table('booking_payments')->insert([
+                    'company_id'      => $companyId,
+                    'booking_id'      => $booking->id,
+                    'amount'          => $advanceAmount,
+                    'payment_method'  => $paymentMethod ?: 'cash',
+                    'payment_details' => $paymentDetails,
+                    'payment_file'    => $data['payment_file_name'] ?? null,
+                    'payment_date'    => !empty($data['advance_payment_date']) ? date('Y-m-d', strtotime($data['advance_payment_date'])) : date('Y-m-d'),
+                    'payment_type'    => ($amountPending <= 0) ? 'final' : 'advance',
+                    'notes'           => $data['payment_notes'] ?? 'Advance payment received at booking creation',
+                    'created_by'      => $authUser->id ?? null,
+                    'created_at'      => now(),
+                    'updated_at'      => now(),
+                ]);
+            }
 
             // Insert service details
             if (!empty($data['service_id']) && is_array($data['service_id'])) {

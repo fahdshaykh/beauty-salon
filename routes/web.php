@@ -244,6 +244,8 @@ Route::middleware(['auth', 'company'])->group(function () {
     Route::get('view-booking/{invoice}', [ServiceBookingController::class, 'show'])->name('service-bookings.show');
     Route::get('show-job-detail/{invoice}', [ServiceBookingController::class, 'show_job_detail'])->name('service-bookings.job_detail');
     Route::post('change-booking-status', [ServiceBookingController::class, 'book_status'])->name('service-bookings.change_status');
+    Route::post('service-bookings/{id}/add-payment', [ServiceBookingController::class, 'add_payment'])->name('service-bookings.add_payment');
+    Route::get('service-bookings/{id}/payments', [ServiceBookingController::class, 'payment_history'])->name('service-bookings.payment_history');
     Route::get('fetch-job-notes/{bookingid}', [ServiceBookingController::class, 'fetch_job_notes'])->name('service-bookings.fetch_notes');
     Route::get('delete-notes/{id}', [ServiceBookingController::class, 'delete_notes'])->name('service-bookings.delete_note');
     Route::post('/update-job-notes', [ServiceBookingController::class, 'update_notes'])->name('service-bookings.update_notes');

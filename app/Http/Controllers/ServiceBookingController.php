@@ -97,6 +97,8 @@ class ServiceBookingController extends Controller
             })
             ->get();
 
+        $payment_methods = PaymentMethod::where('is_active', 1)->get();
+
         return view('service_bookings.create', compact(
             'date',
             'countries',
@@ -106,7 +108,8 @@ class ServiceBookingController extends Controller
             'booking_detail',
             'tax_info',
             'inventories',
-            'users'
+            'users',
+            'payment_methods'
         ));
     }
 
@@ -130,10 +133,24 @@ class ServiceBookingController extends Controller
             'inventory_id.*'  => 'nullable|exists:inventories,id',
             'is_home_service' => 'nullable|integer|in:0,1',
             'booking_address' => 'nullable|string|max:500|required_if:is_home_service,1',
+            'advance_amount'  => 'nullable|numeric|min:0',
+            'payment_file'    => 'nullable|file|mimes:jpeg,png,jpg,gif,svg,pdf,doc,docx|max:2048',
+        ], [
+            'payment_file.max'   => 'Payment document must not exceed 2MB in size.',
+            'payment_file.mimes' => 'Payment document must be a valid file (jpg, png, pdf, doc, docx).',
         ]);
 
         $companyId = auth()->user()->company_id;
-        $result = $this->actionService->createBooking($companyId, $request->all(), auth()->user());
+        $data = $request->all();
+
+        if ($request->hasFile('payment_file')) {
+            $file = $request->file('payment_file');
+            $filename = 'proof_' . time() . '_' . Str::random(8) . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('payment_proofs'), $filename);
+            $data['payment_file_name'] = $filename;
+        }
+
+        $result = $this->actionService->createBooking($companyId, $data, auth()->user());
 
         if (!$result['success']) {
             return redirect()->back()->with('error', $result['message']);
@@ -756,21 +773,75 @@ class ServiceBookingController extends Controller
         $payment_method = $request->input('payment_method');
         $paymentDetails = $request->input('payment_details', []);
 
+        $booking = DB::table('service_bookings')
+            ->where('id', $invoice)
+            ->where('company_id', auth()->user()->company_id)
+            ->first();
+
+        if (!$booking) {
+            return response()->json(['error' => 'Booking not found'], 404);
+        }
+
         $update = [
-            'service_status'     => $status,
-            'payment_instrument' => $payment_method,
-            'payment_details'    => !empty($paymentDetails) ? json_encode($paymentDetails) : null,
-            'updated_at'         => now(),
+            'service_status' => $status,
+            'updated_at'     => now(),
         ];
 
-        if ($payment_method === 'cheque') {
-            $update['payment_instrument_number'] = $paymentDetails['cheque_number'] 
-                ?? $request->input('cheque_number');
-        } elseif (!empty($paymentDetails) && is_array($paymentDetails)) {
-            $firstVal = reset($paymentDetails);
-            if (!empty($firstVal) && is_string($firstVal)) {
-                $update['payment_instrument_number'] = $firstVal;
+        if (!empty($payment_method)) {
+            $totalWithVat = (float)($booking->total_price ?? 0) + (float)($booking->vat ?? 0);
+            $amountPending = (float)($booking->amount_pending ?? max(0, $totalWithVat - (float)$booking->amount_paid));
+
+            $submittedAmount = $request->input('payment_amount');
+            $payAmount = ($submittedAmount !== null && is_numeric($submittedAmount) && (float)$submittedAmount > 0)
+                ? (float)$submittedAmount
+                : $amountPending;
+
+            $paymentFileName = null;
+            if ($request->hasFile('payment_file')) {
+                $file = $request->file('payment_file');
+                $paymentFileName = 'proof_' . time() . '_' . Str::random(8) . '.' . $file->getClientOriginalExtension();
+                $file->move(public_path('payment_proofs'), $paymentFileName);
             }
+
+            if ($payAmount > 0) {
+                DB::table('booking_payments')->insert([
+                    'company_id'      => auth()->user()->company_id,
+                    'booking_id'      => $booking->id,
+                    'amount'          => $payAmount,
+                    'payment_method'  => $payment_method,
+                    'payment_details' => !empty($paymentDetails) ? (is_array($paymentDetails) ? json_encode($paymentDetails) : $paymentDetails) : null,
+                    'payment_file'    => $paymentFileName,
+                    'payment_date'    => !empty($request->payment_date) ? date('Y-m-d', strtotime($request->payment_date)) : date('Y-m-d'),
+                    'payment_type'    => ($payAmount >= $amountPending) ? 'final' : 'installment',
+                    'notes'           => $request->input('payment_notes', 'Payment collected upon service completion'),
+                    'created_by'      => auth()->id(),
+                    'created_at'      => now(),
+                    'updated_at'      => now(),
+                ]);
+
+                $newPaid = (float)$booking->amount_paid + $payAmount;
+                $newPending = max(0.0, $amountPending - $payAmount);
+                $paymentStatus = ($newPending <= 0.0) ? 'paid' : 'partial';
+
+                $update['amount_paid']    = $newPaid;
+                $update['amount_pending'] = $newPending;
+                $update['payment_status'] = $paymentStatus;
+            }
+
+            $update['payment_instrument'] = $payment_method;
+            $update['payment_details']    = !empty($paymentDetails) ? (is_array($paymentDetails) ? json_encode($paymentDetails) : $paymentDetails) : null;
+
+            if ($payment_method === 'cheque') {
+                $update['payment_instrument_number'] = $paymentDetails['cheque_number'] 
+                    ?? $request->input('cheque_number');
+            } elseif (!empty($paymentDetails) && is_array($paymentDetails)) {
+                $firstVal = reset($paymentDetails);
+                if (!empty($firstVal) && is_string($firstVal)) {
+                    $update['payment_instrument_number'] = $firstVal;
+                }
+            }
+        } elseif ((int)$status === 3 && (float)$booking->amount_pending <= 0) {
+            $update['payment_status'] = 'paid';
         }
 
         DB::table('service_bookings')
@@ -779,6 +850,113 @@ class ServiceBookingController extends Controller
             ->update($update);
 
         return response()->json(['success' => 'Status changed successfully']);
+    }
+
+    public function add_payment(Request $request, $id)
+    {
+        $this->validate($request, [
+            'payment_amount' => 'required|numeric|min:0.01',
+            'payment_method' => 'required|string',
+            'payment_file'   => 'nullable|file|mimes:jpeg,png,jpg,gif,svg,pdf,doc,docx|max:2048',
+        ], [
+            'payment_file.max'   => 'Document file must not exceed 2MB in size.',
+            'payment_file.mimes' => 'Document must be a valid file (jpg, png, pdf, doc, docx).',
+        ]);
+
+        $booking = DB::table('service_bookings')
+            ->where('id', $id)
+            ->where('company_id', auth()->user()->company_id)
+            ->first();
+
+        if (!$booking) {
+            return response()->json(['error' => 'Booking not found'], 404);
+        }
+
+        $payAmount = (float)$request->payment_amount;
+        $totalWithVat = (float)($booking->total_price ?? 0) + (float)($booking->vat ?? 0);
+        $amountPending = (float)($booking->amount_pending ?? max(0, $totalWithVat - (float)$booking->amount_paid));
+
+        $paymentFileName = null;
+        if ($request->hasFile('payment_file')) {
+            $file = $request->file('payment_file');
+            $paymentFileName = 'proof_' . time() . '_' . Str::random(8) . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('payment_proofs'), $paymentFileName);
+        }
+
+        $paymentDetails = $request->input('payment_details', []);
+
+        DB::table('booking_payments')->insert([
+            'company_id'      => auth()->user()->company_id,
+            'booking_id'      => $booking->id,
+            'amount'          => $payAmount,
+            'payment_method'  => $request->payment_method,
+            'payment_details' => !empty($paymentDetails) ? (is_array($paymentDetails) ? json_encode($paymentDetails) : $paymentDetails) : null,
+            'payment_file'    => $paymentFileName,
+            'payment_date'    => !empty($request->payment_date) ? date('Y-m-d', strtotime($request->payment_date)) : date('Y-m-d'),
+            'payment_type'    => ($payAmount >= $amountPending) ? 'final' : 'installment',
+            'notes'           => $request->input('notes', 'Payment recorded'),
+            'created_by'      => auth()->id(),
+            'created_at'      => now(),
+            'updated_at'      => now(),
+        ]);
+
+        $newPaid = (float)$booking->amount_paid + $payAmount;
+        $newPending = max(0.0, $amountPending - $payAmount);
+        $paymentStatus = ($newPending <= 0.0) ? 'paid' : 'partial';
+
+        DB::table('service_bookings')
+            ->where('id', $booking->id)
+            ->where('company_id', auth()->user()->company_id)
+            ->update([
+                'amount_paid'    => $newPaid,
+                'amount_pending' => $newPending,
+                'payment_status' => $paymentStatus,
+                'updated_at'     => now(),
+            ]);
+
+        return response()->json([
+            'success'        => 'Payment recorded successfully',
+            'amount_paid'    => $newPaid,
+            'amount_pending' => $newPending,
+            'payment_status' => $paymentStatus,
+        ]);
+    }
+
+    public function payment_history($id)
+    {
+        $booking = ServiceBooking::with(['payments.creator', 'customer'])
+            ->where('id', $id)
+            ->where('company_id', auth()->user()->company_id)
+            ->firstOrFail();
+
+        return response()->json([
+            'booking' => [
+                'id'             => $booking->id,
+                'invoice'        => $booking->invoice,
+                'total_price'    => $booking->total_price,
+                'vat'            => $booking->vat,
+                'total_with_vat' => (float)$booking->total_price + (float)$booking->vat,
+                'amount_paid'    => (float)$booking->amount_paid,
+                'amount_pending' => (float)$booking->amount_pending,
+                'payment_status' => $booking->payment_status,
+                'customer_name'  => optional($booking->customer)->first_name . ' ' . optional($booking->customer)->last_name,
+            ],
+            'payments' => $booking->payments->map(function ($p) {
+                return [
+                    'id'              => $p->id,
+                    'amount'          => (float)$p->amount,
+                    'payment_method'  => ucfirst($p->payment_method),
+                    'payment_date'    => $p->payment_date ? $p->payment_date->format('Y-m-d') : '',
+                    'payment_type'    => ucfirst($p->payment_type),
+                    'payment_details' => is_string($p->payment_details) ? json_decode($p->payment_details, true) : $p->payment_details,
+                    'payment_file'    => $p->payment_file,
+                    'file_url'        => $p->payment_file ? asset('payment_proofs/' . $p->payment_file) : null,
+                    'notes'           => $p->notes,
+                    'created_by'      => optional($p->creator)->name ?? 'System',
+                    'created_at'      => $p->created_at ? $p->created_at->format('d M Y, h:i A') : '',
+                ];
+            })
+        ]);
     }
 
     public function send_review_sms($mobile_number)

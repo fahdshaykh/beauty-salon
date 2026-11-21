@@ -79,6 +79,11 @@ class ServiceBooking extends Model
 
     }
 
+    public function payments()
+    {
+        return $this->hasMany(\App\Models\BookingPayment::class, 'booking_id', 'id')->orderBy('payment_date', 'asc')->orderBy('id', 'asc');
+    }
+
     // public function inventory()
     // {
     //     return $this->belongsTo('App\Inventory','inventory_id', 'id');

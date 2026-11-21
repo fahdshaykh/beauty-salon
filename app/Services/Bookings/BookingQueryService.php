@@ -13,7 +13,7 @@ class BookingQueryService
      */
     public function buildQuery(int $companyId, Request $request, ?int $scopedUserId = null)
     {
-        $query = ServiceBooking::with(['customer', 'user', 'services', 'bookingdetail.service'])
+        $query = ServiceBooking::with(['customer', 'user', 'services', 'bookingdetail.service', 'payments'])
             ->where('company_id', $companyId);
 
         if ($scopedUserId !== null) {
@@ -170,6 +170,11 @@ class BookingQueryService
                 }
             }
 
+            $totalWithVat = (float)($value->total_price ?? 0) + (float)($value->vat ?? 0);
+            $amountPaid = (float)($value->amount_paid ?? 0);
+            $amountPending = (float)($value->amount_pending ?? max(0, $totalWithVat - $amountPaid));
+            $paymentStatus = $value->payment_status ?? ($amountPending <= 0 ? 'paid' : ($amountPaid > 0 ? 'partial' : 'unpaid'));
+
             $dataArray[$key] = [
                 'id'               => $value->id,
                 'status'           => $value->status,
@@ -181,6 +186,13 @@ class BookingQueryService
                 'user_name'        => optional($value->user)->name,
                 'price_type'       => $value->price_type,
                 'total_price'      => $value->total_price,
+                'vat'              => $value->vat ?? 0,
+                'total_with_vat'   => $totalWithVat,
+                'amount_paid'      => $amountPaid,
+                'amount_pending'   => $amountPending,
+                'payment_status'   => $paymentStatus,
+                'payment_method'   => $value->payment_instrument,
+                'payments_count'   => $value->relationLoaded('payments') ? $value->payments->count() : 0,
                 'due_date'         => $value->due_date,
                 'due_time'         => $value->due_time,
                 'service_time'     => $value->service_time,

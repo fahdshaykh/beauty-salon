@@ -300,6 +300,117 @@
     </div>
 </div>
 
+@if(empty($booking_id))
+<div class="card mb-4 border border-info shadow-sm" style="border-radius: 8px;">
+    <div class="card-header bg-light d-flex justify-content-between align-items-center py-2 px-3" style="cursor: pointer;" id="toggle-advance-payment-header">
+        <div class="d-flex align-items-center">
+            <div class="custom-control custom-checkbox mr-2">
+                <input type="checkbox" class="custom-control-input" id="collect_advance" name="collect_advance" value="1" {{ old('collect_advance') ? 'checked' : '' }}>
+                <label class="custom-control-label font-weight-bold text-dark mb-0" for="collect_advance" style="cursor: pointer;">
+                    <i class="fas fa-hand-holding-usd text-primary mr-1"></i> Collect Advance Deposit / Payment (Optional)
+                </label>
+            </div>
+        </div>
+        <span class="badge badge-outline-info font-weight-normal" id="advance-badge-preview" style="display: none;">0.00</span>
+    </div>
+
+    <div class="card-body p-3" id="advance-payment-container" style="{{ old('collect_advance') ? '' : 'display: none;' }}">
+        <p class="text-muted small mb-3">
+            If the customer is paying a partial deposit or full payment upfront today, enter the amount and payment details below. Otherwise, payment will be settled upon service completion.
+        </p>
+
+        <div class="row">
+            <!-- Advance Amount -->
+            <div class="col-md-6 mb-3">
+                <label class="font-weight-bold text-dark mb-1">
+                    Advance Amount <span class="text-danger">*</span>
+                </label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text bg-primary text-white">{{ currency_symbol() }}</span>
+                    </div>
+                    <input type="number" step="0.01" min="0" class="form-control font-weight-bold" 
+                           id="advance_amount" name="advance_amount" 
+                           placeholder="0.00" value="{{ old('advance_amount') }}">
+                </div>
+                <!-- Quick Amount Buttons -->
+                <div class="mt-2 d-flex flex-wrap">
+                    <button type="button" class="btn btn-xs btn-outline-primary mr-1 mb-1 quick-advance-btn" data-type="full">
+                        <i class="fas fa-check-circle mr-1"></i>Full Amount
+                    </button>
+                    <button type="button" class="btn btn-xs btn-outline-secondary mr-1 mb-1 quick-advance-btn" data-type="50">
+                        50% Deposit
+                    </button>
+                    <button type="button" class="btn btn-xs btn-outline-secondary mr-1 mb-1 quick-advance-btn" data-type="25">
+                        25% Deposit
+                    </button>
+                    <button type="button" class="btn btn-xs btn-outline-danger mb-1 quick-advance-btn" data-type="clear">
+                        Clear
+                    </button>
+                </div>
+            </div>
+
+            <!-- Payment Method -->
+            <div class="col-md-6 mb-3">
+                <label class="font-weight-bold text-dark mb-1">
+                    Payment Method <span class="text-danger">*</span>
+                </label>
+                <select class="form-control" name="payment_method" id="advance_payment_method">
+                    <option value="">-- Choose Payment Method --</option>
+                    @if(isset($payment_methods) && $payment_methods->count() > 0)
+                        @foreach($payment_methods as $pm)
+                            <option value="{{ strtolower($pm->method) }}"
+                                    data-fields="{{ json_encode($pm->fields ?? []) }}"
+                                    data-description="{{ $pm->description ?? '' }}"
+                                    {{ old('payment_method') == strtolower($pm->method) ? 'selected' : '' }}>
+                                {{ $pm->method }}
+                            </option>
+                        @endforeach
+                    @else
+                        <option value="cash" selected>Cash</option>
+                        <option value="card" data-fields='[{"name":"last_4_digits","label":"Card Last 4 Digits","type":"number","required":false}]'>Card</option>
+                        <option value="bank transfer" data-fields='[{"name":"transaction_ref","label":"Transaction Reference #","type":"text","required":true}]'>Bank Transfer</option>
+                        <option value="cheque" data-fields='[{"name":"cheque_number","label":"Cheque Number","type":"text","required":true}]'>Cheque</option>
+                    @endif
+                </select>
+                <small id="advance-payment-method-desc" class="form-text text-muted mt-1" style="display:none;"></small>
+            </div>
+        </div>
+
+        <!-- Dynamic Fields Container -->
+        <div id="advance-dynamic-fields-wrapper" class="card bg-light border p-3 mb-3" style="display:none;">
+            <h6 class="font-weight-bold text-dark mb-2" style="font-size: 13px;">
+                <i class="fas fa-list-alt text-primary mr-1"></i> Transaction Details
+            </h6>
+            <div id="advance-dynamic-fields-container" class="row"></div>
+        </div>
+
+        <div class="row">
+            <!-- Payment Date -->
+            <div class="col-md-6 mb-3">
+                <label class="font-weight-bold text-dark mb-1">Payment Date</label>
+                <input type="date" class="form-control" name="advance_payment_date" value="{{ date('Y-m-d') }}">
+            </div>
+
+            <!-- Payment Proof Document (Max 2MB) -->
+            <div class="col-md-6 mb-3">
+                <label class="font-weight-bold text-dark mb-1">
+                    Proof of Payment (Optional)
+                </label>
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="advance_payment_file" name="payment_file" accept=".jpg,.jpeg,.png,.gif,.svg,.pdf,.doc,.docx">
+                    <label class="custom-file-label text-truncate" for="advance_payment_file" id="advance_payment_file_label">Choose receipt or proof file...</label>
+                </div>
+                <small class="text-muted d-block mt-1">Accepted: PDF, JPG, PNG, DOCX (Max 2MB)</small>
+                <div id="advance-file-size-error" class="text-danger small mt-1 font-weight-bold" style="display:none;">
+                    <i class="fas fa-exclamation-circle mr-1"></i>File size exceeds 2MB. Please choose a smaller file.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endif
+
 <div class="form-group">
     <label for="exampleTextarea1">Comment</label>
     <textarea class="form-control" id="exampleTextarea1" name="comment" rows="4">@if(isset($comment)){{$comment}}@else{{old('comment')}}@endif</textarea>
@@ -1001,6 +1112,119 @@ $(document).ready(function() {
         });
 
         $('#total_price').val(totalPrice.toFixed(2));
+    });
+
+    // ==================== ADVANCE PAYMENT HANDLERS ====================
+    $('#collect_advance').on('change', function() {
+        if ($(this).is(':checked')) {
+            $('#advance-payment-container').slideDown(200);
+            $('#advance_amount').prop('required', true);
+            $('#advance_payment_method').prop('required', true);
+        } else {
+            $('#advance-payment-container').slideUp(200);
+            $('#advance_amount').prop('required', false);
+            $('#advance_payment_method').prop('required', false);
+            $('#advance_amount').val('');
+            $('#advance-badge-preview').hide().text('');
+        }
+    });
+
+    $('#advance_amount').on('input change', function() {
+        const val = parseFloat($(this).val()) || 0;
+        if (val > 0) {
+            $('#advance-badge-preview').text('Deposit: ' + val.toFixed(2)).show();
+        } else {
+            $('#advance-badge-preview').hide().text('');
+        }
+    });
+
+    $('.quick-advance-btn').on('click', function() {
+        const type = $(this).data('type');
+        const totalPrice = parseFloat($('#total_price').val()) || 0;
+        let amount = 0;
+
+        if (type === 'full') {
+            amount = totalPrice;
+        } else if (type === '50') {
+            amount = (totalPrice * 0.5);
+        } else if (type === '25') {
+            amount = (totalPrice * 0.25);
+        } else if (type === 'clear') {
+            amount = 0;
+        }
+
+        if (amount > 0) {
+            $('#advance_amount').val(amount.toFixed(2)).trigger('input');
+            if (!$('#collect_advance').is(':checked')) {
+                $('#collect_advance').prop('checked', true).trigger('change');
+            }
+        } else {
+            $('#advance_amount').val('').trigger('input');
+        }
+    });
+
+    $('#advance_payment_method').on('change', function () {
+        const $selected = $(this).find('option:selected');
+        const description = $selected.data('description') || '';
+        let fields = $selected.data('fields') || [];
+
+        if (typeof fields === 'string') {
+            try { fields = JSON.parse(fields); } catch(e) { fields = []; }
+        }
+
+        const $wrapper = $('#advance-dynamic-fields-wrapper');
+        const $container = $('#advance-dynamic-fields-container');
+        const $desc = $('#advance-payment-method-desc');
+
+        if (description) {
+            $desc.text(description).show();
+        } else {
+            $desc.hide();
+        }
+
+        $container.empty();
+
+        if (Array.isArray(fields) && fields.length > 0) {
+            fields.forEach(function (f) {
+                const reqAttr = f.required ? 'required' : '';
+                const reqStar = f.required ? '<span class="text-danger">*</span>' : '';
+                const inputHtml = `
+                    <div class="col-md-6 mb-2">
+                        <label class="small font-weight-bold mb-1">${f.label} ${reqStar}</label>
+                        <input type="${f.type || 'text'}" 
+                               class="form-control form-control-sm" 
+                               name="payment_details[${f.name}]" 
+                               placeholder="Enter ${f.label}" 
+                               ${reqAttr}>
+                    </div>
+                `;
+                $container.append(inputHtml);
+            });
+            $wrapper.slideDown(200);
+        } else {
+            $wrapper.slideUp(200);
+        }
+    });
+
+    $('#advance_payment_file').on('change', function() {
+        const file = this.files[0];
+        const $label = $('#advance_payment_file_label');
+        const $err = $('#advance-file-size-error');
+
+        if (!file) {
+            $label.text('Choose receipt or proof file...');
+            $err.hide();
+            return;
+        }
+
+        if (file.size > 2 * 1024 * 1024) {
+            $err.show();
+            $(this).val('');
+            $label.text('Choose receipt or proof file...');
+        } else {
+            $err.hide();
+            $label.text(file.name);
+        }
     });
 
 });

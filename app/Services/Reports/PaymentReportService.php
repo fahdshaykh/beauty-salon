@@ -95,63 +95,73 @@ class PaymentReportService
 
         $records = collect();
 
-        // 1. Service Bookings (Inflow)
+        // 1. Service Booking Payments (Inflow)
         if ($flowType !== 'outflow' && ($transactionType === 'all' || $transactionType === 'booking')) {
-            $bookingsQuery = DB::table('service_bookings')
+            $bookingPaymentsQuery = DB::table('booking_payments')
+                ->join('service_bookings', 'service_bookings.id', '=', 'booking_payments.booking_id')
                 ->leftJoin('customers', 'customers.id', '=', 'service_bookings.customer_id')
-                ->where('service_bookings.company_id', $companyId)
+                ->where('booking_payments.company_id', $companyId)
                 ->where('service_bookings.is_deleted', 0)
-                ->where('service_bookings.service_status', 3) // Completed bookings
                 ->select(
-                    'service_bookings.id',
+                    'booking_payments.id',
+                    'booking_payments.booking_id',
+                    'booking_payments.amount',
+                    'booking_payments.payment_method',
+                    'booking_payments.payment_details',
+                    'booking_payments.payment_file',
+                    'booking_payments.payment_date as date',
+                    'booking_payments.payment_type',
+                    'booking_payments.created_at',
                     'service_bookings.invoice',
-                    'service_bookings.due_date as date',
                     'service_bookings.due_time',
-                    'service_bookings.total_price as amount',
-                    'service_bookings.payment_instrument as payment_method',
                     'service_bookings.payment_instrument_number',
-                    'service_bookings.payment_details',
                     'customers.first_name',
                     'customers.last_name',
                     'customers.primary_phone'
                 );
 
             if ($startDate && $endDate) {
-                $bookingsQuery->whereBetween('service_bookings.due_date', [$startDate, $endDate]);
+                $bookingPaymentsQuery->whereBetween('booking_payments.payment_date', [$startDate, $endDate]);
             } elseif ($startDate) {
-                $bookingsQuery->where('service_bookings.due_date', '>=', $startDate);
+                $bookingPaymentsQuery->where('booking_payments.payment_date', '>=', $startDate);
             } elseif ($endDate) {
-                $bookingsQuery->where('service_bookings.due_date', '<=', $endDate);
+                $bookingPaymentsQuery->where('booking_payments.payment_date', '<=', $endDate);
             }
 
             if ($methodName) {
-                $bookingsQuery->where(function ($q) use ($methodName, $methodId) {
-                    $q->whereRaw('LOWER(service_bookings.payment_instrument) = ?', [$methodName]);
+                $bookingPaymentsQuery->where(function ($q) use ($methodName, $methodId) {
+                    $q->whereRaw('LOWER(booking_payments.payment_method) = ?', [$methodName]);
                     if ($methodId) {
-                        $q->orWhere('service_bookings.payment_instrument', (string)$methodId);
+                        $q->orWhere('booking_payments.payment_method', (string)$methodId);
                     }
                 });
             }
 
-            $bookings = $bookingsQuery->get();
+            $bookingPayments = $bookingPaymentsQuery->get();
 
-            foreach ($bookings as $b) {
-                $partyName = trim(($b->first_name ?? '') . ' ' . ($b->last_name ?? ''));
+            foreach ($bookingPayments as $bp) {
+                $partyName = trim(($bp->first_name ?? '') . ' ' . ($bp->last_name ?? ''));
+                $typeSuffix = ($bp->payment_type === 'advance') 
+                    ? ' (Advance)' 
+                    : (($bp->payment_type === 'installment') ? ' (Installment)' : '');
+
                 $records->push([
-                    'id'               => $b->id,
+                    'id'               => $bp->id,
+                    'booking_id'       => $bp->booking_id,
                     'source_key'       => 'booking',
-                    'source_label'     => 'Service Booking',
-                    'source_badge'     => 'badge-success',
+                    'source_label'     => 'Service Booking' . $typeSuffix,
+                    'source_badge'     => ($bp->payment_type === 'advance') ? 'badge-info' : 'badge-success',
                     'flow'             => 'inflow',
-                    'date'             => $b->date ?: date('Y-m-d'),
-                    'time'             => $b->due_time,
-                    'reference'        => $b->invoice ?: ('#SB-' . $b->id),
+                    'date'             => $bp->date ?: date('Y-m-d', strtotime($bp->created_at)),
+                    'time'             => $bp->due_time ?: date('H:i', strtotime($bp->created_at)),
+                    'reference'        => $bp->invoice ? ('#' . $bp->invoice) : ('#SB-' . $bp->booking_id),
                     'party'            => $partyName ?: 'Customer',
-                    'party_phone'      => $b->primary_phone ?? '',
-                    'description'      => 'Customer Appointment Service',
-                    'payment_method'   => ucfirst($b->payment_method ?: 'Cash'),
-                    'payment_details'  => $this->formatPaymentDetails($b->payment_details, $b->payment_instrument_number),
-                    'inflow_amount'    => (float)$b->amount,
+                    'party_phone'      => $bp->primary_phone ?? '',
+                    'description'      => 'Customer Appointment Service' . $typeSuffix,
+                    'payment_method'   => ucfirst($bp->payment_method ?: 'Cash'),
+                    'payment_details'  => $this->formatPaymentDetails($bp->payment_details, $bp->payment_instrument_number),
+                    'payment_file'     => $bp->payment_file,
+                    'inflow_amount'    => (float)$bp->amount,
                     'outflow_amount'   => 0.00,
                 ]);
             }
