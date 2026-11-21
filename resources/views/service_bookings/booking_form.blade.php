@@ -200,11 +200,11 @@
                     </div>
                 </div>
 
-                <div class="form-group">
+                {{-- <div class="form-group">
                     <div class="input-group">
                         <input type="number" id="num_days" name="num_days" class="form-control @if(isset($pay_days) && $pay_days==0 || !isset($pay_days)) hide @endif" placeholder="Enter number of days 1 or greater" value="@if(isset($pay_days)){{$pay_days}}@else 1 @endif">
                     </div>
-                </div>
+                </div> --}}
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">

@@ -139,7 +139,7 @@ class ServiceBookingController extends Controller
             return redirect()->back()->with('error', $result['message']);
         }
 
-        return redirect()->route('service-bookings.index')->with('success', $result['message']);
+        return back()->with('success', $result['message']);
     }
 
     public function check_if_financial_year($financial_year)
