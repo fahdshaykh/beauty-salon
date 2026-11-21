@@ -39,7 +39,7 @@
                 <button type="button" onclick="window.print()" class="btn btn-outline-dark btn-sm mr-2 mb-2">
                     <i class="fa fa-print mr-1"></i> Print Statement
                 </button>
-                <a href="{{ route('suppliers.index') }}" class="btn btn-outline-secondary btn-sm mb-2">
+                <a href="{{ route('suppliers.index') }}" class="btn btn-light btn-fw btn-sm mb-2">
                     <i class="fa fa-arrow-left mr-1"></i> Back to Suppliers
                 </a>
             </div>
@@ -403,6 +403,7 @@
                                     <tr>
                                         <th class="text-nowrap">Date</th>
                                         <th class="text-nowrap">Payment Voucher #</th>
+                                        <th class="text-nowrap">Payment Method</th>
                                         <th>Linked Purchase Bill</th>
                                         <th class="text-right text-nowrap">Amount Paid</th>
                                         <th>Note</th>
@@ -413,6 +414,22 @@
                                         <tr>
                                             <td class="text-nowrap">{{ $payment->created_at->format('Y-m-d') }}</td>
                                             <td class="font-weight-bold text-primary text-nowrap">PAY-{{ str_pad($payment->id, 5, '0', STR_PAD_LEFT) }}</td>
+                                            <td>
+                                                <span class="badge badge-light border font-weight-bold text-dark">
+                                                    {{ ucfirst($payment->payment_method ?: 'Cash') }}
+                                                </span>
+                                                @if(!empty($payment->payment_details) && is_array($payment->payment_details))
+                                                    <div class="mt-1 small">
+                                                        @foreach($payment->payment_details as $k => $v)
+                                                            @if($v !== null && $v !== '')
+                                                                <span class="badge badge-light text-muted border mr-1 mb-1">
+                                                                    <strong class="text-dark">{{ ucwords(str_replace('_', ' ', $k)) }}:</strong> {{ $v }}
+                                                                </span>
+                                                            @endif
+                                                        @endforeach
+                                                    </div>
+                                                @endif
+                                            </td>
                                             <td>
                                                 @if($payment->inventory_purchase_id)
                                                     <span class="badge badge-outline-secondary">Bill #{{ $payment->inventory_purchase_id }} ({{ $payment->purchase->inventory->name ?? 'Inventory' }})</span>
@@ -425,7 +442,7 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="5" class="text-center py-4 text-muted">
+                                            <td colspan="6" class="text-center py-4 text-muted">
                                                 No payment records found for this period.
                                             </td>
                                         </tr>
@@ -479,7 +496,7 @@
     min-width: 700px;
 }
 .table-payments {
-    min-width: 580px;
+    min-width: 700px;
 }
 
 @media (max-width: 767.98px) {

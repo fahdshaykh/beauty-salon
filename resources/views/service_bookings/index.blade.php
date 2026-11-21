@@ -526,30 +526,52 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="ModalLabel">Payment Method</h5>
+                <h5 class="modal-title font-weight-bold text-dark" id="ModalLabel">
+                    <i class="fas fa-money-check-alt text-primary mr-2"></i>Payment Method
+                </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form id="payment-form" action="/checkout" method="post">
+            <form id="payment-form" action="{{ url('change-booking-status') }}" method="post">
                 @csrf
                 <div class="modal-body">
-                    <div class="form-group">
-                        <select class="form-control form-control-lg" name="payment_method" id="payment_method" required>
-                            <option value="">Select Payment Method</option>
-                            <option value="cash">Cash</option>
-                            <option value="paypal">PayPal</option>
-                            <option value="stripe">Stripe</option>
+                    <div class="form-group mb-3">
+                        <label class="font-weight-bold text-dark mb-1">Select Payment Method <span class="text-danger">*</span></label>
+                        <select class="form-control" name="payment_method" id="payment_method" required>
+                            <option value="">-- Choose Payment Method --</option>
+                            @if(isset($payment_methods) && $payment_methods->count() > 0)
+                                @foreach($payment_methods as $pm)
+                                    <option value="{{ strtolower($pm->method) }}" 
+                                            data-fields="{{ json_encode($pm->fields ?? []) }}"
+                                            data-description="{{ $pm->description ?? '' }}">
+                                        {{ $pm->method }}
+                                    </option>
+                                @endforeach
+                            @else
+                                <option value="cash">Cash</option>
+                                <option value="card" data-fields='[{"name":"last_4_digits","label":"Card Last 4 Digits","type":"number","required":false}]'>Card</option>
+                                <option value="cheque" data-fields='[{"name":"cheque_number","label":"Cheque Number","type":"text","required":true}]'>Cheque</option>
+                                <option value="bank transfer" data-fields='[{"name":"transaction_ref","label":"Transaction Reference #","type":"text","required":true}]'>Bank Transfer</option>
+                            @endif
                         </select>
+                        <small id="payment-method-desc" class="form-text text-muted mt-1" style="display:none;"></small>
                     </div>
-                    <div class="form-group">
-                        <label for="cheque_number" class="cheque_number_label" style="display:none">Cheque Number:</label>
-                        <input type="text" class="form-control" id="cheque_number" name="cheque_number" style="display:none">
+
+                    <!-- Dynamic Transaction Inputs -->
+                    <div id="dynamic-payment-fields-wrapper" class="card bg-light border p-3 mb-3" style="display:none;">
+                        <h6 class="font-weight-bold text-dark small mb-2">
+                            <i class="fas fa-list-alt text-primary mr-1"></i> Transaction Details
+                        </h6>
+                        <div id="dynamic-payment-fields-container"></div>
                     </div>
+
                     <input type="hidden" id="invoice" name="invoice">
-                    <input type="hidden" id="service_status" name="service_status">
+                    <input type="hidden" id="service_status" name="service_status" value="3">
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-success">Submit</button>
+                    <button type="submit" class="btn btn-success font-weight-bold">
+                        <i class="fas fa-check mr-1"></i> Complete Booking
+                    </button>
                 </div>
             </form>
         </div>
@@ -682,6 +704,58 @@ $(document).ready(function () {
                 });
             }
         });
+    });
+
+    // 4.5 DYNAMIC PAYMENT METHOD FIELDS
+    $('#payment_method').on('change', function () {
+        const $selected = $(this).find('option:selected');
+        const description = $selected.data('description') || '';
+        let fields = $selected.data('fields') || [];
+
+        if (typeof fields === 'string') {
+            try { fields = JSON.parse(fields); } catch(e) { fields = []; }
+        }
+
+        const $wrapper = $('#dynamic-payment-fields-wrapper');
+        const $container = $('#dynamic-payment-fields-container');
+        const $desc = $('#payment-method-desc');
+
+        if (description) {
+            $desc.text(description).show();
+        } else {
+            $desc.hide();
+        }
+
+        $container.empty();
+
+        if (Array.isArray(fields) && fields.length > 0) {
+            fields.forEach(function (f) {
+                const reqAttr = f.required ? 'required' : '';
+                const reqStar = f.required ? '<span class="text-danger">*</span>' : '';
+                const inputHtml = `
+                    <div class="form-group mb-2">
+                        <label class="small font-weight-bold mb-1">${f.label} ${reqStar}</label>
+                        <input type="${f.type || 'text'}" 
+                               class="form-control form-control-sm" 
+                               name="payment_details[${f.name}]" 
+                               placeholder="Enter ${f.label}" 
+                               ${reqAttr}>
+                    </div>
+                `;
+                $container.append(inputHtml);
+            });
+            $wrapper.slideDown(200);
+        } else {
+            $wrapper.slideUp(200);
+        }
+    });
+
+    // Reset payment fields when modal hidden
+    $('#payment-modal').on('hidden.bs.modal', function () {
+        $('#payment_method').val('');
+        $('#dynamic-payment-fields-wrapper').hide();
+        $('#dynamic-payment-fields-container').empty();
+        $('#payment-method-desc').hide();
     });
 
     // 5. PAYMENT MODAL SUBMIT

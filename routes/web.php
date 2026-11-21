@@ -40,7 +40,8 @@ use App\Http\Controllers\{
     EmailTemplateController,
     StripeController,
     TicketController,
-    WorkScheduleController
+    WorkScheduleController,
+    PaymentMethodController
 };
 // use App\Http\Controllers\Admin\CompanyLimitController;
 use Illuminate\Support\Facades\Route;
@@ -305,6 +306,8 @@ Route::middleware(['auth', 'company'])->group(function () {
     Route::get('expense-reports', [ReportController::class, 'expense_index'])->name('expense.reports');
     Route::get('record/expense', [ReportController::class, 'expense_record'])->name('expense.record');
     Route::get('expense-report/{start_date}/{end_date}/{expense_type}/{method}', [ReportController::class, 'reportExpenseCsv'])->name('expense.export');
+    Route::get('payment-reports', [ReportController::class, 'payment_index'])->name('payment.reports');
+    Route::get('payment-reports/export', [ReportController::class, 'reportPaymentCsv'])->name('payment.export');
     Route::get('graph-report', [ReportController::class, 'graph_report'])->name('graph.report');
     Route::get('get-booking-chart', [ReportController::class, 'get_booking_chart'])->name('chart.booking');
     Route::get('get-heat-chart', [ReportController::class, 'heat_graph_report'])->name('chart.heat');
@@ -357,6 +360,12 @@ Route::middleware(['auth', 'company'])->group(function () {
     Route::get('theme-settings/edit/{id}', [SettingController::class, 'theme_settings_edit'])->name('theme.edit');
     Route::post('theme-settings-update', [SettingController::class, 'theme_settings_update'])->name('theme.update');
     Route::post('update-booking-message', [SettingController::class, 'booking_message_update'])->name('settings.booking_message');
+
+    // ── Payment Methods ──
+    Route::get('payment-methods', [PaymentMethodController::class, 'index'])->name('payment-methods.index');
+    Route::post('payment-methods', [PaymentMethodController::class, 'store'])->name('payment-methods.store');
+    Route::put('payment-methods/{id}', [PaymentMethodController::class, 'update'])->name('payment-methods.update');
+    Route::delete('payment-methods/{id}', [PaymentMethodController::class, 'destroy'])->name('payment-methods.destroy');
 
     // ── Quotations ──
     Route::get('quotations', [QuoteController::class, 'index'])->name('quotations.index');

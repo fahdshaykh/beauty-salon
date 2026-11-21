@@ -32,7 +32,7 @@
                         <h4 class="card-title mb-0">Expense Report</h4>
                     </div>
                     <div class="col-md-6 text-md-right mt-2 mt-md-0">
-                        <a href="{{ url('expense-reports') }}" class="btn btn-outline-primary btn-sm">
+                        <a href="{{ url('expense-reports') }}" class="btn btn-light btn-fw btn-sm">
                             <i class="fas fa-arrow-left"></i> Back to Filters
                         </a>
                         @php

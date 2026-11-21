@@ -20,179 +20,7 @@
     <input type="hidden" name="booking_id" value="{{$booking_id}}">
 @endif
 
-<style>
-    .hide {
-        display: none;
-    }
-    .switch {
-        position: relative;
-        display: inline-block;
-        width: 48px;
-        height: 24px;
-    }
-    .switch input {
-        opacity: 0;
-        width: 0;
-        height: 0;
-    }
-    .slider {
-        position: absolute;
-        cursor: pointer;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-color: #cbd5e1;
-        transition: .3s;
-    }
-    .slider:before {
-        position: absolute;
-        content: "";
-        height: 18px;
-        width: 18px;
-        left: 3px;
-        bottom: 3px;
-        background-color: white;
-        transition: .3s;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-    }
-    input:checked + .slider {
-        background-color: #007bff;
-    }
-    input:focus + .slider {
-        box-shadow: 0 0 1px #007bff;
-    }
-    input:checked + .slider:before {
-        transform: translateX(24px);
-    }
-    .slider.round {
-        border-radius: 24px;
-    }
-    .slider.round:before {
-        border-radius: 50%;
-    }
 
-    /* Responsive Select2 Styles */
-    span.select2.select2-container,
-    .form-group span.select2.select2-container {
-        display: block !important;
-        width: 100% !important;
-        max-width: 100% !important;
-        box-sizing: border-box !important;
-    }
-    .select2-container .select2-selection--single {
-        height: 36px !important;
-        padding: 0.35rem 0.85rem !important;
-        font-size: 0.9rem !important;
-        border: 1px solid #ced4da !important;
-        border-radius: 4px !important;
-        width: 100% !important;
-        max-width: 100% !important;
-        box-sizing: border-box !important;
-        display: flex !important;
-        align-items: center !important;
-    }
-    .select2-container .select2-selection--multiple {
-        min-height: 36px !important;
-        padding: 0.25rem 0.65rem !important;
-        font-size: 0.9rem !important;
-        border: 1px solid #ced4da !important;
-        border-radius: 4px !important;
-        width: 100% !important;
-        max-width: 100% !important;
-        box-sizing: border-box !important;
-        display: flex !important;
-        align-items: center !important;
-    }
-    .select2-container--default .select2-selection--single .select2-selection__rendered {
-        width: 100% !important;
-        max-width: 100% !important;
-        padding-left: 0 !important;
-        padding-right: 25px !important;
-        line-height: normal !important;
-        color: #495057 !important;
-        font-size: 0.95rem !important;
-        overflow: hidden !important;
-        text-overflow: ellipsis !important;
-        white-space: nowrap !important;
-        box-sizing: border-box !important;
-    }
-    .select2-container--default .select2-selection--multiple .select2-selection__rendered {
-        width: 100% !important;
-        max-width: 100% !important;
-        box-sizing: border-box !important;
-        display: flex !important;
-        flex-wrap: wrap !important;
-        gap: 6px !important;
-        padding: 0 !important;
-    }
-    .select2-container--default .select2-selection--multiple .select2-selection__choice {
-        max-width: 100% !important;
-        overflow: hidden !important;
-        text-overflow: ellipsis !important;
-        white-space: nowrap !important;
-        padding: 4px 10px !important;
-        font-size: 0.85rem !important;
-        border-radius: 4px !important;
-        margin: 2px !important;
-    }
-    .select2-container--default .select2-selection--single .select2-selection__arrow {
-        height: 100% !important;
-        right: 12px !important;
-        top: 0 !important;
-        display: flex !important;
-        align-items: center !important;
-    }
-    .select2-container--default.select2-container--open .select2-selection--single,
-    .select2-container--default.select2-container--focus .select2-selection--single {
-        border-color: #392C70 !important;
-        outline: 0 !important;
-    }
-    /* Dropdown popup styling */
-    .select2-dropdown {
-        z-index: 1055 !important;
-        box-sizing: border-box !important;
-        overflow-x: hidden !important;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
-        border: 1px solid #ced4da !important;
-        border-radius: 4px !important;
-    }
-    .select2-dropdown .select2-search--dropdown {
-        padding: 6px 8px !important;
-        box-sizing: border-box !important;
-        width: 100% !important;
-    }
-    .select2-dropdown .select2-search--dropdown .select2-search__field {
-        width: 100% !important;
-        max-width: 100% !important;
-        box-sizing: border-box !important;
-        padding: 6px 10px !important;
-        border: 1px solid #ced4da !important;
-        border-radius: 4px !important;
-    }
-    .select2-dropdown .select2-results {
-        max-width: 100% !important;
-        box-sizing: border-box !important;
-    }
-    .select2-dropdown .select2-results__options {
-        max-width: 100% !important;
-        box-sizing: border-box !important;
-        overflow-x: hidden !important;
-        max-height: 220px !important;
-    }
-    .select2-dropdown .select2-results__option {
-        white-space: normal !important;
-        word-break: break-word !important;
-        box-sizing: border-box !important;
-        padding: 8px 12px !important;
-    }
-    .select2-search--inline,
-    .select2-search--inline .select2-search__field {
-        width: 100% !important;
-        max-width: 100% !important;
-        box-sizing: border-box !important;
-    }
-</style>
 
 <div class="row">
     <div class="col-12 col-md-12 grid-margin stretch-card">
@@ -253,7 +81,7 @@
                             <i class="fas fa-history mr-1"></i>View History
                         </a>
                     </div>
-                    <select id="customer_id" name="customer_id" class="form-control @error('customer_id') is-invalid @enderror js-example-basic-single w-100" required>
+                    <select id="customer_id" name="customer_id" class="form-control @error('customer_id') is-invalid @enderror js-example-basic-single w-100" style="width: 100% !important;" required>
                         @if($booking_detail == '')
                             <option value="">Select Customer</option>
                             @foreach($customers as $customer)
@@ -275,7 +103,7 @@
 
                 <div class="form-group">
                     <label>Select Employee</label>
-                    <select id="user_id" name="user_id" class="form-control @error('user_id') is-invalid @enderror js-example-basic-single w-100" required>
+                    <select id="user_id" name="user_id" class="form-control @error('user_id') is-invalid @enderror js-example-basic-single w-100" style="width: 100% !important;" required>
                         @if($booking_detail == '')
                             <option value="">Select employee</option>
                             @foreach($users as $user)
@@ -294,13 +122,12 @@
                         </div>
                     @enderror
                 </div>
-                <br>
 
                 <input type="hidden" id="selected_services" value="{{ json_encode($selectedServices ?? []) }}">
 
                 <div class="form-group">
                     <label>Select Services</label>
-                    <select id="service_id" name="service_id[]" class="form-control @error('service_id') is-invalid @enderror js-example-basic-multiple w-100" multiple="multiple" required>
+                    <select id="service_id" name="service_id[]" class="form-control @error('service_id') is-invalid @enderror js-example-basic-multiple w-100" style="width: 100% !important;" multiple="multiple" required>
                     </select>
                     @error('service_id')
                         <div class="invalid-feedback d-block">
@@ -415,7 +242,7 @@
                 <div class="row">
                     <div class="col-12 col-md-8 mb-2 mb-md-0">
                         <label>Select Inventory</label>
-                        <select id="inventory_id" class="form-control js-example-basic-single w-100">
+                        <select id="inventory_id" class="form-control js-example-basic-single w-100" style="width: 100% !important;">
                             <option value="">Select Inventory</option>
                             @foreach($inventories as $inventory)
                                 <option value="{{ $inventory->id }}" data-name="{{ $inventory->name }}">{{ $inventory->name }}</option>
@@ -623,21 +450,29 @@
 
 <script>
 $(document).ready(function() {
-    // Ensure all select2 elements have 100% responsive width
-    if ($('.js-example-basic-single').length) {
-        $('.js-example-basic-single').select2({
-            width: '100%',
-            dropdownAutoWidth: false
+    // Ensure all select2 elements have 100% responsive width without duplicate instantiation
+    function applySelect2Responsive() {
+        $('.js-example-basic-single').each(function() {
+            if (!$(this).hasClass('select2-hidden-accessible')) {
+                $(this).select2({
+                    width: '100%',
+                    dropdownAutoWidth: false
+                });
+            }
         });
-    }
-    if ($('.js-example-basic-multiple').length) {
-        $('.js-example-basic-multiple').select2({
-            width: '100%',
-            dropdownAutoWidth: false
+        $('.js-example-basic-multiple').each(function() {
+            if (!$(this).hasClass('select2-hidden-accessible')) {
+                $(this).select2({
+                    width: '100%',
+                    dropdownAutoWidth: false
+                });
+            }
         });
+        $('.select2-container:not(.select2-container--open)').css('width', '100%');
     }
+    applySelect2Responsive();
     $(window).on('resize orientationchange', function() {
-        $('span.select2.select2-container').css('width', '100%');
+        $('.select2-container:not(.select2-container--open)').css('width', '100%');
     });
     var selectedServices = JSON.parse($('#selected_services').val() || '[]').map(String); // Ensure IDs are strings
     var lastSelectedServiceId = selectedServices.length > 0 ? selectedServices[selectedServices.length - 1] : null;
@@ -695,6 +530,7 @@ $(document).ready(function() {
                             width: '100%',
                             dropdownAutoWidth: false
                         });
+                        $('#service_id').next('.select2-container').css('width', '100%');
 
                         // Trigger service price calculation
                         $('#service_id').trigger('change');

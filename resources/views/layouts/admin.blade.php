@@ -509,9 +509,10 @@
             $isRepCustGraph = request()->routeIs('customer.graph', 'customer.graph_report', 'customer.country_graph', 'customer.country_graph_report') || request()->is('customer-graph*') || request()->is('customer-country*');
             $isRepInventory = request()->routeIs('inventory-reports', 'inventory.record', 'inventory.report_by_date') || request()->is('inventory-reports*');
             $isRepExpense = request()->routeIs('expense.reports', 'expense.record', 'expense.export') || request()->is('expense-reports*');
+            $isRepPayments = request()->routeIs('payment.reports', 'payment.export') || request()->is('payment-reports*');
             $isRepProfitLoss = request()->routeIs('profit_loss.*') || request()->is('profit-loss-report*') || request()->is('zipcode*');
             $isRepLimits = request()->routeIs('company.limits') || request()->is('company/limits*');
-            $isReports = $isRepServicesGraph || $isRepBookings || $isRepEmpGraph || $isRepCustomer || $isRepCustGraph || $isRepInventory || $isRepExpense || $isRepProfitLoss || $isRepLimits;
+            $isReports = $isRepServicesGraph || $isRepBookings || $isRepEmpGraph || $isRepCustomer || $isRepCustGraph || $isRepInventory || $isRepExpense || $isRepPayments || $isRepProfitLoss || $isRepLimits;
           @endphp
           <li class="nav-item {{ $isReports ? 'active' : '' }}">
 
@@ -556,6 +557,10 @@
                 @can('view expense report')
                 <li class="nav-item"> <a class="nav-link {{ $isRepExpense ? 'active' : '' }}" href="{{url('expense-reports')}}">Expense Report</a></li>
                 @endcan
+
+                @canany(['view payment report', 'view reports', 'view expense report', 'view bookings report'])
+                <li class="nav-item"> <a class="nav-link {{ $isRepPayments ? 'active' : '' }}" href="{{url('payment-reports')}}">Payment Report</a></li>
+                @endcanany
 
                 @can('view profit & loss graph')
                 <li class="nav-item"> <a class="nav-link {{ $isRepProfitLoss ? 'active' : '' }}" href="{{url('profit-loss-report')}}">Profit & Loss Graph</a></li>
@@ -684,7 +689,8 @@
           @can('view settings')
           @php
             $isThemeSetting = request()->routeIs('theme.settings', 'theme.edit') || request()->is('theme-settings*');
-            $isSettings = $isThemeSetting || request()->is('settings*') || request()->is('message-setting*') || request()->is('email-settings*') || request()->is('review-settings*');
+            $isPaymentMethods = request()->routeIs('payment-methods.*') || request()->is('payment-methods*');
+            $isSettings = $isThemeSetting || $isPaymentMethods || request()->is('settings*') || request()->is('message-setting*') || request()->is('email-settings*') || request()->is('review-settings*');
           @endphp
           <li class="nav-item {{ $isSettings ? 'active' : '' }}">
 
@@ -704,6 +710,7 @@
                 @can('general settings')
                 <li class="nav-item"> <a class="nav-link {{ $isThemeSetting ? 'active' : '' }}" href="{{url('theme-settings')}}"> General Setting</a></li>
                 @endcan
+                <li class="nav-item"> <a class="nav-link {{ $isPaymentMethods ? 'active' : '' }}" href="{{route('payment-methods.index')}}"> Payment Methods</a></li>
               </ul>
 
             </div>
@@ -998,7 +1005,7 @@
 
   <script src="{{asset('js/todolist.js')}}"></script>
 
-  <script src="{{asset('js/select2.js')}}"></script>
+  <script src="{{asset('js/select2.js')}}?v=2.1"></script>
 
   <script src="{{asset('js/formpickers.js')}}"></script>
 

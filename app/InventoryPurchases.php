@@ -22,10 +22,15 @@ class InventoryPurchases extends Model
         'amount_paid',
         'amount_pending',
         'payment_type',
+        'payment_details',
         'image',
         'supplier_id',
         'purchase_date',
         'expiry_date'
+    ];
+
+    protected $casts = [
+        'payment_details' => 'array'
     ];
 
     public function inventory()

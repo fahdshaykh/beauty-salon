@@ -17,6 +17,7 @@ use App\Inventory;
 use App\InventoryBook;
 use App\InventoryRemain;
 use App\User;
+use App\Models\PaymentMethod;
 use App\Helpers\LimitHelper;
 use App\Services\Bookings\BookingQueryService;
 use App\Services\Bookings\BookingActionService;
@@ -50,8 +51,9 @@ class ServiceBookingController extends Controller
 
         $services = Services::where('company_id', $companyId)->where('is_active', 1)->get();
         $users    = User::where('company_id', $companyId)->where('is_active', 1)->get();
+        $payment_methods = PaymentMethod::where('is_active', 1)->get();
 
-        return view('service_bookings.index', compact('data_array', 'bookings', 'rows', 'services', 'users'));
+        return view('service_bookings.index', compact('data_array', 'bookings', 'rows', 'services', 'users', 'payment_methods'));
     }
 
     public function create($date = null)
@@ -752,15 +754,23 @@ class ServiceBookingController extends Controller
         $invoice        = $request->input('invoice');
         $status         = $request->input('service_status');
         $payment_method = $request->input('payment_method');
+        $paymentDetails = $request->input('payment_details', []);
 
         $update = [
             'service_status'     => $status,
             'payment_instrument' => $payment_method,
+            'payment_details'    => !empty($paymentDetails) ? json_encode($paymentDetails) : null,
             'updated_at'         => now(),
         ];
 
         if ($payment_method === 'cheque') {
-            $update['payment_instrument_number'] = $request->input('cheque_number');
+            $update['payment_instrument_number'] = $paymentDetails['cheque_number'] 
+                ?? $request->input('cheque_number');
+        } elseif (!empty($paymentDetails) && is_array($paymentDetails)) {
+            $firstVal = reset($paymentDetails);
+            if (!empty($firstVal) && is_string($firstVal)) {
+                $update['payment_instrument_number'] = $firstVal;
+            }
         }
 
         DB::table('service_bookings')

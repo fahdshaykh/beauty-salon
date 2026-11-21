@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Expense;
 use App\ExpenseType;
+use App\Models\PaymentMethod;
 use App\Models\Setting;
 use App\Models\UserSetting;
 use Illuminate\Support\Facades\Auth;
@@ -115,7 +116,7 @@ class ExpenseController extends Controller
             ->where('company_id', $user->company_id)
             ->get();
 
-        $payment_methods = DB::table('payment_methods')->get();
+        $payment_methods = PaymentMethod::where('is_active', 1)->get();
 
         return view('expenses.create', compact('expense_types','payment_methods'));
 
@@ -170,12 +171,10 @@ class ExpenseController extends Controller
         
 
         $data = $request->all();
-
-        //$data['payment_method'] = $request->payment_method;
-
         $data['company_id'] = auth()->user()->company_id;
-
-        //print_r($data); exit;
+        if (!empty($request->payment_details)) {
+            $data['payment_details'] = $request->payment_details;
+        }
 
         Expense::create($data);
 
@@ -213,7 +212,7 @@ class ExpenseController extends Controller
 
         // Load related data for the form
         $expense_types = ExpenseType::where('company_id', $user->company_id)->get();
-        $payment_methods = DB::table('payment_methods')->get();
+        $payment_methods = PaymentMethod::where('is_active', 1)->get();
 
         return view('expenses.edit', compact('expense', 'expense_types', 'payment_methods'));
     }
@@ -244,6 +243,7 @@ class ExpenseController extends Controller
 
         $data = $request->except('_token','_method');
         $data['company_id'] = auth()->user()->company_id;
+        $data['payment_details'] = $request->payment_details ?? null;
         $user = auth()->user();
         
         $expense = Expense::where('id', $id)

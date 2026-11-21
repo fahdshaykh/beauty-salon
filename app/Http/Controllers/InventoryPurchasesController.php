@@ -10,6 +10,7 @@ use App\Inventory;
 use App\Models\Supplier;
 use App\Models\SupplierBalance;
 use App\Models\SupplierPayment;
+use App\Models\PaymentMethod;
 use App\Models\Setting;
 use App\Models\UserSetting;
 use Illuminate\Support\Facades\Auth;
@@ -77,8 +78,9 @@ class InventoryPurchasesController extends Controller
 
         $inventories = Inventory::where('company_id', auth()->user()->company_id)->get();
         $suppliers = Supplier::where('is_active', 1)->where('company_id', auth()->user()->company_id)->get();
+        $payment_methods = PaymentMethod::where('is_active', 1)->get();
 
-        return view('inventories.inventories_purchase.create', compact('inventories', 'suppliers'));
+        return view('inventories.inventories_purchase.create', compact('inventories', 'suppliers', 'payment_methods'));
     }
 
     /**
@@ -98,17 +100,27 @@ class InventoryPurchasesController extends Controller
             'quantity'       => 'required|numeric|min:1',
             'price'          => 'required|numeric|min:0',
             'supplier_id'    => 'required|exists:suppliers,id',
-            'paypemnt_type'  => 'required|in:cash,check',
+            'payment_type'   => 'nullable|string',
+            'paypemnt_type'  => 'nullable|string',
             'amount_paid'    => 'required|numeric|min:0|lte:price',
             'purchase_date'  => 'required|date',
             'amount_pending' => 'nullable|numeric|min:0',
             'description'    => 'nullable|string|max:160',
+            'payment_details'=> 'nullable|array',
         ]);
+
+        $paymentType = $request->payment_type ?? $request->paypemnt_type ?? 'Cash';
+        $methodObj = PaymentMethod::find($paymentType);
+        if ($methodObj) {
+            $paymentType = $methodObj->method;
+        }
 
         $data = $request->all();
         $data['company_id'] = auth()->user()->company_id;  
+        $data['payment_type'] = $paymentType;
         $data['amount_pending'] = $request->price - $request->amount_paid;
-        // dd($data);
+        $data['payment_details'] = $request->payment_details ?? null;
+
         $purchase = InventoryPurchases::create($data);
 
         if ($request->amount_paid > 0) {
@@ -117,7 +129,7 @@ class InventoryPurchasesController extends Controller
                 'company_id' => auth()->user()->company_id,
                 'inventory_purchase_id' => $purchase->id,
                 'amount' => $request->amount_paid,
-                'note' => 'Initial payment during purchase',
+                'note' => 'Initial payment (' . $paymentType . ') during purchase',
             ]);
         }
     
@@ -151,7 +163,9 @@ class InventoryPurchasesController extends Controller
         $inventories = Inventory::where('company_id', auth()->user()->company_id)->get();
         $suppliers = Supplier::where('is_active', 1)->where('company_id', auth()->user()->company_id)->get();
         $purchase = InventoryPurchases::where('id', $id)->where('company_id', auth()->user()->company_id)->firstOrFail();
-        return view('inventories.inventories_purchase.edit', compact('purchase', 'inventories', 'suppliers'));
+        $payment_methods = PaymentMethod::where('is_active', 1)->get();
+
+        return view('inventories.inventories_purchase.edit', compact('purchase', 'inventories', 'suppliers', 'payment_methods'));
     }
 
     /**
@@ -172,17 +186,24 @@ class InventoryPurchasesController extends Controller
             'quantity'       => 'required|numeric|min:1',
             'price'          => 'required|numeric|min:0',
             'supplier_id'    => 'required|exists:suppliers,id',
-            'paypemnt_type'  => 'nullable|in:cash,check',
-            'payment_type'   => 'nullable|in:cash,check',
+            'payment_type'   => 'nullable|string',
+            'paypemnt_type'  => 'nullable|string',
             'amount_paid'    => 'required|numeric|min:0|lte:price',
             'amount_pending' => 'nullable|numeric|min:0',
             'description'    => 'nullable|string|max:160',
+            'payment_details'=> 'nullable|array',
         ]);
 
         $purchase = InventoryPurchases::where('id', $id)->where('company_id', auth()->user()->company_id)->firstOrFail();
     
         // Calculate new pending amount
         $newAmountPending = $request->price - $request->amount_paid;
+
+        $paymentType = $request->payment_type ?? $request->paypemnt_type ?? $purchase->payment_type ?? 'Cash';
+        $methodObj = PaymentMethod::find($paymentType);
+        if ($methodObj) {
+            $paymentType = $methodObj->method;
+        }
     
         // Update the inventory purchase
         $purchase->update([
@@ -192,7 +213,8 @@ class InventoryPurchasesController extends Controller
             'price' => $request->price,
             'amount_paid' => $request->amount_paid,
             'amount_pending' => $newAmountPending,
-            'payment_type' => $request->payment_type ?? $request->paypemnt_type,
+            'payment_type' => $paymentType,
+            'payment_details' => $request->payment_details ?? $purchase->payment_details,
             'description' => $request->description,
         ]);
     

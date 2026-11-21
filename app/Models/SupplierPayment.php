@@ -10,7 +10,19 @@ class SupplierPayment extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['supplier_id', 'company_id', 'inventory_purchase_id', 'amount', 'note'];
+    protected $fillable = [
+        'supplier_id',
+        'company_id',
+        'inventory_purchase_id',
+        'amount',
+        'payment_method',
+        'payment_details',
+        'note',
+    ];
+
+    protected $casts = [
+        'payment_details' => 'array',
+    ];
 
     public function supplier()
     {

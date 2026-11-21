@@ -8,6 +8,8 @@ use App\Services\Reports\BookingReportService;
 use App\Services\Reports\InventoryReportService;
 use App\Services\Reports\ExpenseReportService;
 use App\Services\Reports\ProfitLossReportService;
+use App\Services\Reports\PaymentReportService;
+use App\Models\PaymentMethod;
 
 class ReportController extends Controller
 {
@@ -15,7 +17,8 @@ class ReportController extends Controller
         protected BookingReportService $bookingReportService,
         protected InventoryReportService $inventoryReportService,
         protected ExpenseReportService $expenseReportService,
-        protected ProfitLossReportService $profitLossReportService
+        protected ProfitLossReportService $profitLossReportService,
+        protected PaymentReportService $paymentReportService
     ) {}
 
     public function index()
@@ -464,6 +467,46 @@ class ReportController extends Controller
             'expense_type'   => $type,
             'payment_method' => $method,
         ]);
+    }
+
+    public function payment_index(Request $request)
+    {
+        if (! (auth()->user() && (
+            auth()->user()->can('view payment report') ||
+            auth()->user()->can('view reports') ||
+            auth()->user()->can('view expense report') ||
+            auth()->user()->can('view bookings report')
+        ))) {
+            abort(403);
+        }
+
+        $companyId = auth()->user()->company_id;
+
+        $payment_methods = PaymentMethod::where('is_active', 1)->get();
+
+        $filters = $request->all();
+        if (!$request->has('start_date') && !$request->has('end_date')) {
+            $filters['start_date'] = date('Y-m-01');
+            $filters['end_date']   = date('Y-m-d');
+        }
+
+        $reportData = $this->paymentReportService->getReportData($companyId, $filters);
+
+        return view('reports.payment_reports', compact('payment_methods', 'reportData', 'filters'));
+    }
+
+    public function reportPaymentCsv(Request $request)
+    {
+        if (! (auth()->user() && (
+            auth()->user()->can('view payment report') ||
+            auth()->user()->can('view reports') ||
+            auth()->user()->can('view expense report') ||
+            auth()->user()->can('view bookings report')
+        ))) {
+            abort(403);
+        }
+
+        return $this->paymentReportService->streamCsvExport(auth()->user()->company_id, $request->all());
     }
 
     public function limits()
