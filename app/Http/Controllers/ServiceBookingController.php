@@ -134,6 +134,8 @@ class ServiceBookingController extends Controller
             'is_home_service' => 'nullable|integer|in:0,1',
             'booking_address' => 'nullable|string|max:500|required_if:is_home_service,1',
             'advance_amount'  => 'nullable|numeric|min:0',
+            'is_discount'     => 'nullable',
+            'discount_amount' => 'nullable|numeric|min:0',
             'payment_file'    => 'nullable|file|mimes:jpeg,png,jpg,gif,svg,pdf,doc,docx|max:2048',
         ], [
             'payment_file.max'   => 'Payment document must not exceed 2MB in size.',
@@ -936,10 +938,12 @@ class ServiceBookingController extends Controller
                 'total_price'    => $booking->total_price,
                 'vat'            => $booking->vat,
                 'total_with_vat' => (float)$booking->total_price + (float)$booking->vat,
-                'amount_paid'    => (float)$booking->amount_paid,
-                'amount_pending' => (float)$booking->amount_pending,
-                'payment_status' => $booking->payment_status,
-                'customer_name'  => optional($booking->customer)->first_name . ' ' . optional($booking->customer)->last_name,
+                'amount_paid'     => (float)$booking->amount_paid,
+                'amount_pending'  => (float)$booking->amount_pending,
+                'payment_status'  => $booking->payment_status,
+                'is_discount'     => (bool)$booking->is_discount,
+                'discount_amount' => (float)($booking->discount_amount ?? 0),
+                'customer_name'   => optional($booking->customer)->first_name . ' ' . optional($booking->customer)->last_name,
             ],
             'payments' => $booking->payments->map(function ($p) {
                 return [

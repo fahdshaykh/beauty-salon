@@ -79,6 +79,21 @@ class BookingActionService
                 $nextInvoice = ($lastInvoice ? (int)$lastInvoice : 0) + 1;
             }
 
+            $isDiscount = !empty($data['is_discount']) ? 1 : 0;
+            $discountAmount = 0.0;
+
+            if ($isDiscount) {
+                $submittedTotal = (float)($data['total_price'] ?? 0);
+                $advance = (float)($data['advance_amount'] ?? 0);
+                $discountAmount = isset($data['discount_amount']) && (float)$data['discount_amount'] > 0
+                    ? (float)$data['discount_amount']
+                    : max(0.0, $submittedTotal - $advance);
+
+                if ($advance > 0) {
+                    $data['total_price'] = $advance;
+                }
+            }
+
             $vat = 0;
             if ($taxInfo && $taxInfo->tax_status == 1 && !empty($taxInfo->amount) && ($data['survey'] ?? '') === 'no') {
                 $vat = $taxInfo->vat == 1
@@ -128,6 +143,8 @@ class BookingActionService
                 'amount_paid'               => $amountPaid,
                 'amount_pending'            => $amountPending,
                 'payment_status'            => $paymentStatus,
+                'is_discount'               => $isDiscount,
+                'discount_amount'           => $discountAmount,
                 'payment_instrument'        => $paymentMethod,
                 'payment_instrument_number' => $paymentInstrumentNumber,
                 'payment_details'           => $paymentDetails,

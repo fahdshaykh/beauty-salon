@@ -689,20 +689,27 @@
                 <div class="card bg-light border p-3 mb-3">
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <h6 class="font-weight-bold text-primary mb-0" id="hist-invoice-customer">Booking</h6>
-                        <span id="hist-status-badge"></span>
+                        <div class="d-flex align-items-center">
+                            <span id="hist-discount-badge" class="mr-2" style="display:none;"></span>
+                            <span id="hist-status-badge"></span>
+                        </div>
                     </div>
-                    <div class="row text-center mt-2">
-                        <div class="col-4 border-right">
+                    <div class="row text-center mt-2" id="hist-summary-row">
+                        <div class="col-4 border-right" id="hist-box-total">
                             <small class="text-muted d-block">Total Price</small>
                             <span class="font-weight-bold text-dark h6 mb-0">{{ currency_symbol() }}<span id="hist-total">0.00</span></span>
                         </div>
-                        <div class="col-4 border-right">
+                        <div class="col-4 border-right" id="hist-box-paid">
                             <small class="text-muted d-block">Total Paid</small>
                             <span class="font-weight-bold text-success h6 mb-0">{{ currency_symbol() }}<span id="hist-paid">0.00</span></span>
                         </div>
-                        <div class="col-4">
+                        <div class="col-4" id="hist-box-pending">
                             <small class="text-muted d-block">Remaining Balance</small>
                             <span class="font-weight-bold text-danger h6 mb-0">{{ currency_symbol() }}<span id="hist-pending">0.00</span></span>
+                        </div>
+                        <div class="col-3" id="hist-box-discount" style="display:none;">
+                            <small class="text-muted d-block">Discount Given</small>
+                            <span class="font-weight-bold text-warning h6 mb-0">{{ currency_symbol() }}<span id="hist-discount">0.00</span></span>
                         </div>
                     </div>
                 </div>
@@ -1120,6 +1127,22 @@ $(document).ready(function () {
                     badgeHtml = '<span class="badge badge-danger"><i class="fas fa-exclamation-circle mr-1"></i>Unpaid</span>';
                 }
                 $('#hist-status-badge').html(badgeHtml);
+
+                // Discount Indicator & Box
+                const hasDiscount = Boolean(b.is_discount);
+                const discountAmt = Number(b.discount_amount || 0);
+
+                if (hasDiscount) {
+                    $('#hist-discount-badge').html(`<span class="badge badge-warning text-dark font-weight-bold"><i class="fas fa-tag mr-1"></i>Discount: Yes ({{ currency_symbol() }}${discountAmt.toFixed(2)})</span>`).show();
+                    $('#hist-discount').text(discountAmt.toFixed(2));
+                    $('#hist-box-discount').show();
+                    $('#hist-box-total, #hist-box-paid, #hist-box-pending').removeClass('col-4').addClass('col-3 border-right');
+                } else {
+                    $('#hist-discount-badge').html(`<span class="badge badge-light border text-muted">Discount: No</span>`).show();
+                    $('#hist-box-discount').hide();
+                    $('#hist-box-total, #hist-box-paid, #hist-box-pending').removeClass('col-3 border-right').addClass('col-4 border-right');
+                    $('#hist-box-pending').removeClass('border-right');
+                }
 
                 // Populate Payments Table
                 $tbody.empty();

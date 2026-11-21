@@ -333,20 +333,21 @@
                            id="advance_amount" name="advance_amount" 
                            placeholder="0.00" value="{{ old('advance_amount') }}">
                 </div>
-                <!-- Quick Amount Buttons -->
-                <div class="mt-2 d-flex flex-wrap">
-                    <button type="button" class="btn btn-xs btn-outline-primary mr-1 mb-1 quick-advance-btn" data-type="full">
-                        <i class="fas fa-check-circle mr-1"></i>Full Amount
+                <!-- Single Discount Button Checkbox -->
+                <div class="mt-2 d-flex align-items-center flex-wrap">
+                    <button type="button" 
+                            class="btn btn-xs btn-outline-primary mr-2" 
+                            id="btn-discount-toggle">
+                        <i class="far fa-square mr-1" id="discount-check-icon"></i>
+                        <span>Discount</span>
                     </button>
-                    <button type="button" class="btn btn-xs btn-outline-secondary mr-1 mb-1 quick-advance-btn" data-type="50">
-                        50% Deposit
-                    </button>
-                    <button type="button" class="btn btn-xs btn-outline-secondary mr-1 mb-1 quick-advance-btn" data-type="25">
-                        25% Deposit
-                    </button>
-                    <button type="button" class="btn btn-xs btn-outline-danger mb-1 quick-advance-btn" data-type="clear">
-                        Clear
-                    </button>
+                    <input type="checkbox" name="is_discount" id="is_discount" value="1" style="display:none;" {{ old('is_discount') ? 'checked' : '' }}>
+                    <input type="hidden" name="discount_amount" id="discount_amount" value="{{ old('discount_amount', 0) }}">
+                    <input type="hidden" id="service_original_total" value="">
+
+                    <span id="discount-calc-preview" class="badge badge-warning text-dark font-weight-bold" style="display: none; font-size: 11px; padding: 4px 8px;">
+                        <i class="fas fa-tag mr-1"></i>Discount: {{ currency_symbol() }}<span id="discount-calc-amount">0.00</span> (New Total: {{ currency_symbol() }}<span id="discount-new-total">0.00</span>)
+                    </span>
                 </div>
             </div>
 
@@ -1111,10 +1112,15 @@ $(document).ready(function() {
             }
         });
 
-        $('#total_price').val(totalPrice.toFixed(2));
+        $('#service_original_total').val(totalPrice.toFixed(2));
+        if ($('#is_discount').is(':checked')) {
+            calculateDiscount();
+        } else {
+            $('#total_price').val(totalPrice.toFixed(2));
+        }
     });
 
-    // ==================== ADVANCE PAYMENT HANDLERS ====================
+    // ==================== ADVANCE PAYMENT & DISCOUNT HANDLERS ====================
     $('#collect_advance').on('change', function() {
         if ($(this).is(':checked')) {
             $('#advance-payment-container').slideDown(200);
@@ -1126,6 +1132,80 @@ $(document).ready(function() {
             $('#advance_payment_method').prop('required', false);
             $('#advance_amount').val('');
             $('#advance-badge-preview').hide().text('');
+
+            // Reset discount if advance turned off
+            if ($('#is_discount').is(':checked')) {
+                $('#btn-discount-toggle').trigger('click');
+            }
+        }
+    });
+
+    function calculateDiscount() {
+        if (!$('#is_discount').is(':checked')) {
+            return;
+        }
+
+        let original = parseFloat($('#service_original_total').val());
+        if (isNaN(original) || original <= 0) {
+            original = parseFloat($('#total_price').val()) || 0;
+            if (original > 0) {
+                $('#service_original_total').val(original.toFixed(2));
+            }
+        }
+
+        const advance = parseFloat($('#advance_amount').val()) || 0;
+
+        if (original > 0 && advance > 0 && advance < original) {
+            const discount = original - advance;
+            $('#discount_amount').val(discount.toFixed(2));
+            $('#discount-calc-amount').text(discount.toFixed(2));
+            $('#discount-new-total').text(advance.toFixed(2));
+            $('#discount-calc-preview').show();
+            $('#total_price').val(advance.toFixed(2));
+        } else if (advance >= original && original > 0) {
+            $('#discount_amount').val('0.00');
+            $('#discount-calc-amount').text('0.00');
+            $('#discount-new-total').text(advance.toFixed(2));
+            $('#discount-calc-preview').hide();
+        } else {
+            $('#discount_amount').val('0.00');
+            $('#discount-calc-preview').hide();
+        }
+    }
+
+    // Single Discount Toggle Button (behaves like a checkbox button)
+    $('#btn-discount-toggle').on('click', function() {
+        const $chk = $('#is_discount');
+        const isNowChecked = !$chk.is(':checked');
+        $chk.prop('checked', isNowChecked);
+
+        // Auto-open advance payment container if closed
+        if (isNowChecked && !$('#collect_advance').is(':checked')) {
+            $('#collect_advance').prop('checked', true).trigger('change');
+        }
+
+        if (isNowChecked) {
+            const currentTotal = parseFloat($('#total_price').val()) || 0;
+            if (currentTotal > 0 && !$('#service_original_total').val()) {
+                $('#service_original_total').val(currentTotal.toFixed(2));
+            }
+
+            $(this).removeClass('btn-outline-primary').addClass('btn-primary text-white font-weight-bold');
+            $('#discount-check-icon').removeClass('far fa-square').addClass('fas fa-check-square');
+            $(this).find('span').text('Discount (Applied)');
+            calculateDiscount();
+        } else {
+            $(this).removeClass('btn-primary text-white font-weight-bold').addClass('btn-outline-primary');
+            $('#discount-check-icon').removeClass('fas fa-check-square').addClass('far fa-square');
+            $(this).find('span').text('Discount');
+            $('#discount-calc-preview').hide();
+            $('#discount_amount').val('0.00');
+
+            const orig = $('#service_original_total').val();
+            if (orig) {
+                $('#total_price').val(orig);
+                $('#service_original_total').val('');
+            }
         }
     });
 
@@ -1136,30 +1216,9 @@ $(document).ready(function() {
         } else {
             $('#advance-badge-preview').hide().text('');
         }
-    });
 
-    $('.quick-advance-btn').on('click', function() {
-        const type = $(this).data('type');
-        const totalPrice = parseFloat($('#total_price').val()) || 0;
-        let amount = 0;
-
-        if (type === 'full') {
-            amount = totalPrice;
-        } else if (type === '50') {
-            amount = (totalPrice * 0.5);
-        } else if (type === '25') {
-            amount = (totalPrice * 0.25);
-        } else if (type === 'clear') {
-            amount = 0;
-        }
-
-        if (amount > 0) {
-            $('#advance_amount').val(amount.toFixed(2)).trigger('input');
-            if (!$('#collect_advance').is(':checked')) {
-                $('#collect_advance').prop('checked', true).trigger('change');
-            }
-        } else {
-            $('#advance_amount').val('').trigger('input');
+        if ($('#is_discount').is(':checked')) {
+            calculateDiscount();
         }
     });
 
