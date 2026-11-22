@@ -41,7 +41,8 @@ use App\Http\Controllers\{
     StripeController,
     TicketController,
     WorkScheduleController,
-    PaymentMethodController
+    PaymentMethodController,
+    UserSettingController
 };
 // use App\Http\Controllers\Admin\CompanyLimitController;
 use Illuminate\Support\Facades\Route;
@@ -167,6 +168,8 @@ Route::post('email/resend', [App\Http\Controllers\Auth\VerificationController::c
 // 5. AUTH + COMPANY MIDDLEWARE ROUTES
 // ──────────────────────────────────────
 Route::middleware(['auth', 'company'])->group(function () {
+
+    Route::post('user-settings/update', [UserSettingController::class, 'update'])->name('user-settings.update');
 
     // Home
     Route::get('/home', [HomeController::class, 'index'])->name('home');

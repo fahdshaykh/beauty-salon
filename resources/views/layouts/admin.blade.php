@@ -56,7 +56,7 @@
 
 </style>
 
-<body>
+<body class="{{ (auth()->check() && auth()->user()->getSetting('sidebar_minimize', false)) ? 'sidebar-icon-only' : '' }}">
 
 
 
@@ -1072,7 +1072,6 @@
 
   @yield('pagescript')
 
-  @push('scripts')
   <script>
   // Show Laravel Session Messages via iziToast (works on ALL pages)
   document.addEventListener('DOMContentLoaded', function () {
@@ -1226,9 +1225,64 @@
               $('.sidebar .collapse').not($targetCollapse).collapse('hide');
           }
       });
+
+      // 4) Sidebar minimize state persistence in UserSetting
+      $(document).on('click', '[data-toggle="minimize"]', function() {
+          setTimeout(function() {
+              var isMinimized = $('body').hasClass('sidebar-icon-only');
+              $.ajax({
+                  url: "{{ route('user-settings.update') }}",
+                  type: 'POST',
+                  data: {
+                      _token: "{{ csrf_token() }}",
+                      settings: {
+                          sidebar_minimize: isMinimized
+                      }
+                  }
+              });
+          }, 50);
+      });
+
+      // 5) Global Filter Section Toggle with UserSetting persistence
+      $(document).on('click', '.btn-toggle-filter', function(e) {
+          e.preventDefault();
+          var $btn = $(this);
+          var targetSelector = $btn.attr('data-target') || $btn.data('target') || '#filter-card';
+          var settingKey = $btn.attr('data-key') || $btn.data('key');
+          var $target = $(targetSelector);
+
+          if (!$target.length) {
+              return;
+          }
+
+          var isCurrentlyVisible = $target.is(':visible');
+          var willBeVisible = !isCurrentlyVisible;
+
+          if (willBeVisible) {
+              $target.stop(true, true).slideDown(200);
+              $btn.find('span').text('Hide Filter');
+              $btn.removeClass('btn-outline-secondary').addClass('btn-outline-primary');
+          } else {
+              $target.stop(true, true).slideUp(200);
+              $btn.find('span').text('Show Filter');
+              $btn.removeClass('btn-outline-primary').addClass('btn-outline-secondary');
+          }
+
+          if (settingKey) {
+              $.ajax({
+                  url: "{{ route('user-settings.update') }}",
+                  type: 'POST',
+                  data: {
+                      _token: "{{ csrf_token() }}",
+                      settings: {
+                          [settingKey]: willBeVisible
+                      }
+                  }
+              });
+          }
+      });
   });
   </script>
-  @endpush
 
   @stack('scripts')
 </body>

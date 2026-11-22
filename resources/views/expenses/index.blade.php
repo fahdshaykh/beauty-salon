@@ -22,9 +22,14 @@
 
             </h3>
 
-            @can('create expenses')
-                <a href="{{ route('expenses.create') }}" class="btn btn-primary">New Expense</a>
-            @endcan
+            <div class="d-flex align-items-center">
+                <button type="button" class="btn {{ auth()->user()->getSetting('expenses_filter_visible', true) ? 'btn-outline-primary' : 'btn-outline-secondary' }} mr-2 btn-toggle-filter" data-target="#filter-card" data-key="expenses_filter_visible">
+                    <i class="fas fa-filter mr-1"></i> <span>{{ auth()->user()->getSetting('expenses_filter_visible', true) ? 'Hide Filter' : 'Show Filter' }}</span>
+                </button>
+                @can('create expenses')
+                    <a href="{{ route('expenses.create') }}" class="btn btn-primary">New Expense</a>
+                @endcan
+            </div>
 
         </div>
 
@@ -35,7 +40,7 @@
             <div class="card-body">
 
                 <!-- Filter & Search Card -->
-                <div class="card shadow-sm mb-4">
+                <div class="card shadow-sm mb-4" id="filter-card" style="{{ auth()->user()->getSetting('expenses_filter_visible', true) ? '' : 'display: none;' }}">
                     <div class="card-body pt-4">
                         <form method="GET" action="{{ route('expenses.index') }}" class="row g-3">
                             <!-- Employee Filter -->

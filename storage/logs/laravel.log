@@ -2377,3 +2377,205 @@ Stack trace:
 #3 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(0): Illuminate/Foundation/Bootstrap/HandleExceptions->{closure:D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php:257-259}()
 #4 {main}
 "} 
+[2026-11-22 20:36:06] local.ERROR: PHP Parse error: Syntax error, unexpected T_NS_SEPARATOR on line 1 {"exception":"[object] (Psy\\Exception\\ParseErrorException(code: 0): PHP Parse error: Syntax error, unexpected T_NS_SEPARATOR on line 1 at D:/Working/Code Disk/works fahd/beauty-salon/vendor/psy/psysh/src/Exception/ParseErrorException.php:44)
+[stacktrace]
+#0 D:/Working/Code Disk/works fahd/beauty-salon/vendor/psy/psysh/src/CodeCleaner.php(657): Psy/Exception/ParseErrorException::fromParseError(Object(PhpParser/Error))
+#1 D:/Working/Code Disk/works fahd/beauty-salon/vendor/psy/psysh/src/CodeCleaner.php(273): Psy/CodeCleaner->parse('<?php // = App//U...', false)
+#2 D:/Working/Code Disk/works fahd/beauty-salon/vendor/psy/psysh/src/Shell.php(1358): Psy/CodeCleaner->clean(Array, false)
+#3 D:/Working/Code Disk/works fahd/beauty-salon/vendor/psy/psysh/src/Shell.php(1465): Psy/Shell->appendCode('// = App//User::f...', true, false)
+#4 D:/Working/Code Disk/works fahd/beauty-salon/vendor/psy/psysh/src/Shell.php(2173): Psy/Shell->setCode('// = App//User::f...', true)
+#5 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/tinker/src/Console/TinkerCommand.php(77): Psy/Shell->execute('// = App//User::f...')
+#6 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(36): Laravel/Tinker/Console/TinkerCommand->handle()
+#7 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Util.php(43): Illuminate/Container/BoundMethod::{closure:Illuminate/Container/BoundMethod::call():35}()
+#8 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(96): Illuminate/Container/Util::unwrapIfClosure(Object(Closure))
+#9 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(35): Illuminate/Container/BoundMethod::callBoundMethod(Object(Illuminate/Foundation/Application), Array, Object(Closure))
+#10 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php(799): Illuminate/Container/BoundMethod::call(Object(Illuminate/Foundation/Application), Array, Array, NULL)
+#11 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Console/Command.php(211): Illuminate/Container/Container->call(Array)
+#12 D:/Working/Code Disk/works fahd/beauty-salon/vendor/symfony/console/Command/Command.php(341): Illuminate/Console/Command->execute(Object(Symfony/Component/Console/Input/ArgvInput), Object(Illuminate/Console/OutputStyle))
+#13 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Console/Command.php(180): Symfony/Component/Console/Command/Command->run(Object(Symfony/Component/Console/Input/ArgvInput), Object(Illuminate/Console/OutputStyle))
+#14 D:/Working/Code Disk/works fahd/beauty-salon/vendor/symfony/console/Application.php(1117): Illuminate/Console/Command->run(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#15 D:/Working/Code Disk/works fahd/beauty-salon/vendor/symfony/console/Application.php(356): Symfony/Component/Console/Application->doRunCommand(Object(Laravel/Tinker/Console/TinkerCommand), Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#16 D:/Working/Code Disk/works fahd/beauty-salon/vendor/symfony/console/Application.php(195): Symfony/Component/Console/Application->doRun(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#17 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Symfony/Component/Console/Application->run(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#18 D:/Working/Code Disk/works fahd/beauty-salon/artisan(68): Illuminate/Foundation/Console/Kernel->handle(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#19 {main}
+"} 
+[2026-11-22 20:36:58] local.ERROR: PHP Parse error: Syntax error, unexpected ':', expecting ';' on line 1 {"exception":"[object] (Psy\\Exception\\ParseErrorException(code: 0): PHP Parse error: Syntax error, unexpected ':', expecting ';' on line 1 at D:/Working/Code Disk/works fahd/beauty-salon/vendor/psy/psysh/src/Exception/ParseErrorException.php:44)
+[stacktrace]
+#0 D:/Working/Code Disk/works fahd/beauty-salon/vendor/psy/psysh/src/CodeCleaner.php(657): Psy/Exception/ParseErrorException::fromParseError(Object(PhpParser/Error))
+#1 D:/Working/Code Disk/works fahd/beauty-salon/vendor/psy/psysh/src/CodeCleaner.php(273): Psy/CodeCleaner->parse('<?php $u = App//...', false)
+#2 D:/Working/Code Disk/works fahd/beauty-salon/vendor/psy/psysh/src/Shell.php(1358): Psy/CodeCleaner->clean(Array, false)
+#3 D:/Working/Code Disk/works fahd/beauty-salon/vendor/psy/psysh/src/Shell.php(1465): Psy/Shell->appendCode('$u = App//User::...', true, false)
+#4 D:/Working/Code Disk/works fahd/beauty-salon/vendor/psy/psysh/src/Shell.php(2173): Psy/Shell->setCode('$u = App//User::...', true)
+#5 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/tinker/src/Console/TinkerCommand.php(77): Psy/Shell->execute('$u = App//User::...')
+#6 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(36): Laravel/Tinker/Console/TinkerCommand->handle()
+#7 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Util.php(43): Illuminate/Container/BoundMethod::{closure:Illuminate/Container/BoundMethod::call():35}()
+#8 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(96): Illuminate/Container/Util::unwrapIfClosure(Object(Closure))
+#9 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(35): Illuminate/Container/BoundMethod::callBoundMethod(Object(Illuminate/Foundation/Application), Array, Object(Closure))
+#10 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Container/Container.php(799): Illuminate/Container/BoundMethod::call(Object(Illuminate/Foundation/Application), Array, Array, NULL)
+#11 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Console/Command.php(211): Illuminate/Container/Container->call(Array)
+#12 D:/Working/Code Disk/works fahd/beauty-salon/vendor/symfony/console/Command/Command.php(341): Illuminate/Console/Command->execute(Object(Symfony/Component/Console/Input/ArgvInput), Object(Illuminate/Console/OutputStyle))
+#13 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Console/Command.php(180): Symfony/Component/Console/Command/Command->run(Object(Symfony/Component/Console/Input/ArgvInput), Object(Illuminate/Console/OutputStyle))
+#14 D:/Working/Code Disk/works fahd/beauty-salon/vendor/symfony/console/Application.php(1117): Illuminate/Console/Command->run(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#15 D:/Working/Code Disk/works fahd/beauty-salon/vendor/symfony/console/Application.php(356): Symfony/Component/Console/Application->doRunCommand(Object(Laravel/Tinker/Console/TinkerCommand), Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#16 D:/Working/Code Disk/works fahd/beauty-salon/vendor/symfony/console/Application.php(195): Symfony/Component/Console/Application->doRun(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#17 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Symfony/Component/Console/Application->run(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#18 D:/Working/Code Disk/works fahd/beauty-salon/artisan(68): Illuminate/Foundation/Console/Kernel->handle(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#19 {main}
+"} 
+[2026-11-22 22:27:16] local.ERROR: Uncaught Error: Call to a member function getSetting() on null in D:\Working\Code Disk\works fahd\beauty-salon\storage\framework\views\60cadc689889863b21afd6d0b82835db.php:29
+Stack trace:
+#0 D:\Working\Code Disk\works fahd\beauty-salon\vendor\laravel\framework\src\Illuminate\Filesystem\Filesystem.php(123): require()
+#1 D:\Working\Code Disk\works fahd\beauty-salon\vendor\laravel\framework\src\Illuminate\Filesystem\Filesystem.php(124): Illuminate\Filesystem\Filesystem::{closure:Illuminate\Filesystem\Filesystem::getRequire():120}()
+#2 D:\Working\Code Disk\works fahd\beauty-salon\vendor\laravel\framework\src\Illuminate\View\Engines\PhpEngine.php(57): Illuminate\Filesystem\Filesystem->getRequire('D:\\Working\\Code...', Array)
+#3 D:\Working\Code Disk\works fahd\beauty-salon\vendor\laravel\framework\src\Illuminate\View\Engines\CompilerEngine.php(76): Illuminate\View\Engines\PhpEngine->evaluatePath('D:\\Working\\Code...', Array)
+#4 D:\Working\Code Disk\works fahd\beauty-salon\vendor\laravel\framework\src\Illuminate\View\View.php(208): Illuminate\View\Engines\CompilerEngine->get('D:\\Working\\Code...', Array)
+#5 D:\Working\Code Disk\works fahd\beauty-salon\vendor\laravel\framework\src\Illuminate\View\View.php(191): Illuminate\View\View->getContents()
+#6 D:\Working\Code Disk\works fahd\beauty-salon\vendor\laravel\framework\src\Illuminate\View\View.php(160): Illuminate\View\View->renderContents()
+#7 Command line code(1): Illuminate\View\View->render()
+#8 {main}
+
+Next Illuminate\View\ViewException: Call to a member function getSetting() on null (View: D:\Working\Code Disk\works fahd\beauty-salon\resources\views\categories\index.blade.php) in D:\Working\Code Disk\works fahd\beauty-salon\storage\framework\views\60cadc689889863b21afd6d0b82835db.php:29
+Stack trace:
+#0 D:\Working\Code Disk\works fahd\beauty-salon\vendor\laravel\framework\src\Illuminate\View\Engines\PhpEngine.php(59): Illuminate\View\Engines\CompilerEngine->handleViewException(Object(Error), 0)
+#1 D:\Working\Code Disk\works fahd\beauty-salon\vendor\laravel\framework\src\Illuminate\View\Engines\CompilerEngine.php(76): Illuminate\View\Engines\PhpEngine->evaluatePath('D:\\Working\\Code...', Array)
+#2 D:\Working\Code Disk\works fahd\beauty-salon\vendor\laravel\framework\src\Illuminate\View\View.php(208): Illuminate\View\Engines\CompilerEngine->get('D:\\Working\\Code...', Array)
+#3 D:\Working\Code Disk\works fahd\beauty-salon\vendor\laravel\framework\src\Illuminate\View\View.php(191): Illuminate\View\View->getContents()
+#4 D:\Working\Code Disk\works fahd\beauty-salon\vendor\laravel\framework\src\Illuminate\View\View.php(160): Illuminate\View\View->renderContents()
+#5 Command line code(1): Illuminate\View\View->render()
+#6 {main}
+  thrown {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): Uncaught Error: Call to a member function getSetting() on null in D:\\Working\\Code Disk\\works fahd\\beauty-salon\\storage\\framework\\views\\60cadc689889863b21afd6d0b82835db.php:29
+Stack trace:
+#0 D:\\Working\\Code Disk\\works fahd\\beauty-salon\\vendor\\laravel\\framework\\src\\Illuminate\\Filesystem\\Filesystem.php(123): require()
+#1 D:\\Working\\Code Disk\\works fahd\\beauty-salon\\vendor\\laravel\\framework\\src\\Illuminate\\Filesystem\\Filesystem.php(124): Illuminate\\Filesystem\\Filesystem::{closure:Illuminate\\Filesystem\\Filesystem::getRequire():120}()
+#2 D:\\Working\\Code Disk\\works fahd\\beauty-salon\\vendor\\laravel\\framework\\src\\Illuminate\\View\\Engines\\PhpEngine.php(57): Illuminate\\Filesystem\\Filesystem->getRequire('D:\\\\Working\\\\Code...', Array)
+#3 D:\\Working\\Code Disk\\works fahd\\beauty-salon\\vendor\\laravel\\framework\\src\\Illuminate\\View\\Engines\\CompilerEngine.php(76): Illuminate\\View\\Engines\\PhpEngine->evaluatePath('D:\\\\Working\\\\Code...', Array)
+#4 D:\\Working\\Code Disk\\works fahd\\beauty-salon\\vendor\\laravel\\framework\\src\\Illuminate\\View\\View.php(208): Illuminate\\View\\Engines\\CompilerEngine->get('D:\\\\Working\\\\Code...', Array)
+#5 D:\\Working\\Code Disk\\works fahd\\beauty-salon\\vendor\\laravel\\framework\\src\\Illuminate\\View\\View.php(191): Illuminate\\View\\View->getContents()
+#6 D:\\Working\\Code Disk\\works fahd\\beauty-salon\\vendor\\laravel\\framework\\src\\Illuminate\\View\\View.php(160): Illuminate\\View\\View->renderContents()
+#7 Command line code(1): Illuminate\\View\\View->render()
+#8 {main}
+
+Next Illuminate\\View\\ViewException: Call to a member function getSetting() on null (View: D:\\Working\\Code Disk\\works fahd\\beauty-salon\\resources\\views\\categories\\index.blade.php) in D:\\Working\\Code Disk\\works fahd\\beauty-salon\\storage\\framework\\views\\60cadc689889863b21afd6d0b82835db.php:29
+Stack trace:
+#0 D:\\Working\\Code Disk\\works fahd\\beauty-salon\\vendor\\laravel\\framework\\src\\Illuminate\\View\\Engines\\PhpEngine.php(59): Illuminate\\View\\Engines\\CompilerEngine->handleViewException(Object(Error), 0)
+#1 D:\\Working\\Code Disk\\works fahd\\beauty-salon\\vendor\\laravel\\framework\\src\\Illuminate\\View\\Engines\\CompilerEngine.php(76): Illuminate\\View\\Engines\\PhpEngine->evaluatePath('D:\\\\Working\\\\Code...', Array)
+#2 D:\\Working\\Code Disk\\works fahd\\beauty-salon\\vendor\\laravel\\framework\\src\\Illuminate\\View\\View.php(208): Illuminate\\View\\Engines\\CompilerEngine->get('D:\\\\Working\\\\Code...', Array)
+#3 D:\\Working\\Code Disk\\works fahd\\beauty-salon\\vendor\\laravel\\framework\\src\\Illuminate\\View\\View.php(191): Illuminate\\View\\View->getContents()
+#4 D:\\Working\\Code Disk\\works fahd\\beauty-salon\\vendor\\laravel\\framework\\src\\Illuminate\\View\\View.php(160): Illuminate\\View\\View->renderContents()
+#5 Command line code(1): Illuminate\\View\\View->render()
+#6 {main}
+  thrown at D:/Working/Code Disk/works fahd/beauty-salon/storage/framework/views/60cadc689889863b21afd6d0b82835db.php:29)
+[stacktrace]
+#0 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(247): Symfony/Component/ErrorHandler/Error/FatalError->__construct(message: ''Uncaught Error...', code: '0', error: '['type' => 1, '...', traceOffset: '0', traceArgs: '???', trace: '???')
+#1 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(234): Illuminate/Foundation/Bootstrap/HandleExceptions->fatalErrorFromPhpError(error: '['type' => 1, '...', traceOffset: '0')
+#2 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(258): Illuminate/Foundation/Bootstrap/HandleExceptions->handleShutdown()
+#3 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(0): Illuminate/Foundation/Bootstrap/HandleExceptions->{closure:D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php:257-259}()
+#4 {main}
+"} 
+[2026-11-22 22:29:35] local.ERROR: Uncaught ErrorException: Undefined variable $errors in D:\Working\Code Disk\works fahd\beauty-salon\storage\framework\views\37b1ede51601d74138b4e2ec7813192d.php:1096
+Stack trace:
+#0 D:\Working\Code Disk\works fahd\beauty-salon\vendor\laravel\framework\src\Illuminate\Foundation\Bootstrap\HandleExceptions.php(258): Illuminate\Foundation\Bootstrap\HandleExceptions->handleError(2, 'Undefined varia...', 'D:\\Working\\Code...', 1096)
+#1 D:\Working\Code Disk\works fahd\beauty-salon\storage\framework\views\37b1ede51601d74138b4e2ec7813192d.php(1096): Illuminate\Foundation\Bootstrap\HandleExceptions->{closure:Illuminate\Foundation\Bootstrap\HandleExceptions::forwardsTo():257}(2, 'Undefined varia...', 'D:\\Working\\Code...', 1096)
+#2 D:\Working\Code Disk\works fahd\beauty-salon\vendor\laravel\framework\src\Illuminate\Filesystem\Filesystem.php(123): require('D:\\Working\\Code...')
+#3 D:\Working\Code Disk\works fahd\beauty-salon\vendor\laravel\framework\src\Illuminate\Filesystem\Filesystem.php(124): Illuminate\Filesystem\Filesystem::{closure:Illuminate\Filesystem\Filesystem::getRequire():120}()
+#4 D:\Working\Code Disk\works fahd\beauty-salon\vendor\laravel\framework\src\Illuminate\View\Engines\PhpEngine.php(57): Illuminate\Filesystem\Filesystem->getRequire('D:\\Working\\Code...', Array)
+#5 D:\Working\Code Disk\works fahd\beauty-salon\vendor\laravel\framework\src\Illuminate\View\Engines\CompilerEngine.php(76): Illuminate\View\Engines\PhpEngine->evaluatePath('D:\\Working\\Code...', Array)
+#6 D:\Working\Code Disk\works fahd\beauty-salon\vendor\laravel\framework\src\Illuminate\View\View.php(208): Illuminate\View\Engines\CompilerEngine->get('D:\\Working\\Code...', Array)
+#7 D:\Working\Code Disk\works fahd\beauty-salon\vendor\laravel\framework\src\Illuminate\View\View.php(191): Illuminate\View\View->getContents()
+#8 D:\Working\Code Disk\works fahd\beauty-salon\vendor\laravel\framework\src\Illuminate\View\View.php(160): Illuminate\View\View->renderContents()
+#9 D:\Working\Code Disk\works fahd\beauty-salon\storage\framework\views\60cadc689889863b21afd6d0b82835db.php(295): Illuminate\View\View->render()
+#10 D:\Working\Code Disk\works fahd\beauty-salon\vendor\laravel\framework\src\Illuminate\Filesystem\Filesystem.php(123): require('D:\\Working\\Code...')
+#11 D:\Working\Code Disk\works fahd\beauty-salon\vendor\laravel\framework\src\Illuminate\Filesystem\Filesystem.php(124): Illuminate\Filesystem\Filesystem::{closure:Illuminate\Filesystem\Filesystem::getRequire():120}()
+#12 D:\Working\Code Disk\works fahd\beauty-salon\vendor\laravel\framework\src\Illuminate\View\Engines\PhpEngine.php(57): Illuminate\Filesystem\Filesystem->getRequire('D:\\Working\\Code...', Array)
+#13 D:\Working\Code Disk\works fahd\beauty-salon\vendor\laravel\framework\src\Illuminate\View\Engines\CompilerEngine.php(76): Illuminate\View\Engines\PhpEngine->evaluatePath('D:\\Working\\Code...', Array)
+#14 D:\Working\Code Disk\works fahd\beauty-salon\vendor\laravel\framework\src\Illuminate\View\View.php(208): Illuminate\View\Engines\CompilerEngine->get('D:\\Working\\Code...', Array)
+#15 D:\Working\Code Disk\works fahd\beauty-salon\vendor\laravel\framework\src\Illuminate\View\View.php(191): Illuminate\View\View->getContents()
+#16 D:\Working\Code Disk\works fahd\beauty-salon\vendor\laravel\framework\src\Illuminate\View\View.php(160): Illuminate\View\View->renderContents()
+#17 Command line code(1): Illuminate\View\View->render()
+#18 {main}
+
+Next Illuminate\View\ViewException: Undefined variable $errors (View: D:\Working\Code Disk\works fahd\beauty-salon\resources\views\layouts\admin.blade.php) in D:\Working\Code Disk\works fahd\beauty-salon\storage\framework\views\37b1ede51601d74138b4e2ec7813192d.php:1096
+Stack trace:
+#0 D:\Working\Code Disk\works fahd\beauty-salon\vendor\laravel\framework\src\Illuminate\View\Engines\PhpEngine.php(59): Illuminate\View\Engines\CompilerEngine->handleViewException(Object(ErrorException), 1)
+#1 D:\Working\Code Disk\works fahd\beauty-salon\vendor\laravel\framework\src\Illuminate\View\Engines\CompilerEngine.php(76): Illuminate\View\Engines\PhpEngine->evaluatePath('D:\\Working\\Code...', Array)
+#2 D:\Working\Code Disk\works fahd\beauty-salon\vendor\laravel\framework\src\Illuminate\View\View.php(208): Illuminate\View\Engines\CompilerEngine->get('D:\\Working\\Code...', Array)
+#3 D:\Working\Code Disk\works fahd\beauty-salon\vendor\laravel\framework\src\Illuminate\View\View.php(191): Illuminate\View\View->getContents()
+#4 D:\Working\Code Disk\works fahd\beauty-salon\vendor\laravel\framework\src\Illuminate\View\View.php(160): Illuminate\View\View->renderContents()
+#5 D:\Working\Code Disk\works fahd\beauty-salon\storage\framework\views\60cadc689889863b21afd6d0b82835db.php(295): Illuminate\View\View->render()
+#6 D:\Working\Code Disk\works fahd\beauty-salon\vendor\laravel\framework\src\Illuminate\Filesystem\Filesystem.php(123): require('D:\\Working\\Code...')
+#7 D:\Working\Code Disk\works fahd\beauty-salon\vendor\laravel\framework\src\Illuminate\Filesystem\Filesystem.php(124): Illuminate\Filesystem\Filesystem::{closure:Illuminate\Filesystem\Filesystem::getRequire():120}()
+#8 D:\Working\Code Disk\works fahd\beauty-salon\vendor\laravel\framework\src\Illuminate\View\Engines\PhpEngine.php(57): Illuminate\Filesystem\Filesystem->getRequire('D:\\Working\\Code...', Array)
+#9 D:\Working\Code Disk\works fahd\beauty-salon\vendor\laravel\framework\src\Illuminate\View\Engines\CompilerEngine.php(76): Illuminate\View\Engines\PhpEngine->evaluatePath('D:\\Working\\Code...', Array)
+#10 D:\Working\Code Disk\works fahd\beauty-salon\vendor\laravel\framework\src\Illuminate\View\View.php(208): Illuminate\View\Engines\CompilerEngine->get('D:\\Working\\Code...', Array)
+#11 D:\Working\Code Disk\works fahd\beauty-salon\vendor\laravel\framework\src\Illuminate\View\View.php(191): Illuminate\View\View->getContents()
+#12 D:\Working\Code Disk\works fahd\beauty-salon\vendor\laravel\framework\src\Illuminate\View\View.php(160): Illuminate\View\View->renderContents()
+#13 Command line code(1): Illuminate\View\View->render()
+#14 {main}
+
+Next Illuminate\View\ViewException: Undefined variable $errors (View: D:\Working\Code Disk\works fahd\beauty-salon\resources\views\layouts\admin.blade.php) (View: D:\Working\Code Disk\works fahd\beauty-salon\resources\views\layouts\admin.blade.php) in D:\Working\Code Disk\works fahd\beauty-salon\storage\framework\views\37b1ede51601d74138b4e2ec7813192d.php:1096
+Stack trace:
+#0 D:\Working\Code Disk\works fahd\beauty-salon\vendor\laravel\framework\src\Illuminate\View\Engines\PhpEngine.php(59): Illuminate\View\Engines\CompilerEngine->handleViewException(Object(Illuminate\View\ViewException), 0)
+#1 D:\Working\Code Disk\works fahd\beauty-salon\vendor\laravel\framework\src\Illuminate\View\Engines\CompilerEngine.php(76): Illuminate\View\Engines\PhpEngine->evaluatePath('D:\\Working\\Code...', Array)
+#2 D:\Working\Code Disk\works fahd\beauty-salon\vendor\laravel\framework\src\Illuminate\View\View.php(208): Illuminate\View\Engines\CompilerEngine->get('D:\\Working\\Code...', Array)
+#3 D:\Working\Code Disk\works fahd\beauty-salon\vendor\laravel\framework\src\Illuminate\View\View.php(191): Illuminate\View\View->getContents()
+#4 D:\Working\Code Disk\works fahd\beauty-salon\vendor\laravel\framework\src\Illuminate\View\View.php(160): Illuminate\View\View->renderContents()
+#5 Command line code(1): Illuminate\View\View->render()
+#6 {main}
+  thrown {"userId":1,"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): Uncaught ErrorException: Undefined variable $errors in D:\\Working\\Code Disk\\works fahd\\beauty-salon\\storage\\framework\\views\\37b1ede51601d74138b4e2ec7813192d.php:1096
+Stack trace:
+#0 D:\\Working\\Code Disk\\works fahd\\beauty-salon\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Bootstrap\\HandleExceptions.php(258): Illuminate\\Foundation\\Bootstrap\\HandleExceptions->handleError(2, 'Undefined varia...', 'D:\\\\Working\\\\Code...', 1096)
+#1 D:\\Working\\Code Disk\\works fahd\\beauty-salon\\storage\\framework\\views\\37b1ede51601d74138b4e2ec7813192d.php(1096): Illuminate\\Foundation\\Bootstrap\\HandleExceptions->{closure:Illuminate\\Foundation\\Bootstrap\\HandleExceptions::forwardsTo():257}(2, 'Undefined varia...', 'D:\\\\Working\\\\Code...', 1096)
+#2 D:\\Working\\Code Disk\\works fahd\\beauty-salon\\vendor\\laravel\\framework\\src\\Illuminate\\Filesystem\\Filesystem.php(123): require('D:\\\\Working\\\\Code...')
+#3 D:\\Working\\Code Disk\\works fahd\\beauty-salon\\vendor\\laravel\\framework\\src\\Illuminate\\Filesystem\\Filesystem.php(124): Illuminate\\Filesystem\\Filesystem::{closure:Illuminate\\Filesystem\\Filesystem::getRequire():120}()
+#4 D:\\Working\\Code Disk\\works fahd\\beauty-salon\\vendor\\laravel\\framework\\src\\Illuminate\\View\\Engines\\PhpEngine.php(57): Illuminate\\Filesystem\\Filesystem->getRequire('D:\\\\Working\\\\Code...', Array)
+#5 D:\\Working\\Code Disk\\works fahd\\beauty-salon\\vendor\\laravel\\framework\\src\\Illuminate\\View\\Engines\\CompilerEngine.php(76): Illuminate\\View\\Engines\\PhpEngine->evaluatePath('D:\\\\Working\\\\Code...', Array)
+#6 D:\\Working\\Code Disk\\works fahd\\beauty-salon\\vendor\\laravel\\framework\\src\\Illuminate\\View\\View.php(208): Illuminate\\View\\Engines\\CompilerEngine->get('D:\\\\Working\\\\Code...', Array)
+#7 D:\\Working\\Code Disk\\works fahd\\beauty-salon\\vendor\\laravel\\framework\\src\\Illuminate\\View\\View.php(191): Illuminate\\View\\View->getContents()
+#8 D:\\Working\\Code Disk\\works fahd\\beauty-salon\\vendor\\laravel\\framework\\src\\Illuminate\\View\\View.php(160): Illuminate\\View\\View->renderContents()
+#9 D:\\Working\\Code Disk\\works fahd\\beauty-salon\\storage\\framework\\views\\60cadc689889863b21afd6d0b82835db.php(295): Illuminate\\View\\View->render()
+#10 D:\\Working\\Code Disk\\works fahd\\beauty-salon\\vendor\\laravel\\framework\\src\\Illuminate\\Filesystem\\Filesystem.php(123): require('D:\\\\Working\\\\Code...')
+#11 D:\\Working\\Code Disk\\works fahd\\beauty-salon\\vendor\\laravel\\framework\\src\\Illuminate\\Filesystem\\Filesystem.php(124): Illuminate\\Filesystem\\Filesystem::{closure:Illuminate\\Filesystem\\Filesystem::getRequire():120}()
+#12 D:\\Working\\Code Disk\\works fahd\\beauty-salon\\vendor\\laravel\\framework\\src\\Illuminate\\View\\Engines\\PhpEngine.php(57): Illuminate\\Filesystem\\Filesystem->getRequire('D:\\\\Working\\\\Code...', Array)
+#13 D:\\Working\\Code Disk\\works fahd\\beauty-salon\\vendor\\laravel\\framework\\src\\Illuminate\\View\\Engines\\CompilerEngine.php(76): Illuminate\\View\\Engines\\PhpEngine->evaluatePath('D:\\\\Working\\\\Code...', Array)
+#14 D:\\Working\\Code Disk\\works fahd\\beauty-salon\\vendor\\laravel\\framework\\src\\Illuminate\\View\\View.php(208): Illuminate\\View\\Engines\\CompilerEngine->get('D:\\\\Working\\\\Code...', Array)
+#15 D:\\Working\\Code Disk\\works fahd\\beauty-salon\\vendor\\laravel\\framework\\src\\Illuminate\\View\\View.php(191): Illuminate\\View\\View->getContents()
+#16 D:\\Working\\Code Disk\\works fahd\\beauty-salon\\vendor\\laravel\\framework\\src\\Illuminate\\View\\View.php(160): Illuminate\\View\\View->renderContents()
+#17 Command line code(1): Illuminate\\View\\View->render()
+#18 {main}
+
+Next Illuminate\\View\\ViewException: Undefined variable $errors (View: D:\\Working\\Code Disk\\works fahd\\beauty-salon\\resources\\views\\layouts\\admin.blade.php) in D:\\Working\\Code Disk\\works fahd\\beauty-salon\\storage\\framework\\views\\37b1ede51601d74138b4e2ec7813192d.php:1096
+Stack trace:
+#0 D:\\Working\\Code Disk\\works fahd\\beauty-salon\\vendor\\laravel\\framework\\src\\Illuminate\\View\\Engines\\PhpEngine.php(59): Illuminate\\View\\Engines\\CompilerEngine->handleViewException(Object(ErrorException), 1)
+#1 D:\\Working\\Code Disk\\works fahd\\beauty-salon\\vendor\\laravel\\framework\\src\\Illuminate\\View\\Engines\\CompilerEngine.php(76): Illuminate\\View\\Engines\\PhpEngine->evaluatePath('D:\\\\Working\\\\Code...', Array)
+#2 D:\\Working\\Code Disk\\works fahd\\beauty-salon\\vendor\\laravel\\framework\\src\\Illuminate\\View\\View.php(208): Illuminate\\View\\Engines\\CompilerEngine->get('D:\\\\Working\\\\Code...', Array)
+#3 D:\\Working\\Code Disk\\works fahd\\beauty-salon\\vendor\\laravel\\framework\\src\\Illuminate\\View\\View.php(191): Illuminate\\View\\View->getContents()
+#4 D:\\Working\\Code Disk\\works fahd\\beauty-salon\\vendor\\laravel\\framework\\src\\Illuminate\\View\\View.php(160): Illuminate\\View\\View->renderContents()
+#5 D:\\Working\\Code Disk\\works fahd\\beauty-salon\\storage\\framework\\views\\60cadc689889863b21afd6d0b82835db.php(295): Illuminate\\View\\View->render()
+#6 D:\\Working\\Code Disk\\works fahd\\beauty-salon\\vendor\\laravel\\framework\\src\\Illuminate\\Filesystem\\Filesystem.php(123): require('D:\\\\Working\\\\Code...')
+#7 D:\\Working\\Code Disk\\works fahd\\beauty-salon\\vendor\\laravel\\framework\\src\\Illuminate\\Filesystem\\Filesystem.php(124): Illuminate\\Filesystem\\Filesystem::{closure:Illuminate\\Filesystem\\Filesystem::getRequire():120}()
+#8 D:\\Working\\Code Disk\\works fahd\\beauty-salon\\vendor\\laravel\\framework\\src\\Illuminate\\View\\Engines\\PhpEngine.php(57): Illuminate\\Filesystem\\Filesystem->getRequire('D:\\\\Working\\\\Code...', Array)
+#9 D:\\Working\\Code Disk\\works fahd\\beauty-salon\\vendor\\laravel\\framework\\src\\Illuminate\\View\\Engines\\CompilerEngine.php(76): Illuminate\\View\\Engines\\PhpEngine->evaluatePath('D:\\\\Working\\\\Code...', Array)
+#10 D:\\Working\\Code Disk\\works fahd\\beauty-salon\\vendor\\laravel\\framework\\src\\Illuminate\\View\\View.php(208): Illuminate\\View\\Engines\\CompilerEngine->get('D:\\\\Working\\\\Code...', Array)
+#11 D:\\Working\\Code Disk\\works fahd\\beauty-salon\\vendor\\laravel\\framework\\src\\Illuminate\\View\\View.php(191): Illuminate\\View\\View->getContents()
+#12 D:\\Working\\Code Disk\\works fahd\\beauty-salon\\vendor\\laravel\\framework\\src\\Illuminate\\View\\View.php(160): Illuminate\\View\\View->renderContents()
+#13 Command line code(1): Illuminate\\View\\View->render()
+#14 {main}
+
+Next Illuminate\\View\\ViewException: Undefined variable $errors (View: D:\\Working\\Code Disk\\works fahd\\beauty-salon\\resources\\views\\layouts\\admin.blade.php) (View: D:\\Working\\Code Disk\\works fahd\\beauty-salon\\resources\\views\\layouts\\admin.blade.php) in D:\\Working\\Code Disk\\works fahd\\beauty-salon\\storage\\framework\\views\\37b1ede51601d74138b4e2ec7813192d.php:1096
+Stack trace:
+#0 D:\\Working\\Code Disk\\works fahd\\beauty-salon\\vendor\\laravel\\framework\\src\\Illuminate\\View\\Engines\\PhpEngine.php(59): Illuminate\\View\\Engines\\CompilerEngine->handleViewException(Object(Illuminate\\View\\ViewException), 0)
+#1 D:\\Working\\Code Disk\\works fahd\\beauty-salon\\vendor\\laravel\\framework\\src\\Illuminate\\View\\Engines\\CompilerEngine.php(76): Illuminate\\View\\Engines\\PhpEngine->evaluatePath('D:\\\\Working\\\\Code...', Array)
+#2 D:\\Working\\Code Disk\\works fahd\\beauty-salon\\vendor\\laravel\\framework\\src\\Illuminate\\View\\View.php(208): Illuminate\\View\\Engines\\CompilerEngine->get('D:\\\\Working\\\\Code...', Array)
+#3 D:\\Working\\Code Disk\\works fahd\\beauty-salon\\vendor\\laravel\\framework\\src\\Illuminate\\View\\View.php(191): Illuminate\\View\\View->getContents()
+#4 D:\\Working\\Code Disk\\works fahd\\beauty-salon\\vendor\\laravel\\framework\\src\\Illuminate\\View\\View.php(160): Illuminate\\View\\View->renderContents()
+#5 Command line code(1): Illuminate\\View\\View->render()
+#6 {main}
+  thrown at D:/Working/Code Disk/works fahd/beauty-salon/storage/framework/views/37b1ede51601d74138b4e2ec7813192d.php:1096)
+[stacktrace]
+#0 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(247): Symfony/Component/ErrorHandler/Error/FatalError->__construct(message: ''Uncaught Error...', code: '0', error: '['type' => 1, '...', traceOffset: '0', traceArgs: '???', trace: '???')
+#1 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(234): Illuminate/Foundation/Bootstrap/HandleExceptions->fatalErrorFromPhpError(error: '['type' => 1, '...', traceOffset: '0')
+#2 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(258): Illuminate/Foundation/Bootstrap/HandleExceptions->handleShutdown()
+#3 D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(0): Illuminate/Foundation/Bootstrap/HandleExceptions->{closure:D:/Working/Code Disk/works fahd/beauty-salon/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php:257-259}()
+#4 {main}
+"} 

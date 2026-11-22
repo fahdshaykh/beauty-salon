@@ -9,9 +9,14 @@
         <div class="page-header">
             <h3 class="page-title">All Customers</h3>
 
-            @can('create customers')
-                <a href="{{url('customers/create')}}" class="btn btn-primary">New Customer</a>
-            @endcan
+            <div class="d-flex align-items-center">
+                <button type="button" class="btn {{ auth()->user()->getSetting('customers_filter_visible', true) ? 'btn-outline-primary' : 'btn-outline-secondary' }} mr-2 btn-toggle-filter" data-target="#filter-card" data-key="customers_filter_visible">
+                    <i class="fas fa-filter mr-1"></i> <span>{{ auth()->user()->getSetting('customers_filter_visible', true) ? 'Hide Filter' : 'Show Filter' }}</span>
+                </button>
+                @can('create customers')
+                    <a href="{{url('customers/create')}}" class="btn btn-primary">New Customer</a>
+                @endcan
+            </div>
             
         </div>
 
@@ -34,7 +39,7 @@
                 </div>
 
                 <!-- Filter & Search Card -->
-                <div class="card shadow-sm mb-4">
+                <div class="card shadow-sm mb-4" id="filter-card" style="{{ auth()->user()->getSetting('customers_filter_visible', true) ? '' : 'display: none;' }}">
                     <div class="card-body pt-4">
                         <form method="GET" action="{{ route('customers.index') }}" class="row g-3">
                             <!-- Search Field -->

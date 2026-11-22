@@ -286,13 +286,14 @@ input:checked+.slider:before {
 
 
 
-            @can('create inventory purchases')
-            <div class="text-center" style="float: center;">
-
+            <div class="d-flex align-items-center">
+                <button type="button" class="btn {{ auth()->user()->getSetting('inventories_purchase_filter_visible', true) ? 'btn-outline-primary' : 'btn-outline-secondary' }} mr-2 btn-toggle-filter" data-target="#filter-card" data-key="inventories_purchase_filter_visible">
+                    <i class="fas fa-filter mr-1"></i> <span>{{ auth()->user()->getSetting('inventories_purchase_filter_visible', true) ? 'Hide Filter' : 'Show Filter' }}</span>
+                </button>
+                @can('create inventory purchases')
                 <a href="{{ route('inventories_purchases.create') }}" class="btn btn-primary">Purchase Inventory</a>
-            
+                @endcan
             </div>
-            @endcan
 
 
 
@@ -308,7 +309,7 @@ input:checked+.slider:before {
             <div class="card-body">
 
                 <!-- Purchases Filter Card -->
-                <div class="card shadow-sm mb-4">
+                <div class="card shadow-sm mb-4" id="filter-card" style="{{ auth()->user()->getSetting('inventories_purchase_filter_visible', true) ? '' : 'display: none;' }}">
                     <div class="card-body pt-4">
                         <form method="GET" action="{{ route('inventories_purchases.index') }}" class="row g-3">
                             <!-- Search Field -->

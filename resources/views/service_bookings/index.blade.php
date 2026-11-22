@@ -117,9 +117,14 @@
 
             </h3>
 
-            @can('create bookings')
-                <a href="{{ url('service-bookings/service-bookings-create') }}" class="btn btn-primary">New Booking</a>
-            @endcan
+            <div class="d-flex align-items-center">
+                <button type="button" class="btn {{ auth()->user()->getSetting('service_bookings_filter_visible', true) ? 'btn-outline-primary' : 'btn-outline-secondary' }} mr-2 btn-toggle-filter" data-target="#filter-card" data-key="service_bookings_filter_visible">
+                    <i class="fas fa-filter mr-1"></i> <span>{{ auth()->user()->getSetting('service_bookings_filter_visible', true) ? 'Hide Filter' : 'Show Filter' }}</span>
+                </button>
+                @can('create bookings')
+                    <a href="{{ url('service-bookings/service-bookings-create') }}" class="btn btn-primary">New Booking</a>
+                @endcan
+            </div>
 
         </div>
 
@@ -154,7 +159,7 @@
                 @endif
 
                 <!-- Filter Form -->
-                <div class="card mb-3">
+                <div class="card mb-3" id="filter-card" style="{{ auth()->user()->getSetting('service_bookings_filter_visible', true) ? '' : 'display: none;' }}">
                     <div class="card-body">
                         <form method="GET" action="{{ route('service-bookings.index') }}">
                             

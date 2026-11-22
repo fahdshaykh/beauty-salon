@@ -286,13 +286,14 @@ input:checked+.slider:before {
 
 
 
-            @can('create suppliers')
-                <div class="text-center" style="float: center;">
-
-                    <a href="{{ route('suppliers.create') }}" class="btn btn-primary">New Supplier</a>
-
-                </div>
-            @endcan
+            <div class="d-flex align-items-center">
+                <button type="button" class="btn {{ auth()->user()->getSetting('suppliers_filter_visible', true) ? 'btn-outline-primary' : 'btn-outline-secondary' }} mr-2 btn-toggle-filter" data-target="#filter-card" data-key="suppliers_filter_visible">
+                    <i class="fas fa-filter mr-1"></i> <span>{{ auth()->user()->getSetting('suppliers_filter_visible', true) ? 'Hide Filter' : 'Show Filter' }}</span>
+                </button>
+                @can('create suppliers')
+                <a href="{{ route('suppliers.create') }}" class="btn btn-primary">New Supplier</a>
+                @endcan
+            </div>
 
 
 
@@ -305,7 +306,7 @@ input:checked+.slider:before {
             <div class="card-body">
 
                 <!-- Filter & Search Card -->
-                <div class="card shadow-sm mb-4">
+                <div class="card shadow-sm mb-4" id="filter-card" style="{{ auth()->user()->getSetting('suppliers_filter_visible', true) ? '' : 'display: none;' }}">
                     <div class="card-body pt-4">
                         <form method="GET" action="{{ route('suppliers.index') }}" class="row g-3">
                             <!-- Search Field -->

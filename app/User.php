@@ -6,6 +6,7 @@ namespace App;
 
 use App\Models\EmployeeAttendance;
 use App\Models\Payroll;
+use App\Models\UserSetting;
 use App\ServiceBooking;
 use Illuminate\Notifications\Notifiable;
 
@@ -48,7 +49,7 @@ class User extends Authenticatable
         'transport_allowance',
     ];
 
-        /**
+    /**
 
      * The attributes that are mass assignable.
 
@@ -67,7 +68,6 @@ class User extends Authenticatable
     {
 
         return $this->belongsTo('App\Role');
-
     }
 
 
@@ -96,16 +96,18 @@ class User extends Authenticatable
         return $this->hasOne(CompanySetting::class, 'company_id', 'company_id');
     }
 
-    // public function getPerPagePreference()
-    // {
-    //     return $this->setting ? $this->setting->per_page : 10;
-    // }
-        // get a user's setting
+    public function userSetting()
+    {
+        return $this->hasOne(UserSetting::class, 'user_id', 'id');
+    }
+
+    // get a user's setting
     public function getSetting(string $var, $default = null)
     {
-        if($this->settings){
-            if (array_key_exists($var, $this->settings)) {
-                return $this->settings[$var];
+        $settingModel = $this->relationLoaded('userSetting') ? $this->userSetting : $this->userSetting()->first();
+        if ($settingModel && is_array($settingModel->settings)) {
+            if (array_key_exists($var, $settingModel->settings)) {
+                return $settingModel->settings[$var];
             }
         }
         return $default;
@@ -114,30 +116,24 @@ class User extends Authenticatable
     // update one or more settings and optionally save the model
     public function setSettings(array $update, bool $save = true): self
     {
-        if ($this->settings != null) {
-
-            $this->settings = array_merge($this->settings, $update);
-            if ($save) {
-                $this->save();
-            }
-
-        } else {
-
-            $this->settings = array_merge($update);
-            if ($save) {
-                $this->save();
-            }
-            
+        $settingModel = $this->userSetting()->first();
+        if (!$settingModel) {
+            $settingModel = new UserSetting(['user_id' => $this->id, 'settings' => []]);
         }
-        
+        $currentSettings = is_array($settingModel->settings) ? $settingModel->settings : [];
+        $settingModel->settings = array_merge($currentSettings, $update);
+        if ($save) {
+            $settingModel->save();
+        }
+
         return $this;
     }
 
     public function scopeActiveInCompany($query)
     {
         return $query->where('is_active', 1)
-                    ->where('company_id', auth()->user()->company_id)
-                    ->where('is_deleted', 0);
+            ->where('company_id', auth()->user()->company_id)
+            ->where('is_deleted', 0);
     }
 
     public function scopeNotCheckedInToday($query)
@@ -156,27 +152,26 @@ class User extends Authenticatable
     {
         return $this->hasMany(Payroll::class, 'user_id');
     }
-   /**
+    /**
 
- * Send the password reset notification.
+     * Send the password reset notification.
 
- *
+     *
 
- * @param  string  $token
+     * @param  string  $token
 
- * @return void
+     * @return void
 
- */
+     */
 
-public function sendPasswordResetNotification($token)
+    public function sendPasswordResetNotification($token)
 
-{
+    {
 
-     
 
-    $this->notify(new PasswordReset($token));
 
-}
+        $this->notify(new PasswordReset($token));
+    }
 
 
 
@@ -184,7 +179,7 @@ public function sendPasswordResetNotification($token)
 
 
 
-    
+
 
 
 
@@ -202,7 +197,8 @@ public function sendPasswordResetNotification($token)
 
     protected $hidden = [
 
-        'password', 'remember_token',
+        'password',
+        'remember_token',
 
     ];
 
@@ -217,12 +213,4 @@ public function sendPasswordResetNotification($token)
      * @var array
 
      */
-
-
-
-   
-
 }
-
-
-
