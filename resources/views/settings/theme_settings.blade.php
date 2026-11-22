@@ -174,6 +174,16 @@
 
                         </li>
 
+                        <li class="nav-item">
+
+                          <a class="nav-link" id="booking-settings-tab-custom" data-toggle="tab" href="#booking-settings-pane" role="tab" aria-controls="booking-settings-pane" aria-selected="false">
+
+                            Booking Settings <i class="fas fa-chevron-right"></i>
+
+                          </a>
+
+                        </li>
+
 
 
                         <li class="nav-item">
@@ -762,6 +772,110 @@
                                                 <span class="slider round"></span>
 
             
+
+                                            </label>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="card mt-3">
+
+                                <div class="card-body">
+
+                                    <div class="row">
+
+                                        <div class="col-lg-6"> 
+                                            <b> Email Complete Booking Message </b>
+                                            <p class="text-muted small mb-0">Send an email notification to the customer when their booking is marked completed.</p>
+                                        </div>
+
+                                        <div class="col-lg-6">
+
+                                            <label class="switch" style="float: right;">
+
+                                                <input type="checkbox" id="complete-email-{{$settings->company_id}}"
+
+                                                    onclick="changeCompleteEmailStatus(event.target, {{ $settings->company_id }});"
+
+                                                    {{(isset($settings->complete_booking_email_permission) && $settings->complete_booking_email_permission) ? 'checked' : ''}}>
+
+                                                <span class="slider round"></span>
+
+                                            </label>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <!-- Booking Settings Pane -->
+                        <div class="tab-pane fade" id="booking-settings-pane" role="tabpanel" aria-labelledby="booking-settings-tab-custom">
+
+                            <div class="card">
+
+                                <div class="card-body">
+
+                                    <div class="row">
+
+                                        <div class="col-lg-6"> 
+                                            <b> Advance Payment </b>
+                                            <p class="text-muted small mb-0">Allow taking advance deposit or partial payment when creating a service booking.</p>
+                                        </div>
+
+                                        <div class="col-lg-6">
+
+                                            <label class="switch" style="float: right;">
+
+                                                <input type="checkbox" id="advance-pay-{{$settings->company_id}}"
+
+                                                    onclick="changeAdvancePaymentStatus(event.target, {{ $settings->company_id }});"
+
+                                                    {{(isset($settings->advance_payment_permission) && $settings->advance_payment_permission) ? 'checked' : ''}}>
+
+                                                <span class="slider round"></span>
+
+                                            </label>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="card mt-3">
+
+                                <div class="card-body">
+
+                                    <div class="row">
+
+                                        <div class="col-lg-6"> 
+                                            <b> Add Inventory </b>
+                                            <p class="text-muted small mb-0">Allow adding retail / inventory products and basket to service bookings.</p>
+                                        </div>
+
+                                        <div class="col-lg-6">
+
+                                            <label class="switch" style="float: right;">
+
+                                                <input type="checkbox" id="booking-inv-{{$settings->company_id}}"
+
+                                                    onclick="changeBookingInventoryStatus(event.target, {{ $settings->company_id }});"
+
+                                                    {{(isset($settings->booking_inventory_permission) && $settings->booking_inventory_permission) ? 'checked' : ''}}>
+
+                                                <span class="slider round"></span>
 
                                             </label>
 
@@ -1654,6 +1768,63 @@ $.ajax({
 
 });
 
+}
+
+function changeCompleteEmailStatus(_this, id) {
+    var status = $(_this).prop('checked') == true ? 1 : 0;
+    $.ajax({
+        url: "{{url('complete-email-status')}}",
+        type: 'GET',
+        data: {
+            id: id,
+            complete_booking_email_permission: status
+        },
+        success: function(result) {
+            if(result.success){
+                showSuccessToast(result.success);
+            } else {
+                showDangerToast(result.error);
+            }
+        }
+    });
+}
+
+function changeAdvancePaymentStatus(_this, id) {
+    var status = $(_this).prop('checked') == true ? 1 : 0;
+    $.ajax({
+        url: "{{url('advance-payment-status')}}",
+        type: 'GET',
+        data: {
+            id: id,
+            advance_payment_permission: status
+        },
+        success: function(result) {
+            if(result.success){
+                showSuccessToast(result.success);
+            } else {
+                showDangerToast(result.error);
+            }
+        }
+    });
+}
+
+function changeBookingInventoryStatus(_this, id) {
+    var status = $(_this).prop('checked') == true ? 1 : 0;
+    $.ajax({
+        url: "{{url('booking-inventory-status')}}",
+        type: 'GET',
+        data: {
+            id: id,
+            booking_inventory_permission: status
+        },
+        success: function(result) {
+            if(result.success){
+                showSuccessToast(result.success);
+            } else {
+                showDangerToast(result.error);
+            }
+        }
+    });
 }
 
 function changeTaxStatus(_this) {

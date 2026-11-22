@@ -238,6 +238,7 @@
 
                 
                 <!-- Inventory Section -->
+                @if((auth()->user()->companySetting->booking_inventory_permission ?? 1) == 1)
                 <p>Inventories is optional</p>
                 <div class="row">
                     <div class="col-12 col-md-8 mb-2 mb-md-0">
@@ -291,6 +292,7 @@
                         </tbody>
                     </table>
                 </div>
+                @endif
 
                 <label style="color:red;">
                     @if($tax_info[0]->tax_status==1 && $tax_info[0]->amount!="") VAT {{$tax_info[0]->amount}} @if($tax_info[0]->vat==1)% @elseif($tax_info[0]->vat==0)£ @endif will apply. @endif
@@ -300,7 +302,7 @@
     </div>
 </div>
 
-@if(empty($booking_id))
+@if(empty($booking_id) && (auth()->user()->companySetting->advance_payment_permission ?? 1) == 1)
 <div class="card mb-4 border border-info shadow-sm" style="border-radius: 8px;">
     <div class="card-header bg-light d-flex justify-content-between align-items-center py-2 px-3" style="cursor: pointer;" id="toggle-advance-payment-header">
         <div class="d-flex align-items-center">

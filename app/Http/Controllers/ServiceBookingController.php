@@ -851,6 +851,10 @@ class ServiceBookingController extends Controller
             ->where('company_id', auth()->user()->company_id)
             ->update($update);
 
+        if ((int)$status === 3) {
+            $this->notificationService->sendCompletionEmail($invoice, auth()->user()->company_id);
+        }
+
         return response()->json(['success' => 'Status changed successfully']);
     }
 
@@ -1104,6 +1108,11 @@ class ServiceBookingController extends Controller
             } else {
                 $this->notificationService->syncGoogleCalendarEvent($id, auth()->user()->company_id);
             }
+
+            if ((string)$status === '3') {
+                $this->notificationService->sendCompletionEmail($id, auth()->user()->company_id);
+            }
+
             return response()->json(['success' => 'Status changed successfully.']);
         }
 

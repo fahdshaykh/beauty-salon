@@ -327,6 +327,42 @@ class SettingController extends Controller
 
     }
 
+    public function complete_email_status(Request $request)
+    {
+        $id = $request->id;
+        $status = $request->complete_booking_email_permission;
+
+        DB::table('company_settings')->where('company_id', $id)->update([
+            'complete_booking_email_permission' => $status
+        ]);
+
+        return response()->json(['success' => 'Status changed successfully.']);
+    }
+
+    public function advance_payment_setting_status(Request $request)
+    {
+        $id = $request->id;
+        $status = $request->advance_payment_permission;
+
+        DB::table('company_settings')->where('company_id', $id)->update([
+            'advance_payment_permission' => $status
+        ]);
+
+        return response()->json(['success' => 'Status changed successfully.']);
+    }
+
+    public function booking_inventory_setting_status(Request $request)
+    {
+        $id = $request->id;
+        $status = $request->booking_inventory_permission;
+
+        DB::table('company_settings')->where('company_id', $id)->update([
+            'booking_inventory_permission' => $status
+        ]);
+
+        return response()->json(['success' => 'Status changed successfully.']);
+    }
+
     public function tax_status(Request $request)
 
 

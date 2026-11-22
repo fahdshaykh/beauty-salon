@@ -185,6 +185,59 @@ class BookingNotificationService
     }
 
     /**
+     * Send booking completion email asynchronously.
+     */
+    public function sendCompletionEmail(int $bookingId, int $companyId)
+    {
+        $setting = DB::table('company_settings')->where('company_id', $companyId)->first();
+        if (!$setting || empty($setting->complete_booking_email_permission)) {
+            return;
+        }
+
+        try {
+            $booking = ServiceBooking::findOrFail($bookingId);
+            $customer = Customer::findOrFail($booking->customer_id);
+
+            if ($customer->email) {
+                $services = DB::table('booking_details')
+                    ->join('services', 'services.id', '=', 'booking_details.service_id')
+                    ->where('booking_details.booking_id', $booking->id)
+                    ->pluck('services.name')
+                    ->implode(', ');
+
+                $totalPrice = $booking->total_price;
+                $vatAmount  = ($totalPrice * ($setting->vat ?? 0)) / 100;
+
+                $bookingData = [
+                    'customer_name'       => $customer->customer_name ?? trim($customer->first_name . ' ' . $customer->last_name),
+                    'invoice_number'      => 'BK-' . str_pad($booking->id, 5, '0', STR_PAD_LEFT),
+                    'due_date'            => date('d/m/Y', strtotime($booking->due_date)),
+                    'due_time'            => $booking->due_time,
+                    'services'            => $services,
+                    'total_price'         => number_format($totalPrice, 2),
+                    'vat'                 => number_format($vatAmount, 2),
+                    'amount_paid'         => number_format($booking->amount_paid ?? 0, 2),
+                    'amount_pending'      => number_format($booking->amount_pending ?? 0, 2),
+                    'comment'             => $booking->comment ?? '',
+                    'company_title'       => $setting->site_name ?? 'Beauty Salon',
+                    'is_completed'        => true,
+                ];
+
+                Mail::to($customer->email)->queue(new BookingMailable(
+                    $bookingData,
+                    $customer->email,
+                    'Booking Completed - ' . ($setting->site_name ?? 'Beauty Salon'),
+                    $setting->from_email ?? 'noreply@salon.com',
+                    $setting->site_name ?? 'Beauty Salon',
+                    $companyId
+                ));
+            }
+        } catch (\Exception $e) {
+            Log::error('Booking completion email error: ' . $e->getMessage());
+        }
+    }
+
+    /**
      * Get an authenticated Google_Client for a company.
      * Prioritizes OAuth (connected salon owner account) and falls back to central Service Account.
      * Automatically refreshes expired OAuth access tokens using refresh tokens.

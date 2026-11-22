@@ -58,13 +58,17 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>Booking Confirmation</h1>
+            <h1>{{ !empty($bookingData['is_completed']) ? 'Booking Completed' : 'Booking Confirmation' }}</h1>
             <p>{{ $company_title ?? 'Beauty Salon' }}</p>
         </div>
 
         <div class="content">
             <p>Dear <strong>{{ $customer_name }}</strong>,</p>
+            @if(!empty($bookingData['is_completed']))
+            <p>Thank you for visiting us! Your appointment has been successfully completed. Here is the summary of your visit:</p>
+            @else
             <p>Thank you for booking with us! Here are your booking details:</p>
+            @endif
 
             <table class="info-table">
                 <tr>
@@ -91,6 +95,12 @@
                     <th>VAT</th>
                     <td>£{{ $vat }}</td>
                 </tr>
+                @if(!empty($bookingData['is_completed']))
+                <tr>
+                    <th>Amount Paid</th>
+                    <td>£{{ $bookingData['amount_paid'] ?? '0.00' }}</td>
+                </tr>
+                @endif
                 @if($comment)
                 <tr>
                     <th>Notes</th>
@@ -99,6 +109,9 @@
                 @endif
             </table>
 
+            @if(!empty($bookingData['is_completed']))
+            <p>Thank you for choosing {{ $company_title ?? 'Beauty Salon' }}. We hope you had a great experience and look forward to welcoming you again soon!</p>
+            @else
             @if(!empty($google_calendar_url))
             <div style="text-align: center; margin: 25px 0;">
                 <a href="{{ $google_calendar_url }}" target="_blank" style="background-color: #4285F4; color: #ffffff; padding: 12px 25px; text-decoration: none; border-radius: 4px; font-weight: bold; font-size: 14px; display: inline-block;">
@@ -109,6 +122,7 @@
 
             <p>We look forward to seeing you on the scheduled date and time!</p>
             <p>If you have any questions or need to reschedule, please contact us.</p>
+            @endif
         </div>
 
         <div class="footer">

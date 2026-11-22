@@ -341,6 +341,9 @@ Route::middleware(['auth', 'company'])->group(function () {
     Route::get('message-setting', [SettingController::class, 'message_index'])->name('settings.message');
     Route::get('message-status', [SettingController::class, 'message_status'])->name('settings.message_status');
     Route::get('email-status', [SettingController::class, 'email_status'])->name('settings.email_status');
+    Route::get('complete-email-status', [SettingController::class, 'complete_email_status'])->name('settings.complete_email_status');
+    Route::get('advance-payment-status', [SettingController::class, 'advance_payment_setting_status'])->name('settings.advance_payment_status');
+    Route::get('booking-inventory-status', [SettingController::class, 'booking_inventory_setting_status'])->name('settings.booking_inventory_status');
     Route::get('tax-status', [SettingController::class, 'tax_status'])->name('settings.tax_status');
     Route::post('tax-settings-update', [SettingController::class, 'tax_settings_update'])->name('settings.tax_update');
     Route::post('voodoosms-settings-update', [SettingController::class, 'voodoosms_settings_update'])->name('settings.voodoosms_update');
