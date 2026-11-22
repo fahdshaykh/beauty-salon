@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use App\http\requests\StoreInventoryRequest;
 use App\InventoryRemain;
 use App\Models\Setting;
-use App\Models\UserSetting;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 

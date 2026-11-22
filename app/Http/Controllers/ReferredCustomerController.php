@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\ReferredCustomer;
 use App\Models\Setting;
-use App\Models\UserSetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 

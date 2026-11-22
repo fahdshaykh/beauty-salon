@@ -10,7 +10,6 @@ use App\Expense;
 use App\ExpenseType;
 use App\Models\PaymentMethod;
 use App\Models\Setting;
-use App\Models\UserSetting;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 

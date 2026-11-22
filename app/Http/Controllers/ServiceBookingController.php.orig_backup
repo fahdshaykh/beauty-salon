@@ -34,7 +34,6 @@ use App\User;
 use App\Mail\NotificationEmail;
 use App\Mail\BookingMailable;
 use App\Models\Setting;
-use App\Models\UserSetting;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 

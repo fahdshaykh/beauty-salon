@@ -6,7 +6,6 @@ use App\Customer;
 use App\Helpers\LimitHelper;
 use App\Imports\CustomersImport;
 use App\Models\Setting;
-use App\Models\UserSetting;
 use App\ServiceBooking;
 use App\Services\Customers\CustomerService;
 use App\User;

@@ -11,26 +11,17 @@ namespace App\Http\Controllers;
 use App\Helpers\LimitHelper;
 use App\Models\Payroll;
 use Illuminate\Http\Request;
-
-
-
 use App\User;
 use PDF;
 use Carbon\Carbon;
-
 use App\Models\Role;
 use App\Models\Setting;
-use App\Models\UserSetting;
 use DB;
-
 use File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Spatie\Permission\PermissionRegistrar;
-
-
-
 
 
 class UserController extends Controller

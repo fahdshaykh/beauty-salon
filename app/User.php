@@ -6,7 +6,6 @@ namespace App;
 
 use App\Models\EmployeeAttendance;
 use App\Models\Payroll;
-use App\Models\UserSetting;
 use App\ServiceBooking;
 use Illuminate\Notifications\Notifiable;
 
@@ -96,11 +95,6 @@ class User extends Authenticatable
     {
         return $this->hasOne(CompanySetting::class, 'company_id', 'company_id');
     }
-
-    // public function setting()
-    // {
-    //     return $this->hasOne(UserSetting::class);
-    // }
 
     // public function getPerPagePreference()
     // {

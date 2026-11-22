@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use App\User;
 use App\Category;
 use App\Models\Setting;
-use App\Models\UserSetting;
 
 use Session;
 

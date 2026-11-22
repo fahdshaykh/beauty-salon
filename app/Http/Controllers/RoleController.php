@@ -12,7 +12,6 @@ use Spatie\Permission\PermissionRegistrar;
 use DB;
 
 use App\Models\Setting;
-use App\Models\UserSetting;
 use Illuminate\Support\Facades\Auth;
 
 class RoleController extends Controller
