@@ -115,17 +115,17 @@ public function store(Request $request)
         'email' => 'required|email|unique:users,email',
         'password' => 'required|min:6',
         'phone' => 'required|string|max:15',
-        'base_salary' => 'nullable|numeric',
-        'commission_rate' => 'nullable|numeric',
-        'is_transport' => 'required|in:yes,no',
-        'transport_allowance' => 'nullable|numeric|required_if:is_transport,yes',
+        // 'base_salary' => 'nullable|numeric',
+        // 'commission_rate' => 'nullable|numeric',
+        // 'is_transport' => 'required|in:yes,no',
+        // 'transport_allowance' => 'nullable|numeric|required_if:is_transport,yes',
         'address' => 'nullable|string',
         'role' => 'required|exists:roles,name', // Spatie uses 'name'
         'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
     ], [
         'role.required' => 'Please select a role.',
         'role.exists' => 'Selected role is invalid.',
-        'transport_allowance.required_if' => 'Transport allowance is required when transport is yes.'
+        // 'transport_allowance.required_if' => 'Transport allowance is required when transport is yes.'
     ]);
 
     // CREATE USER
@@ -134,10 +134,10 @@ public function store(Request $request)
         'email' => $request->email,
         'password' => Hash::make($request->password),
         'phone' => $request->phone,
-        'base_salary' => $request->base_salary,
-        'commission_rate' => $request->commission_rate,
-        'is_transport' => $request->is_transport,
-        'transport_allowance' => $request->is_transport === 'yes' ? $request->transport_allowance : 0,
+        // 'base_salary' => $request->base_salary,
+        // 'commission_rate' => $request->commission_rate,
+        // 'is_transport' => $request->is_transport,
+        // 'transport_allowance' => $request->is_transport === 'yes' ? $request->transport_allowance : 0,
         'address' => $request->address,
         'company_id' => auth()->user()->company_id,
     ]);
@@ -235,10 +235,10 @@ public function store(Request $request)
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $id,
             'phone' => 'required|string|max:15',
-            'base_salary' => 'nullable|numeric',
-            'commission_rate' => 'nullable|numeric',
-            'is_transport' => 'required|in:yes,no',
-            'transport_allowance' => 'nullable|numeric|required_if:is_transport,yes',
+            // 'base_salary' => 'nullable|numeric',
+            // 'commission_rate' => 'nullable|numeric',
+            // 'is_transport' => 'required|in:yes,no',
+            // 'transport_allowance' => 'nullable|numeric|required_if:is_transport,yes',
             'address' => 'nullable|string',
             'role' => 'required|exists:roles,name',
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
@@ -250,10 +250,10 @@ public function store(Request $request)
             'name' => $request->name,
             'email' => $request->email,
             'phone' => $request->phone,
-            'base_salary' => $request->base_salary,
-            'commission_rate' => $request->commission_rate,
-            'is_transport' => $request->is_transport,
-            'transport_allowance' => $request->is_transport === 'yes' ? $request->transport_allowance : null,
+            // 'base_salary' => $request->base_salary,
+            // 'commission_rate' => $request->commission_rate,
+            // 'is_transport' => $request->is_transport,
+            // 'transport_allowance' => $request->is_transport === 'yes' ? $request->transport_allowance : null,
             'address' => $request->address,
         ]);
 

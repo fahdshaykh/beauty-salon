@@ -63,7 +63,7 @@
                                 @enderror
                             </div>
 
-                            <div class="form-group">
+                            {{-- <div class="form-group">
                                 <label>Base Salary</label>
                                 <input type="number" name="base_salary" class="form-control" value="{{ old('base_salary', $user->base_salary) }}" step="0.01">
                             </div>
@@ -71,9 +71,9 @@
                             <div class="form-group">
                                 <label>Commission Rate (%)</label>
                                 <input type="number" name="commission_rate" class="form-control" value="{{ old('commission_rate', $user->commission_rate) }}" step="0.01">
-                            </div>
+                            </div> --}}
 
-                            <div class="form-group">
+                            {{-- <div class="form-group">
                                 <label>Transport Allowance?</label>
                                 <select name="is_transport" id="transportSelect" class="form-control" required>
                                     <option value="no" {{ old('is_transport', $user->is_transport) === 'no' ? 'selected' : '' }}>No</option>
@@ -84,7 +84,7 @@
                             <div class="form-group" id="transportAmount" style="display: {{ old('is_transport', $user->is_transport) === 'yes' ? 'block' : 'none' }};">
                                 <label>Transport Allowance Amount</label>
                                 <input type="number" name="transport_allowance" class="form-control" value="{{ old('transport_allowance', $user->transport_allowance) }}" step="0.01">
-                            </div>
+                            </div> --}}
 
                             <div class="form-group">
                                 <label>Address</label>

@@ -35,11 +35,11 @@ class ProfitLossReportService
             ->whereDate('created_at', '<=', $endDate)
             ->sum('amount');
 
-        // 3. Staff Salaries Paid (net_pay)
-        $salaries = Payroll::whereHas('user', fn($q) => $q->where('company_id', $companyId))
-            ->whereDate('pay_period_start', '>=', $startDate)
-            ->whereDate('pay_period_end', '<=', $endDate)
-            ->sum('net_pay');
+        // // 3. Staff Salaries Paid (net_pay)
+        // $salaries = Payroll::whereHas('user', fn($q) => $q->where('company_id', $companyId))
+        //     ->whereDate('pay_period_start', '>=', $startDate)
+        //     ->whereDate('pay_period_end', '<=', $endDate)
+        //     ->sum('net_pay');
 
         // 4. Sales (Completed Bookings)
         $sales = ServiceBooking::where('company_id', $companyId)
@@ -49,7 +49,8 @@ class ProfitLossReportService
             ->sum('total_price');
 
         // 5. Aggregations
-        $totalExpenses = $expenses + $supplier + $salaries;
+        // $totalExpenses = $expenses + $supplier + $salaries;
+        $totalExpenses = $expenses + $supplier;
         $profit = $sales - $totalExpenses;
 
         return [
@@ -59,7 +60,7 @@ class ProfitLossReportService
             'breakdown' => [
                 'general_expenses'  => round($expenses, 2),
                 'supplier_payments' => round($supplier, 2),
-                'salaries_paid'     => round($salaries, 2),
+                // 'salaries_paid'     => round($salaries, 2),
             ]
         ];
     }
