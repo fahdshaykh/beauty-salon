@@ -138,7 +138,7 @@
                                         <th class="font-weight-bold">Method</th>
                                         <th class="font-weight-bold">Custom Fields</th>
                                         <th class="font-weight-bold">Status</th>
-                                        <th class="font-weight-bold text-right">Actions</th>
+                                        <th class="font-weight-bold text-center" style="width: 80px;">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -179,18 +179,33 @@
                                                     <span class="badge badge-secondary">Inactive</span>
                                                 @endif
                                             </td>
-                                            <td class="text-right">
-                                                <button type="button" class="btn btn-sm btn-outline-primary btn-edit-pm" title="Edit Method">
-                                                    <i class="fas fa-edit"></i>
-                                                </button>
-                                                <form action="{{ route('payment-methods.destroy', $method->id) }}" method="POST" class="d-inline-block form-delete-pm">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-sm btn-outline-danger btn-delete-pm" title="Delete Method" 
-                                                            onclick="return confirm('Are you sure you want to delete {{ $method->method }}?');">
-                                                        <i class="fas fa-trash-alt"></i>
+                                            <td class="text-center align-middle">
+                                                <div class="dropdown">
+                                                    <button class="btn btn-sm action-dots-btn no-caret" 
+                                                            type="button" 
+                                                            id="actionDropdown_{{ $method->id }}" 
+                                                            data-toggle="dropdown" 
+                                                            aria-haspopup="true" 
+                                                            aria-expanded="false" 
+                                                            title="Actions">
+                                                        <i class="fas fa-ellipsis-v"></i>
                                                     </button>
-                                                </form>
+                                                    <div class="dropdown-menu dropdown-menu-right py-2" aria-labelledby="actionDropdown_{{ $method->id }}" style="min-width: 160px;">
+                                                        <button type="button" class="dropdown-item btn-edit-pm d-flex align-items-center">
+                                                            <i class="fas fa-edit fa-fw text-primary mr-2"></i> Edit
+                                                        </button>
+                                                        <div class="dropdown-divider"></div>
+                                                        <a class="dropdown-item d-flex align-items-center text-danger" 
+                                                           href="javascript:void(0)"
+                                                           onclick="if(confirm('Are you sure you want to delete {{ $method->method }}?')) document.getElementById('delete-pm-{{ $method->id }}').submit();">
+                                                            <i class="fas fa-trash-alt fa-fw text-danger mr-2"></i> Delete
+                                                        </a>
+                                                        <form id="delete-pm-{{ $method->id }}" action="{{ route('payment-methods.destroy', $method->id) }}" method="POST" style="display:none;">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                        </form>
+                                                    </div>
+                                                </div>
                                             </td>
                                         </tr>
                                     @empty

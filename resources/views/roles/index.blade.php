@@ -94,7 +94,7 @@
                                 <th>Role Name</th>
                                 <th>Permissions</th>
                                 <th>Created At</th>
-                                <th>Actions</th>
+                                <th class="text-center" style="width: 80px;">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -114,26 +114,42 @@
                                         @endif
                                     </td>
                                     <td>{{ $role->created_at->format('m-d-Y') }}</td>
-                                    <td style="float: center;">
-                                        @can('edit roles')
+                                    <td class="text-center align-middle">
+                                        <div class="dropdown">
+                                            <button class="btn btn-sm action-dots-btn no-caret" 
+                                                    type="button" 
+                                                    id="actionDropdown_{{ $role->id }}" 
+                                                    data-toggle="dropdown" 
+                                                    aria-haspopup="true" 
+                                                    aria-expanded="false" 
+                                                    title="Actions">
+                                                <i class="fas fa-ellipsis-v"></i>
+                                            </button>
+                                            <div class="dropdown-menu dropdown-menu-right py-2" aria-labelledby="actionDropdown_{{ $role->id }}" style="min-width: 160px;">
+                                                @can('edit roles')
+                                                <a class="dropdown-item d-flex align-items-center" href="{{ route('roles.edit', $role) }}">
+                                                    <i class="fas fa-pencil-alt fa-fw text-primary mr-2"></i> Edit Role
+                                                </a>
+                                                @endcan
 
-                                            <a href="{{ route('roles.edit', $role) }}"
-                                                class="btn btn-sm btn-outline-primary" title="Edit Role">
-                                                    <i class="fas fa-pencil-alt"></i>
-                                            </a>
-                                        @endcan
-
-                                        @can('delete roles')
-                                            @if($role->name !== 'admin')
-                                                <form action="{{ route('roles.destroy', $role) }}" method="POST" style="display:inline">
-                                                    @csrf @method('DELETE')
-                                                    <button type="submit" class="btn btn-sm btn-outline-danger ml-1"
-                                                            onclick="return confirm('Delete {{ $role->name }} role?')">
-                                                        <i class="fas fa-trash-alt"></i>
-                                                    </button>
-                                                </form>
-                                            @endif
-                                        @endcan
+                                                @can('delete roles')
+                                                    @if($role->name !== 'admin')
+                                                        @can('edit roles')
+                                                        <div class="dropdown-divider"></div>
+                                                        @endcan
+                                                        <a class="dropdown-item d-flex align-items-center text-danger" 
+                                                           href="javascript:void(0)"
+                                                           onclick="if(confirm('Delete {{ $role->name }} role?')) document.getElementById('delete-role-{{ $role->id }}').submit();">
+                                                            <i class="fas fa-trash-alt fa-fw text-danger mr-2"></i> Delete Role
+                                                        </a>
+                                                        <form id="delete-role-{{ $role->id }}" action="{{ route('roles.destroy', $role) }}" method="POST" style="display:none">
+                                                            @csrf 
+                                                            @method('DELETE')
+                                                        </form>
+                                                    @endif
+                                                @endcan
+                                            </div>
+                                        </div>
                                     </td>
                                 </tr>
                                 @endif

@@ -402,7 +402,7 @@ input:checked+.slider:before {
                                     <th>Name</th>
                                     <th>Phone</th>
                                     <th>Email</th>
-                                    <th>Actions</th>
+                                    <th class="text-center" style="width: 80px;">Actions</th>
 
 
 
@@ -433,37 +433,44 @@ input:checked+.slider:before {
                                         <td>{{ $supplier->phone }}</td>
                                         <td>{{ $supplier->email }}</td>
 
-                                        <td>
-                                            <div class="d-flex gap-1">
-                                                @can('supplier summary')
-                                                <a href="{{ route('suppliers.balance_summary', $supplier->id) }}"
-                                                class="btn btn-sm btn-outline-success" title="view supplier">
-                                                    <i class="fa fa-eye text-primary"></i>
-                                                </a>
-                                                @endcan
+                                        <td class="text-center align-middle">
+                                            <div class="dropdown">
+                                                <button class="btn btn-sm action-dots-btn no-caret" 
+                                                        type="button" 
+                                                        id="actionDropdown_{{ $supplier->id }}" 
+                                                        data-toggle="dropdown" 
+                                                        aria-haspopup="true" 
+                                                        aria-expanded="false" 
+                                                        title="Actions">
+                                                    <i class="fas fa-ellipsis-v"></i>
+                                                </button>
+                                                <div class="dropdown-menu dropdown-menu-right py-2" aria-labelledby="actionDropdown_{{ $supplier->id }}" style="min-width: 170px;">
+                                                    @can('supplier summary')
+                                                    <a class="dropdown-item d-flex align-items-center" href="{{ route('suppliers.balance_summary', $supplier->id) }}">
+                                                        <i class="fa fa-eye fa-fw text-info mr-2"></i> Balance Summary
+                                                    </a>
+                                                    @endcan
 
-                                                @can('edit suppliers')
-                                                <a href="{{ route('suppliers.edit', $supplier->id) }}"
-                                                class="btn btn-sm btn-outline-primary ml-1" title="Edit supplier">
-                                                    <i class="fas fa-pencil-alt"></i>
-                                                </a>
-                                                @endcan
+                                                    @can('edit suppliers')
+                                                    <a class="dropdown-item d-flex align-items-center" href="{{ route('suppliers.edit', $supplier->id) }}">
+                                                        <i class="fas fa-pencil-alt fa-fw text-primary mr-2"></i> Edit
+                                                    </a>
+                                                    @endcan
 
-                                                @can('delete suppliers')
-                                                <a href="javascript:void(0)"
-                                                onclick="if(confirm('Are You Sure Want To Delete?')) 
-                                                            document.getElementById('delete-cat-{{ $supplier->id }}').submit();"
-                                                class="btn btn-sm btn-outline-danger ml-1" title="Delete supplier">
-                                                    <i class="fas fa-trash-alt"></i>
-                                                </a>
-
-                                                <form id="delete-cat-{{ $supplier->id }}"
-                                                    action="{{ route('suppliers.destroy', $supplier->id) }}"
-                                                    method="POST" style="display:none;">
-                                                    @csrf @method('DELETE')
-                                                </form>
-                                                @endcan
-
+                                                    @can('delete suppliers')
+                                                    <div class="dropdown-divider"></div>
+                                                    <a class="dropdown-item d-flex align-items-center text-danger" 
+                                                       href="javascript:void(0)"
+                                                       onclick="if(confirm('Are You Sure Want To Delete?')) document.getElementById('delete-cat-{{ $supplier->id }}').submit();">
+                                                        <i class="fas fa-trash-alt fa-fw text-danger mr-2"></i> Delete
+                                                    </a>
+                                                    <form id="delete-cat-{{ $supplier->id }}"
+                                                        action="{{ route('suppliers.destroy', $supplier->id) }}"
+                                                        method="POST" style="display:none;">
+                                                        @csrf @method('DELETE')
+                                                    </form>
+                                                    @endcan
+                                                </div>
                                             </div>
                                         </td>
                                     </tr>

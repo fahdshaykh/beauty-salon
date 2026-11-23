@@ -409,7 +409,7 @@ input:checked+.slider:before {
 
                                         <th>Status</th>
 
-                                        <th>Actions</th>
+                                        <th class="text-center" style="width: 80px;">Actions</th>
 
 
 
@@ -468,30 +468,30 @@ input:checked+.slider:before {
                                             </label>
                                         </td>
 
-                                        <td>
-                                            <div class="d-flex gap-1">
+                                        <td class="text-center align-middle">
+                                            <div class="dropdown">
+                                                <button class="btn btn-sm action-dots-btn no-caret" 
+                                                        type="button" 
+                                                        id="actionDropdown_{{ $user->id }}" 
+                                                        data-toggle="dropdown" 
+                                                        aria-haspopup="true" 
+                                                        aria-expanded="false" 
+                                                        title="Actions">
+                                                    <i class="fas fa-ellipsis-v"></i>
+                                                </button>
+                                                <div class="dropdown-menu dropdown-menu-right py-2" aria-labelledby="actionDropdown_{{ $user->id }}" style="min-width: 160px;">
+                                                    <a class="dropdown-item d-flex align-items-center" href="{{ url('user/edit', $user->id) }}">
+                                                        <i class="fas fa-pencil-alt fa-fw text-primary mr-2"></i> Edit
+                                                    </a>
 
-                                                
-                                                <a href="{{url('user/edit',$user->id)}}"
-                                                class="btn btn-sm btn-outline-primary" title="Edit Booking">
-                                                    <i class="fas fa-pencil-alt"></i>
-                                                </a>
-
-                                                
-                                                <a href="{{url('user/destroy',$user->id)}}"
-                                                onclick="return confirm('Are you sure to delete?')"
-                                                class="btn btn-sm btn-outline-danger ml-1" title="Delete Booking">
-                                                    <i class="fas fa-trash"></i>
-                                                </a>
-
-                                                
-                                                <a href="{{url('user/payslip',$user->id)}}"
-                                                class="btn btn-sm btn-outline-dark ml-1" title="View / Send Invoice">
-                                                <i class='fas fa-file-pdf' style='font-size:14px'></i>
-                                                </a>
-
+                                                    <div class="dropdown-divider"></div>
+                                                    <a class="dropdown-item d-flex align-items-center text-danger" 
+                                                       href="{{ url('user/destroy', $user->id) }}"
+                                                       onclick="return confirm('Are you sure to delete?')">
+                                                        <i class="fas fa-trash fa-fw text-danger mr-2"></i> Delete
+                                                    </a>
+                                                </div>
                                             </div>
-
                                         </td>
 
 

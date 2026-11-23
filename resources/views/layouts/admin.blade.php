@@ -52,6 +52,62 @@
 
 
     }
+
+    /* Action three-dots dropdown styling */
+    .action-dots-btn {
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 6px;
+        background-color: #f8f9fa;
+        border: 1px solid #dee2e6;
+        color: #6c757d;
+        cursor: pointer;
+        transition: all 0.2s ease-in-out;
+    }
+    .action-dots-btn:hover, 
+    .action-dots-btn:focus,
+    .action-dots-btn[aria-expanded="true"] {
+        background-color: #e9ecef;
+        border-color: #ced4da;
+        color: #212529;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    }
+    .action-dots-btn.no-caret::after {
+        display: none !important;
+    }
+    .card-body .dropdown-menu {
+        border-radius: 8px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12) !important;
+        border: 1px solid #e2e8f0;
+        z-index: 1050;
+    }
+    .card-body .dropdown-item {
+        padding: 8px 16px;
+        font-size: 13px;
+        font-weight: 500;
+        color: #495057;
+        cursor: pointer;
+        transition: background-color 0.15s ease, color 0.15s ease;
+        border: none;
+        background: transparent;
+        width: 100%;
+        text-align: left;
+    }
+    .card-body .dropdown-item:hover {
+        background-color: #f8f9fa;
+        color: #1a202c;
+    }
+    .card-body .dropdown-item.text-danger:hover {
+        background-color: #fff5f5;
+        color: #dc3545 !important;
+    }
+    .table-responsive {
+        min-height: 250px;
+    }
 </style>
 
 <body class="{{ auth()->check() && auth()->user()->getSetting('sidebar_minimize', false) ? 'sidebar-icon-only' : '' }}">
@@ -1489,6 +1545,14 @@
                             });
                         }
                     });
+                });
+
+                // 6) Prevent table-responsive from clipping action dropdowns
+                $(document).on('show.bs.dropdown', '.table-responsive', function () {
+                    $(this).css('overflow', 'inherit');
+                });
+                $(document).on('hide.bs.dropdown', '.table-responsive', function () {
+                    $(this).css('overflow', 'auto');
                 });
             });
         </script>

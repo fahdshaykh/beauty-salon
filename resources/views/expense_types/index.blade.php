@@ -66,7 +66,7 @@
 
                         <th>Status</th>
 
-                        <th>Action</th>
+                        <th class="text-center" style="width: 80px;">Action</th>
 
                     </tr>
 
@@ -98,21 +98,35 @@
                         </td>
 
 
-                        <td>
-                            <div class="d-flex gap-1">
-                                @can('edit expense types')
-                                <a href="{{url('expense-types/edit',$expense_type->id)}}"
-                                class="btn btn-sm btn-outline-primary" title="Edit">
-                                    <i class="fas fa-pencil-alt"></i>
-                                </a>
-                                @endcan
+                        <td class="text-center align-middle">
+                            <div class="dropdown">
+                                <button class="btn btn-sm action-dots-btn no-caret" 
+                                        type="button" 
+                                        id="actionDropdown_{{ $expense_type->id }}" 
+                                        data-toggle="dropdown" 
+                                        aria-haspopup="true" 
+                                        aria-expanded="false" 
+                                        title="Actions">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-right py-2" aria-labelledby="actionDropdown_{{ $expense_type->id }}" style="min-width: 160px;">
+                                    @can('edit expense types')
+                                    <a class="dropdown-item d-flex align-items-center" href="{{ url('expense-types/edit', $expense_type->id) }}">
+                                        <i class="fas fa-pencil-alt fa-fw text-primary mr-2"></i> Edit
+                                    </a>
+                                    @endcan
 
-                                @can('delete expense types')
-                                <a href="{{ route('expense_types.destroy', $expense_type->id) }}"
-                                class="btn btn-sm btn-outline-danger ml-2" title="Delete">
-                                    <i class="fas fa-trash-alt"></i>
-                                </a>
-                                @endcan
+                                    @can('delete expense types')
+                                    @can('edit expense types')
+                                    <div class="dropdown-divider"></div>
+                                    @endcan
+                                    <a class="dropdown-item d-flex align-items-center text-danger" 
+                                       href="{{ route('expense_types.destroy', $expense_type->id) }}"
+                                       onclick="return confirm('Are You Sure Want To Delete?')">
+                                        <i class="fas fa-trash-alt fa-fw text-danger mr-2"></i> Delete
+                                    </a>
+                                    @endcan
+                                </div>
                             </div>
                         </td>
 

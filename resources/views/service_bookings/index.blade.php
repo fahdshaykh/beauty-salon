@@ -103,6 +103,62 @@
         font-size: 1.25rem;
         flex-shrink: 0;
     }
+
+    /* Action three-dots dropdown styling */
+    .action-dots-btn {
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 6px;
+        background-color: #f8f9fa;
+        border: 1px solid #dee2e6;
+        color: #6c757d;
+        cursor: pointer;
+        transition: all 0.2s ease-in-out;
+    }
+    .action-dots-btn:hover, 
+    .action-dots-btn:focus,
+    .action-dots-btn[aria-expanded="true"] {
+        background-color: #e9ecef;
+        border-color: #ced4da;
+        color: #212529;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    }
+    .action-dots-btn.no-caret::after {
+        display: none !important;
+    }
+    .card-body .dropdown-menu {
+        border-radius: 8px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12) !important;
+        border: 1px solid #e2e8f0;
+        z-index: 1050;
+    }
+    .card-body .dropdown-item {
+        padding: 8px 16px;
+        font-size: 13px;
+        font-weight: 500;
+        color: #495057;
+        cursor: pointer;
+        transition: background-color 0.15s ease, color 0.15s ease;
+        border: none;
+        background: transparent;
+        width: 100%;
+        text-align: left;
+    }
+    .card-body .dropdown-item:hover {
+        background-color: #f8f9fa;
+        color: #1a202c;
+    }
+    .card-body .dropdown-item.text-danger:hover {
+        background-color: #fff5f5;
+        color: #dc3545 !important;
+    }
+    .table-responsive {
+        min-height: 250px;
+    }
 </style>
 
 <div class="main-panel">
@@ -308,7 +364,7 @@
 
                                         <th>Status</th>
 
-                                        <th>Actions</th>
+                                        <th class="text-center" style="width: 80px;">Actions</th>
 
                                     </tr>
 
@@ -459,53 +515,58 @@
                                         </td>
                                         
 
-                                        <td>
-                                            <div class="d-flex gap-1">
-
-                                                <button type="button" 
-                                                        class="btn btn-sm btn-outline-success btn-view-payment-history" 
-                                                        data-booking_id="{{ $book['id'] }}" 
-                                                        data-invoice="{{ $book['invoice'] }}"
-                                                        data-customer="{{ $book['customer_name'] }}"
-                                                        data-total="{{ $book['total_with_vat'] ?? $book['total_price'] }}"
-                                                        data-paid="{{ $book['amount_paid'] ?? 0 }}"
-                                                        data-pending="{{ $book['amount_pending'] ?? 0 }}"
-                                                        data-payment_status="{{ $book['payment_status'] ?? 'unpaid' }}"
-                                                        title="Payment History & Ledger">
-                                                    <i class="fas fa-receipt"></i>
+                                        <td class="text-center align-middle">
+                                            <div class="dropdown">
+                                                <button class="btn btn-sm action-dots-btn no-caret" 
+                                                        type="button" 
+                                                        id="actionDropdown_{{ $book['id'] }}" 
+                                                        data-toggle="dropdown" 
+                                                        aria-haspopup="true" 
+                                                        aria-expanded="false" 
+                                                        title="Actions">
+                                                    <i class="fas fa-ellipsis-v"></i>
                                                 </button>
+                                                <div class="dropdown-menu dropdown-menu-right py-2" aria-labelledby="actionDropdown_{{ $book['id'] }}" style="min-width: 205px;">
+                                                    <button type="button" 
+                                                            class="dropdown-item btn-view-payment-history d-flex align-items-center" 
+                                                            data-booking_id="{{ $book['id'] }}" 
+                                                            data-invoice="{{ $book['invoice'] }}"
+                                                            data-customer="{{ $book['customer_name'] }}"
+                                                            data-total="{{ $book['total_with_vat'] ?? $book['total_price'] }}"
+                                                            data-paid="{{ $book['amount_paid'] ?? 0 }}"
+                                                            data-pending="{{ $book['amount_pending'] ?? 0 }}"
+                                                            data-payment_status="{{ $book['payment_status'] ?? 'unpaid' }}">
+                                                        <i class="fas fa-receipt fa-fw text-success mr-2"></i> Payment History
+                                                    </button>
 
-                                                @can('booking inventory')
-                                                <a href="{{ route('service-bookings.edit-inventory', $book['id']) }}"
-                                                class="btn btn-sm btn-outline-info" title="Edit Inventory">
-                                                    <i class="fa fa-box"></i>
-                                                </a>
-                                                @endcan
+                                                    @can('view invoices')
+                                                    <a class="dropdown-item d-flex align-items-center" href="{{ url('view-booking', $book['id']) }}">
+                                                        <i class="fa fa-eye fa-fw text-info mr-2"></i> View / Send Invoice
+                                                    </a>
+                                                    @endcan
 
-                                                @can('edit bookings')
-                                                <a href="{{ url('service-bookings/edit', $book['id']) }}"
-                                                class="btn btn-sm btn-outline-primary" title="Edit Booking">
-                                                    <i class="fas fa-pencil-alt"></i>
-                                                </a>
-                                                @endcan
+                                                    @can('booking inventory')
+                                                    <a class="dropdown-item d-flex align-items-center" href="{{ route('service-bookings.edit-inventory', $book['id']) }}">
+                                                        <i class="fa fa-box fa-fw text-warning mr-2"></i> update Inventory
+                                                    </a>
+                                                    @endcan
 
-                                                @can('delete bookings')
-                                                <a href="{{ url('service-bookings/destroy', $book['id']) }}"
-                                                onclick="return confirm('Are you sure to delete?')"
-                                                class="btn btn-sm btn-outline-danger" title="Delete Booking">
-                                                    <i class="fas fa-trash"></i>
-                                                </a>
-                                                @endcan
+                                                    @can('edit bookings')
+                                                    <a class="dropdown-item d-flex align-items-center" href="{{ url('service-bookings/edit', $book['id']) }}">
+                                                        <i class="fas fa-pencil-alt fa-fw text-primary mr-2"></i> Edit Booking
+                                                    </a>
+                                                    @endcan
 
-                                                @can('view invoices')
-                                                <a href="{{ url('view-booking', $book['id']) }}"
-                                                class="btn btn-sm btn-outline-dark" title="View / Send Invoice">
-                                                <i class="fa fa-eye text-success"></i>
-                                                </a>
-                                                @endcan
-
+                                                    @can('delete bookings')
+                                                    <div class="dropdown-divider"></div>
+                                                    <a class="dropdown-item d-flex align-items-center text-danger" 
+                                                       href="{{ url('service-bookings/destroy', $book['id']) }}"
+                                                       onclick="return confirm('Are you sure to delete?')">
+                                                        <i class="fas fa-trash fa-fw text-danger mr-2"></i> Delete Booking
+                                                    </a>
+                                                    @endcan
+                                                </div>
                                             </div>
-
                                         </td>
 
 
@@ -1339,6 +1400,14 @@ $(document).ready(function () {
 
     setupRevertOnHide('#cancel-modal', '#cancel-booking-id');
     setupRevertOnHide('#payment-modal', '#invoice');
+
+    // Prevent table-responsive from clipping action dropdowns
+    $(document).on('show.bs.dropdown', '.table-responsive', function () {
+        $(this).css('overflow', 'inherit');
+    });
+    $(document).on('hide.bs.dropdown', '.table-responsive', function () {
+        $(this).css('overflow', 'auto');
+    });
 
     // 7. Pagination (unchanged)
     $('#rows').on('change', function () {

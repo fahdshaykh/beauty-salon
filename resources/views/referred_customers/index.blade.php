@@ -419,7 +419,7 @@ input:checked+.slider:before {
 
                                         <th>Status</th>
 
-                                        <th>Actions</th>
+                                        <th class="text-center" style="width: 80px;">Actions</th>
 
 
 
@@ -471,31 +471,40 @@ input:checked+.slider:before {
                                             </label>
                                         </td>
 
-                                        <td>
-                                            <div class="d-flex gap-1">
-                                                @can('edit referred customers')
-                                                <a href="{{route('referred_customers.edit', ['referred_customer' => $referred->id])}}"
-                                                class="btn btn-sm btn-outline-primary" title="Edit">
-                                                    <i class="fas fa-pencil-alt"></i>
-                                                </a>
-                                                @endcan
+                                        <td class="text-center align-middle">
+                                            <div class="dropdown">
+                                                <button class="btn btn-sm action-dots-btn no-caret" 
+                                                        type="button" 
+                                                        id="actionDropdown_{{ $referred->id }}" 
+                                                        data-toggle="dropdown" 
+                                                        aria-haspopup="true" 
+                                                        aria-expanded="false" 
+                                                        title="Actions">
+                                                    <i class="fas fa-ellipsis-v"></i>
+                                                </button>
+                                                <div class="dropdown-menu dropdown-menu-right py-2" aria-labelledby="actionDropdown_{{ $referred->id }}" style="min-width: 160px;">
+                                                    @can('edit referred customers')
+                                                    <a class="dropdown-item d-flex align-items-center" href="{{ route('referred_customers.edit', ['referred_customer' => $referred->id]) }}">
+                                                        <i class="fas fa-pencil-alt fa-fw text-primary mr-2"></i> Edit
+                                                    </a>
+                                                    @endcan
 
-
-                                                @can('delete referred customers')
-                                                <a href="javascript:void(0)"
-                                                onclick="if(confirm('Are You Sure Want To Delete?')) 
-                                                            document.getElementById('delete-cat-{{ $referred->id }}').submit();"
-                                                class="btn btn-sm btn-outline-danger ml-1" title="Delete">
-                                                    <i class="fas fa-trash-alt"></i>
-                                                </a>
-
-                                                <form id="delete-cat-{{ $referred->id }}"
-                                                    action="{{ route('referred_customers.destroy', $referred->id) }}"
-                                                    method="POST" style="display:none;">
-                                                    @csrf @method('DELETE')
-                                                </form>
-                                                @endcan
-
+                                                    @can('delete referred customers')
+                                                    @can('edit referred customers')
+                                                    <div class="dropdown-divider"></div>
+                                                    @endcan
+                                                    <a class="dropdown-item d-flex align-items-center text-danger" 
+                                                       href="javascript:void(0)"
+                                                       onclick="if(confirm('Are You Sure Want To Delete?')) document.getElementById('delete-cat-{{ $referred->id }}').submit();">
+                                                        <i class="fas fa-trash-alt fa-fw text-danger mr-2"></i> Delete
+                                                    </a>
+                                                    <form id="delete-cat-{{ $referred->id }}"
+                                                        action="{{ route('referred_customers.destroy', $referred->id) }}"
+                                                        method="POST" style="display:none;">
+                                                        @csrf @method('DELETE')
+                                                    </form>
+                                                    @endcan
+                                                </div>
                                             </div>
                                         </td>
 

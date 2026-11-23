@@ -388,7 +388,7 @@ input:checked+.slider:before {
 
                                         <th>Created Date</th>
 
-                                        <th>Actions</th>
+                                        <th class="text-center" style="width: 80px;">Actions</th>
 
 
 
@@ -423,31 +423,40 @@ input:checked+.slider:before {
 
                                         <td>{{$inventory->created_at}}</td>
 
-                                        <td>
-                                            <div class="d-flex gap-1">
-                                                @can('edit inventories')
-                                                <a href="{{ route('inventories.edit', $inventory->id) }}"
-                                                class="btn btn-sm btn-outline-primary" title="Edit inventory">
-                                                    <i class="fas fa-pencil-alt"></i>
-                                                </a>
-                                                @endcan
+                                        <td class="text-center align-middle">
+                                            <div class="dropdown">
+                                                <button class="btn btn-sm action-dots-btn no-caret" 
+                                                        type="button" 
+                                                        id="actionDropdown_{{ $inventory->id }}" 
+                                                        data-toggle="dropdown" 
+                                                        aria-haspopup="true" 
+                                                        aria-expanded="false" 
+                                                        title="Actions">
+                                                    <i class="fas fa-ellipsis-v"></i>
+                                                </button>
+                                                <div class="dropdown-menu dropdown-menu-right py-2" aria-labelledby="actionDropdown_{{ $inventory->id }}" style="min-width: 160px;">
+                                                    @can('edit inventories')
+                                                    <a class="dropdown-item d-flex align-items-center" href="{{ route('inventories.edit', $inventory->id) }}">
+                                                        <i class="fas fa-pencil-alt fa-fw text-primary mr-2"></i> Edit
+                                                    </a>
+                                                    @endcan
 
-
-                                                @can('delete inventories')
-                                                <a href="javascript:void(0)"
-                                                onclick="if(confirm('Are You Sure Want To Delete?')) 
-                                                            document.getElementById('delete-cat-{{ $inventory->id }}').submit();"
-                                                class="btn btn-sm btn-outline-danger ml-1" title="Delete inventory">
-                                                    <i class="fas fa-trash-alt"></i>
-                                                </a>
-
-                                                <form id="delete-cat-{{ $inventory->id }}"
-                                                    action="{{ route('inventories.destroy', $inventory->id) }}"
-                                                    method="POST" style="display:none;">
-                                                    @csrf @method('DELETE')
-                                                </form>
-                                                @endcan
-
+                                                    @can('delete inventories')
+                                                    @can('edit inventories')
+                                                    <div class="dropdown-divider"></div>
+                                                    @endcan
+                                                    <a class="dropdown-item d-flex align-items-center text-danger" 
+                                                       href="javascript:void(0)"
+                                                       onclick="if(confirm('Are You Sure Want To Delete?')) document.getElementById('delete-cat-{{ $inventory->id }}').submit();">
+                                                        <i class="fas fa-trash-alt fa-fw text-danger mr-2"></i> Delete
+                                                    </a>
+                                                    <form id="delete-cat-{{ $inventory->id }}"
+                                                        action="{{ route('inventories.destroy', $inventory->id) }}"
+                                                        method="POST" style="display:none;">
+                                                        @csrf @method('DELETE')
+                                                    </form>
+                                                    @endcan
+                                                </div>
                                             </div>
                                         </td>
 

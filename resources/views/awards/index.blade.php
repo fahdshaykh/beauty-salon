@@ -389,7 +389,7 @@ input:checked+.slider:before {
                                     <th>Award</th>
                                     <th>Gift</th>
                                     <th>Date</th>
-                                    <th>Actions</th>
+                                    <th class="text-center" style="width: 80px;">Actions</th>
                                   </tr>
                                 </thead>
 
@@ -407,30 +407,41 @@ input:checked+.slider:before {
                                     <td>{{ $award->gift }}</td>
                                     <td>{{ $award->date }}</td>
                                     
-                                    <td>
-                                        <div class="d-flex gap-1">
-                                            @can('edit awards')
-                                            <a href="{{ route('awards.edit', $award->id) }}"
-                                            class="btn btn-sm btn-outline-primary" title="Edit Award">
-                                                <i class="fas fa-pen"></i>
-                                            </a>
-                                            @endcan
+                                    <td class="text-center align-middle">
+                                        <div class="dropdown">
+                                            <button class="btn btn-sm action-dots-btn no-caret" 
+                                                    type="button" 
+                                                    id="actionDropdown_{{ $award->id }}" 
+                                                    data-toggle="dropdown" 
+                                                    aria-haspopup="true" 
+                                                    aria-expanded="false" 
+                                                    title="Actions">
+                                                <i class="fas fa-ellipsis-v"></i>
+                                            </button>
+                                            <div class="dropdown-menu dropdown-menu-right py-2" aria-labelledby="actionDropdown_{{ $award->id }}" style="min-width: 160px;">
+                                                @can('edit awards')
+                                                <a class="dropdown-item d-flex align-items-center" href="{{ route('awards.edit', $award->id) }}">
+                                                    <i class="fas fa-pen fa-fw text-primary mr-2"></i> Edit Award
+                                                </a>
+                                                @endcan
 
-                                            @can('delete awards')
-                                            <a href="javascript:void(0)"
-                                            onclick="if(confirm('Are You Sure Want To Delete?'))
-                                                        document.getElementById('delete-award-{{ $award->id }}').submit();"
-                                            class="btn btn-sm btn-outline-danger ml-1" title="Delete Award">
-                                                <i class="fas fa-trash-alt"></i>
-                                            </a>
-
-                                            <form id="delete-award-{{ $award->id }}"
-                                                action="{{ route('awards.destroy', $award->id) }}"
-                                                method="POST" style="display:none;">
-                                                @csrf
-                                                @method('DELETE')
-                                            </form>
-                                            @endcan
+                                                @can('delete awards')
+                                                @can('edit awards')
+                                                <div class="dropdown-divider"></div>
+                                                @endcan
+                                                <a class="dropdown-item d-flex align-items-center text-danger" 
+                                                   href="javascript:void(0)"
+                                                   onclick="if(confirm('Are You Sure Want To Delete?')) document.getElementById('delete-award-{{ $award->id }}').submit();">
+                                                    <i class="fas fa-trash-alt fa-fw text-danger mr-2"></i> Delete Award
+                                                </a>
+                                                <form id="delete-award-{{ $award->id }}"
+                                                    action="{{ route('awards.destroy', $award->id) }}"
+                                                    method="POST" style="display:none;">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                </form>
+                                                @endcan
+                                            </div>
                                         </div>
                                     </td>
                                   </tr>
