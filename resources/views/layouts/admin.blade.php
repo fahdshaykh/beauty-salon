@@ -598,12 +598,16 @@
 
                     @can('view bookings')
                         @php
+                            $isBookingCustomizer = request()->routeIs('booking_page.*');
+                            $isBookingAutomations = request()->routeIs('booking_automations.*');
                             $isBookings =
                                 request()->is('service-bookings*') ||
                                 request()->is('service_bookings*') ||
                                 request()->is('view-booking*') ||
                                 request()->is('show-job-detail*') ||
-                                request()->routeIs('service-bookings.*');
+                                request()->routeIs('service-bookings.*') ||
+                                $isBookingCustomizer ||
+                                $isBookingAutomations;
                             $isBookingsCreate =
                                 request()->routeIs(
                                     'service-bookings.create',
@@ -612,7 +616,7 @@
                                 ) ||
                                 request()->is('service-bookings/*create*') ||
                                 request()->is('get-booking-date*');
-                            $isBookingsList = $isBookings && !$isBookingsCreate;
+                            $isBookingsList = $isBookings && !$isBookingsCreate && !$isBookingCustomizer && !$isBookingAutomations;
                         @endphp
                         <li class="nav-item {{ $isBookings ? 'active' : '' }}">
 
@@ -640,6 +644,12 @@
                                                 href="{{ url('service-bookings/service-bookings-create') }}">Create
                                                 Booking</a></li>
                                     @endcan
+
+                                    <li class="nav-item"><a class="nav-link {{ $isBookingCustomizer ? 'active' : '' }}"
+                                            href="{{ route('booking_page.customizer') }}">Booking Page Builder</a></li>
+
+                                    <li class="nav-item"><a class="nav-link {{ $isBookingAutomations ? 'active' : '' }}"
+                                            href="{{ route('booking_automations.index') }}">Booking Automations</a></li>
 
                                 </ul>
 
@@ -831,10 +841,7 @@
                                 request()->routeIs('users.*') || request()->is('users*') || request()->is('user/*');
                             $isRolesList =
                                 request()->routeIs('roles.*') || request()->is('roles*') || request()->is('role/*');
-                            $isScheduleList =
-                                request()->routeIs('work_schedule.*', 'schedule.status') ||
-                                request()->is('work-schedule*');
-                            $isUserSettings = $isUsersList || $isRolesList || $isScheduleList;
+                            $isUserSettings = $isUsersList || $isRolesList;
                         @endphp
                         <li class="nav-item {{ $isUserSettings ? 'active' : '' }}">
 
@@ -860,54 +867,12 @@
                                     <li class="nav-item"> <a class="nav-link {{ $isRolesList ? 'active' : '' }}"
                                             href="{{ url('roles') }}"> Roles </a></li>
 
-                                    {{-- <li class="nav-item"> <a class="nav-link {{ $isScheduleList ? 'active' : '' }}" href="{{route('work_schedule.index')}}"> working schedule </a></li> --}}
-
                                 </ul>
 
                             </div>
 
                         </li>
                     @endrole
-
-                    {{-- @can('view attendance')
-          @php
-            $isWorkHours = request()->routeIs('work_hours') || request()->is('work-hours*');
-            $isPayrolls = request()->routeIs('payrolls.index', 'user.monthly.payslip') || request()->is('user/payrolls*');
-            $isAttList = request()->routeIs('attendance', 'employee_attendance') || request()->is('attendance*') || request()->is('employee_attendance*');
-            $isAttendance = $isAttList || $isWorkHours || $isPayrolls;
-          @endphp
-          <li class="nav-item {{ $isAttendance ? 'active' : '' }}">
-
-            <a class="nav-link" data-toggle="collapse" href="#attendance-pages" aria-expanded="{{ $isAttendance ? 'true' : 'false' }}" aria-controls="attendance-pages">
-
-              <i class="fas fa-clipboard-list menu-icon"></i>
-
-              <span class="menu-title">Employee Attendance</span>
-
-              <i class="menu-arrow"></i>
-
-            </a>
-
-            <div class="collapse {{ $isAttendance ? 'show' : '' }}" id="attendance-pages" data-parent="#sidebar .nav">
-
-              <ul class="nav flex-column sub-menu">
-
-                <li class="nav-item"> <a class="nav-link {{ $isAttList ? 'active' : '' }}" href="{{ route('attendance') }}">Attendance</a></li>
-
-                @can('view work hours')
-                <li class="nav-item"> <a class="nav-link {{ $isWorkHours ? 'active' : '' }}" href="{{ route('work_hours') }}"> Work Hours </a></li>
-                @endcan
-
-                @can('view payrolls')
-                <li class="nav-item"> <a class="nav-link {{ $isPayrolls ? 'active' : '' }}" href="{{ route('payrolls.index') }}"> Monthly Payrolls </a></li>
-                @endcan
-                
-              </ul>
-
-            </div>
-
-          </li>
-          @endcan --}}
 
                     @can('view settings')
                         @php

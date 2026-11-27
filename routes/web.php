@@ -32,15 +32,15 @@ use App\Http\Controllers\{
     SupplierController,
     SupplierPaymentController,
     EmployeeController,
-    EmployeeAttendanceController,
-    PayrollController,
+    PublicBookingController,
+    BookingPageCustomizerController,
+    BookingAutomationController,
     AwardController,
     BookingController,
     CalendarController,
     EmailTemplateController,
     StripeController,
     TicketController,
-    WorkScheduleController,
     PaymentMethodController,
     UserSettingController
 };
@@ -105,6 +105,12 @@ Route::get('/clear-view', fn() => \Artisan::call('view:clear') ? \Artisan::outpu
 // ──────────────────────────────────────
 // 3. PUBLIC / GUEST ROUTES
 // ──────────────────────────────────────
+Route::get('/book/{slug}', [PublicBookingController::class, 'show'])->name('public_booking.show');
+Route::get('/book/{slug}/slots', [PublicBookingController::class, 'getSlots'])->name('public_booking.slots');
+Route::post('/book/{slug}/submit', [PublicBookingController::class, 'submit'])->name('public_booking.submit');
+Route::get('/book/{slug}/confirmed/{invoice}', [PublicBookingController::class, 'confirmed'])->name('public_booking.confirmed');
+Route::post('/book/{slug}/ai-assistant', [PublicBookingController::class, 'aiChat'])->name('public_booking.ai');
+
 Route::get('sms-invoice-mail/{id}/{company}', [MailController::class, 'sms_invoice_mail'])->name('sms.invoice.mail');
 Route::get('optout/{companyid}/{customerid}/{opt}', [MarketingController::class, 'emailoptout'])
     ->where(['companyid' => '[0-9]+', 'customerid' => '[0-9]+', 'opt' => '[0-9]+'])
@@ -480,18 +486,9 @@ Route::middleware(['auth', 'company'])->group(function () {
     Route::get('/suppliers/{id}/balance-summary', [SupplierController::class, 'balanceSummary'])->name('suppliers.balance_summary');
     Route::get('/suppliers/{id}/balance-summary/export', [SupplierController::class, 'exportBalanceSummary'])->name('suppliers.balance_summary.export');
 
-    // ── Employee Management ──
+    // ── Employee Reports ──
     Route::get('/employee-graph-report', [EmployeeController::class, 'employee_graph_report'])->name('employee.graph_report');
     Route::get('/employee-booking-chart', [EmployeeController::class, 'employee_booking_chart'])->name('employee.booking_chart');
-    Route::get('employee_attendance', [EmployeeAttendanceController::class, 'employee_attendance'])->name('employee_attendance');
-    Route::post('/attendance/store', [EmployeeAttendanceController::class, 'store'])->name('attendance.store');
-    Route::get('attendance', [EmployeeAttendanceController::class, 'attendance'])->name('attendance');
-    Route::post('/update-exit-time', [EmployeeAttendanceController::class, 'updateExitTime'])->name('update.exit.time');
-    Route::get('/work-hours', [EmployeeAttendanceController::class, 'work_hours'])->name('work_hours');
-
-    // ── Payroll ──
-    Route::get('/user/payrolls', [PayrollController::class, 'index'])->name('payrolls.index');
-    Route::get('user/monthly/payslip/{id}', [PayrollController::class, 'payslip'])->name('user.monthly.payslip');
 
     // ── Awards ──
     Route::resource('awards', AwardController::class)->names([
@@ -515,10 +512,14 @@ Route::middleware(['auth', 'company'])->group(function () {
     // ── Mail ──
     Route::get('invoice-mail/{id}', [MailController::class, 'invoice_mail'])->name('invoice.mail');
 
-    // ── Work Schedule ──
-    Route::get('/work-schedule', [WorkScheduleController::class, 'index'])->name('work_schedule.index');
-    Route::patch('/work-schedule/{id}', [WorkScheduleController::class, 'update'])->name('work_schedule.update');
-    Route::get('schedule-status', [WorkScheduleController::class, 'categoryStatus'])->name('schedule.status');
+    // ── Booking Page Customizer (Builder) ──
+    Route::get('/booking-page/customizer', [BookingPageCustomizerController::class, 'index'])->name('booking_page.customizer');
+    Route::post('/booking-page/customizer/save', [BookingPageCustomizerController::class, 'save'])->name('booking_page.save');
+    Route::post('/booking-page/ai-settings', [BookingPageCustomizerController::class, 'saveAiSettings'])->name('booking_page.ai_settings');
+
+    // ── Booking Automations Hub ──
+    Route::get('/booking-automations', [BookingAutomationController::class, 'index'])->name('booking_automations.index');
+    Route::post('/booking-automations/{event}', [BookingAutomationController::class, 'update'])->name('booking_automations.update');
 
     Route::resource('tickets', TicketController::class);
 

@@ -47,9 +47,12 @@ class ServiceBooking extends Model
 
     public function bookingdetail()
     {
-
         return $this->hasMany('App\BookingDetail','booking_id','id');
+    }
 
+    public function booking_details()
+    {
+        return $this->hasMany('App\BookingDetail', 'booking_id', 'id');
     }
 
     public function companysetting()

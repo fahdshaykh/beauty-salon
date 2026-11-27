@@ -19,6 +19,16 @@ class Company extends Model
         return $this->hasOne(CompanyLimit::class);
     }
 
+    public function bookingPageSetting()
+    {
+        return $this->hasOne(\App\Models\BookingPageSetting::class, 'company_id');
+    }
+
+    public function bookingAutomations()
+    {
+        return $this->hasMany(\App\Models\BookingAutomation::class, 'company_id');
+    }
+
     public function currentLimits()
     {
         $currentMonth = now()->format('Y-m');

@@ -54,6 +54,16 @@ class SendBookingReminders extends Command
             }
         }
 
+        // Process Event-Driven Automations (24h & 2h reminders)
+        try {
+            $automatedSent = app(\App\Services\BookingAutomationService::class)->processReminders();
+            if ($automatedSent > 0) {
+                $this->info("Processed {$automatedSent} automated reminders.");
+            }
+        } catch (\Exception $e) {
+            \Log::warning("Automation reminders cron error: " . $e->getMessage());
+        }
+
 
 
 
